@@ -33,7 +33,7 @@ namespace MediaPlayer_X_Ark
             g2.FillRectangle(Brushes.Cyan, g2.VisibleClipBounds);
 
             player = new PlayerEngine();
-            player.CreateSound("C:\\Windows\\Media\\town.mid");
+            player.CreateSound("");
 
             initialize = true;
         }
@@ -53,9 +53,9 @@ namespace MediaPlayer_X_Ark
             if (!initialize)
                 return;
 
-            g1.Clear(Color.White);
+//            g1.Clear(Color.White);
 //            g1.FillRectangle(brush, 0, 0, Spectrum.Width, Spectrum.Height);
-            player.spectrum.UpdateSpectrum(g1, g2, Spectrum.Width, Spectrum.Height);
+            player.spectrum.UpdateSpectrum(g1, g2, Spectrum.Width, Spectrum.Height, 1);
         }
     }
 }

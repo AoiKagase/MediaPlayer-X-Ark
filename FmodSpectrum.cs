@@ -78,16 +78,24 @@ namespace MediaPlayer_X_Ark
 
 		private static float[] lineBottom = new float[128];
 
-		public void UpdateSpectrum(Graphics g1, Graphics g2, float width, float height)
+		public void UpdateSpectrum(Graphics g1, Graphics g2, int width, int height, int mode)
 		{
 			// BitBlt用にPictureBoxのHDCを取得
+			Rectangle line1;
+
+			int lineHeight = 0;
+			bool isPlaying;
+
+			FmodChannelGroup.isPlaying(out isPlaying);
+
+			if (!isPlaying)
+			{
+				g1.Clear(Color.White);
+				return;
+			}
+
 			IntPtr hdc1 = g1.GetHdc();
 			IntPtr hdc2 = g2.GetHdc();
-			Rectangle line1 = new Rectangle(0, 0, (int)width, (int)height);
-
-//			float maxHeight = 0;
-//			float lineHeight = 0;
-
 			// DSPを作成済み
 			if (mFFT.hasHandle())
             {
@@ -107,24 +115,25 @@ namespace MediaPlayer_X_Ark
 						if (mFFTSpectrum == null)
                         {
 							// Allocate the fft spectrum buffer once
-							//for (int i = 0; i < fftData.numchannels; ++i)
-							//{
 							mFFTSpectrum = new float[fftData.length];
-							//}
 						}
 
 						// channel = 0? 
 						// スペクトラム値の取得
 						fftData.getSpectrum(0, ref mFFTSpectrum);
 
+
+						int step = (mode > 0) ? mode * 2 : 1;
 						// 画像処理用の座標計算開始
 						line1 = new Rectangle(0, 0, 0, 0);
-						for (int i = 0; i < windowSize; ++i)
+						for (int i = 0; i < windowSize; i+=step)
                         {
-							float level = lin2dB(mFFTSpectrum[i]);
-							line1 = new Rectangle(line1.Left+((int)width / windowSize), (int)((80 + level) * 0.1), 1, (int)height);
+							lineHeight = height - (int)(lin2dB(mFFTSpectrum[i]) + 80) * 2;
 
-							BitBlt(hdc1, line1.Left, line1.Top, 1, line1.Bottom, hdc2, line1.Left, line1.Top, TernaryRasterOperations.SRCCOPY);
+							line1 = new Rectangle(i + (width / windowSize), lineHeight, (windowSize / width), height - lineHeight);
+//							g1.FillRectangle(Brushes.Red, line1.X, line1.Y, line1.Width, line1.Height);
+
+							BitBlt(hdc1, line1.X, line1.Y, line1.Width, line1.Height, hdc2, line1.X, line1.Y, TernaryRasterOperations.SRCCOPY);
 						}
 					}
                 }
