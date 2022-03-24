@@ -141,7 +141,7 @@ namespace MediaPlayer_X_Ark
 				// Create Channel Group.
 				FmodSystem.createChannelGroup("Channel 01", out FmodChannelGroup);
 
-				spectrum = new FmodSpectrum(ref FmodSystem, 128, ref this.FmodChannelGroup);
+				spectrum = new FmodSpectrum(ref FmodSystem, 256, ref this.FmodChannelGroup);
 			}
 			else
             {

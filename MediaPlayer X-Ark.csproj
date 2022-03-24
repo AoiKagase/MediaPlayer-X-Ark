@@ -21,6 +21,5 @@
     <Compile Remove="Mathf.cs" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy fmod.dll bin\Debug\net6.0-windows\&#xD;&#xA;copy fmod.dll bin\Release\net6.0-windows\" />
   </Target>
 </Project>

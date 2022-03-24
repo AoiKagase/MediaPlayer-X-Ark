@@ -1,7 +1,7 @@
 ﻿
 namespace MediaPlayer_X_Ark
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// 必要なデザイナー変数です。
@@ -31,14 +31,11 @@ namespace MediaPlayer_X_Ark
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.play = new System.Windows.Forms.Button();
             this.Stop = new System.Windows.Forms.Button();
             this.Spectrum = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.SpectrumSrc = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.Spectrum)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SpectrumSrc)).BeginInit();
             this.SuspendLayout();
             // 
             // play
@@ -74,29 +71,18 @@ namespace MediaPlayer_X_Ark
             this.timer1.Enabled = true;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // SpectrumSrc
-            // 
-            this.SpectrumSrc.Image = ((System.Drawing.Image)(resources.GetObject("SpectrumSrc.Image")));
-            this.SpectrumSrc.Location = new System.Drawing.Point(138, 251);
-            this.SpectrumSrc.Name = "SpectrumSrc";
-            this.SpectrumSrc.Size = new System.Drawing.Size(295, 66);
-            this.SpectrumSrc.TabIndex = 1;
-            this.SpectrumSrc.TabStop = false;
-            // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(454, 329);
-            this.Controls.Add(this.SpectrumSrc);
             this.Controls.Add(this.Spectrum);
             this.Controls.Add(this.Stop);
             this.Controls.Add(this.play);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.Spectrum)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SpectrumSrc)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -107,7 +93,6 @@ namespace MediaPlayer_X_Ark
         private System.Windows.Forms.Button Stop;
         private System.Windows.Forms.PictureBox Spectrum;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.PictureBox SpectrumSrc;
     }
 }
 
