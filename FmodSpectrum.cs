@@ -129,7 +129,7 @@ namespace MediaPlayer_X_Ark
 					}
                 }
             }
-
+			
 			g1.ReleaseHdc(hdc1);
 			g2.ReleaseHdc(hdc2);
 			return;
