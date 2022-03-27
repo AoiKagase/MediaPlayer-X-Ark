@@ -1,0 +1,140 @@
+[SkinInformation]
+-Name			=BBLean BlackStyle
+-Author			=SandStriker
+-Comment		=BBLeanÇímÇ¡ÇƒÇÈêlÇ»ÇÁï™Ç©ÇÈÇÕÇ∏ÅEÅEÅE
+
+[SkinSetting]
+-Dir			=Skins\bbbs
+-Extension		=png
+-BackPicture		=back.png
+-MainWidth		=579
+-MainHeight		=174
+
+[ButtonVector]
+-BackX			=14
+-BackY			=128
+-SeekBackX		=98
+-SeekBackY		=128
+-PlayX			=266
+-PlayY			=128
+-PauseX
+-PauseY
+-StopX			=182
+-StopY			=128
+-SeekForwardX		=350
+-SeekForwardY		=128
+-ForwardX		=434
+-ForwardY		=129
+-RandomX		=14
+-RandomY		=146
+-LoopX			=98
+-LoopY			=146
+-OpenX			=350
+-OpenY			=146
+-PlayListX		=355
+-PlayListY		=2
+-SettingX		=411
+-SettingY		=2
+-CloseX			=523
+-CloseY			=2
+-OpenCDX		=434
+-OpenCDY		=146
+-MiniSizeX		=467
+-MiniSizeY		=2
+
+[VolumeSlider]
+-BarPicture		=volbar.png
+-BarVector		=1
+-BarX			=521
+-BarY			=27
+-BarMin			=0
+-BarMax			=10
+-BarAreaY		=27
+-BarAreaY2		=153
+
+[TrackSlider]
+-BarPicture		=trackbar.png
+-BarVector		=0
+-BarX			=15
+-BarY			=111
+-BarMin			=0
+-BarMax			=100
+-BarAreaX		=15
+-BarAreaX2		=490
+
+[PanSlider]
+-BarPicture		=panbar.png
+-BarVector		=0
+-BarX			=184
+-BarY			=148
+-BarMin			=-10
+-BarMax			=10
+-BarAreaX		=184
+-BarAreaX2		=339
+
+[GraphicArea]
+-ClearColor		=4080FF
+-SpectrumAreaX		=17
+-SpectrumAreaY		=29
+-SpectrumAreaWidth	=229
+-SpectrumAreaHeight	=76
+-SpectrumColor		=FF0000
+-SpectrumWaveColor	=FF8080
+-SpectrumPicture	=analyzer.png
+-TextAreaX		=260
+-TextAreaY		=35
+-TextAreaWidth		=248
+-TextAreaHeight	=36
+-TextAreaBackColor	=000000
+-TitleAreaX		=0
+-TitleAreaY		=0
+-TitleFont		=HGPënâpäpŒﬂØÃﬂëÃ
+-TitleFontColor	=C0C0C0
+-TitleFontSize		=18
+-TitleFontBold		=1
+-TitleFontItalic	=0
+-TimeTxtAreaX		=368
+-TimeTxtAreaY		=74
+-TimeTxtFont		=Arial Black
+-TimeTxtColor		=808080
+-TimeTxtFontSize	= 16
+-TimeTxtFontBold	=1
+-TimeTxtFontItalic
+-FileTxtArea		=False
+-FileTxtAreaX		=0
+-FileTxtAreaY		=0
+-FileTxtFont		=0
+-FileTxtColor		=0
+-FileTxtFontSize	=0
+-FileTxtFontBold	=0
+-FileTxtFontItalic	=0
+
+[PlayListMain]
+-BackPic		=playlist\playlists.png
+-ListBackColor		=000000
+-ListForeColor		=FFFFFF
+-MagnetMode		=1
+-MainX			=-581
+-MainY			=0
+-MainWidth		=316
+-MainHeight		=174
+-ListX			=14
+-ListY			=29
+-ListWidth		=288
+-ListHeight		=132
+-ListTab
+-ListCharCount
+
+[PlayListButton]
+-POpenX			=83
+-POpenY			=2
+-PSaveX			=121
+-PSaveY			=2
+-PRemoveX		=160
+-PRemoveY		=2
+-PUpX			=213
+-PUpY			=2
+-PDownX			=253
+-PDownY			=2
+-PCloseX		=293
+-PCloseY		=2

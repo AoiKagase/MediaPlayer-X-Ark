@@ -1,0 +1,140 @@
+[SkinInformation]
+-Name			=Small Skin
+-Author			=kaseijinól
+-Comment		=äÊí£ÇËÇ‹Ç∑ÇÀÅB
+
+[SkinSetting]
+-Dir			=Skins\Small-S
+-Extension		=bmp
+-BackPicture		=Player.bmp
+-MainWidth		=350
+-MainHeight		=100
+
+[ButtonVector]
+-BackX			=17
+-BackY			=76
+-SeekBackX		=63
+-SeekBackY		=76
+-PlayX			=101
+-PlayY			=76
+-PauseX			=119
+-PauseY			=130
+-StopX			=124
+-StopY			=76
+-SeekForwardX		=147
+-SeekForwardY		=76
+-ForwardX		=185
+-ForwardY		=76
+-RandomX		=247
+-RandomY		=32
+-LoopX			=247
+-LoopY			=51
+-OpenX			=282
+-OpenY			=54
+-PlayListX		=269
+-PlayListY		=22
+-SettingX		=305
+-SettingY		=21
+-CloseX			=310
+-CloseY			=2
+-OpenCDX		=309
+-OpenCDY		=54
+-MiniSizeX		=291
+-MiniSizeY		=2
+
+[VolumeSlider]
+-BarPicture		=bar.bmp
+-BarVector		=0
+-BarX			=17
+-BarY			=47
+-BarMin			=0
+-BarMax			=10
+-BarAreaX		=17
+-BarAreaX2		=99
+
+[TrackSlider]
+-BarPicture		=bar2.bmp
+-BarVector		=0
+-BarX			=17
+-BarY			=62
+-BarMin			=0
+-BarMax			=200
+-BarAreaX		=17
+-BarAreaX2		=194
+
+[PanSlider]
+-BarPicture		=bar.bmp
+-BarVector		=0
+-BarX			=17
+-BarY			=28
+-BarMin			=-10
+-BarMax			=10
+-BarAreaX		=17
+-BarAreaX2		=100
+
+[GraphicArea]
+-ClearColor		=404080
+-SpectrumAreaX		=119
+-SpectrumAreaY		=30
+-SpectrumAreaWidth	=112
+-SpectrumAreaHeight	=15
+-SpectrumColor		=FFFFFF
+-SpectrumWaveColor	=C0C0C0
+-SpectrumPicture
+-TextAreaX		=120
+-TextAreaY		=46
+-TextAreaWidth		=110
+-TextAreaHeight		=15
+-TextAreaBackColor	=000000
+-TitleAreaX		=0
+-TitleAreaY		=50
+-TitleFont		=Small Fonts
+-TitleFontColor		=FFFFFF
+-TitleFontSize		=7
+-TitleFontBold		=0
+-TitleFontItalic	=0
+-TimeTxtAreaX		=257
+-TimeTxtAreaY		=81
+-TimeTxtFont		=ÇlÇr Çoñæí©
+-TimeTxtColor		=FFFFFF
+-TimeTxtFontSize	=9
+-TimeTxtFontBold	=1
+-TimeTxtFontItalic	=0
+-FileTxtArea		=False
+-FileTxtAreaX		=0
+-FileTxtAreaY		=0
+-FileTxtFont		=0
+-FileTxtColor		=0
+-FileTxtFontSize	=0
+-FileTxtFontBold	=0
+-FileTxtFontItalic	=0
+
+[PlayListMain]
+-BackPic		=playlist\playlists.bmp
+-ListBackColor		=000000
+-ListForeColor		=FFFFFF
+-MagnetMode		=1
+-MainX			=0
+-MainY			=-100
+-MainWidth		=350
+-MainHeight		=100
+-ListX			=31
+-ListY			=2
+-ListWidth		=288
+-ListHeight		=59
+-ListTab		=15
+-ListCharCount		=3
+
+[PlayListButton]
+-POpenX			=321
+-POpenY			=2
+-PSaveX			=251
+-PSaveY			=63
+-PRemoveX		=279
+-PRemoveY		=63
+-PUpX			=321
+-PUpY			=20
+-PDownX			=321
+-PDownY			=38
+-PCloseX		=311
+-PCloseY		=92

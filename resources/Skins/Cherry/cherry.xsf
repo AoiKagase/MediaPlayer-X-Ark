@@ -1,0 +1,151 @@
+[SkinInformation]
+-Name		=Cherry
+-Author		=カミヤ
+-Comment	=もうすこしだけ右クリックと仲よくなれるデザインです
+
+[SkinSetting]
+-Dir		=Skins\Cherry\
+-Extension	=bmp
+-BackPicture	=back.bmp
+-MainWidth	=341
+-MainHeight	=90
+
+[ButtonVector]
+-BackX		=10
+-BackY		=20
+-SeekBackX	=43
+-SeekBackY	=21
+-PlayX		=75
+-PlayY		=19
+-PauseX		=24
+-PauseY		=92
+-StopX		=173
+-StopY		=19
+-SeekForwardX	=107
+-SeekForwardY	=20
+-ForwardX	=140
+-ForwardY	=21
+-RandomX	=205
+-RandomY	=21
+-LoopX		=239
+-LoopY		=21
+-OpenX		=99
+-OpenY		=89
+-PlayListX	=271
+-PlayListY	=19
+-SettingX	
+-SettingY	
+-MiniSizeX	=306
+-MiniSizeY	=21
+-OpenCDX	=117
+-OpenCDY	=89
+-CloseX		
+-CloseY		
+
+[VolumeSlider]
+-BarPicture	=vbar.bmp
+-BarVector	=0
+-BarX		=228
+-BarY		=56
+-BarMin		=0
+-BarMax		=10
+-BarAreaX	=228
+-BarAreaX2	=300
+//Vector=1用
+//-BarAreaY 
+//-BarAreaY2
+
+[TrackSlider]
+-BarPicture	=sbar.bmp
+-BarVector	=0
+-BarX		=10
+-BarY		=54
+-BarMin		=0
+-BarMax		=100
+-BarAreaX	=10
+-BarAreaX2	=190
+//Vector=1用
+//-BarAreaY
+//-BarAreaY2
+
+[PanSlider]
+-BarPicture	
+-BarVector	=0
+-BarX		=148
+-BarY		=100
+-BarMin		=-10
+-BarMax		=10
+-BarAreaX	=148
+-BarAreaX2	=178
+//Vector=1用
+//-BarAreaY
+//-BarAreaY2
+
+[GraphicArea]
+-SpectrumAreaX		=8
+-SpectrumAreaY		=7
+-SpectrumAreaWidth		=119
+-SpectrumAreaHeight	=44
+-SpectrumColor		=FFFFFF
+-SpectrumWaveColor	=FFFFFF
+
+-TextAreaX		=6
+-TextAreaY		=6
+-TextAreaWidth		=245
+-TextAreaHeight		=12
+-TextAreaBackColor		=000000
+
+-TitleAreaX		=0
+-TitleAreaY		=0
+-TitleFont			=MS UI Gothic
+-TitleFontColor		=000000
+-TitleFontSize		=10
+-TitleFontBold		=1
+-TitleFontItalic		=0
+
+-TimeTxtAreaX		=256
+-TimeTxtAreaY		=7
+-TimeTxtFont		=MS UI Gothic
+-TimeTxtColor		=000000
+-TimeTxtFontSize		=10
+-TimeTxtFontBold		=1
+-TimeTxtFontItalic		=0
+
+-FileTxtArea		=false
+-FileTxtAreaX		=0
+-FileTxtAreaY		=0
+-FileTxtFont		=0
+-FileTxtColor		=0
+-FileTxtFontSize		=0
+-FileTxtFontBold		=0
+-FileTxtFontItalic		=0
+
+[PlayListMain]
+-BackPic		=playlist\pl.bmp
+-ListBackColor	=E7E1FF
+-ListForeColor	=000000
+-MagnetMode	=0
+-MainX		=500
+-MainY		=60
+-MainWidth	=400
+-MainHeight	=650
+-ListX		=5
+-ListY		=5
+-ListWidth	=358
+-ListHeight	=640
+-ListTab	=20
+-ListCharCount	=10
+
+[PlayListButton]
+-POpenX		
+-POpenY		
+-PSaveX		
+-PSaveY		
+-PRemoveX	
+-PRemoveY	
+-PUpX		=363
+-PUpY		=300
+-PDownX		=364
+-PDownY		=332
+-PCloseX	=363
+-PCloseY	=500

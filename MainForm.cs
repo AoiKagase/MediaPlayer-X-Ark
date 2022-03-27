@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using MediaPlayer_X_Ark.Skin;
 namespace MediaPlayer_X_Ark
 {
     public partial class MainForm : Form
@@ -16,8 +10,9 @@ namespace MediaPlayer_X_Ark
 
         Graphics g1;
         Graphics g2;
-
+        Bitmap bitmap;
         PlayerEngine player;
+        OldSkinSystem oldSkinSystem;
 
         public MainForm()
         {
@@ -26,24 +21,63 @@ namespace MediaPlayer_X_Ark
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            g1 = Spectrum.CreateGraphics();
-            Bitmap bitmap = new Bitmap(Spectrum.Width, Spectrum.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-
-            g2 = Graphics.FromImage(bitmap);
-            g2.FillRectangle(Brushes.Cyan, g2.VisibleClipBounds);
-
             player = new PlayerEngine();
-            player.CreateSound("");
+            oldSkinSystem = new OldSkinSystem();
+
+
+            this.SkinLoad("bbbs\\bs.xsf");
+
+            g1 = Spectrum.CreateGraphics();
+            bitmap = new Bitmap(oldSkinSystem.ImgSpectrum.BackImage);
+            player.spectrum.Initialize(g1, bitmap);
 
             initialize = true;
         }
 
-        private void Play_Click(object sender, EventArgs e)
+        private void SkinLoad(string skinFile)
+        {
+            oldSkinSystem.Open(skinFile);
+            this.BackgroundImage = oldSkinSystem.MainForm.BackImage;
+            this.Width = oldSkinSystem.MainForm.BackImage.Width;
+            this.Height = oldSkinSystem.MainForm.BackImage.Height;
+
+            this.Spectrum.Left = oldSkinSystem.ImgSpectrum.position.Left;
+            this.Spectrum.Top = oldSkinSystem.ImgSpectrum.position.Top;
+            this.Spectrum.Width = oldSkinSystem.ImgSpectrum.position.Width;
+            this.Spectrum.Height = oldSkinSystem.ImgSpectrum.position.Height;
+
+            this.BtnOpen.BackgroundImage = oldSkinSystem.BtnOpen.BackImage;
+            this.BtnOpen.Top = oldSkinSystem.BtnOpen.position.Top;
+            this.BtnOpen.Left = oldSkinSystem.BtnOpen.position.Left;
+            this.BtnOpen.Width = oldSkinSystem.BtnOpen.position.Width;
+            this.BtnOpen.Height = oldSkinSystem.BtnOpen.position.Height;
+
+            this.BtnClose.BackgroundImage = oldSkinSystem.BtnClose.BackImage;
+            this.BtnClose.Top = oldSkinSystem.BtnClose.position.Top;
+            this.BtnClose.Left = oldSkinSystem.BtnClose.position.Left;
+            this.BtnClose.Width = oldSkinSystem.BtnClose.position.Width;
+            this.BtnClose.Height = oldSkinSystem.BtnClose.position.Height;
+
+            this.BtnPlay.BackgroundImage = oldSkinSystem.BtnPlay.BackImage;
+            this.BtnPlay.Top = oldSkinSystem.BtnPlay.position.Top;
+            this.BtnPlay.Left = oldSkinSystem.BtnPlay.position.Left;
+            this.BtnPlay.Width = oldSkinSystem.BtnPlay.position.Width;
+            this.BtnPlay.Height = oldSkinSystem.BtnPlay.position.Height;
+
+            this.BtnStop.BackgroundImage = oldSkinSystem.BtnStop.BackImage;
+            this.BtnStop.Top = oldSkinSystem.BtnStop.position.Top;
+            this.BtnStop.Left = oldSkinSystem.BtnStop.position.Left;
+            this.BtnStop.Width = oldSkinSystem.BtnStop.position.Width;
+            this.BtnStop.Height = oldSkinSystem.BtnStop.position.Height;
+
+        }
+
+        private void BtnPlay_Click(object sender, EventArgs e)
         {
             player.PlaySound();
         }
 
-        private void Stop_Click(object sender, EventArgs e)
+        private void BtnStop_Click(object sender, EventArgs e)
         {
             player.Stop();
         }
@@ -53,9 +87,112 @@ namespace MediaPlayer_X_Ark
             if (!initialize)
                 return;
 
-//            g1.Clear(Color.White);
-//            g1.FillRectangle(brush, 0, 0, Spectrum.Width, Spectrum.Height);
-            player.spectrum.UpdateSpectrum(g1, g2, Spectrum.Width, Spectrum.Height, 1);
+            //            g1.Clear(Color.White);
+            //            g1.FillRectangle(brush, 0, 0, Spectrum.Width, Spectrum.Height);
+            player.spectrum.UpdateSpectrum(g1,ref bitmap, Spectrum.Width, Spectrum.Height, 1);
+
+//            statusStrip1.Text = player.lastError;
+        }
+
+        private void BtnOpenFile_Click(object sender, EventArgs e)
+        {
+            if (OpenFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // Open File
+                if (player.CreateSound(OpenFileDialog.FileName) == FMOD.RESULT.OK)
+                {
+                    player.PlaySound();
+                }
+            } else
+            {
+                MessageBox.Show(player.lastError);
+            }
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+        }
+
+        private void BtnClose_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void BtnDownEvent(ref object button)
+        {
+            ((Button)button).BackgroundImage = ((Components)oldSkinSystem[((Button)button).Name]).DownImage;
+            ((Button)button).Refresh();
+        }
+        private void BtnUpEvent(ref object button)
+        {
+            ((Button)button).BackgroundImage = ((Components)oldSkinSystem[((Button)button).Name]).BackImage;
+            ((Button)button).Refresh();
+        }
+
+        private Point mousePoint;
+        private void MainForm_MouseDown(object sender, MouseEventArgs e)
+        {
+            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+            {
+                //位置を記憶する
+                mousePoint = new Point(e.X, e.Y);
+            }
+        }
+
+        private void MainForm_MouseMove(object sender, MouseEventArgs e)
+        {
+            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+            {
+                this.Left += e.X - mousePoint.X;
+                this.Top += e.Y - mousePoint.Y;
+                //または、つぎのようにする
+                //this.Location = new Point(
+                //    this.Location.X + e.X - mousePoint.X,
+                //    this.Location.Y + e.Y - mousePoint.Y);
+            }
+        }
+
+        private void BtnOpen_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+
+        private void BtnClose_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+
+        private void BtnStop_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+
+
+        private void BtnPlay_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+
+        private void BtnClose_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+
+        private void BtnOpen_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+
+        }
+        private void BtnPlay_MouseUp(object sender, MouseEventArgs e)
+        {
+
+            BtnUpEvent(ref sender);
+        }
+
+        private void BtnStop_MouseUp(object sender, MouseEventArgs e)
+        {
+
+            BtnUpEvent(ref sender);
         }
     }
 }

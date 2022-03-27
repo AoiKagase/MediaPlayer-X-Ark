@@ -1,0 +1,140 @@
+[SkinInformation]
+-Name			=Reason Rack Style
+-Author			=SandStriker
+-Comment		=作曲ソフトReasonのパーツを使いました。
+
+[SkinSetting]
+-Dir			=Skins\RRS
+-Extension		=bmp
+-BackPicture		=back.bmp
+-MainWidth		=498
+-MainHeight		=180
+
+[ButtonVector]
+-BackX			=67
+-BackY			=135
+-SeekBackX		=99
+-SeekBackY		=135
+-PlayX			=163
+-PlayY			=135
+-PauseX
+-PauseY
+-StopX			=131
+-StopY			=135
+-SeekForwardX		=195
+-SeekForwardY		=135
+-ForwardX		=227
+-ForwardY		=135
+-RandomX		=233
+-RandomY		=68
+-LoopX			=296
+-LoopY			=68
+-OpenX			=284
+-OpenY			=135
+-PlayListX		=404
+-PlayListY		=53
+-SettingX		=404
+-SettingY		=37
+-CloseX			=404
+-CloseY			=21
+-OpenCDX		=316
+-OpenCDY		=135
+-MiniSizeX
+-MiniSizeY
+
+[VolumeSlider]
+-BarPicture		=bar.bmp
+-BarVector		=1
+-BarX			=363
+-BarY			=16
+-BarMin			=0
+-BarMax			=10
+-BarAreaY		=16
+-BarAreaY2		=65
+
+[TrackSlider]
+-BarPicture		=bar2.bmp
+-BarVector		=0
+-BarX			=78
+-BarY			=105
+-BarMin			=0
+-BarMax			=100
+-BarAreaX		=78
+-BarAreaX2		=337
+
+[PanSlider]
+-BarPicture		=bar3.bmp
+-BarVector		=0
+-BarX			=397
+-BarY			=92
+-BarMin			=-10
+-BarMax			=10
+-BarAreaX		=397
+-BarAreaX2		=425
+
+[GraphicArea]
+-ClearColor
+-SpectrumAreaX		=72
+-SpectrumAreaY		=60
+-SpectrumAreaWidth	=127
+-SpectrumAreaHeight	=24
+-SpectrumColor		=FFFF00
+-SpectrumWaveColor	=FFFF00
+-SpectrumPicture
+-TextAreaX		=80
+-TextAreaY		=26
+-TextAreaWidth		=245
+-TextAreaHeight	=12
+-TextAreaBackColor	=000000
+-TitleAreaX		=0
+-TitleAreaY		=0
+-TitleFont		=Small Fonts
+-TitleFontColor	=FFFF00
+-TitleFontSize		=6
+-TitleFontBold		=0
+-TitleFontItalic	=0
+-TimeTxtAreaX		=265
+-TimeTxtAreaY		=55
+-TimeTxtFont		=Small Fonts
+-TimeTxtColor		=FF
+-TimeTxtFontSize	=6
+-TimeTxtFontBold	=1
+-TimeTxtFontItalic
+-FileTxtArea		=False
+-FileTxtAreaX		=0
+-FileTxtAreaY		=0
+-FileTxtFont		=0
+-FileTxtColor		=0
+-FileTxtFontSize	=0
+-FileTxtFontBold	=0
+-FileTxtFontItalic	=0
+
+[PlayListMain]
+-BackPic		=playlist\playlists.bmp
+-ListBackColor		=000000
+-ListForeColor		=FFFFFF
+-MagnetMode		=1
+-MainX			=0
+-MainY			=-132
+-MainWidth		=498
+-MainHeight		=228
+-ListX			=82
+-ListY			=105
+-ListWidth		=332
+-ListHeight		=88
+-ListTab
+-ListCharCount
+
+[PlayListButton]
+-POpenX			=117
+-POpenY			=73
+-PSaveX			=135
+-PSaveY			=73
+-PRemoveX
+-PRemoveY
+-PUpX			=99
+-PUpY			=73
+-PDownX			=99
+-PDownY			=82
+-PCloseX		=413
+-PCloseY		=0

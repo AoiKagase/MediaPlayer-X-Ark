@@ -1,0 +1,140 @@
+[SkinInformation]
+-Name			=simple a
+-Author			=ayumi
+-Comment		=simple is the BESTÇÃÇ‡Ç∆Ç…çÏê¨ÇµÇΩÉXÉLÉìÇ≈Ç∑ÅB
+
+[SkinSetting]
+-Dir			=Skins\simple a\
+-Extension		=png
+-BackPicture		=main.gif
+-MainWidth		=300
+-MainHeight		=120
+
+[ButtonVector]
+-BackX			=9
+-BackY			=93
+-SeekBackX		=44
+-SeekBackY		=93
+-PlayX			=74
+-PlayY			=93
+-PauseX			=74
+-PauseY			=113
+-StopX			=111
+-StopY			=93
+-SeekForwardX		=141
+-SeekForwardY		=93
+-ForwardX		=174
+-ForwardY		=93
+-RandomX		=240
+-RandomY		=29
+-LoopX			=268
+-LoopY			=29
+-OpenX			=268
+-OpenY			=73
+-PlayListX		=224
+-PlayListY		=73
+-SettingX		=224
+-SettingY		=53
+-CloseX			=276
+-CloseY			=3
+-OpenCDX		=268
+-OpenCDY		=53
+-MiniSizeX		=253
+-MiniSizeY		=3
+
+[VolumeSlider]
+-BarPicture		=bar.png
+-BarVector		=0
+-BarX			=230
+-BarY			=94
+-BarMin			=0
+-BarMax			=10
+-BarAreaX		=230
+-BarAreaX2		=280
+
+[TrackSlider]
+-BarPicture		=bar2.png
+-BarVector		=0
+-BarX			=11
+-BarY			=77
+-BarMin			=0
+-BarMax			=200
+-BarAreaX		=11
+-BarAreaX2		=185
+
+[PanSlider]
+-BarPicture		=bar.png
+-BarVector		=0
+-BarX			=230
+-BarY			=105
+-BarMin			=-10
+-BarMax			=10
+-BarAreaX		=230
+-BarAreaX2		=280
+
+[GraphicArea]
+//-ClearColor		=404080
+-SpectrumAreaX		=11
+-SpectrumAreaY		=26
+-SpectrumAreaWidth	=82
+-SpectrumAreaHeight	=45
+-SpectrumColor		=FF8080
+-SpectrumWaveColor	=FF8080
+-SpectrumPicture
+-TextAreaX		=99
+-TextAreaY		=28
+-TextAreaWidth		=133
+-TextAreaHeight		=16
+-TextAreaBackColor	=F2F2F2
+-TitleAreaX		=110
+-TitleAreaY		=0
+-TitleFont		=ÇlÇr ÇoÉSÉVÉbÉN
+-TitleFontColor		=808080
+-TitleFontSize		=10
+-TitleFontBold		=0
+-TitleFontItalic	=0
+-TimeTxtAreaX		=125
+-TimeTxtAreaY		=53
+-TimeTxtFont		=ÇlÇr ÇoÉSÉVÉbÉN
+-TimeTxtColor		=808080
+-TimeTxtFontSize	=10
+-TimeTxtFontBold	=0
+-TimeTxtFontItalic	=0
+-FileTxtArea		=False
+-FileTxtAreaX		=0
+-FileTxtAreaY		=0
+-FileTxtFont		=0
+-FileTxtColor		=0
+-FileTxtFontSize	=0
+-FileTxtFontBold	=0
+-FileTxtFontItalic	=0
+
+[PlayListMain]
+-BackPic		=playlist\playlists.gif
+-ListBackColor		=FCFCFC
+-ListForeColor		=808080
+-MagnetMode		=1
+-MainX			=0
+-MainY			=-120
+-MainWidth		=300
+-MainHeight		=120
+-ListX			=6
+-ListY			=5
+-ListWidth		=262
+-ListHeight		=108
+//-ListTab		=15
+//-ListCharCount		=3
+
+[PlayListButton]
+-POpenX			=273
+-POpenY			=81
+-PSaveX			=272
+-PSaveY			=63
+-PRemoveX		=273
+-PRemoveY		=99
+-PUpX			=273
+-PUpY			=24
+-PDownX			=273
+-PDownY			=42
+-PCloseX		=276
+-PCloseY		=3

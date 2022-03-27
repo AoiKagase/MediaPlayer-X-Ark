@@ -1,0 +1,151 @@
+[SkinInformation]
+-Name		=Default SilverMetallic Skin
+-Author		=Kaseijin
+-Comment	=デフォルトのスキンです。 シンプルを追求したデザインです。
+
+[SkinSetting]
+-Dir		=Skins\Default\
+-Extension	=bmp
+-BackPicture	=back.bmp
+-MainWidth	=265
+-MainHeight	=108
+
+[ButtonVector]
+-BackX		=4
+-BackY		=74
+-SeekBackX	=19
+-SeekBackY	=75
+-PlayX		=43
+-PlayY		=84
+-PauseX		=24
+-PauseY		=92
+-StopX		=62
+-StopY		=92
+-SeekForwardX	=59
+-SeekForwardY	=75
+-ForwardX	=83
+-ForwardY	=74
+-RandomX	=100
+-RandomY	=74
+-LoopX		=118
+-LoopY		=74
+-OpenX		=99
+-OpenY		=89
+-PlayListX	=182
+-PlayListY	=7
+-SettingX	=205
+-SettingY	=7
+-MiniSizeX	=228
+-MiniSizeY	=6
+-OpenCDX	=117
+-OpenCDY	=89
+-CloseX		=239
+-CloseY		=6
+
+[VolumeSlider]
+-BarPicture	=bar.bmp
+-BarVector	=0
+-BarX		=209
+-BarY		=80
+-BarMin		=0
+-BarMax		=10
+-BarAreaX	=209
+-BarAreaX2	=255
+//Vector=1用
+//-BarAreaY 
+//-BarAreaY2
+
+[TrackSlider]
+-BarPicture	=bar.bmp
+-BarVector	=0
+-BarX		=5
+-BarY		=60
+-BarMin		=0
+-BarMax		=100
+-BarAreaX	=5
+-BarAreaX2	=127
+//Vector=1用
+//-BarAreaY
+//-BarAreaY2
+
+[PanSlider]
+-BarPicture	=bar.bmp
+-BarVector	=0
+-BarX		=148
+-BarY		=80
+-BarMin		=-10
+-BarMax		=10
+-BarAreaX	=148
+-BarAreaX2	=178
+//Vector=1用
+//-BarAreaY
+//-BarAreaY2
+
+[GraphicArea]
+-SpectrumAreaX		=8
+-SpectrumAreaY		=7
+-SpectrumAreaWidth		=119
+-SpectrumAreaHeight	=44
+-SpectrumColor		=FFFFFF
+-SpectrumWaveColor	=FFFFFF
+
+-TextAreaX		=150
+-TextAreaY		=24
+-TextAreaWidth		=97
+-TextAreaHeight		=35
+-TextAreaBackColor		=000003
+
+-TitleAreaX		=1
+-TitleAreaY		=1
+-TitleFont			=MS UI Gothic
+-TitleFontColor		=FFFFFF
+-TitleFontSize		=15
+-TitleFontBold		=1
+-TitleFontItalic		=0
+
+-TimeTxtAreaX		=170
+-TimeTxtAreaY		=50
+-TimeTxtFont		=MS UI Gothic
+-TimeTxtColor		=F0FFFF
+-TimeTxtFontSize		=10
+-TimeTxtFontBold		=1
+-TimeTxtFontItalic		=0
+
+-FileTxtArea		=false
+-FileTxtAreaX		=0
+-FileTxtAreaY		=0
+-FileTxtFont		=0
+-FileTxtColor		=0
+-FileTxtFontSize		=0
+-FileTxtFontBold		=0
+-FileTxtFontItalic		=0
+
+[PlayListMain]
+-BackPic		=playlist\playlists.bmp
+-ListBackColor	=000001
+-ListForeColor	=FFF0FF
+-MagnetMode	=0
+-MainX		=300
+-MainY		=350
+-MainWidth	=350
+-MainHeight	=250
+-ListX		=24
+-ListY		=41
+-ListWidth	=260
+-ListHeight	=83
+-ListTab	=15
+-ListCharCount	=25
+
+[PlayListButton]
+-POpenX		=130
+-POpenY		=140
+-PSaveX		=217
+-PSaveY		=140
+-PRemoveX	=165
+-PRemoveY	=140
+-PUpX		=267
+-PUpY		=136
+-PDownX		=267
+-PDownY		=150
+-PCloseX	=78
+-PCloseY	=140

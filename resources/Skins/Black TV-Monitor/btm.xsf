@@ -1,0 +1,140 @@
+[SkinInformation]
+-Name			=Black TV-Monitor
+-Author			=kaseijinól
+-Comment		=çïÇà”éØÇµÇƒçÏÇËÇ‹ÇµÇΩ çÏÇÈÇÃÇ…éûä‘ÇÇ©ÇØÇΩÇÃÇ≈Ç‹ÇüÇ‹ÇüèoóàÇΩãCÇ™ÇµÇ‹Ç∑
+
+[SkinSetting]
+-Dir			=Skins\Black TV-Monitor
+-Extension		=bmp
+-BackPicture		=player.bmp
+-MainWidth		=396
+-MainHeight		=248
+
+[ButtonVector]
+-BackX			=104
+-BackY			=210
+-SeekBackX		=158
+-SeekBackY		=210
+-PlayX			=189
+-PlayY			=214
+-PauseX
+-PauseY
+-StopX			=189
+-StopY			=226
+-SeekForwardX		=231
+-SeekForwardY		=210
+-ForwardX		=260
+-ForwardY		=210
+-RandomX		=323
+-RandomY		=184
+-LoopX			=355
+-LoopY			=184
+-OpenX			=323
+-OpenY			=210
+-PlayListX		=340
+-PlayListY		=67
+-SettingX		=340
+-SettingY		=39
+-CloseX			=361
+-CloseY			=12
+-OpenCDX		=355
+-OpenCDY		=210
+-MiniSizeX		=339
+-MiniSizeY		=12
+
+[VolumeSlider]
+-BarPicture		=bar.bmp
+-BarVector		=1
+-BarX			=368
+-BarY			=103
+-BarMin			=0
+-BarMax			=10
+-BarAreaY		=103
+-BarAreaY2		=155
+
+[TrackSlider]
+-BarPicture		=bar.bmp
+-BarVector		=1
+-BarX			=325
+-BarY			=10
+-BarMin			=0
+-BarMax			=100
+-BarAreaY		=10
+-BarAreaY2		=155
+
+[PanSlider]
+-BarPicture		=bar.bmp
+-BarVector		=1
+-BarX			=347
+-BarY			=129
+-BarMin			=-10
+-BarMax			=10
+-BarAreaY		=103
+-BarAreaY2		=155
+
+[GraphicArea]
+-ClearColor		=00ff16
+-SpectrumAreaX		=35
+-SpectrumAreaY		=35
+-SpectrumAreaWidth	=243
+-SpectrumAreaHeight	=108
+-SpectrumColor		=C0C0C0
+-SpectrumWaveColor	=808080
+-SpectrumPicture
+-TextAreaX		=7
+-TextAreaY		=188
+-TextAreaWidth		=305
+-TextAreaHeight	=15
+-TextAreaBackColor	=000000
+-TitleAreaX		=0
+-TitleAreaY		=0
+-TitleFont		=ÇlÇr ñæí©
+-TitleFontColor	=F0F0F0
+-TitleFontSize		= 10
+-TitleFontBold		=0
+-TitleFontItalic	=0
+-TimeTxtAreaX		=20
+-TimeTxtAreaY		=226
+-TimeTxtFont		=batangche
+-TimeTxtColor		=C0C0C0
+-TimeTxtFontSize	= 10
+-TimeTxtFontBold	=0
+-TimeTxtFontItalic	=0
+-FileTxtArea		=False
+-FileTxtAreaX		=0
+-FileTxtAreaY		=0
+-FileTxtFont		=0
+-FileTxtColor		=0
+-FileTxtFontSize	=0
+-FileTxtFontBold	=0
+-FileTxtFontItalic	=0
+
+[PlayListMain]
+-BackPic		=playlist\list.bmp
+-ListBackColor		=000000
+-ListForeColor		=353535
+-MagnetMode		=1
+-MainX			=-396
+-MainY			=0
+-MainWidth		=405
+-MainHeight		=233
+-ListX			=31
+-ListY			=12
+-ListWidth		=299
+-ListHeight		=170
+-ListTab		=3
+-ListCharCount		=33
+
+[PlayListButton]
+-POpenX			=346
+-POpenY			=12
+-PSaveX			=346
+-PSaveY			=76
+-PRemoveX		=346
+-PRemoveY		=44
+-PUpX			=346
+-PUpY			=108
+-PDownX			=346
+-PDownY			=135
+-PCloseX		=346
+-PCloseY		=163

@@ -11,7 +11,7 @@
     <Authors>Aoi.Kagase</Authors>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="fmod.dll" />
+    <Content Include="Fmod\fmod.dll" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
@@ -19,6 +19,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Mathf.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="resources\Skins\Temp\" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   </Target>

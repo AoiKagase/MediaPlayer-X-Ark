@@ -1,0 +1,146 @@
+[SkinSetting]
+-Dir		=Skins\Gain\
+-Extension	=bmp
+-BackPicture	=back.bmp
+-MainWidth	=384
+-MainHeight	=384
+
+[ButtonVector]
+-BackX		=37
+-BackY		=92
+-SeekBackX	=89
+-SeekBackY	=86
+-PlayX		=126
+-PlayY		=84
+-PauseX		=0
+-PauseY		=0
+-StopX		=235
+-StopY		=84
+-SeekForwardX	=267
+-SeekForwardY	=86
+-ForwardX	=309
+-ForwardY	=92
+-RandomX	=96
+-RandomY		=50
+-LoopX		=229
+-LoopY		=50
+-OpenX		=74
+-OpenY		=217
+-PlayListX	=255
+-PlayListY		=246
+-SettingX		=99
+-SettingY		=246
+-MiniSizeX	
+-MiniSizeY		
+-OpenCDX	=291
+-OpenCDY	=217
+-CloseX		=353
+-CloseY		=7
+
+[VolumeSlider]
+-BarPicture	=bar.bmp
+-BarVector	=0
+-BarX		=150
+-BarY		=118
+-BarMin		=0
+-BarMax		=10
+-BarAreaX	=150
+-BarAreaX2	=233
+//Vector=1—p
+//-BarAreaY 
+//-BarAreaY2
+
+[TrackSlider]
+-BarPicture	=bar.bmp
+-BarVector	=0
+-BarX		=65
+-BarY		=131
+-BarMin		=0
+-BarMax		=100
+-BarAreaX	=65
+-BarAreaX2	=318
+//Vector=1—p
+//-BarAreaY
+//-BarAreaY2
+
+[PanSlider]
+-BarPicture	=bar.bmp
+-BarVector	=0
+-BarX		=150
+-BarY		=140
+-BarMin		=-10
+-BarMax		=10
+-BarAreaX	=150
+-BarAreaX2	=233
+//Vector=1—p
+//-BarAreaY
+//-BarAreaY2
+
+[GraphicArea]
+-SpectrumAreaX		=102
+-SpectrumAreaY		=265
+-SpectrumAreaWidth		=180
+-SpectrumAreaHeight	=53
+-SpectrumColor		=00A5FF
+-SpectrumWaveColor	=FFFFFF
+-SpectrumPicture		=Analyzer.bmp
+
+-TextAreaX		=136
+-TextAreaY		=218
+-TextAreaWidth		=112
+-TextAreaHeight		=16
+-TextAreaBackColor		=000003
+
+-TitleAreaX		=1
+-TitleAreaY		=1
+-TitleFont			=MS UI Gothic
+-TitleFontColor		=FFFFFF
+-TitleFontSize		=11
+-TitleFontBold		=1
+-TitleFontItalic		=0
+
+-TimeTxtAreaX		=158
+-TimeTxtAreaY		=92
+-TimeTxtFont		=MS UI Gothic
+-TimeTxtColor		=FFFFFF
+-TimeTxtFontSize		=9
+-TimeTxtFontBold		=1
+-TimeTxtFontItalic		=0
+
+-FileTxtArea		=false
+-FileTxtAreaX		=0
+-FileTxtAreaY		=0
+-FileTxtFont		=0
+-FileTxtColor		=0
+-FileTxtFontSize		=0
+-FileTxtFontBold		=0
+-FileTxtFontItalic		=0
+
+[PlayListMain]
+-BackPic		=playlist\playlists.bmp
+-ListBackColor	=000001
+-ListForeColor	=FFFFFF
+-MagnetMode	=1
+-MainX		=0
+-MainY		=0
+-MainWidth	=384
+-MainHeight	=384
+-ListX		=37
+-ListY		=172
+-ListWidth		=310
+-ListHeight	=39
+-ListTab		=160
+
+[PlayListButton]
+-POpenX		=111
+-POpenY		=17
+-PSaveX		=228
+-PSaveY		=17
+-PRemoveX	=19
+-PRemoveY	=229
+-PUpX		=332
+-PUpY		=224
+-PDownX		=328
+-PDownY		=234
+-PCloseX		=353
+-PCloseY		=7
