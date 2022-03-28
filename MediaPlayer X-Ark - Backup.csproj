@@ -9,13 +9,7 @@
     <StartupObject>MediaPlayer_X_Ark.Program</StartupObject>
     <PlatformTarget>x64</PlatformTarget>
     <Authors>Aoi.Kagase</Authors>
-    <AssemblyName>x-ark</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="resources\Skins\Temp\**" />
-    <EmbeddedResource Remove="resources\Skins\Temp\**" />
-    <None Remove="resources\Skins\Temp\**" />
-  </ItemGroup>
   <ItemGroup>
     <Content Include="resources\fmod.dll" />
   </ItemGroup>
@@ -26,9 +20,12 @@
   <ItemGroup>
     <Compile Remove="Mathf.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="resources\Skins\Temp\" />
+  </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="robocopy $(ProjectDir)resources\ $(TargetDir) /E" />
+    <Exec Command="copy &quot;resources\&quot; $(TargetDir)&#xD;&#xA;" />
   </Target>
 </Project>
