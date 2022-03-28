@@ -29,6 +29,5 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="robocopy $(ProjectDir)resources\ $(TargetDir) /E" />
   </Target>
 </Project>

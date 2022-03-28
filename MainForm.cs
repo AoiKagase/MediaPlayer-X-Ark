@@ -46,30 +46,22 @@ namespace MediaPlayer_X_Ark
             this.Spectrum.Width = oldSkinSystem.ImgSpectrum.position.Width;
             this.Spectrum.Height = oldSkinSystem.ImgSpectrum.position.Height;
 
-            this.BtnOpen.BackgroundImage = oldSkinSystem.BtnOpen.BackImage;
-            this.BtnOpen.Top = oldSkinSystem.BtnOpen.position.Top;
-            this.BtnOpen.Left = oldSkinSystem.BtnOpen.position.Left;
-            this.BtnOpen.Width = oldSkinSystem.BtnOpen.position.Width;
-            this.BtnOpen.Height = oldSkinSystem.BtnOpen.position.Height;
-
-            this.BtnClose.BackgroundImage = oldSkinSystem.BtnClose.BackImage;
-            this.BtnClose.Top = oldSkinSystem.BtnClose.position.Top;
-            this.BtnClose.Left = oldSkinSystem.BtnClose.position.Left;
-            this.BtnClose.Width = oldSkinSystem.BtnClose.position.Width;
-            this.BtnClose.Height = oldSkinSystem.BtnClose.position.Height;
-
-            this.BtnPlay.BackgroundImage = oldSkinSystem.BtnPlay.BackImage;
-            this.BtnPlay.Top = oldSkinSystem.BtnPlay.position.Top;
-            this.BtnPlay.Left = oldSkinSystem.BtnPlay.position.Left;
-            this.BtnPlay.Width = oldSkinSystem.BtnPlay.position.Width;
-            this.BtnPlay.Height = oldSkinSystem.BtnPlay.position.Height;
-
-            this.BtnStop.BackgroundImage = oldSkinSystem.BtnStop.BackImage;
-            this.BtnStop.Top = oldSkinSystem.BtnStop.position.Top;
-            this.BtnStop.Left = oldSkinSystem.BtnStop.position.Left;
-            this.BtnStop.Width = oldSkinSystem.BtnStop.position.Width;
-            this.BtnStop.Height = oldSkinSystem.BtnStop.position.Height;
-
+            string cName = "";
+            foreach(Control c in this.Controls)
+            {
+                if (c.GetType() == typeof(Button))
+                {
+                    cName = c.Name;
+                    ((Button)c).BackgroundImage = ((Components)oldSkinSystem[cName]).BackImage;
+                    ((Button)c).Top = ((Components)oldSkinSystem[cName]).position.Top;
+                    ((Button)c).Left = ((Components)oldSkinSystem[cName]).position.Left;
+                    ((Button)c).Width = ((Components)oldSkinSystem[cName]).position.Width;
+                    ((Button)c).Height = ((Components)oldSkinSystem[cName]).position.Height;
+                    ((Button)c).Enabled = ((Components)oldSkinSystem[cName]).Enabled;
+                    ((Button)c).Visible = ((Components)oldSkinSystem[cName]).Enabled;
+                    ((Button)c).Refresh();
+                }
+            }
         }
 
         private void BtnPlay_Click(object sender, EventArgs e)
@@ -192,6 +184,156 @@ namespace MediaPlayer_X_Ark
         private void BtnStop_MouseUp(object sender, MouseEventArgs e)
         {
 
+            BtnUpEvent(ref sender);
+        }
+
+        private void BtnBack_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnBack_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+
+        private void BtnBack_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+
+        private void BtnSeekBack_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnSeekBack_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+
+        private void BtnSeekBack_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+
+        private void BtnPause_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnPause_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+
+        private void BtnPause_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+
+        private void BtnSeekForward_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnSeekForward_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+
+        private void BtnSeekForward_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+
+        private void BtnNext_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnNext_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+
+        private void BtnNext_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+
+        private void BtnRandom_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnRandom_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+
+        private void BtnRandom_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+
+        private void BtnLoop_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnLoop_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+
+        private void BtnLoop_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+
+        private void BtnSetting_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnSetting_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+
+        private void BtnSetting_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+
+        private void BtnPlaylist_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnPlaylist_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+
+        private void BtnPlaylist_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+
+        private void BtnMinisize_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnMinisize_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+
+        private void BtnMinisize_MouseUp(object sender, MouseEventArgs e)
+        {
             BtnUpEvent(ref sender);
         }
     }
