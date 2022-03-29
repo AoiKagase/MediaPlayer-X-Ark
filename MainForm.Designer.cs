@@ -48,6 +48,9 @@ namespace MediaPlayer_X_Ark
             this.BtnPause = new System.Windows.Forms.Button();
             this.BtnSeekBack = new System.Windows.Forms.Button();
             this.BtnBack = new System.Windows.Forms.Button();
+            this.SldVolume = new MediaPlayer_X_Ark.CustomSlider();
+            this.SldPan = new MediaPlayer_X_Ark.CustomSlider();
+            this.SldTrack = new MediaPlayer_X_Ark.CustomSlider();
             ((System.ComponentModel.ISupportInitialize)(this.Spectrum)).BeginInit();
             this.SuspendLayout();
             // 
@@ -281,6 +284,45 @@ namespace MediaPlayer_X_Ark
             this.BtnBack.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnBack_MouseDown);
             this.BtnBack.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnBack_MouseUp);
             // 
+            // SldVolume
+            // 
+            this.SldVolume.BackColor = System.Drawing.Color.Turquoise;
+            this.SldVolume.Location = new System.Drawing.Point(138, 12);
+            this.SldVolume.Maximum = 0;
+            this.SldVolume.Minimum = 0;
+            this.SldVolume.Name = "SldVolume";
+            this.SldVolume.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.SldVolume.Size = new System.Drawing.Size(100, 42);
+            this.SldVolume.SliderImage = null;
+            this.SldVolume.TabIndex = 15;
+            this.SldVolume.Value = 0;
+            // 
+            // SldPan
+            // 
+            this.SldPan.BackColor = System.Drawing.Color.Turquoise;
+            this.SldPan.Location = new System.Drawing.Point(244, 12);
+            this.SldPan.Maximum = 0;
+            this.SldPan.Minimum = 0;
+            this.SldPan.Name = "SldPan";
+            this.SldPan.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.SldPan.Size = new System.Drawing.Size(100, 42);
+            this.SldPan.SliderImage = null;
+            this.SldPan.TabIndex = 16;
+            this.SldPan.Value = 0;
+            // 
+            // SldTrack
+            // 
+            this.SldTrack.BackColor = System.Drawing.Color.Turquoise;
+            this.SldTrack.Location = new System.Drawing.Point(350, 12);
+            this.SldTrack.Maximum = 0;
+            this.SldTrack.Minimum = 0;
+            this.SldTrack.Name = "SldTrack";
+            this.SldTrack.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.SldTrack.Size = new System.Drawing.Size(100, 42);
+            this.SldTrack.SliderImage = null;
+            this.SldTrack.TabIndex = 17;
+            this.SldTrack.Value = 0;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -289,6 +331,9 @@ namespace MediaPlayer_X_Ark
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(500, 500);
             this.ControlBox = false;
+            this.Controls.Add(this.SldTrack);
+            this.Controls.Add(this.SldPan);
+            this.Controls.Add(this.SldVolume);
             this.Controls.Add(this.BtnBack);
             this.Controls.Add(this.BtnSeekBack);
             this.Controls.Add(this.BtnPause);
@@ -337,6 +382,9 @@ namespace MediaPlayer_X_Ark
         private System.Windows.Forms.Button BtnPause;
         private System.Windows.Forms.Button BtnSeekBack;
         private System.Windows.Forms.Button BtnBack;
+        private CustomSlider SldVolume;
+        private CustomSlider SldPan;
+        private CustomSlider SldTrack;
     }
 }
 

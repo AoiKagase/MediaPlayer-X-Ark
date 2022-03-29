@@ -30,7 +30,7 @@ namespace MediaPlayer_X_Ark
             g1 = Spectrum.CreateGraphics();
             bitmap = new Bitmap(oldSkinSystem.ImgSpectrum.BackImage);
             player.spectrum.Initialize(g1, bitmap);
-
+            this.SldVolume.Maximum = 100;
             initialize = true;
         }
 
@@ -41,25 +41,40 @@ namespace MediaPlayer_X_Ark
             this.Width = oldSkinSystem.MainForm.BackImage.Width;
             this.Height = oldSkinSystem.MainForm.BackImage.Height;
 
-            this.Spectrum.Left = oldSkinSystem.ImgSpectrum.position.Left;
-            this.Spectrum.Top = oldSkinSystem.ImgSpectrum.position.Top;
-            this.Spectrum.Width = oldSkinSystem.ImgSpectrum.position.Width;
-            this.Spectrum.Height = oldSkinSystem.ImgSpectrum.position.Height;
+            this.Spectrum.Left = oldSkinSystem.ImgSpectrum.Position.Left;
+            this.Spectrum.Top = oldSkinSystem.ImgSpectrum.Position.Top;
+            this.Spectrum.Width = oldSkinSystem.ImgSpectrum.Position.Width;
+            this.Spectrum.Height = oldSkinSystem.ImgSpectrum.Position.Height;
 
             string cName = "";
             foreach(Control c in this.Controls)
             {
+                cName = c.Name;
                 if (c.GetType() == typeof(Button))
                 {
-                    cName = c.Name;
-                    ((Button)c).BackgroundImage = ((Components)oldSkinSystem[cName]).BackImage;
-                    ((Button)c).Top = ((Components)oldSkinSystem[cName]).position.Top;
-                    ((Button)c).Left = ((Components)oldSkinSystem[cName]).position.Left;
-                    ((Button)c).Width = ((Components)oldSkinSystem[cName]).position.Width;
-                    ((Button)c).Height = ((Components)oldSkinSystem[cName]).position.Height;
-                    ((Button)c).Enabled = ((Components)oldSkinSystem[cName]).Enabled;
-                    ((Button)c).Visible = ((Components)oldSkinSystem[cName]).Enabled;
+                    ((Button)c).BackgroundImage = ((ButtonComponents)oldSkinSystem[cName]).BackImage;
+                    ((Button)c).Top = ((ButtonComponents)oldSkinSystem[cName]).Position.Top;
+                    ((Button)c).Left = ((ButtonComponents)oldSkinSystem[cName]).Position.Left;
+                    ((Button)c).Width = ((ButtonComponents)oldSkinSystem[cName]).Position.Width;
+                    ((Button)c).Height = ((ButtonComponents)oldSkinSystem[cName]).Position.Height;
+                    ((Button)c).Enabled = ((ButtonComponents)oldSkinSystem[cName]).Enabled;
+                    ((Button)c).Visible = ((ButtonComponents)oldSkinSystem[cName]).Enabled;
                     ((Button)c).Refresh();
+                }
+                if (c.GetType() == typeof(CustomSlider))
+                {
+                    ((CustomSlider)c).SliderImage = ((SliderComponents)oldSkinSystem[cName]).SliderImage;
+                    ((CustomSlider)c).Orientation = ((SliderComponents)oldSkinSystem[cName]).Orientation;
+                    ((CustomSlider)c).Minimum = ((SliderComponents)oldSkinSystem[cName]).Minimum;
+                    ((CustomSlider)c).Maximum = ((SliderComponents)oldSkinSystem[cName]).Maximum;
+                    ((CustomSlider)c).Top = ((SliderComponents)oldSkinSystem[cName]).Position.Top;
+                    ((CustomSlider)c).Left = ((SliderComponents)oldSkinSystem[cName]).Position.Left;
+                    ((CustomSlider)c).Width = ((SliderComponents)oldSkinSystem[cName]).Position.Width;
+                    ((CustomSlider)c).Height = ((SliderComponents)oldSkinSystem[cName]).Position.Height;
+                    ((CustomSlider)c).Enabled = ((SliderComponents)oldSkinSystem[cName]).Enabled;
+                    ((CustomSlider)c).Visible = ((SliderComponents)oldSkinSystem[cName]).Enabled;
+                    ((CustomSlider)c).Value = 0;
+                    ((CustomSlider)c).Refresh();
                 }
             }
         }
@@ -82,7 +97,8 @@ namespace MediaPlayer_X_Ark
             //            g1.Clear(Color.White);
             //            g1.FillRectangle(brush, 0, 0, Spectrum.Width, Spectrum.Height);
             player.spectrum.UpdateSpectrum(g1,ref bitmap, Spectrum.Width, Spectrum.Height, 1);
-
+            this.SldTrack.Value = (int) player.GetPosition();
+            this.SldVolume.Value = (int)player.GetVolume();
 //            statusStrip1.Text = player.lastError;
         }
 
@@ -94,10 +110,11 @@ namespace MediaPlayer_X_Ark
                 if (player.CreateSound(OpenFileDialog.FileName) == FMOD.RESULT.OK)
                 {
                     player.PlaySound();
+                    this.SldTrack.Maximum = (int)player.GetLength();
                 }
             } else
             {
-                MessageBox.Show(player.lastError);
+//              MessageBox.Show(player.lastError);
             }
         }
 
@@ -112,15 +129,18 @@ namespace MediaPlayer_X_Ark
 
         private void BtnDownEvent(ref object button)
         {
-            ((Button)button).BackgroundImage = ((Components)oldSkinSystem[((Button)button).Name]).DownImage;
+            ((Button)button).BackgroundImage = ((ButtonComponents)oldSkinSystem[((Button)button).Name]).DownImage;
             ((Button)button).Refresh();
         }
         private void BtnUpEvent(ref object button)
         {
-            ((Button)button).BackgroundImage = ((Components)oldSkinSystem[((Button)button).Name]).BackImage;
+            ((Button)button).BackgroundImage = ((ButtonComponents)oldSkinSystem[((Button)button).Name]).BackImage;
             ((Button)button).Refresh();
         }
 
+        /// <summary>
+        /// 本体ドラッグによるウィンドウ移動
+        /// </summary>
         private Point mousePoint;
         private void MainForm_MouseDown(object sender, MouseEventArgs e)
         {
@@ -137,13 +157,15 @@ namespace MediaPlayer_X_Ark
             {
                 this.Left += e.X - mousePoint.X;
                 this.Top += e.Y - mousePoint.Y;
-                //または、つぎのようにする
-                //this.Location = new Point(
-                //    this.Location.X + e.X - mousePoint.X,
-                //    this.Location.Y + e.Y - mousePoint.Y);
             }
         }
 
+
+        /// <summary>
+        /// ボタン操作
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnOpen_MouseDown(object sender, MouseEventArgs e)
         {
             BtnDownEvent(ref sender);

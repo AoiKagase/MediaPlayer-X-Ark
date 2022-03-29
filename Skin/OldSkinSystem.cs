@@ -12,38 +12,52 @@ using System.IO;
 
 namespace MediaPlayer_X_Ark.Skin
 {
-	public struct Components
+	public struct ButtonComponents
 	{
 		public Image BackImage;
 		public Image DownImage;
 		public Image OptionalImage;
 
-		public RECT position;
+		public RECT Position;
 		public bool Toggle;
 		public bool Enabled;
 	}
+	public struct SliderComponents
+	{
+		public bool Enabled;
+		public Image SliderImage;
+		public Orientation Orientation;
+		public RECT Position;
+		public int Maximum;
+		public int Minimum;
+	}
+
 	class OldSkinSystem
 	{
 		private string defaultSkinDir = "Skins\\";
 		private string defaultSkin = "Default\\Default.xsf";
 
-		public Components MainForm;
-		public Components ImgSpectrum;
-		public Components BtnOpen;
-		public Components BtnClose;
-		public Components BtnPlay;
-		public Components BtnStop;
+		public ButtonComponents MainForm;
+		public ButtonComponents ImgSpectrum;
+		public ButtonComponents BtnOpen;
+		public ButtonComponents BtnClose;
+		public ButtonComponents BtnPlay;
+		public ButtonComponents BtnStop;
 
-		public Components BtnBack;
-		public Components BtnSeekBack;
-		public Components BtnPause;
-		public Components BtnSeekForward;
-		public Components BtnNext;
-		public Components BtnRandom;
-		public Components BtnLoop;
-		public Components BtnSetting;
-		public Components BtnPlaylist;
-		public Components BtnMinisize;
+		public ButtonComponents BtnBack;
+		public ButtonComponents BtnSeekBack;
+		public ButtonComponents BtnPause;
+		public ButtonComponents BtnSeekForward;
+		public ButtonComponents BtnNext;
+		public ButtonComponents BtnRandom;
+		public ButtonComponents BtnLoop;
+		public ButtonComponents BtnSetting;
+		public ButtonComponents BtnPlaylist;
+		public ButtonComponents BtnMinisize;
+
+		public SliderComponents SldVolume;
+		public SliderComponents SldPan;
+		public SliderComponents SldTrack;
 
 		public OldSkinSystem()
 		{
@@ -89,34 +103,20 @@ namespace MediaPlayer_X_Ark.Skin
 
 			result = Win32API.GetPrivateProfileString("GraphicArea", "-SpectrumPicture", "", nValue, Convert.ToUInt32(nValue.Capacity), skinFile);
 			ImgSpectrum.BackImage = LoadImage(skinDir + "\\" + nValue.ToString());
-			ImgSpectrum.position.Top = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-SpectrumAreaY", 0, skinFile);
-			ImgSpectrum.position.Left = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-SpectrumAreaX", 0, skinFile);
-			ImgSpectrum.position.Width = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-SpectrumAreaWidth", 0, skinFile);
-			ImgSpectrum.position.Height = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-SpectrumAreaHeight", 0, skinFile);
+			ImgSpectrum.Position.Top = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-SpectrumAreaY", 0, skinFile);
+			ImgSpectrum.Position.Left = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-SpectrumAreaX", 0, skinFile);
+			ImgSpectrum.Position.Width = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-SpectrumAreaWidth", 0, skinFile);
+			ImgSpectrum.Position.Height = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-SpectrumAreaHeight", 0, skinFile);
 
-
+			LoadSliderComponents(ref SldVolume, skinDir, "VolumeSlider", skinFile);
+			LoadSliderComponents(ref SldPan, skinDir, "PanSlider", skinFile);
+			LoadSliderComponents(ref SldTrack, skinDir, "TrackSlider", skinFile);
 			/*
 
 			BtnOpen.position.Top = (int)Win32API.GetPrivateProfileInt("ButtonVector", "-OpenCDY", 0, skinFile);
 			BtnOpen.position.Left = (int)Win32API.GetPrivateProfileInt("ButtonVector", "-OpenCDX", 0, skinFile);
 
 
-			result = 
-			result = 
-
-			result = 
-			result = 
-
-						result = Win32API.GetPrivateProfileString("VolumeSlider", "-BarPicture", "bar.bmp", nName, Leng, skinFile);
-						result = Win32API.GetPrivateProfileInt("VolumeSlider", "-BarVector", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("VolumeSlider", "-BarX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("VolumeSlider", "-BarY", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("VolumeSlider", "-BarMin", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("VolumeSlider", "-BarMax", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("VolumeSlider", "-BarAreaX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("VolumeSlider", "-BarAreaX2", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("VolumeSlider", "-BarAreaY", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("VolumeSlider", "-BarAreaY2", 0, skinFile);
 
 						result = Win32API.GetPrivateProfileString("TrackSlider", "-BarPicture", "bar.bmp", nName, Leng, skinFile);
 						result = Win32API.GetPrivateProfileInt("TrackSlider", "-BarVector", 0, skinFile);
@@ -219,7 +219,7 @@ namespace MediaPlayer_X_Ark.Skin
 			}
 		}
 
-		private Components LoadButtonComponents(ref Components result, string skinDir, string buttonNo, string extension, string section, string key, string skinFile)
+		private ButtonComponents LoadButtonComponents(ref ButtonComponents result, string skinDir, string buttonNo, string extension, string section, string key, string skinFile)
 		{
 			if (File.Exists(skinDir + "\\0-" + buttonNo + "." + extension))
 			{
@@ -232,10 +232,10 @@ namespace MediaPlayer_X_Ark.Skin
 						result.OptionalImage = Image.FromFile(skinDir + "\\2-" + buttonNo + "." + extension);
 						result.Toggle = true;
 					}
-					result.position.Top = (int)Win32API.GetPrivateProfileInt(section, key + "Y", 0, skinFile);
-					result.position.Left = (int)Win32API.GetPrivateProfileInt(section, key + "X", 0, skinFile);
-					result.position.Width = result.BackImage.Width;
-					result.position.Height= result.BackImage.Height;
+					result.Position.Top = (int)Win32API.GetPrivateProfileInt(section, key + "Y", 0, skinFile);
+					result.Position.Left = (int)Win32API.GetPrivateProfileInt(section, key + "X", 0, skinFile);
+					result.Position.Width = result.BackImage.Width;
+					result.Position.Height= result.BackImage.Height;
 					result.Enabled = true;
 				}
 				else
@@ -247,6 +247,39 @@ namespace MediaPlayer_X_Ark.Skin
 			}
 			return result;
 		}
+
+		private SliderComponents LoadSliderComponents(ref SliderComponents result, string skinDir, string section, string skinFile)
+        {
+			StringBuilder sb = new StringBuilder(256);
+			uint ret;
+			Win32API.GetPrivateProfileString(section, "-BarPicture", "bar.bmp", sb, Convert.ToUInt32(sb.Capacity), skinFile);
+			result.SliderImage = LoadImage(skinDir + "\\" + sb.ToString());
+			if (result.SliderImage != null)
+			{
+				ret = Win32API.GetPrivateProfileInt(section, "-BarVector", 0, skinFile);
+				if (ret == 0)
+					result.Orientation = Orientation.Horizontal;
+				else
+					result.Orientation = Orientation.Vertical;
+
+				result.Position.Left = (int)Win32API.GetPrivateProfileInt(section, "-BarX", 0, skinFile);
+				result.Position.Top = (int)Win32API.GetPrivateProfileInt(section, "-BarY", 0, skinFile);
+				result.Minimum = (int)Win32API.GetPrivateProfileInt(section, "-BarMin", 0, skinFile);
+				result.Maximum = (int)Win32API.GetPrivateProfileInt(section, "-BarMax", 0, skinFile);
+				if (result.Orientation == Orientation.Horizontal)
+				{
+					result.Position.Width = (int)Win32API.GetPrivateProfileInt(section, "-BarAreaX2", 0, skinFile) - result.Position.Left + result.SliderImage.Width;
+					result.Position.Height = result.SliderImage.Height;
+				}
+				else
+				{
+					result.Position.Width = result.SliderImage.Width;
+					result.Position.Height = (int)Win32API.GetPrivateProfileInt(section, "-BarAreaY2", 0, skinFile) - result.Position.Top + result.SliderImage.Height;
+				}
+				result.Enabled = true;
+			}
+			return result;
+        }
 
 		private Image LoadImage(string path)
         {

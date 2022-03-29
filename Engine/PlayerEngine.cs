@@ -345,7 +345,7 @@ namespace MediaPlayer_X_Ark
 		public uint GetPosition()
         {
 			uint position = 0;
-			FmodChannel.getPosition(out position, FMOD.TIMEUNIT.MS);
+			FmodCallFunction(FmodChannel.getPosition(out position, FMOD.TIMEUNIT.MS));
 			return position;
         }
 
@@ -376,6 +376,12 @@ namespace MediaPlayer_X_Ark
 			return FmodCallFunction(FmodSystem.playSound(FmodSound, FmodChannelGroup, false, out FmodChannel));
         }
 
+		public uint GetLength()
+        {
+			uint length = 0;
+			FmodCallFunction(FmodSound.getLength(out length, TIMEUNIT.MS));
+			return length;
+        }
 		/// <summary>
 		/// Get Sound file Tags.
 		/// </summary>
@@ -455,21 +461,26 @@ namespace MediaPlayer_X_Ark
 		/// </summary>
 		/// <param name="channel"></param>
 		/// <param name="vol"></param>
-		public void SetVolume(int channel, float vol)
+		public void SetVolume(float vol)
         {
 			FmodChannel.setVolume(vol);
         }
 
+		public int GetVolume()
+        {
+			float volume;
+			FmodChannel.getVolume(out volume);
+			return (int) (volume * 100);
+        }
 		/// <summary>
 		/// Set Pan
 		/// </summary>
 		/// <param name="channel"></param>
 		/// <param name="pan"></param>
-		public void SetPan(int channel, float pan)
+		public void SetPan(float pan)
         {
 			FmodChannel.setPan(pan);
         }
-
 
 		public void GetWaveData()
         {
