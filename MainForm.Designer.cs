@@ -286,7 +286,7 @@ namespace MediaPlayer_X_Ark
             // 
             // SldVolume
             // 
-            this.SldVolume.BackColor = System.Drawing.Color.Turquoise;
+            this.SldVolume.BackColor = System.Drawing.Color.Transparent;
             this.SldVolume.Location = new System.Drawing.Point(138, 12);
             this.SldVolume.Maximum = 0;
             this.SldVolume.Minimum = 0;
@@ -296,10 +296,12 @@ namespace MediaPlayer_X_Ark
             this.SldVolume.SliderImage = null;
             this.SldVolume.TabIndex = 15;
             this.SldVolume.Value = 0;
+            this.SldVolume.SliderMoved += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldVolume_SliderMoved);
+            this.SldVolume.SliderMoving += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldVolume_SliderMoving);
             // 
             // SldPan
             // 
-            this.SldPan.BackColor = System.Drawing.Color.Turquoise;
+            this.SldPan.BackColor = System.Drawing.Color.Transparent;
             this.SldPan.Location = new System.Drawing.Point(244, 12);
             this.SldPan.Maximum = 0;
             this.SldPan.Minimum = 0;
@@ -309,10 +311,11 @@ namespace MediaPlayer_X_Ark
             this.SldPan.SliderImage = null;
             this.SldPan.TabIndex = 16;
             this.SldPan.Value = 0;
+            this.SldPan.SliderMoving += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldPan_SliderMoving);
             // 
             // SldTrack
             // 
-            this.SldTrack.BackColor = System.Drawing.Color.Turquoise;
+            this.SldTrack.BackColor = System.Drawing.Color.Transparent;
             this.SldTrack.Location = new System.Drawing.Point(350, 12);
             this.SldTrack.Maximum = 0;
             this.SldTrack.Minimum = 0;
@@ -322,6 +325,8 @@ namespace MediaPlayer_X_Ark
             this.SldTrack.SliderImage = null;
             this.SldTrack.TabIndex = 17;
             this.SldTrack.Value = 0;
+            this.SldTrack.SliderMoved += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldTrack_SliderMoved);
+            this.SldTrack.SliderMoving += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldTrack_SliderMoving);
             // 
             // MainForm
             // 

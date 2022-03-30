@@ -25,9 +25,11 @@ namespace MediaPlayer_X_Ark
 		protected string lastError;
 
 		protected Graphics gAnalyzer;
+		protected Graphics gBuffer;
 		protected Graphics gSnow;
 
 		protected IntPtr hdc1Analyzer;
+		protected IntPtr hdc1Buffer;
 		protected IntPtr hdc2AnalyzerSrc;
 		protected IntPtr hdc3AnalyzerSnow;
 
@@ -45,12 +47,15 @@ namespace MediaPlayer_X_Ark
 			analyzerSnow = new int[windowSize];
 
 			Bitmap snow = new Bitmap(src.Width, src.Height);
+			Bitmap buff = new Bitmap(src.Width, src.Height);
 			gSnow = Graphics.FromImage(snow);
+			gBuffer = Graphics.FromImage(buff);
 			using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 255, 255)))
 			{
 				gSnow.FillRectangle(brush, 0, 0, src.Width, src.Height);
 			}
 			hdc3AnalyzerSnow = gSnow.GetHdc();
+			hdc1Buffer = gBuffer.GetHdc();
 			Prog2 = Win32API.SelectObject(hdc3AnalyzerSnow, snow.GetHbitmap(Color.White));
 		}
 
@@ -85,8 +90,10 @@ namespace MediaPlayer_X_Ark
 			Win32API.DeleteObject(Prog2);
 			Win32API.DeleteObject(Prog1);
 			Win32API.DeleteDC(hdc3AnalyzerSnow);
+			Win32API.DeleteDC(hdc1Buffer);
 			Win32API.DeleteDC(hdc2AnalyzerSrc);
 			Win32API.DeleteDC(hdc1Analyzer);
+			gBuffer.ReleaseHdc(hdc1Buffer);
 			gSnow.ReleaseHdc(hdc3AnalyzerSnow);
 			gAnalyzer.ReleaseHdc(hdc1Analyzer);
 
@@ -108,7 +115,9 @@ namespace MediaPlayer_X_Ark
 
 			if (!isPlaying)
 			{
-				Win32API.FillRect(hdc1Analyzer, ref line2, Win32API.CreateSolidBrush(0xffffff00));
+				Win32API.FillRect(hdc1Buffer, ref line2, Win32API.CreateSolidBrush(0xffffff00));
+				Win32API.BitBlt(hdc1Analyzer, 0, 0, width, height, hdc1Buffer, 0, 0, Win32API.TernaryRasterOperations.SRCCOPY);
+
 				return;
 			}
 
@@ -118,7 +127,7 @@ namespace MediaPlayer_X_Ark
 				IntPtr unmanagedData;
 				uint length;
 
-				Win32API.FillRect(hdc1Analyzer, ref line2, Win32API.CreateSolidBrush(0xffffff00));
+				Win32API.FillRect(hdc1Buffer, ref line2, Win32API.CreateSolidBrush(0xffffff00));
 				// スペクトラムデータの取得（RAW）
 				if (mFFT.getParameterData((int) DSP_FFT.SPECTRUMDATA, out unmanagedData, out length) == RESULT.OK)
                 {
@@ -160,19 +169,19 @@ namespace MediaPlayer_X_Ark
 
 							line3.Top = line3.Bottom - 1;
 
-							Win32API.BitBlt(hdc1Analyzer, line3.Left, line3.Top, line3.Right - line3.Left, 1, hdc3AnalyzerSnow, line3.Left, line3.Top, Win32API.TernaryRasterOperations.SRCCOPY);
+							Win32API.BitBlt(hdc1Buffer, line3.Left, line3.Top, line3.Right - line3.Left, 1, hdc3AnalyzerSnow, line3.Left, line3.Top, Win32API.TernaryRasterOperations.SRCCOPY);
 
 							line1.Bottom = height;
 							line1.Top = lineHeight;
 							line1.Left = line3.Left;
 							line1.Right = line3.Right;
 
-							Win32API.BitBlt(hdc1Analyzer, line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top, hdc2AnalyzerSrc, line1.Left, line1.Top, Win32API.TernaryRasterOperations.SRCCOPY);
+							Win32API.BitBlt(hdc1Buffer, line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top, hdc2AnalyzerSrc, line1.Left, line1.Top, Win32API.TernaryRasterOperations.SRCCOPY);
 						}
 					}
                 }
             }
-
+			Win32API.BitBlt(hdc1Analyzer, 0, 0, width, height, hdc1Buffer, 0, 0, Win32API.TernaryRasterOperations.SRCCOPY);
 			return;
 		}
 

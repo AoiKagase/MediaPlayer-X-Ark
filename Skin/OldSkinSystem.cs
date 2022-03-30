@@ -28,9 +28,14 @@ namespace MediaPlayer_X_Ark.Skin
 		public Image SliderImage;
 		public Orientation Orientation;
 		public RECT Position;
-		public int Maximum;
-		public int Minimum;
+		public uint Maximum;
+		public uint Minimum;
 	}
+	
+	public struct GraphicCOmponents
+    {
+
+    }
 
 	class OldSkinSystem
 	{
@@ -264,8 +269,8 @@ namespace MediaPlayer_X_Ark.Skin
 
 				result.Position.Left = (int)Win32API.GetPrivateProfileInt(section, "-BarX", 0, skinFile);
 				result.Position.Top = (int)Win32API.GetPrivateProfileInt(section, "-BarY", 0, skinFile);
-				result.Minimum = (int)Win32API.GetPrivateProfileInt(section, "-BarMin", 0, skinFile);
-				result.Maximum = (int)Win32API.GetPrivateProfileInt(section, "-BarMax", 0, skinFile);
+				result.Minimum = Win32API.GetPrivateProfileInt(section, "-BarMin", 0, skinFile);
+				result.Maximum = Win32API.GetPrivateProfileInt(section, "-BarMax", 0, skinFile);
 				if (result.Orientation == Orientation.Horizontal)
 				{
 					result.Position.Width = (int)Win32API.GetPrivateProfileInt(section, "-BarAreaX2", 0, skinFile) - result.Position.Left + result.SliderImage.Width;

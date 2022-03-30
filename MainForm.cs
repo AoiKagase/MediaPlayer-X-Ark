@@ -13,6 +13,7 @@ namespace MediaPlayer_X_Ark
         Bitmap bitmap;
         PlayerEngine player;
         OldSkinSystem oldSkinSystem;
+		private ToolTip _toolTip;
 
         public MainForm()
         {
@@ -31,6 +32,8 @@ namespace MediaPlayer_X_Ark
             bitmap = new Bitmap(oldSkinSystem.ImgSpectrum.BackImage);
             player.spectrum.Initialize(g1, bitmap);
             this.SldVolume.Maximum = 100;
+
+            _toolTip = new ToolTip(this.components);            
             initialize = true;
         }
 
@@ -97,9 +100,9 @@ namespace MediaPlayer_X_Ark
             //            g1.Clear(Color.White);
             //            g1.FillRectangle(brush, 0, 0, Spectrum.Width, Spectrum.Height);
             player.spectrum.UpdateSpectrum(g1,ref bitmap, Spectrum.Width, Spectrum.Height, 1);
-            this.SldTrack.Value = (int) player.GetPosition();
-            this.SldVolume.Value = (int)player.GetVolume();
-//            statusStrip1.Text = player.lastError;
+            this.SldTrack.Value =  player.GetPosition();
+            this.SldVolume.Value = (uint)player.GetVolume();
+            //            statusStrip1.Text = player.lastError;
         }
 
         private void BtnOpenFile_Click(object sender, EventArgs e)
@@ -110,7 +113,7 @@ namespace MediaPlayer_X_Ark
                 if (player.CreateSound(OpenFileDialog.FileName) == FMOD.RESULT.OK)
                 {
                     player.PlaySound();
-                    this.SldTrack.Maximum = (int)player.GetLength();
+                    this.SldTrack.Maximum = player.GetLength();
                 }
             } else
             {
@@ -357,6 +360,40 @@ namespace MediaPlayer_X_Ark
         private void BtnMinisize_MouseUp(object sender, MouseEventArgs e)
         {
             BtnUpEvent(ref sender);
+        }
+
+        private void SldVolume_SliderMoving(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SldPan_SliderMoving(object sender, MouseEventArgs e)
+        {
+            _toolTip.Show(this.SldPan.Value.ToString(), this, ((CustomSlider)(sender)).Left, ((CustomSlider)(sender)).Top);
+        }
+
+        private void SldTrack_SliderMoving(object sender, MouseEventArgs e)
+        {
+            TimeSpan time = TimeSpan.FromMilliseconds(this.SldTrack.Value);
+
+            _toolTip.Show(time.ToString(@"hh\:mm\:ss"), this, ((CustomSlider)(sender)).Left, ((CustomSlider)(sender)).Top);
+        }
+
+        private void SldTrack_SliderMoved(object sender, MouseEventArgs e)
+        {
+            _toolTip.Hide(this);
+            player.SetPosition(this.SldTrack.Value);
+        }
+
+        private void SldVolume_SliderMoving(object sender, MouseEventArgs e)
+        {
+            _toolTip.Show(this.SldVolume.Value.ToString(), this, ((CustomSlider)(sender)).Left, ((CustomSlider)(sender)).Top);
+        }
+
+        private void SldVolume_SliderMoved(object sender, MouseEventArgs e)
+        {
+            _toolTip.Hide(this);
+            player.SetVolume((float)this.SldVolume.Value / 100);
         }
     }
 }

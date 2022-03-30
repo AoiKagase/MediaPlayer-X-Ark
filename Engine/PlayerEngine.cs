@@ -146,6 +146,8 @@ namespace MediaPlayer_X_Ark
                     {
 						spectrum = new FmodSpectrum(ref FmodSystem, 1024, ref this.FmodChannelGroup);
 						LoadPlugins();
+
+						FmodCallFunction(FmodSystem.getChannel(0, out FmodChannel));
 						initialized = true;
 					}
 				}
@@ -345,10 +347,13 @@ namespace MediaPlayer_X_Ark
 		public uint GetPosition()
         {
 			uint position = 0;
-			FmodCallFunction(FmodChannel.getPosition(out position, FMOD.TIMEUNIT.MS));
+			FmodCallFunction(FmodChannel.getPosition(out position, TIMEUNIT.MS));
 			return position;
         }
-
+		public void SetPosition(uint position)
+        {
+			FmodCallFunction(FmodChannel.setPosition(position, TIMEUNIT.MS));
+        }
 		/// <summary>
 		/// Retrieves the state a sound is in after being opened with the non blocking flag, or the current state of the streaming buffer.
 		/// </summary>

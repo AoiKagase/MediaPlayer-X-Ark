@@ -13,6 +13,8 @@ namespace MediaPlayer_X_Ark
     public partial class CustomSlider : UserControl
     {
         public event EventHandler<EventArgs> ValueChanged;
+        public event EventHandler<MouseEventArgs> SliderMoved;
+        public event EventHandler<MouseEventArgs> SliderMoving;
 
         /// <summary>
         /// スライダー値が変更された場合に発生します
@@ -20,9 +22,41 @@ namespace MediaPlayer_X_Ark
         /// <param name="e"></param>
         [Browsable(true)]
         [Description("スライダー値が変更されるときに発生するイベントです")]
-        protected virtual void OnCheckedChanged(EventArgs e)
+        protected virtual void OnValueChanged(EventArgs e)
         {
             EventHandler<EventArgs> eventHandler = ValueChanged;
+
+            if (eventHandler != null)
+            {
+                eventHandler(this, e);
+            }
+        }
+
+        /// <summary>
+        /// スライダーが移動されるときに発生します
+        /// </summary>
+        /// <param name="e"></param>
+        [Browsable(true)]
+        [Description("スライダーが移動されるときに発生するイベントです")]
+        protected virtual void OnSliderMoved(MouseEventArgs e)
+        {
+            EventHandler<MouseEventArgs> eventHandler = SliderMoved;
+
+            if (eventHandler != null)
+            {
+                eventHandler(this, e);
+            }
+        }
+
+        /// <summary>
+        /// スライダーが移動されるときに発生します
+        /// </summary>
+        /// <param name="e"></param>
+        [Browsable(true)]
+        [Description("スライダーが移動されるときに発生するイベントです")]
+        protected virtual void OnSliderMoving(MouseEventArgs e)
+        {
+            EventHandler<MouseEventArgs> eventHandler = SliderMoving;
 
             if (eventHandler != null)
             {
@@ -47,13 +81,13 @@ namespace MediaPlayer_X_Ark
             }
         }
 
-        public int Maximum { get; set; }
-        public int Minimum { get; set; }
+        public uint Maximum { get; set; }
+        public uint Minimum { get; set; }
         public Orientation Orientation { get; set; }
 
-        private int _value;
+        private uint _value;
 
-        public int Value
+        public uint Value
         {
             get { return this._value; }
             set
@@ -61,7 +95,7 @@ namespace MediaPlayer_X_Ark
                 this._value = value;
                 ValueChangeSliderPosition();
 
-                OnCheckedChanged(EventArgs.Empty);
+                OnValueChanged(EventArgs.Empty);
             }
         }
         public CustomSlider()
@@ -91,7 +125,12 @@ namespace MediaPlayer_X_Ark
         private Point mousePoint;
         private void Bar_MouseUp(object sender, MouseEventArgs e)
         {
+            if (this.Orientation == Orientation.Horizontal)
+                this._value = (uint)((float)(this.Slider.Left) / (this.Width - this.Slider.Width)) * (Maximum - Minimum);
+            else
+                this._value = (uint)((float)(this.Slider.Top) / (this.Height - this.Slider.Height)) * (Maximum - Minimum);
 
+            OnSliderMoved(e);
         }
 
         private void Bar_MouseDown(object sender, MouseEventArgs e)
@@ -118,6 +157,7 @@ namespace MediaPlayer_X_Ark
                     else
                         this.Slider.Left = position;
                     this.Slider.Top = 0;
+                    this._value = (uint)(((float)(this.Slider.Left) / (this.Width - this.Slider.Width)) * (Maximum - Minimum)) + Minimum;
                 }
                 else
                 {
@@ -129,7 +169,10 @@ namespace MediaPlayer_X_Ark
                     else
                         this.Slider.Top = position;
                     this.Slider.Left = 0;
+                    this._value = (uint)((float)(this.Slider.Top) / (this.Height - this.Slider.Height)) * (Maximum - Minimum);
                 }
+
+                OnSliderMoving(e);
             }
         }
     }
