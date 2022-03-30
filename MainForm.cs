@@ -20,41 +20,6 @@ namespace MediaPlayer_X_Ark
         }
 
         /// <summary>
-        /// フォームロード処理
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            // ===================================
-            // インスタンスの生成
-            // ===================================
-            // ツールチップ
-            _toolTip = new ToolTip(components);
-            // FMODサウンドエンジン
-            player = new PlayerEngine();
-
-            // 予定：設定ファイルの読み込み スキンファイルの指定も含む
-            // 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
-            // 新形式（JSON）の場合はNewSkinSystemへインスタンス切替
-            // スキンシステム
-            oldSkinSystem = new OldSkinSystem();
-            // スキンロード
-            SkinLoad("bbbs\\bs.xsf");
-            // スペクトラム画像の保持
-            bmpSpectrumSrc = new Bitmap(oldSkinSystem.ImgSpectrum.BackImage);
-            // スペクトラム領域のグラフィックインスタンス生成
-            gSpectrum = Spectrum.CreateGraphics();
-            // スペクトラム領域の初期化
-            player.spectrum.Initialize(gSpectrum, bmpSpectrumSrc);
-
-            // ボリューム最大値を強制100（旧形式スキンはこの数値を変動出来ていた為、処理簡略化を考慮する）
-            SldVolume.Maximum = 100;
-
-            initialize = true;
-        }
-
-        /// <summary>
         /// スキンロード
         /// 設定ファイルからスキンファイルパスを取得して投げる
         /// </summary>
@@ -114,108 +79,34 @@ namespace MediaPlayer_X_Ark
         }
 
         /// <summary>
-        /// 再生/一時停止ボタンのクリック
+        /// ファイルを開く
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnPlay_Click(object sender, EventArgs e)
+        /// <param name="fileName"></param>
+        private void OpenFile(string fileName)
         {
-            // プレイ中の場合はポーズする
-            if (player.IsPlaying())
-                player.Pause();
-            else
+            // Open File
+            if (player.CreateSound(fileName) == FMOD.RESULT.OK)
+            {
+                // =====================================================================
+                // 本来は先に設定を終わらせてから再生させたいが、
+                // 設定するためのFMOD-Channelインスタンスが再生後に生成されるためやむを得ず
+                // (何か方法があるかもしれない)
+                // =====================================================================
+
+                // 再生
                 player.PlaySound();
-        }
 
-        /// <summary>
-        /// 停止ボタンのクリック
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnStop_Click(object sender, EventArgs e)
-        {
-            // 問答無用の停止
-            player.Stop();
-        }
+                // 曲長に合わせてトラックバーの総量調整
+                SldTrack.Maximum = (int)player.GetLength();
 
-        /// <summary>
-        /// タイマー処理
-        /// リアルタイム処理が必要なものは全てここで処理する
-        /// (スレッド化したい)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PlayerTimer_Tick(object sender, EventArgs e)
-        {
-            // 初期化済みの場合のみ処理する
-            if (!initialize)
-                return;
+                // ボリュームを設定値へ
+                float volume = ((float)SldVolume.Value) / 100f;
+                player.SetVolume(volume);
 
-            // スペクトラム画像の反映
-            player.spectrum.UpdateSpectrum(gSpectrum, ref bmpSpectrumSrc, Spectrum.Width, Spectrum.Height, 1);
-
-            // 曲調トラックバーの反映
-            SldTrack.Value =  (int)player.GetPosition();
-        }
-
-        /// <summary>
-        /// ファイルを開くボタンをクリック
-        /// ファイルオープンダイアログにてファイル選択後、自動で再生する
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnOpenFile_Click(object sender, EventArgs e)
-        {
-            if (OpenFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                // Open File
-                if (player.CreateSound(OpenFileDialog.FileName) == FMOD.RESULT.OK)
-                {
-                    // =====================================================================
-                    // 本来は先に設定を終わらせてから再生させたいが、
-                    // 設定するためのFMOD-Channelインスタンスが再生後に生成されるためやむを得ず
-                    // (何か方法があるかもしれない)
-                    // =====================================================================
-
-                    // 再生
-                    player.PlaySound();
-
-                    // 曲長に合わせてトラックバーの総量調整
-                    SldTrack.Maximum = (int)player.GetLength();
-
-                    // ボリュームを設定値へ
-                    float volume = ((float)SldVolume.Value) / 100f;
-                    player.SetVolume(volume);
-
-                    // PANを設定値へ
-                    float pan = ((float)SldPan.Value) / 10f;
-                    player.SetPan(pan);
-                }
-            } else
-            {
-//              MessageBox.Show(player.lastError);
+                // PANを設定値へ
+                float pan = ((float)SldPan.Value) / 10f;
+                player.SetPan(pan);
             }
-        }
-
-        /// <summary>
-        /// フォームクローズ処理
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            player = null;
-        }
-
-        /// <summary>
-        /// 閉じるボタンのクリック
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnClose_Click(object sender, EventArgs e)
-        {
-            // 終了
-            Close();
         }
 
         /// <summary>
@@ -239,10 +130,50 @@ namespace MediaPlayer_X_Ark
             ((Button)button).Refresh();
         }
 
+        /// =============================================================
+        /// 各コントロールイベント
+        /// =============================================================
+        #region MainForm Event
+        /// <summary>
+        /// フォームロード処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            // ===================================
+            // インスタンスの生成
+            // ===================================
+            // ツールチップ
+            _toolTip = new ToolTip(components);
+            // FMODサウンドエンジン
+            player = new PlayerEngine();
+
+            // 予定：設定ファイルの読み込み スキンファイルの指定も含む
+            // 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
+            // 新形式（JSON）の場合はNewSkinSystemへインスタンス切替
+            // スキンシステム
+            oldSkinSystem = new OldSkinSystem();
+            // スキンロード
+            SkinLoad("bbbs\\bs.xsf");
+            // スペクトラム画像の保持
+            bmpSpectrumSrc = new Bitmap(oldSkinSystem.ImgSpectrum.BackImage);
+            // スペクトラム領域のグラフィックインスタンス生成
+            gSpectrum = Spectrum.CreateGraphics();
+            // スペクトラム領域の初期化
+            player.spectrum.Initialize(gSpectrum, bmpSpectrumSrc);
+
+            // ボリューム最大値を強制100（旧形式スキンはこの数値を変動出来ていた為、処理簡略化を考慮する）
+            SldVolume.Maximum = 100;
+
+            initialize = true;
+        }
+
         /// <summary>
         /// 本体ドラッグによるウィンドウ移動
         /// </summary>
         private Point mousePoint;
+
         /// <summary>
         /// フォーム内のマウス押下処理
         /// 位置の記憶
@@ -273,7 +204,246 @@ namespace MediaPlayer_X_Ark
             }
         }
 
-        #region スライダーロジック
+        /// <summary>
+        /// フォームクローズ処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            player = null;
+        }
+        #endregion
+
+        #region Timer Event
+        /// <summary>
+        /// タイマー処理
+        /// リアルタイム処理が必要なものは全てここで処理する
+        /// (スレッド化したい)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PlayerTimer_Tick(object sender, EventArgs e)
+        {
+            // 初期化済みの場合のみ処理する
+            if (!initialize)
+                return;
+
+            // スペクトラム画像の反映
+            player.spectrum.UpdateSpectrum(gSpectrum, ref bmpSpectrumSrc, Spectrum.Width, Spectrum.Height, 1);
+
+            // 曲調トラックバーの反映
+            SldTrack.Value = (int)player.GetPosition();
+        }
+        #endregion
+
+        #region Button MouseDown Event
+        /// <summary>
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnOpen_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+        private void BtnClose_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+        private void BtnStop_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+        private void BtnBack_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+        private void BtnPlay_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+        private void BtnSeekBack_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+        private void BtnPause_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+        private void BtnSeekForward_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+        private void BtnNext_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+        private void BtnRandom_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+        private void BtnLoop_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+        private void BtnSetting_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+        private void BtnPlaylist_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+        private void BtnMinisize_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+        #endregion
+
+        #region Button MouseUp Event
+        private void BtnBack_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+        private void BtnClose_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+        private void BtnOpen_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+        private void BtnPlay_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+
+        private void BtnStop_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+        private void BtnSeekBack_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+        private void BtnPause_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+        private void BtnSeekForward_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+        private void BtnNext_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+        private void BtnRandom_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+        private void BtnLoop_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+        private void BtnSetting_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+        private void BtnPlaylist_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+        private void BtnMinisize_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
+        }
+        #endregion
+
+        #region Button Click Event
+        /// <summary>
+        /// ファイルを開くボタンをクリック
+        /// ファイルオープンダイアログにてファイル選択後、自動で再生する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnOpenFile_Click(object sender, EventArgs e)
+        {
+            if (OpenFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                OpenFile(OpenFileDialog.FileName);
+            }
+        }
+
+        /// <summary>
+        /// 再生/一時停止ボタンのクリック
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnPlay_Click(object sender, EventArgs e)
+        {
+            // プレイ中の場合はポーズする
+            if (player.IsPlaying())
+                player.Pause();
+            else
+                player.PlaySound();
+        }
+
+        /// <summary>
+        /// 停止ボタンのクリック
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnStop_Click(object sender, EventArgs e)
+        {
+            // 問答無用の停止
+            player.Stop();
+        }
+
+
+        /// <summary>
+        /// 閉じるボタンのクリック
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnClose_Click(object sender, EventArgs e)
+        {
+            // 終了
+            Close();
+        }
+        private void BtnBack_Click(object sender, EventArgs e)
+        {
+        }
+        private void BtnSeekBack_Click(object sender, EventArgs e)
+        {
+        }
+        private void BtnPause_Click(object sender, EventArgs e)
+        {
+        }
+        private void BtnSeekForward_Click(object sender, EventArgs e)
+        {
+        }
+        private void BtnNext_Click(object sender, EventArgs e)
+        {
+        }
+        private void BtnRandom_Click(object sender, EventArgs e)
+        {
+        }
+        private void BtnLoop_Click(object sender, EventArgs e)
+        {
+        }
+        private void BtnSetting_Click(object sender, EventArgs e)
+        {
+        }
+        private void BtnPlaylist_Click(object sender, EventArgs e)
+        {
+        }
+        private void BtnMinisize_Click(object sender, EventArgs e)
+        {
+        }
+        #endregion
+
+        #region Slider Event
         /// <summary>
         /// トラックスライダー
         /// 移動時
@@ -350,205 +520,5 @@ namespace MediaPlayer_X_Ark
             _toolTip.Hide(this);
         }
         #endregion
-        /// =============================================================
-        /// ボタン操作
-        /// =============================================================
-        /// <summary>
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnOpen_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-
-        private void BtnClose_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-
-        private void BtnStop_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-
-
-        private void BtnPlay_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-
-        private void BtnClose_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-
-        private void BtnOpen_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-
-        }
-        private void BtnPlay_MouseUp(object sender, MouseEventArgs e)
-        {
-
-            BtnUpEvent(ref sender);
-        }
-
-        private void BtnStop_MouseUp(object sender, MouseEventArgs e)
-        {
-
-            BtnUpEvent(ref sender);
-        }
-
-        private void BtnBack_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BtnBack_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-
-        private void BtnBack_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-
-        private void BtnSeekBack_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BtnSeekBack_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-
-        private void BtnSeekBack_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-
-        private void BtnPause_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BtnPause_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-
-        private void BtnPause_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-
-        private void BtnSeekForward_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BtnSeekForward_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-
-        private void BtnSeekForward_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-
-        private void BtnNext_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BtnNext_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-
-        private void BtnNext_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-
-        private void BtnRandom_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BtnRandom_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-
-        private void BtnRandom_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-
-        private void BtnLoop_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BtnLoop_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-
-        private void BtnLoop_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-
-        private void BtnSetting_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BtnSetting_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-
-        private void BtnSetting_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-
-        private void BtnPlaylist_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BtnPlaylist_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-
-        private void BtnPlaylist_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-
-        private void BtnMinisize_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BtnMinisize_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-
-        private void BtnMinisize_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-
     }
 }
