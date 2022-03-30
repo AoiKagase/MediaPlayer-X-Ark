@@ -96,7 +96,7 @@ namespace MediaPlayer_X_Ark
             // Timer
             // 
             this.Timer.Enabled = true;
-            this.Timer.Tick += new System.EventHandler(this.timer1_Tick);
+            this.Timer.Tick += new System.EventHandler(this.PlayerTimer_Tick);
             // 
             // OpenFileDialog
             // 
@@ -311,6 +311,7 @@ namespace MediaPlayer_X_Ark
             this.SldPan.SliderImage = null;
             this.SldPan.TabIndex = 16;
             this.SldPan.Value = 0;
+            this.SldPan.SliderMoved += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldPan_SliderMoved);
             this.SldPan.SliderMoving += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldPan_SliderMoving);
             // 
             // SldTrack

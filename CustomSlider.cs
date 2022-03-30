@@ -81,13 +81,13 @@ namespace MediaPlayer_X_Ark
             }
         }
 
-        public uint Maximum { get; set; }
-        public uint Minimum { get; set; }
+        public int Maximum { get; set; }
+        public int Minimum { get; set; }
         public Orientation Orientation { get; set; }
 
-        private uint _value;
+        private int _value;
 
-        public uint Value
+        public int Value
         {
             get { return this._value; }
             set
@@ -108,12 +108,12 @@ namespace MediaPlayer_X_Ark
             if (this.Orientation == Orientation.Horizontal)
             {
                 this.Slider.Top = 0;
-                this.Slider.Left = (int)((float)(this.Width - this.Slider.Width) / (Maximum - Minimum) * (this._value - Minimum));
+                this.Slider.Left = (int)(((float)(this.Width - this.Slider.Width) / (Maximum - Minimum)) * (this._value - Minimum));
             }
             else
             {
                 this.Slider.Left = 0;
-                this.Slider.Top = this.Height - (int)((float)(this.Height - this.Slider.Height) / (Maximum - Minimum) * (this._value - Minimum));
+                this.Slider.Top = (this.Height - this.Slider.Height) - (int)(((float)(this.Height - this.Slider.Height) / (Maximum - Minimum)) * (this._value - Minimum));
             }
         }
 
@@ -126,9 +126,9 @@ namespace MediaPlayer_X_Ark
         private void Bar_MouseUp(object sender, MouseEventArgs e)
         {
             if (this.Orientation == Orientation.Horizontal)
-                this._value = (uint)((float)(this.Slider.Left) / (this.Width - this.Slider.Width)) * (Maximum - Minimum);
+                this._value = (int)(((float)(this.Slider.Left) / (this.Width - this.Slider.Width)) * (Maximum - Minimum)) + Minimum;
             else
-                this._value = (uint)((float)(this.Slider.Top) / (this.Height - this.Slider.Height)) * (Maximum - Minimum);
+                this._value = (int)(((float)((this.Height - this.Slider.Height) - this.Slider.Top) / (this.Height - this.Slider.Height)) * (Maximum - Minimum)) + Minimum;
 
             OnSliderMoved(e);
         }
@@ -157,7 +157,7 @@ namespace MediaPlayer_X_Ark
                     else
                         this.Slider.Left = position;
                     this.Slider.Top = 0;
-                    this._value = (uint)(((float)(this.Slider.Left) / (this.Width - this.Slider.Width)) * (Maximum - Minimum)) + Minimum;
+                    this._value = (int)(((float)(this.Slider.Left) / (this.Width - this.Slider.Width)) * (Maximum - Minimum)) + Minimum;
                 }
                 else
                 {
@@ -169,7 +169,7 @@ namespace MediaPlayer_X_Ark
                     else
                         this.Slider.Top = position;
                     this.Slider.Left = 0;
-                    this._value = (uint)((float)(this.Slider.Top) / (this.Height - this.Slider.Height)) * (Maximum - Minimum);
+                    this._value = (int)(((float)((this.Height - this.Slider.Height) - this.Slider.Top) / (this.Height - this.Slider.Height)) * (Maximum - Minimum)) + Minimum;
                 }
 
                 OnSliderMoving(e);
