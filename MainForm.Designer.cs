@@ -51,6 +51,8 @@ namespace MediaPlayer_X_Ark
             this.SldVolume = new MediaPlayer_X_Ark.CustomSlider();
             this.SldPan = new MediaPlayer_X_Ark.CustomSlider();
             this.SldTrack = new MediaPlayer_X_Ark.CustomSlider();
+            this.LabelTitle = new MediaPlayer_X_Ark.ScrollLabel();
+            this.LabelTime = new MediaPlayer_X_Ark.ScrollLabel();
             ((System.ComponentModel.ISupportInitialize)(this.Spectrum)).BeginInit();
             this.SuspendLayout();
             // 
@@ -329,6 +331,22 @@ namespace MediaPlayer_X_Ark
             this.SldTrack.SliderMoved += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldTrack_SliderMoved);
             this.SldTrack.SliderMoving += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldTrack_SliderMoving);
             // 
+            // LabelTitle
+            // 
+            this.LabelTitle.BackColor = System.Drawing.SystemColors.Window;
+            this.LabelTitle.Location = new System.Drawing.Point(81, 246);
+            this.LabelTitle.Name = "LabelTitle";
+            this.LabelTitle.Size = new System.Drawing.Size(87, 88);
+            this.LabelTitle.TabIndex = 18;
+            // 
+            // LabelTime
+            // 
+            this.LabelTime.BackColor = System.Drawing.SystemColors.Window;
+            this.LabelTime.Location = new System.Drawing.Point(207, 206);
+            this.LabelTime.Name = "LabelTime";
+            this.LabelTime.Size = new System.Drawing.Size(87, 88);
+            this.LabelTime.TabIndex = 19;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -337,6 +355,8 @@ namespace MediaPlayer_X_Ark
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(500, 500);
             this.ControlBox = false;
+            this.Controls.Add(this.LabelTime);
+            this.Controls.Add(this.LabelTitle);
             this.Controls.Add(this.SldTrack);
             this.Controls.Add(this.SldPan);
             this.Controls.Add(this.SldVolume);
@@ -391,6 +411,8 @@ namespace MediaPlayer_X_Ark
         private CustomSlider SldVolume;
         private CustomSlider SldPan;
         private CustomSlider SldTrack;
+        private ScrollLabel LabelTitle;
+        private ScrollLabel LabelTime;
     }
 }
 

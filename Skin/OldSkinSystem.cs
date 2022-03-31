@@ -32,9 +32,14 @@ namespace MediaPlayer_X_Ark.Skin
 		public int Minimum;
 	}
 	
-	public struct GraphicCOmponents
+	public struct GraphicComponents
     {
-
+		public bool Enabled;
+		public int Interval;
+		public RECT Position;
+		public Font Font;
+		public Color BackColor;
+		public Color FontColor;
     }
 
 	class OldSkinSystem
@@ -63,6 +68,9 @@ namespace MediaPlayer_X_Ark.Skin
 		public SliderComponents SldVolume;
 		public SliderComponents SldPan;
 		public SliderComponents SldTrack;
+
+		public GraphicComponents LabelTitle;
+		public GraphicComponents LabelTime;
 
 		public OldSkinSystem()
 		{
@@ -116,34 +124,43 @@ namespace MediaPlayer_X_Ark.Skin
 			LoadSliderComponents(ref SldVolume, skinDir, "VolumeSlider", skinFile);
 			LoadSliderComponents(ref SldPan, skinDir, "PanSlider", skinFile);
 			LoadSliderComponents(ref SldTrack, skinDir, "TrackSlider", skinFile);
+
+			// TITLE
+			result = Win32API.GetPrivateProfileString("GraphicArea", "-TitleFont", "", nValue, Convert.ToUInt32(nValue.Capacity), skinFile);
+			int bold = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TitleFontBold", 0, skinFile);
+			int italic = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TitleFontItalic", 0, skinFile);
+			int size = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TitleFontSize", 0, skinFile);
+			string fontName = nValue.ToString();
+			result = Win32API.GetPrivateProfileString("GraphicArea", "-TitleFontColor", "", nValue, Convert.ToUInt32(nValue.Capacity), skinFile);
+			LabelTitle.FontColor = ColorTranslator.FromHtml("#" + nValue.ToString());
+			LabelTitle.Font = new Font(fontName, size, ((bold > 0) ? FontStyle.Bold : FontStyle.Regular) | ((italic > 0) ? FontStyle.Italic : FontStyle.Regular), GraphicsUnit.Point);
+			LabelTitle.Position.Left = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaX", 0, skinFile);
+			LabelTitle.Position.Top = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaY", 0, skinFile);
+			LabelTitle.Position.Width = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaWidth", 0, skinFile);
+			LabelTitle.Position.Height = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaHeight", 0, skinFile);
+			LabelTitle.Interval = 100;
+			LabelTitle.Enabled = true;
+
+			// TIME
+			result = Win32API.GetPrivateProfileString("GraphicArea", "-TimeTxtFont", "", nValue, Convert.ToUInt32(nValue.Capacity), skinFile);
+			bold = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtFontBold", 0, skinFile);
+			italic = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtFontItalic", 0, skinFile);
+			size = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtFontSize", 0, skinFile);
+			fontName = nValue.ToString();
+			result = Win32API.GetPrivateProfileString("GraphicArea", "-TimeTxtColor", "", nValue, Convert.ToUInt32(nValue.Capacity), skinFile);
+			LabelTime.FontColor = ColorTranslator.FromHtml("#" + nValue.ToString());
+			LabelTime.Font = new Font(fontName, size, ((bold > 0) ? FontStyle.Bold : FontStyle.Regular) | ((italic > 0) ? FontStyle.Italic : FontStyle.Regular), GraphicsUnit.Point);
+			LabelTime.Position.Left = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtAreaX", 0, skinFile);
+			LabelTime.Position.Top = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtAreaY", 0, skinFile);
+			LabelTime.Position.Width = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaWidth", 0, skinFile);
+			LabelTime.Position.Height = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaHeight", 0, skinFile);
+			LabelTime.Interval = 0;
+			LabelTime.Enabled = true;
+
 			/*
 
 			BtnOpen.position.Top = (int)Win32API.GetPrivateProfileInt("ButtonVector", "-OpenCDY", 0, skinFile);
 			BtnOpen.position.Left = (int)Win32API.GetPrivateProfileInt("ButtonVector", "-OpenCDX", 0, skinFile);
-
-
-
-						result = Win32API.GetPrivateProfileString("TrackSlider", "-BarPicture", "bar.bmp", nName, Leng, skinFile);
-						result = Win32API.GetPrivateProfileInt("TrackSlider", "-BarVector", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("TrackSlider", "-BarX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("TrackSlider", "-BarY", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("TrackSlider", "-BarMin", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("TrackSlider", "-BarMax", 100, skinFile);
-						result = Win32API.GetPrivateProfileInt("TrackSlider", "-BarAreaX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("TrackSlider", "-BarAreaX2", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("TrackSlider", "-BarAreaY", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("TrackSlider", "-BarAreaY2", 0, skinFile);
-
-						result = Win32API.GetPrivateProfileString("PanSlider", "-BarPicture", "bar.bmp", nName, Leng, skinFile);
-						result = Win32API.GetPrivateProfileInt("PanSlider", "-BarVector", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PanSlider", "-BarX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PanSlider", "-BarY", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PanSlider", "-BarMin", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PanSlider", "-BarMax", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PanSlider", "-BarAreaX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PanSlider", "-BarAreaX2", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PanSlider", "-BarAreaY", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PanSlider", "-BarAreaY2", 0, skinFile);
 
 						result = Win32API.GetPrivateProfileString("GraphicArea", "-ClearColor", Hex$(RGB(48, 32, 32)), nName, Leng, skinFile);
 						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaX", 0, skinFile);
@@ -159,18 +176,13 @@ namespace MediaPlayer_X_Ark.Skin
 						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TitleAreaX", 0, skinFile);
 						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TitleAreaY", 0, skinFile);
 
-						result = Win32API.GetPrivateProfileString("GraphicArea", "-TitleFont", "MS UI Gothic", nName, Leng, skinFile);
-						result = Win32API.GetPrivateProfileString("GraphicArea", "-TitleFontColor", "FFFFFF", nName, Leng, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TitleFontBold", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TitleFontItalic", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TitleFontSize", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtAreaX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtAreaY", 0, skinFile);
-						result = Win32API.GetPrivateProfileString("GraphicArea", "-TimeTxtFont", "MS UI Gothic", nName, Leng, skinFile);
-						result = Win32API.GetPrivateProfileString("GraphicArea", "-TimeTxtColor", "FFFFFF", nName, Leng, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtFontBold", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtFontItalic", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtFontSize", 0, skinFile);
+						result = Win32API.GetPrivateProfileInt("GraphicArea", "-", 0, skinFile);
+						result = Win32API.GetPrivateProfileInt("GraphicArea", "-", 0, skinFile);
+						result = Win32API.GetPrivateProfileString("GraphicArea", "-", "MS UI Gothic", nName, Leng, skinFile);
+						result = Win32API.GetPrivateProfileString("GraphicArea", "-", "FFFFFF", nName, Leng, skinFile);
+						result = Win32API.GetPrivateProfileInt("GraphicArea", "-", 0, skinFile);
+						result = Win32API.GetPrivateProfileInt("GraphicArea", "-", 0, skinFile);
+						result = Win32API.GetPrivateProfileInt("GraphicArea", "-", 0, skinFile);
 						result = Win32API.GetPrivateProfileInt("GraphicArea", "-FileTxtArea", 0, skinFile);
 						result = Win32API.GetPrivateProfileInt("GraphicArea", "-FileTxtAreaX", 0, skinFile);
 						result = Win32API.GetPrivateProfileInt("GraphicArea", "-FileTxtAreaY", 0, skinFile);

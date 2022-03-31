@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 using MediaPlayer_X_Ark.Skin;
+using System.IO;
+
 namespace MediaPlayer_X_Ark
 {
     public partial class MainForm : Form
@@ -75,6 +77,20 @@ namespace MediaPlayer_X_Ark
                     ((CustomSlider)c).Refresh();
                 }
                 // 設定反映：文字領域（スクロールタイトル等）
+                if (c.GetType() == typeof(ScrollLabel))
+                {
+                    ((ScrollLabel)c).BackColor = Color.Transparent;
+                    ((ScrollLabel)c).Value.Font = ((GraphicComponents)oldSkinSystem[cName]).Font;
+                    ((ScrollLabel)c).Value.ForeColor = ((GraphicComponents)oldSkinSystem[cName]).FontColor;
+                    ((ScrollLabel)c).Top = ((GraphicComponents)oldSkinSystem[cName]).Position.Top;
+                    ((ScrollLabel)c).Left = ((GraphicComponents)oldSkinSystem[cName]).Position.Left;
+                    ((ScrollLabel)c).Width = ((GraphicComponents)oldSkinSystem[cName]).Position.Width;
+                    ((ScrollLabel)c).Height = ((GraphicComponents)oldSkinSystem[cName]).Position.Height;
+                    ((ScrollLabel)c).Enabled = ((GraphicComponents)oldSkinSystem[cName]).Enabled;
+                    ((ScrollLabel)c).Visible = ((GraphicComponents)oldSkinSystem[cName]).Enabled;
+                    ((ScrollLabel)c).Timer.Interval = ((GraphicComponents)oldSkinSystem[cName]).Interval > 0 ? ((GraphicComponents)oldSkinSystem[cName]).Interval : 100;
+                    ((ScrollLabel)c).Timer.Enabled = ((GraphicComponents)oldSkinSystem[cName]).Interval > 0 ? true : false;
+                }
             }
         }
 
@@ -106,6 +122,10 @@ namespace MediaPlayer_X_Ark
                 // PANを設定値へ
                 float pan = ((float)SldPan.Value) / 10f;
                 player.SetPan(pan);
+
+                // タグ取得
+                player.GetTags();
+                LabelTitle.Value.Text = (!string.IsNullOrEmpty(player.PlayingTags.Title)) ? player.PlayingTags.Title : Path.GetFileName(fileName);
             }
         }
 
@@ -234,6 +254,10 @@ namespace MediaPlayer_X_Ark
 
             // 曲調トラックバーの反映
             SldTrack.Value = (int)player.GetPosition();
+            TimeSpan time1 = TimeSpan.FromMilliseconds(SldTrack.Value);
+            TimeSpan time2 = TimeSpan.FromMilliseconds(SldTrack.Maximum);
+
+            LabelTime.Value.Text = time1.ToString(@"mm\:ss") + "/" + time2.ToString(@"mm\:ss");
         }
         #endregion
 

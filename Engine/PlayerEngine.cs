@@ -9,7 +9,7 @@ using FMOD;
 
 namespace MediaPlayer_X_Ark
 {
-	struct DEVICE_INFO
+	public struct DEVICE_INFO
 	{
 		public int deviceId;
 		public System.Guid guid;
@@ -20,7 +20,7 @@ namespace MediaPlayer_X_Ark
 		public int speakerModeChannels;
 	}
 
-	enum SOFTWARE_SAMPLE_RATE
+	public enum SOFTWARE_SAMPLE_RATE
 	{
 		SAMPLE_8000HZ	= 8000,
 		SAMPLE_11025HZ	= 11025,
@@ -33,7 +33,7 @@ namespace MediaPlayer_X_Ark
 		SAMPLE_96000HZ	= 96000,
 		SAMPLE_192000HZ	= 192000,
 	}
-	struct TrackTag
+	public struct TrackTag
 	{
 		public string Artist;
 		public string Title;
@@ -69,7 +69,7 @@ namespace MediaPlayer_X_Ark
 
 		private const int channelCount = 1;
 
-		protected TrackTag PlayingTags;
+		public TrackTag PlayingTags;
 
 		public FmodSpectrum spectrum;
 
