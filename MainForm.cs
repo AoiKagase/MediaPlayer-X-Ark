@@ -126,6 +126,8 @@ namespace MediaPlayer_X_Ark
                 // タグ取得
                 player.GetTags();
                 LabelTitle.Value.Text = (!string.IsNullOrEmpty(player.PlayingTags.Title)) ? player.PlayingTags.Title : Path.GetFileName(fileName);
+                LabelTitle.Value.Text +=(!string.IsNullOrEmpty(player.PlayingTags.Artist)) ? (" - " + player.PlayingTags.Artist) : "";
+                LabelTitle.Value.Text +=(!string.IsNullOrEmpty(player.PlayingTags.Alubum)) ? (" - " + player.PlayingTags.Alubum) : "";
             }
         }
 
@@ -252,8 +254,9 @@ namespace MediaPlayer_X_Ark
             // スペクトラム画像の反映
             player.spectrum.UpdateSpectrum(gSpectrum, ref bmpSpectrumSrc, Spectrum.Width, Spectrum.Height, 1);
 
-            // 曲調トラックバーの反映
-            SldTrack.Value = (int)player.GetPosition();
+            // 曲調トラックバーの反映 (シーク中はボタン側で動作する為動かさない)
+            if (this.seekValue == 0)
+                SldTrack.Value = (int)player.GetPosition();
             TimeSpan time1 = TimeSpan.FromMilliseconds(SldTrack.Value);
             TimeSpan time2 = TimeSpan.FromMilliseconds(SldTrack.Maximum);
 
@@ -286,9 +289,12 @@ namespace MediaPlayer_X_Ark
         {
             BtnDownEvent(ref sender);
         }
+        private int seekValue;
+        private int seeking;
         private void BtnSeekBack_MouseDown(object sender, MouseEventArgs e)
         {
             BtnDownEvent(ref sender);
+            seeking = 2;
         }
         private void BtnPause_MouseDown(object sender, MouseEventArgs e)
         {
@@ -297,6 +303,7 @@ namespace MediaPlayer_X_Ark
         private void BtnSeekForward_MouseDown(object sender, MouseEventArgs e)
         {
             BtnDownEvent(ref sender);
+            seeking = 1;
         }
         private void BtnNext_MouseDown(object sender, MouseEventArgs e)
         {
@@ -349,6 +356,8 @@ namespace MediaPlayer_X_Ark
         private void BtnSeekBack_MouseUp(object sender, MouseEventArgs e)
         {
             BtnUpEvent(ref sender);
+            this.seekValue = 0;
+            this.seeking = 0;
         }
         private void BtnPause_MouseUp(object sender, MouseEventArgs e)
         {
@@ -357,6 +366,8 @@ namespace MediaPlayer_X_Ark
         private void BtnSeekForward_MouseUp(object sender, MouseEventArgs e)
         {
             BtnUpEvent(ref sender);
+            this.seekValue = 0;
+            this.seeking = 0;
         }
         private void BtnNext_MouseUp(object sender, MouseEventArgs e)
         {
@@ -490,9 +501,7 @@ namespace MediaPlayer_X_Ark
         {
             uint time = (uint)SldTrack.Value;
             _toolTip.Hide(this);
-            player.Pause();
             player.SetPosition(time);
-            player.Pause();
         }
 
         /// <summary>
@@ -544,5 +553,33 @@ namespace MediaPlayer_X_Ark
             _toolTip.Hide(this);
         }
         #endregion
+
+        private void SldTrack_ValueChanged(object sender, EventArgs e)
+        {
+            if (this.seekValue > 0)
+            {
+                TimeSpan stime = TimeSpan.FromMilliseconds(SldTrack.Value);
+                _toolTip.Show(stime.ToString(@"hh\:mm\:ss"), this, ((CustomSlider)(sender)).Left, ((CustomSlider)(sender)).Top, 1);
+                uint time = (uint)SldTrack.Value;
+                player.SetPosition(time);
+            }
+        }
+
+        private void SeekiTimer_Tick(object sender, EventArgs e)
+        {
+            switch (seeking)
+            {
+                case 0:
+                    break;
+                case 1:
+                    this.seekValue += 100;
+                    this.SldTrack.Value += seekValue;
+                    break;
+                case 2:
+                    this.seekValue += 100;
+                    this.SldTrack.Value -= seekValue;
+                    break;
+            }
+        }
     }
 }

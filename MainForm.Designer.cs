@@ -53,6 +53,7 @@ namespace MediaPlayer_X_Ark
             this.SldTrack = new MediaPlayer_X_Ark.CustomSlider();
             this.LabelTitle = new MediaPlayer_X_Ark.ScrollLabel();
             this.LabelTime = new MediaPlayer_X_Ark.ScrollLabel();
+            this.SeekiTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.Spectrum)).BeginInit();
             this.SuspendLayout();
             // 
@@ -328,6 +329,7 @@ namespace MediaPlayer_X_Ark
             this.SldTrack.SliderImage = null;
             this.SldTrack.TabIndex = 17;
             this.SldTrack.Value = 0;
+            this.SldTrack.ValueChanged += new System.EventHandler<System.EventArgs>(this.SldTrack_ValueChanged);
             this.SldTrack.SliderMoved += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldTrack_SliderMoved);
             this.SldTrack.SliderMoving += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldTrack_SliderMoving);
             // 
@@ -346,6 +348,11 @@ namespace MediaPlayer_X_Ark
             this.LabelTime.Name = "LabelTime";
             this.LabelTime.Size = new System.Drawing.Size(87, 88);
             this.LabelTime.TabIndex = 19;
+            // 
+            // SeekiTimer
+            // 
+            this.SeekiTimer.Enabled = true;
+            this.SeekiTimer.Tick += new System.EventHandler(this.SeekiTimer_Tick);
             // 
             // MainForm
             // 
@@ -413,6 +420,7 @@ namespace MediaPlayer_X_Ark
         private CustomSlider SldTrack;
         private ScrollLabel LabelTitle;
         private ScrollLabel LabelTime;
+        private System.Windows.Forms.Timer SeekiTimer;
     }
 }
 

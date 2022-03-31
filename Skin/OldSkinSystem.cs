@@ -176,13 +176,6 @@ namespace MediaPlayer_X_Ark.Skin
 						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TitleAreaX", 0, skinFile);
 						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TitleAreaY", 0, skinFile);
 
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-", 0, skinFile);
-						result = Win32API.GetPrivateProfileString("GraphicArea", "-", "MS UI Gothic", nName, Leng, skinFile);
-						result = Win32API.GetPrivateProfileString("GraphicArea", "-", "FFFFFF", nName, Leng, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-", 0, skinFile);
 						result = Win32API.GetPrivateProfileInt("GraphicArea", "-FileTxtArea", 0, skinFile);
 						result = Win32API.GetPrivateProfileInt("GraphicArea", "-FileTxtAreaX", 0, skinFile);
 						result = Win32API.GetPrivateProfileInt("GraphicArea", "-FileTxtAreaY", 0, skinFile);

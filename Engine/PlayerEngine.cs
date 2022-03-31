@@ -401,25 +401,28 @@ namespace MediaPlayer_X_Ark
 			if (updated > 0)
             {
 				for (int i = 0; i < numtags; i++)
+//				while(FmodSound.getTag(null, -1, out tags) == FMOD.RESULT.OK)
                 {
 					FmodSound.getTag(null, i, out tags);
-					if (tags.name.Equals("ARTIST"))
+					if (tags.type == TAGTYPE.ID3V1 || tags.type == TAGTYPE.ID3V2 || tags.type == TAGTYPE.VORBISCOMMENT)
                     {
-						PlayingTags.Artist = tags.data.ToString();
-                    }
-					if (tags.name.Equals("TITLE"))
-                    {
-						PlayingTags.Title = tags.data.ToString();
-                    }
-					if (tags.name.Equals("AUTHOR"))
-                    {
-						PlayingTags.Artist = tags.data.ToString();
-                    }
-					if (tags.name.Equals("ALBUM"))
-					{
-						PlayingTags.Alubum = tags.data.ToString();
+						if (((string)tags.name).Equals("ARTIST"))
+						{
+							PlayingTags.Artist = Marshal.PtrToStringUTF8(tags.data);
+						}
+						if (((string)tags.name).Equals("TITLE"))
+						{
+							PlayingTags.Title = Marshal.PtrToStringUTF8(tags.data);
+						}
+						if (((string)tags.name).Equals("AUTHOR"))
+						{
+							PlayingTags.Artist = Marshal.PtrToStringUTF8(tags.data);
+						}
+						if (((string)tags.name).Equals("ALBUM"))
+						{
+							PlayingTags.Alubum = Marshal.PtrToStringUTF8(tags.data);
+						}
 					}
-
 				}
 			}
 
