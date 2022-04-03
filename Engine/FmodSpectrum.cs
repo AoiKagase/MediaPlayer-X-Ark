@@ -15,7 +15,7 @@ namespace MediaPlayer_X_Ark
 		public float Y;
 	}
 
-    class FmodSpectrum
+    public class FmodSpectrum
 	{
 		protected DSP mFFT;
 		protected float[] mFFTSpectrum;
@@ -154,7 +154,7 @@ namespace MediaPlayer_X_Ark
 						line1 = new Rectangle(0, 0, 0, 0);
 						for (int i = 0; i < windowSize; i+=step)
                         {
-							lineHeight = height - (int)((lin2dB(mFFTSpectrum[i]) + 80) * 1.5);
+							lineHeight = height - (int)((lin2dB(mFFTSpectrum[i]) + 80) * 0.8);
 
 							line3.Left = i;
 							if (width > windowSize)

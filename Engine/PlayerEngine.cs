@@ -1,15 +1,14 @@
-﻿using System;
+﻿using FMOD;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
-using FMOD;
 
 namespace MediaPlayer_X_Ark
 {
-	public struct DEVICE_INFO
+    public struct DEVICE_INFO
 	{
 		public int deviceId;
 		public System.Guid guid;
@@ -33,18 +32,8 @@ namespace MediaPlayer_X_Ark
 		SAMPLE_96000HZ	= 96000,
 		SAMPLE_192000HZ	= 192000,
 	}
-	public struct TrackTag
-	{
-		public string Artist;
-		public string Title;
-		public string Alubum;
-		public FMOD.SOUND_TYPE SoundType;
-		public FMOD.SOUND_FORMAT Format;
-		public int Bit;
-		public uint length;
-	}
 
-	class PlayerEngine
+	public class PlayerEngine
 	{
 		[DllImport("kernel32.dll")]
 		public static extern IntPtr LoadLibrary(string dllToLoad);
@@ -54,8 +43,8 @@ namespace MediaPlayer_X_Ark
 		public FMOD.RESULT lastErrCode;
 
 		// FMOD SYSTEM.
+		public BindingList<Engine.PlayList> PlayList = new BindingList<Engine.PlayList>();
 		protected FMOD.System FmodSystem;
-		protected FMOD.Sound FmodSound;
 		protected FMOD.ChannelGroup FmodChannelGroup;
 		protected FMOD.Channel FmodChannel;
 
@@ -68,8 +57,6 @@ namespace MediaPlayer_X_Ark
 		protected List<DEVICE_INFO> FmodDeviceList = new List<DEVICE_INFO>();
 
 		private const int channelCount = 1;
-
-		public TrackTag PlayingTags;
 
 		public FmodSpectrum spectrum;
 
@@ -104,8 +91,12 @@ namespace MediaPlayer_X_Ark
 					FmodChannelGroup.release();
 
 				// Relase FMOD handles for Sound.
-				if (FmodSound.hasHandle())
-					FmodSound.release();
+				for (int i = 0; i < PlayList.Count; i++)
+                {
+					if (PlayList[i].Sound.hasHandle())
+						PlayList[i].Sound.release();
+				}
+				PlayList.Clear();
 
 				// Relase FMOD handles for System.
 				if (FmodSystem.hasHandle())
@@ -148,6 +139,8 @@ namespace MediaPlayer_X_Ark
 						LoadPlugins();
 
 						FmodCallFunction(FmodSystem.getChannel(0, out FmodChannel));
+
+						PlayList = new BindingList<Engine.PlayList>();
 						initialized = true;
 					}
 				}
@@ -361,13 +354,13 @@ namespace MediaPlayer_X_Ark
 		/// <param name="starving">Starving state. true if a stream has decoded more than the stream file buffer has ready.</param>
 		/// <param name="diskBusy">Disk is currently being accessed for this sound.</param>
 		/// <returns>Open state of a sound. </returns>
-		public FMOD.OPENSTATE GetOpenState(out uint buffered, out bool starving, out bool diskBusy)
+		public FMOD.OPENSTATE GetOpenState(int index, out uint buffered, out bool starving, out bool diskBusy)
         {
 			FMOD.OPENSTATE state;
 			buffered = 0;
 			starving = false;
 			diskBusy = false;
-			FmodSound.getOpenState(out state, out buffered, out starving, out diskBusy);
+			PlayList[index].Sound.getOpenState(out state, out buffered, out starving, out diskBusy);
 			return state;
         }
 
@@ -376,83 +369,111 @@ namespace MediaPlayer_X_Ark
 		/// Play Sound for Loaded Channels.
 		/// </summary>
 		/// <param name="channel"></param>
-		public RESULT PlaySound()
+		public RESULT PlaySound(int index)
         {
-			return FmodCallFunction(FmodSystem.playSound(FmodSound, FmodChannelGroup, false, out FmodChannel));
+			FMOD.RESULT result = FmodCallFunction(FmodSystem.playSound(PlayList[index].Sound, FmodChannelGroup, false, out FmodChannel));
+			GetTags(index);
+			return result;
         }
 
-		public uint GetLength()
+		public uint GetLength(int index)
         {
 			uint length = 0;
-			FmodCallFunction(FmodSound.getLength(out length, TIMEUNIT.MS));
+			FmodCallFunction(PlayList[index].Sound.getLength(out length, TIMEUNIT.MS));
 			return length;
         }
 		/// <summary>
 		/// Get Sound file Tags.
 		/// </summary>
-        public void GetTags()
+        public void GetTags(int index)
         {
 			FMOD.TAG tags;
 
 			int numtags;
 			int updated;
 
-			FmodSound.getNumTags(out numtags, out updated);
+			PlayList[index].Sound.getNumTags(out numtags, out updated);
 			if (updated > 0)
             {
 				for (int i = 0; i < numtags; i++)
 //				while(FmodSound.getTag(null, -1, out tags) == FMOD.RESULT.OK)
                 {
-					FmodSound.getTag(null, i, out tags);
+					PlayList[index].Sound.getTag(null, i, out tags);
 					if (tags.type == TAGTYPE.ID3V1 || tags.type == TAGTYPE.ID3V2 || tags.type == TAGTYPE.VORBISCOMMENT)
                     {
-						if (((string)tags.name).Equals("ARTIST"))
-						{
-							PlayingTags.Artist = Marshal.PtrToStringUTF8(tags.data);
-						}
-						if (((string)tags.name).Equals("TITLE"))
-						{
-							PlayingTags.Title = Marshal.PtrToStringUTF8(tags.data);
-						}
-						if (((string)tags.name).Equals("AUTHOR"))
-						{
-							PlayingTags.Artist = Marshal.PtrToStringUTF8(tags.data);
-						}
-						if (((string)tags.name).Equals("ALBUM"))
-						{
-							PlayingTags.Alubum = Marshal.PtrToStringUTF8(tags.data);
-						}
+						string tagname = ((string)tags.name).ToUpper();
+						if (tagname.Equals("ARTIST") || tagname.Equals("ARTIST NAME"))
+							PlayList[index].Artist = Marshal.PtrToStringUTF8(tags.data);
+
+						if ((tagname).Equals("TITLE") || tagname.Equals("TRACK TITLE"))
+							PlayList[index].Title = Marshal.PtrToStringUTF8(tags.data);
+
+						if ((tagname).Equals("AUTHOR"))
+							PlayList[index].Artist = Marshal.PtrToStringUTF8(tags.data);
+
+						if ((tagname).Equals("ALBUM") || tagname.Equals("ALBUM TITLE"))
+							PlayList[index].Album = Marshal.PtrToStringUTF8(tags.data);
+
 					}
 				}
 			}
 
 			int channel;
-			FmodSound.getFormat(out PlayingTags.SoundType, out PlayingTags.Format, out channel, out PlayingTags.Bit);
+			SOUND_TYPE soundtype;
+			SOUND_FORMAT soundformat;
+			int bit;
+			uint length;
 
-			FmodSound.getLength(out PlayingTags.length, FMOD.TIMEUNIT.MS);
-        }
+			PlayList[index].Sound.getFormat(out soundtype, out soundformat, out channel, out bit);
+			PlayList[index].Sound.getLength(out length, FMOD.TIMEUNIT.MS);
+
+			PlayList[index].SoundType = soundtype;
+			PlayList[index].Format = soundformat;
+			PlayList[index].Bit = bit;
+			PlayList[index].length = length;
+		}
 
 		/// <summary>
 		/// Create Sound.
 		/// Removed CDDA support.
 		/// </summary>
 		/// <param name="filename"></param>
-		public RESULT CreateSound(string filename)
+		public RESULT CreateSound(string filename, out int index)
         {
 			// CD Player
 			//if (filename.Substring(0, 3).Equals("cd:"))
 			//{
 			//	FmodSystem.createStream(filename.Substring(4, 2), (FMOD.MODE._2D | FMOD.MODE.CREATESTREAM | FMOD.MODE.OPENONLY | FMOD.MODE.OPENMEMORY), out FmodSound);
 			//}
-			return FmodCallFunction(FmodSystem.createStream(filename, FMOD.MODE.DEFAULT, out FmodSound));
+			FMOD.Sound sound;
+			FMOD.RESULT result;
+			index = 0;
+			if (Path.GetExtension(filename).Equals("mid"))
+			{
+				FMOD.CREATESOUNDEXINFO info = new FMOD.CREATESOUNDEXINFO();
+				info.cbsize = Marshal.SizeOf(info);
+				info.suggestedsoundtype = FMOD.SOUND_TYPE.MIDI;
+				if ((result = FmodCallFunction(FmodSystem.createSound(filename, FMOD.MODE.DEFAULT, ref info, out sound))) == RESULT.OK)
+				{
+					Engine.PlayList plist = new Engine.PlayList(filename, sound);
+					PlayList.Add(plist);
+					index = PlayList.Count - 1;
+				}
+			}
+			else
+			{
+				if ((result = FmodCallFunction(FmodSystem.createStream(filename, FMOD.MODE.DEFAULT, out sound))) == RESULT.OK)
+				{
+					Engine.PlayList plist = new Engine.PlayList(filename, sound);
+					PlayList.Add(plist);
+					index = PlayList.Count - 1;
+				}
+			}
+			return result;
         }
 
 		public void CreateSoundForMidi(string filename)
         {
-			FMOD.CREATESOUNDEXINFO info = new FMOD.CREATESOUNDEXINFO();
-			info.cbsize = Marshal.SizeOf(info);
-			info.suggestedsoundtype = FMOD.SOUND_TYPE.MIDI;
-			FmodCallFunction(FmodSystem.createSound(filename, FMOD.MODE.DEFAULT, ref info, out FmodSound));
 		}
 
 		/// <summary>

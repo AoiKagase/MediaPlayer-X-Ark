@@ -362,11 +362,11 @@ namespace MediaPlayer_X_Ark
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(500, 500);
             this.ControlBox = false;
+            this.Controls.Add(this.SldVolume);
+            this.Controls.Add(this.SldPan);
+            this.Controls.Add(this.SldTrack);
             this.Controls.Add(this.LabelTime);
             this.Controls.Add(this.LabelTitle);
-            this.Controls.Add(this.SldTrack);
-            this.Controls.Add(this.SldPan);
-            this.Controls.Add(this.SldVolume);
             this.Controls.Add(this.BtnBack);
             this.Controls.Add(this.BtnSeekBack);
             this.Controls.Add(this.BtnPause);

@@ -42,13 +42,21 @@ namespace MediaPlayer_X_Ark.Skin
 		public Color FontColor;
     }
 
+    public struct SpectrumComponents
+    {
+		public Image Image;
+		public Color Color;
+		public RECT Position;
+		public bool Enabled;
+	}
+
 	class OldSkinSystem
 	{
 		private string defaultSkinDir = "Skins\\";
 		private string defaultSkin = "Default\\Default.xsf";
 
 		public ButtonComponents MainForm;
-		public ButtonComponents ImgSpectrum;
+		public SpectrumComponents ImgSpectrum;
 		public ButtonComponents BtnOpen;
 		public ButtonComponents BtnClose;
 		public ButtonComponents BtnPlay;
@@ -84,6 +92,8 @@ namespace MediaPlayer_X_Ark.Skin
 			string skinFile;
 			string extension;
 			StringBuilder nValue = new StringBuilder(256);
+			uint capacity = Convert.ToUInt32(nValue.Capacity);
+
 			if (!File.Exists(defaultSkinDir + loadSkinFile))
 			{
 				skinFile = Application.ExecutablePath + "\\" + defaultSkinDir + defaultSkin;
@@ -91,9 +101,9 @@ namespace MediaPlayer_X_Ark.Skin
 			skinFile = (defaultSkinDir + loadSkinFile);
 			skinDir = Path.GetDirectoryName(defaultSkinDir + loadSkinFile);
 
-			result = Win32API.GetPrivateProfileString("SkinSetting", "-Extension", "bmp", nValue, Convert.ToUInt32(nValue.Capacity), skinFile);
+			result = Win32API.GetPrivateProfileString("SkinSetting", "-Extension", "bmp", nValue, capacity, skinFile);
 			extension = nValue.ToString();
-			result = Win32API.GetPrivateProfileString("SkinSetting", "-BackPicture", "back.bmp", nValue, Convert.ToUInt32(nValue.Capacity), skinFile);
+			result = Win32API.GetPrivateProfileString("SkinSetting", "-BackPicture", "back.bmp", nValue, capacity, skinFile);
 			MainForm.BackImage = LoadImage(skinDir + "\\" +  nValue.ToString());
 			// result = Win32API.GetPrivateProfileInt("SkinSetting", "-MainWidth", 0, skinFile)
 			// result = Win32API.GetPrivateProfileInt("SkinSetting", "-MainHeight", 0, skinFile)
@@ -114,8 +124,15 @@ namespace MediaPlayer_X_Ark.Skin
 			LoadButtonComponents(ref BtnMinisize, skinDir, "17", extension, "ButtonVector", "-MiniSize", skinFile);
 
 
-			result = Win32API.GetPrivateProfileString("GraphicArea", "-SpectrumPicture", "", nValue, Convert.ToUInt32(nValue.Capacity), skinFile);
-			ImgSpectrum.BackImage = LoadImage(skinDir + "\\" + nValue.ToString());
+			result = Win32API.GetPrivateProfileString("GraphicArea", "-SpectrumPicture", "", nValue, capacity, skinFile);
+			ImgSpectrum.Image = LoadImage(skinDir + "\\" + nValue.ToString());
+			if (ImgSpectrum.Image == null)
+            {
+				result = Win32API.GetPrivateProfileString("GraphicArea", "-SpectrumColor", "FFFFFF", nValue, capacity, skinFile);
+				if (nValue.ToString() != "")
+					ImgSpectrum.Color = LoadColor(nValue.ToString());
+			}
+
 			ImgSpectrum.Position.Top = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-SpectrumAreaY", 0, skinFile);
 			ImgSpectrum.Position.Left = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-SpectrumAreaX", 0, skinFile);
 			ImgSpectrum.Position.Width = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-SpectrumAreaWidth", 0, skinFile);
@@ -126,13 +143,13 @@ namespace MediaPlayer_X_Ark.Skin
 			LoadSliderComponents(ref SldTrack, skinDir, "TrackSlider", skinFile);
 
 			// TITLE
-			result = Win32API.GetPrivateProfileString("GraphicArea", "-TitleFont", "", nValue, Convert.ToUInt32(nValue.Capacity), skinFile);
+			result = Win32API.GetPrivateProfileString("GraphicArea", "-TitleFont", "", nValue, capacity, skinFile);
 			int bold = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TitleFontBold", 0, skinFile);
 			int italic = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TitleFontItalic", 0, skinFile);
 			int size = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TitleFontSize", 0, skinFile);
 			string fontName = nValue.ToString();
-			result = Win32API.GetPrivateProfileString("GraphicArea", "-TitleFontColor", "", nValue, Convert.ToUInt32(nValue.Capacity), skinFile);
-			LabelTitle.FontColor = ColorTranslator.FromHtml("#" + nValue.ToString());
+			result = Win32API.GetPrivateProfileString("GraphicArea", "-TitleFontColor", "", nValue, capacity, skinFile);
+			LabelTitle.FontColor = LoadColor(nValue.ToString());
 			LabelTitle.Font = new Font(fontName, size, ((bold > 0) ? FontStyle.Bold : FontStyle.Regular) | ((italic > 0) ? FontStyle.Italic : FontStyle.Regular), GraphicsUnit.Point);
 			LabelTitle.Position.Left = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaX", 0, skinFile);
 			LabelTitle.Position.Top = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaY", 0, skinFile);
@@ -142,13 +159,13 @@ namespace MediaPlayer_X_Ark.Skin
 			LabelTitle.Enabled = true;
 
 			// TIME
-			result = Win32API.GetPrivateProfileString("GraphicArea", "-TimeTxtFont", "", nValue, Convert.ToUInt32(nValue.Capacity), skinFile);
+			result = Win32API.GetPrivateProfileString("GraphicArea", "-TimeTxtFont", "", nValue, capacity, skinFile);
 			bold = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtFontBold", 0, skinFile);
 			italic = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtFontItalic", 0, skinFile);
 			size = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtFontSize", 0, skinFile);
 			fontName = nValue.ToString();
-			result = Win32API.GetPrivateProfileString("GraphicArea", "-TimeTxtColor", "", nValue, Convert.ToUInt32(nValue.Capacity), skinFile);
-			LabelTime.FontColor = ColorTranslator.FromHtml("#" + nValue.ToString());
+			result = Win32API.GetPrivateProfileString("GraphicArea", "-TimeTxtColor", "", nValue, capacity, skinFile);
+			LabelTime.FontColor = LoadColor(nValue.ToString());
 			LabelTime.Font = new Font(fontName, size, ((bold > 0) ? FontStyle.Bold : FontStyle.Regular) | ((italic > 0) ? FontStyle.Italic : FontStyle.Regular), GraphicsUnit.Point);
 			LabelTime.Position.Left = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtAreaX", 0, skinFile);
 			LabelTime.Position.Top = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtAreaY", 0, skinFile);
@@ -168,7 +185,6 @@ namespace MediaPlayer_X_Ark.Skin
 						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaWidth", 0, skinFile);
 						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaHeight", 0, skinFile);
 
-						result = Win32API.GetPrivateProfileString("GraphicArea", "-SpectrumColor", "FFFFFF", nName, Leng, skinFile);
 						result = Win32API.GetPrivateProfileString("GraphicArea", "-SpectrumWaveColor", "FFFFFF", nName, Leng, skinFile);
 						result = Win32API.GetPrivateProfileString("GraphicArea", "-SpectrumPicture", "", nName, Leng, skinFile);
 
@@ -297,6 +313,11 @@ namespace MediaPlayer_X_Ark.Skin
 				return Image.FromFile(path);
 			else
 				return null;
+        }
+
+		private Color LoadColor(string color)
+        {
+			return ColorTranslator.FromWin32(Int32.Parse(color, System.Globalization.NumberStyles.HexNumber));
         }
 	}
 }

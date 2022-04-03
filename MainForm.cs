@@ -9,12 +9,14 @@ namespace MediaPlayer_X_Ark
     public partial class MainForm : Form
     {
         bool initialize = false;
+        public static PlayerEngine player;
 
         Graphics gSpectrum;
         Bitmap bmpSpectrumSrc;
-        PlayerEngine player;
         OldSkinSystem oldSkinSystem;
 		private ToolTip _toolTip;
+        private int playingIndex = 0;
+        private PlayListForm playListForm;
 
         public MainForm()
         {
@@ -43,6 +45,19 @@ namespace MediaPlayer_X_Ark
             Spectrum.Top = oldSkinSystem.ImgSpectrum.Position.Top;
             Spectrum.Width = oldSkinSystem.ImgSpectrum.Position.Width;
             Spectrum.Height = oldSkinSystem.ImgSpectrum.Position.Height;
+            // スペクトラム画像の保持
+            if (oldSkinSystem.ImgSpectrum.Image != null)
+                bmpSpectrumSrc = new Bitmap(oldSkinSystem.ImgSpectrum.Image);
+            else
+            {
+                bmpSpectrumSrc = new Bitmap(Spectrum.Width, Spectrum.Height);
+                Graphics g = Graphics.FromImage(bmpSpectrumSrc);
+                g.Clear(oldSkinSystem.ImgSpectrum.Color);
+            }
+            // スペクトラム領域のグラフィックインスタンス生成
+            gSpectrum = Spectrum.CreateGraphics();
+            // スペクトラム領域の初期化
+            player.spectrum.Initialize(gSpectrum, bmpSpectrumSrc);
 
             string cName = "";
             foreach(Control c in Controls)
@@ -101,36 +116,40 @@ namespace MediaPlayer_X_Ark
         private void OpenFile(string fileName)
         {
             // Open File
-            if (player.CreateSound(fileName) == FMOD.RESULT.OK)
+            if (player.CreateSound(fileName, out playingIndex) == FMOD.RESULT.OK)
             {
-                // =====================================================================
-                // 本来は先に設定を終わらせてから再生させたいが、
-                // 設定するためのFMOD-Channelインスタンスが再生後に生成されるためやむを得ず
-                // (何か方法があるかもしれない)
-                // =====================================================================
-
-                // 再生
-                player.PlaySound();
-
-                // 曲長に合わせてトラックバーの総量調整
-                SldTrack.Maximum = (int)player.GetLength();
-
-                // ボリュームを設定値へ
-                float volume = ((float)SldVolume.Value) / 100f;
-                player.SetVolume(volume);
-
-                // PANを設定値へ
-                float pan = ((float)SldPan.Value) / 10f;
-                player.SetPan(pan);
-
-                // タグ取得
-                player.GetTags();
-                LabelTitle.Value.Text = (!string.IsNullOrEmpty(player.PlayingTags.Title)) ? player.PlayingTags.Title : Path.GetFileName(fileName);
-                LabelTitle.Value.Text +=(!string.IsNullOrEmpty(player.PlayingTags.Artist)) ? (" - " + player.PlayingTags.Artist) : "";
-                LabelTitle.Value.Text +=(!string.IsNullOrEmpty(player.PlayingTags.Alubum)) ? (" - " + player.PlayingTags.Alubum) : "";
+                PlayLoad();
             }
         }
 
+        private void PlayLoad()
+        {
+            // =====================================================================
+            // 本来は先に設定を終わらせてから再生させたいが、
+            // 設定するためのFMOD-Channelインスタンスが再生後に生成されるためやむを得ず
+            // (何か方法があるかもしれない)
+            // =====================================================================
+
+            // 再生
+            player.PlaySound(playingIndex);
+
+            // 曲長に合わせてトラックバーの総量調整
+            SldTrack.Maximum = (int)player.GetLength(playingIndex);
+
+            // ボリュームを設定値へ
+            float volume = ((float)SldVolume.Value) / 100f;
+            player.SetVolume(volume);
+
+            // PANを設定値へ
+            float pan = ((float)SldPan.Value) / 10f;
+            player.SetPan(pan);
+
+            // タグ取得
+            player.GetTags(playingIndex);
+            LabelTitle.Value.Text = (!string.IsNullOrEmpty(player.PlayList[playingIndex].Title)) ? player.PlayList[playingIndex].Title : Path.GetFileName(player.PlayList[playingIndex].FileName);
+            LabelTitle.Value.Text += (!string.IsNullOrEmpty(player.PlayList[playingIndex].Artist)) ? (" - " + player.PlayList[playingIndex].Artist) : "";
+            LabelTitle.Value.Text += (!string.IsNullOrEmpty(player.PlayList[playingIndex].Album)) ? (" - " + player.PlayList[playingIndex].Album) : "";
+        }
         /// <summary>
         /// ボタンクリック時のイベント（MouseDown時）
         /// </summary>
@@ -177,18 +196,15 @@ namespace MediaPlayer_X_Ark
             // スキンシステム
             oldSkinSystem = new OldSkinSystem();
             // スキンロード
-            SkinLoad("bbbs\\bs.xsf");
-            // スペクトラム画像の保持
-            bmpSpectrumSrc = new Bitmap(oldSkinSystem.ImgSpectrum.BackImage);
-            // スペクトラム領域のグラフィックインスタンス生成
-            gSpectrum = Spectrum.CreateGraphics();
-            // スペクトラム領域の初期化
-            player.spectrum.Initialize(gSpectrum, bmpSpectrumSrc);
+            SkinLoad("RRS\\rack.xsf");
 
             // ボリューム最大値を強制100（旧形式スキンはこの数値を変動出来ていた為、処理簡略化を考慮する）
             SldVolume.Maximum = 100;
 
             initialize = true;
+
+            playListForm = new PlayListForm();
+            playListForm.Show();
         }
 
         /// <summary>
@@ -252,7 +268,7 @@ namespace MediaPlayer_X_Ark
                 return;
 
             // スペクトラム画像の反映
-            player.spectrum.UpdateSpectrum(gSpectrum, ref bmpSpectrumSrc, Spectrum.Width, Spectrum.Height, 1);
+            player.spectrum.UpdateSpectrum(gSpectrum, ref bmpSpectrumSrc, Spectrum.Width, Spectrum.Height, 0);
 
             // 曲調トラックバーの反映 (シーク中はボタン側で動作する為動かさない)
             if (this.seekValue == 0)
@@ -421,7 +437,7 @@ namespace MediaPlayer_X_Ark
             if (player.IsPlaying())
                 player.Pause();
             else
-                player.PlaySound();
+                player.PlaySound(playingIndex);
         }
 
         /// <summary>
@@ -448,6 +464,11 @@ namespace MediaPlayer_X_Ark
         }
         private void BtnBack_Click(object sender, EventArgs e)
         {
+            if (playingIndex > 0)
+            {
+                playingIndex--;
+            }
+            PlayLoad();
         }
         private void BtnSeekBack_Click(object sender, EventArgs e)
         {
@@ -460,6 +481,11 @@ namespace MediaPlayer_X_Ark
         }
         private void BtnNext_Click(object sender, EventArgs e)
         {
+            if (playingIndex < player.PlayList.Count)
+            {
+                playingIndex++;
+            }
+            PlayLoad();
         }
         private void BtnRandom_Click(object sender, EventArgs e)
         {
@@ -472,6 +498,7 @@ namespace MediaPlayer_X_Ark
         }
         private void BtnPlaylist_Click(object sender, EventArgs e)
         {
+            playListForm.Show();
         }
         private void BtnMinisize_Click(object sender, EventArgs e)
         {
