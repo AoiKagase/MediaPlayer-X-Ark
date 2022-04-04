@@ -19,12 +19,12 @@ namespace MediaPlayer_X_Ark
 
         private void PlayList_Load(object sender, EventArgs e)
         {
-            this.DataGridPlaylist.DataSource = MainForm.player.PlayList;
-            this.DataGridPlaylist.Columns.Clear();
-            this.DataGridPlaylist.Columns.Add("Title", "Title");
-            this.DataGridPlaylist.Columns.Add("Artist", "Artist");
-            this.DataGridPlaylist.Columns.Add("Album", "Album");
-            this.DataGridPlaylist.Columns.Add("length", "Length");
+            this.PlayListGrid.DataSource = MainForm.player.PlayList;
+            this.PlayListGrid.Columns.Clear();
+            this.PlayListGrid.Columns.Add("Title", "Title");
+            this.PlayListGrid.Columns.Add("Artist", "Artist");
+            this.PlayListGrid.Columns.Add("Album", "Album");
+            this.PlayListGrid.Columns.Add("length", "Length");
         }
     }
 }

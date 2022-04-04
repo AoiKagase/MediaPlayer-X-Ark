@@ -107,6 +107,29 @@ namespace MediaPlayer_X_Ark
                     ((ScrollLabel)c).Timer.Enabled = ((GraphicComponents)oldSkinSystem[cName]).Interval > 0 ? true : false;
                 }
             }
+
+            playListForm.Left = ((PListComponents)oldSkinSystem["PlayListForm"]).Position.Left;
+            playListForm.Top = ((PListComponents)oldSkinSystem["PlayListForm"]).Position.Top;
+            playListForm.BackgroundImage = ((PListComponents)oldSkinSystem["PlayListForm"]).Back;
+            playListForm.Width = playListForm.BackgroundImage.Width;
+            playListForm.Height = playListForm.BackgroundImage.Height;
+            foreach (Control c in playListForm.Controls)
+            {
+                cName = c.Name;
+                if (c.GetType() == typeof(DataGridView))
+                {
+                    ((DataGridView)c).BackgroundColor = ((PListGrid)oldSkinSystem[cName]).ListBackColor;
+                    ((DataGridView)c).ForeColor = ((PListGrid)oldSkinSystem[cName]).ListForeColor;
+                    ((DataGridView)c).Left = ((PListGrid)oldSkinSystem[cName]).ListPosition.Left;
+                    ((DataGridView)c).Top = ((PListGrid)oldSkinSystem[cName]).ListPosition.Top;
+                    ((DataGridView)c).Width = ((PListGrid)oldSkinSystem[cName]).ListPosition.Width;
+                    ((DataGridView)c).Height = ((PListGrid)oldSkinSystem[cName]).ListPosition.Height;
+                }
+                if (c.GetType() == typeof(Button))
+                {
+
+                }
+            }
         }
 
         /// <summary>
@@ -189,6 +212,7 @@ namespace MediaPlayer_X_Ark
             _toolTip = new ToolTip(components);
             // FMODサウンドエンジン
             player = new PlayerEngine();
+            playListForm = new PlayListForm();
 
             // 予定：設定ファイルの読み込み スキンファイルの指定も含む
             // 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
@@ -203,7 +227,6 @@ namespace MediaPlayer_X_Ark
 
             initialize = true;
 
-            playListForm = new PlayListForm();
             playListForm.Show();
         }
 
