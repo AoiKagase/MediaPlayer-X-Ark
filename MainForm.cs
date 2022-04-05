@@ -37,8 +37,9 @@ namespace MediaPlayer_X_Ark
 
             // 設定反映：メインフォーム
             BackgroundImage = oldSkinSystem.MainForm.BackImage;
-            Width = oldSkinSystem.MainForm.BackImage.Width;
-            Height = oldSkinSystem.MainForm.BackImage.Height;
+            TransparencyKey = oldSkinSystem.MainForm.TransparentKey;
+            Width = oldSkinSystem.MainForm.Position.Width;
+            Height = oldSkinSystem.MainForm.Position.Height;
 
             // 設定反映：スペクトラム領域
             Spectrum.Left = oldSkinSystem.ImgSpectrum.Position.Left;
@@ -108,11 +109,12 @@ namespace MediaPlayer_X_Ark
                 }
             }
 
-            playListForm.Left = ((PListComponents)oldSkinSystem["PlayListForm"]).Position.Left;
-            playListForm.Top = ((PListComponents)oldSkinSystem["PlayListForm"]).Position.Top;
-            playListForm.BackgroundImage = ((PListComponents)oldSkinSystem["PlayListForm"]).Back;
+            playListForm.Left = Left + Width + ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Left;
+            playListForm.Top = Top + Height + ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Top;
+            playListForm.BackgroundImage = ((FormComponents)oldSkinSystem["PlayListForm"]).BackImage;
             playListForm.Width = playListForm.BackgroundImage.Width;
             playListForm.Height = playListForm.BackgroundImage.Height;
+            playListForm.TransparencyKey = ((FormComponents)oldSkinSystem["PlayListForm"]).TransparentKey;
             foreach (Control c in playListForm.Controls)
             {
                 cName = c.Name;
@@ -127,7 +129,14 @@ namespace MediaPlayer_X_Ark
                 }
                 if (c.GetType() == typeof(Button))
                 {
-
+                    ((Button)c).BackgroundImage = ((ButtonComponents)oldSkinSystem[cName]).BackImage;
+                    ((Button)c).Top = ((ButtonComponents)oldSkinSystem[cName]).Position.Top;
+                    ((Button)c).Left = ((ButtonComponents)oldSkinSystem[cName]).Position.Left;
+                    ((Button)c).Width = ((ButtonComponents)oldSkinSystem[cName]).Position.Width;
+                    ((Button)c).Height = ((ButtonComponents)oldSkinSystem[cName]).Position.Height;
+                    ((Button)c).Enabled = ((ButtonComponents)oldSkinSystem[cName]).Enabled;
+                    ((Button)c).Visible = ((ButtonComponents)oldSkinSystem[cName]).Enabled;
+                    ((Button)c).Refresh();
                 }
             }
         }
@@ -177,7 +186,7 @@ namespace MediaPlayer_X_Ark
         /// ボタンクリック時のイベント（MouseDown時）
         /// </summary>
         /// <param name="button"></param>
-        private void BtnDownEvent(ref object button)
+        public void BtnDownEvent(ref object button)
         {
             // 背景画像を押下時の画像へ変更
             ((Button)button).BackgroundImage = ((ButtonComponents)oldSkinSystem[((Button)button).Name]).DownImage;
@@ -187,7 +196,7 @@ namespace MediaPlayer_X_Ark
         /// ボタンクリック時のイベント（MouseUp時）
         /// </summary>
         /// <param name="button"></param>
-        private void BtnUpEvent(ref object button)
+        public void BtnUpEvent(ref object button)
         {
             // 背景画像を元画像へ変更
             ((Button)button).BackgroundImage = ((ButtonComponents)oldSkinSystem[((Button)button).Name]).BackImage;
@@ -212,7 +221,7 @@ namespace MediaPlayer_X_Ark
             _toolTip = new ToolTip(components);
             // FMODサウンドエンジン
             player = new PlayerEngine();
-            playListForm = new PlayListForm();
+            playListForm = new PlayListForm(this);
 
             // 予定：設定ファイルの読み込み スキンファイルの指定も含む
             // 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
@@ -220,7 +229,7 @@ namespace MediaPlayer_X_Ark
             // スキンシステム
             oldSkinSystem = new OldSkinSystem();
             // スキンロード
-            SkinLoad("RRS\\rack.xsf");
+            SkinLoad("bbbs\\bs.xsf");
 
             // ボリューム最大値を強制100（旧形式スキンはこの数値を変動出来ていた為、処理簡略化を考慮する）
             SldVolume.Maximum = 100;

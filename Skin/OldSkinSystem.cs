@@ -12,6 +12,14 @@ using System.IO;
 
 namespace MediaPlayer_X_Ark.Skin
 {
+	public struct FormComponents
+	{
+		public Image BackImage;
+		public RECT Position;
+		public Color TransparentKey;
+		public bool MagnetMode;
+	}
+
 	public struct ButtonComponents
 	{
 		public Image BackImage;
@@ -50,12 +58,6 @@ namespace MediaPlayer_X_Ark.Skin
 		public bool Enabled;
     }
 
-    public struct PListComponents
-    {
-		public Image Back;
-		public bool MagnetMode;
-		public RECT Position;
-    }
     public struct PListGrid
     {
 		public Color ListBackColor;
@@ -68,7 +70,7 @@ namespace MediaPlayer_X_Ark.Skin
 		private string defaultSkinDir = "Skins\\";
 		private string defaultSkin = "Default\\Default.xsf";
 
-		public ButtonComponents MainForm;
+		public FormComponents MainForm;
 		public SpectrumComponents ImgSpectrum;
 		public ButtonComponents BtnOpen;
 		public ButtonComponents BtnClose;
@@ -93,7 +95,7 @@ namespace MediaPlayer_X_Ark.Skin
 		public GraphicComponents LabelTitle;
 		public GraphicComponents LabelTime;
 
-		public PListComponents PlayListForm;
+		public FormComponents PlayListForm;
 		public PListGrid PlayListGrid;
 		public ButtonComponents PBtnOpen;
 		public ButtonComponents PBtnSave;
@@ -129,8 +131,9 @@ namespace MediaPlayer_X_Ark.Skin
 			extension = nValue.ToString();
 			result = Win32API.GetPrivateProfileString("SkinSetting", "-BackPicture", "back.bmp", nValue, capacity, skinFile);
 			MainForm.BackImage = LoadImage(skinDir + "\\" +  nValue.ToString());
-			// result = Win32API.GetPrivateProfileInt("SkinSetting", "-MainWidth", 0, skinFile)
-			// result = Win32API.GetPrivateProfileInt("SkinSetting", "-MainHeight", 0, skinFile)
+			MainForm.TransparentKey = ColorTranslator.FromWin32(0x202030);
+			MainForm.Position.Width = (int)Win32API.GetPrivateProfileInt("SkinSetting", "-MainWidth", 0, skinFile);
+			MainForm.Position.Height = (int)Win32API.GetPrivateProfileInt("SkinSetting", "-MainHeight", 0, skinFile);
 
 			LoadButtonComponents(ref BtnOpen, skinDir, "12", extension,	"ButtonVector", "-Open",  skinFile);
 			LoadButtonComponents(ref BtnClose, skinDir, "15", extension,	"ButtonVector", "-Close", skinFile);
@@ -200,7 +203,7 @@ namespace MediaPlayer_X_Ark.Skin
 
 			// Playlist
 			result = Win32API.GetPrivateProfileString("PlayListMain", "-BackPic", "playlist\\playlists.bmp", nValue, capacity, skinFile);
-			PlayListForm.Back = LoadImage(skinDir + "\\" + nValue.ToString());
+			PlayListForm.BackImage = LoadImage(skinDir + "\\" + nValue.ToString());
 			result = Win32API.GetPrivateProfileString("PlayListMain", "-ListBackColor", "000001", nValue, capacity, skinFile);
 			PlayListGrid.ListBackColor = LoadColor(nValue.ToString());
 			result = Win32API.GetPrivateProfileString("PlayListMain", "-ListForeColor", "FFFFFF", nValue, capacity, skinFile);
@@ -210,10 +213,20 @@ namespace MediaPlayer_X_Ark.Skin
 			PlayListForm.Position.Top = (int)Win32API.GetPrivateProfileInt("PlayListMain", "-MainY", 0, skinFile);
 			PlayListForm.Position.Width = (int)Win32API.GetPrivateProfileInt("PlayListMain", "-MainWidth", 0, skinFile);
 			PlayListForm.Position.Height = (int)Win32API.GetPrivateProfileInt("PlayListMain", "-MainHeight", 0, skinFile);
+			PlayListForm.TransparentKey = ColorTranslator.FromWin32(0x202030);
+
 			PlayListGrid.ListPosition.Left = (int)Win32API.GetPrivateProfileInt("PlayListMain", "-ListX", 0, skinFile);
 			PlayListGrid.ListPosition.Top = (int)Win32API.GetPrivateProfileInt("PlayListMain", "-ListY", 0, skinFile);
 			PlayListGrid.ListPosition.Width = (int)Win32API.GetPrivateProfileInt("PlayListMain", "-ListWidth", 0, skinFile);
 			PlayListGrid.ListPosition.Height = (int)Win32API.GetPrivateProfileInt("PlayListMain", "-ListHeight", 0, skinFile);
+
+			LoadPListComponents(ref PBtnOpen, skinDir, extension, "0", "-POpen", skinFile);
+			LoadPListComponents(ref PBtnSave, skinDir, extension, "1", "-PSave", skinFile);
+			LoadPListComponents(ref PBtnRemove, skinDir, extension, "2", "-PRemove", skinFile);
+			LoadPListComponents(ref PBtnUp, skinDir, extension, "3", "-PUp", skinFile);
+			LoadPListComponents(ref PBtnDown, skinDir, extension, "4", "-PDown", skinFile);
+			LoadPListComponents(ref PBtnClose, skinDir, extension, "5", "-PClose", skinFile);
+			LoadPListComponents(ref PBtnClear, skinDir, extension, "6", "-PClear", skinFile);
 
 			/*
 
@@ -244,20 +257,6 @@ namespace MediaPlayer_X_Ark.Skin
 
 						result = Win32API.GetPrivateProfileInt("PlayListMain", "-ListTab", 0, skinFile);
 						result = Win32API.GetPrivateProfileInt("PlaylistMain", "-ListCharCount", 30, skinFile);
-						result = Win32API.GetPrivateProfileInt("PlayListButton", "-POpenX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PlayListButton", "-POpenY", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PlayListButton", "-PSaveX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PlayListButton", "-PSaveY", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PlayListButton", "-PRemoveX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PlayListButton", "-PRemoveY", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PlayListButton", "-PUpX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PlayListButton", "-PUpY", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PlayListButton", "-PDownX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PlayListButton", "-PDownY", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PlayListButton", "-PCloseX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PlayListButton", "-PCloseY", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PlayListButton", "-PClearX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PlayListButton", "-PClearY", 0, skinFile);
 			*/
 		}
 
@@ -347,6 +346,30 @@ namespace MediaPlayer_X_Ark.Skin
 		private Color LoadColor(string color)
         {
 			return ColorTranslator.FromWin32(Int32.Parse(color, System.Globalization.NumberStyles.HexNumber));
+        }
+
+		private ButtonComponents LoadPListComponents(ref ButtonComponents result, string skinDir, string extension, string buttonNo, string key, string skinFile)
+        {
+			if (File.Exists(skinDir + "\\playlist\\p" + buttonNo + "-0." + extension))
+			{
+				result.BackImage = Image.FromFile(skinDir + "\\playlist\\p" + buttonNo + "-0." + extension);
+				if (File.Exists(skinDir + "\\playlist\\p" + buttonNo + "-1." + extension))
+				{
+					result.DownImage = Image.FromFile(skinDir + "\\playlist\\p" + buttonNo + "-1." + extension);
+					result.Position.Top = (int)Win32API.GetPrivateProfileInt("PlayListButton", key + "Y", 0, skinFile);
+					result.Position.Left = (int)Win32API.GetPrivateProfileInt("PlayListButton", key + "X", 0, skinFile);
+					result.Position.Width = result.BackImage.Width;
+					result.Position.Height = result.BackImage.Height;
+					result.Enabled = true;
+				}
+				else
+					result.Enabled = false;
+			}
+			else
+			{
+				result.Enabled = false;
+			}
+			return result;
         }
 	}
 }

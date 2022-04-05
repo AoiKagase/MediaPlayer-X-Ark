@@ -12,8 +12,10 @@ namespace MediaPlayer_X_Ark
 {
     public partial class PlayListForm : Form
     {
-        public PlayListForm()
+        MainForm mainForm;
+        public PlayListForm(MainForm main)
         {
+            mainForm = main;
             InitializeComponent();
         }
 
@@ -25,6 +27,16 @@ namespace MediaPlayer_X_Ark
             this.PlayListGrid.Columns.Add("Artist", "Artist");
             this.PlayListGrid.Columns.Add("Album", "Album");
             this.PlayListGrid.Columns.Add("length", "Length");
+        }
+
+        private void PBtnOpen_MouseDown(object sender, MouseEventArgs e)
+        {
+            mainForm.BtnDownEvent(ref sender);
+        }
+
+        private void PBtnOpen_MouseUp(object sender, MouseEventArgs e)
+        {
+            mainForm.BtnUpEvent(ref sender);
         }
     }
 }

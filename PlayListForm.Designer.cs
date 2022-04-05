@@ -64,6 +64,8 @@
             this.PBtnOpen.Size = new System.Drawing.Size(75, 27);
             this.PBtnOpen.TabIndex = 4;
             this.PBtnOpen.UseVisualStyleBackColor = false;
+            this.PBtnOpen.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PBtnOpen_MouseDown);
+            this.PBtnOpen.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PBtnOpen_MouseUp);
             // 
             // PBtnSave
             // 
