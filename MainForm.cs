@@ -109,11 +109,11 @@ namespace MediaPlayer_X_Ark
                 }
             }
 
-            playListForm.Left = Left + Width + ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Left;
-            playListForm.Top = Top + Height + ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Top;
+            playListForm.Left = Left - ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Left;
+            playListForm.Top = Top - ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Top;
             playListForm.BackgroundImage = ((FormComponents)oldSkinSystem["PlayListForm"]).BackImage;
-            playListForm.Width = playListForm.BackgroundImage.Width;
-            playListForm.Height = playListForm.BackgroundImage.Height;
+            playListForm.Width = ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Width;
+            playListForm.Height = ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Height;
             playListForm.TransparencyKey = ((FormComponents)oldSkinSystem["PlayListForm"]).TransparentKey;
             foreach (Control c in playListForm.Controls)
             {
@@ -271,6 +271,9 @@ namespace MediaPlayer_X_Ark
             {
                 Left += e.X - mousePoint.X;
                 Top += e.Y - mousePoint.Y;
+
+                playListForm.Left = Left - ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Left;
+                playListForm.Top = Top - ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Top;
             }
         }
 

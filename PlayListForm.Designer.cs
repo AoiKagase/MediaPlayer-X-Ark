@@ -49,7 +49,7 @@
             this.PlayListGrid.ReadOnly = true;
             this.PlayListGrid.RowTemplate.Height = 25;
             this.PlayListGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.PlayListGrid.Size = new System.Drawing.Size(128, 90);
+            this.PlayListGrid.Size = new System.Drawing.Size(38, 22);
             this.PlayListGrid.TabIndex = 0;
             // 
             // PBtnOpen
@@ -59,9 +59,9 @@
             this.PBtnOpen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.PBtnOpen.FlatAppearance.BorderSize = 0;
             this.PBtnOpen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.PBtnOpen.Location = new System.Drawing.Point(12, 108);
+            this.PBtnOpen.Location = new System.Drawing.Point(12, 40);
             this.PBtnOpen.Name = "PBtnOpen";
-            this.PBtnOpen.Size = new System.Drawing.Size(75, 27);
+            this.PBtnOpen.Size = new System.Drawing.Size(38, 14);
             this.PBtnOpen.TabIndex = 4;
             this.PBtnOpen.UseVisualStyleBackColor = false;
             this.PBtnOpen.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PBtnOpen_MouseDown);
@@ -74,9 +74,9 @@
             this.PBtnSave.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.PBtnSave.FlatAppearance.BorderSize = 0;
             this.PBtnSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.PBtnSave.Location = new System.Drawing.Point(93, 108);
+            this.PBtnSave.Location = new System.Drawing.Point(56, 40);
             this.PBtnSave.Name = "PBtnSave";
-            this.PBtnSave.Size = new System.Drawing.Size(75, 27);
+            this.PBtnSave.Size = new System.Drawing.Size(31, 14);
             this.PBtnSave.TabIndex = 5;
             this.PBtnSave.UseVisualStyleBackColor = false;
             // 
@@ -87,9 +87,9 @@
             this.PBtnRemove.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.PBtnRemove.FlatAppearance.BorderSize = 0;
             this.PBtnRemove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.PBtnRemove.Location = new System.Drawing.Point(174, 108);
+            this.PBtnRemove.Location = new System.Drawing.Point(93, 40);
             this.PBtnRemove.Name = "PBtnRemove";
-            this.PBtnRemove.Size = new System.Drawing.Size(75, 27);
+            this.PBtnRemove.Size = new System.Drawing.Size(28, 14);
             this.PBtnRemove.TabIndex = 6;
             this.PBtnRemove.UseVisualStyleBackColor = false;
             // 
@@ -100,9 +100,9 @@
             this.PBtnUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.PBtnUp.FlatAppearance.BorderSize = 0;
             this.PBtnUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.PBtnUp.Location = new System.Drawing.Point(255, 108);
+            this.PBtnUp.Location = new System.Drawing.Point(12, 80);
             this.PBtnUp.Name = "PBtnUp";
-            this.PBtnUp.Size = new System.Drawing.Size(75, 27);
+            this.PBtnUp.Size = new System.Drawing.Size(38, 17);
             this.PBtnUp.TabIndex = 7;
             this.PBtnUp.UseVisualStyleBackColor = false;
             // 
@@ -113,9 +113,9 @@
             this.PBtnDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.PBtnDown.FlatAppearance.BorderSize = 0;
             this.PBtnDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.PBtnDown.Location = new System.Drawing.Point(174, 141);
+            this.PBtnDown.Location = new System.Drawing.Point(93, 60);
             this.PBtnDown.Name = "PBtnDown";
-            this.PBtnDown.Size = new System.Drawing.Size(75, 27);
+            this.PBtnDown.Size = new System.Drawing.Size(28, 14);
             this.PBtnDown.TabIndex = 8;
             this.PBtnDown.UseVisualStyleBackColor = false;
             // 
@@ -126,9 +126,9 @@
             this.PBtnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.PBtnClose.FlatAppearance.BorderSize = 0;
             this.PBtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.PBtnClose.Location = new System.Drawing.Point(12, 141);
+            this.PBtnClose.Location = new System.Drawing.Point(12, 60);
             this.PBtnClose.Name = "PBtnClose";
-            this.PBtnClose.Size = new System.Drawing.Size(75, 27);
+            this.PBtnClose.Size = new System.Drawing.Size(38, 14);
             this.PBtnClose.TabIndex = 9;
             this.PBtnClose.UseVisualStyleBackColor = false;
             // 
@@ -139,9 +139,9 @@
             this.PBtnClear.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.PBtnClear.FlatAppearance.BorderSize = 0;
             this.PBtnClear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.PBtnClear.Location = new System.Drawing.Point(93, 141);
+            this.PBtnClear.Location = new System.Drawing.Point(56, 60);
             this.PBtnClear.Name = "PBtnClear";
-            this.PBtnClear.Size = new System.Drawing.Size(75, 27);
+            this.PBtnClear.Size = new System.Drawing.Size(31, 14);
             this.PBtnClear.TabIndex = 10;
             this.PBtnClear.UseVisualStyleBackColor = false;
             // 
@@ -149,10 +149,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.ClientSize = new System.Drawing.Size(335, 185);
+            this.ClientSize = new System.Drawing.Size(128, 103);
             this.ControlBox = false;
             this.Controls.Add(this.PBtnClear);
             this.Controls.Add(this.PBtnClose);

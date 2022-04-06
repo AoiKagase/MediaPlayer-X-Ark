@@ -336,17 +336,17 @@ namespace MediaPlayer_X_Ark
             // LabelTitle
             // 
             this.LabelTitle.BackColor = System.Drawing.SystemColors.Window;
-            this.LabelTitle.Location = new System.Drawing.Point(81, 246);
+            this.LabelTitle.Location = new System.Drawing.Point(257, 161);
             this.LabelTitle.Name = "LabelTitle";
-            this.LabelTitle.Size = new System.Drawing.Size(87, 88);
+            this.LabelTitle.Size = new System.Drawing.Size(73, 27);
             this.LabelTitle.TabIndex = 18;
             // 
             // LabelTime
             // 
             this.LabelTime.BackColor = System.Drawing.SystemColors.Window;
-            this.LabelTime.Location = new System.Drawing.Point(207, 206);
+            this.LabelTime.Location = new System.Drawing.Point(174, 161);
             this.LabelTime.Name = "LabelTime";
-            this.LabelTime.Size = new System.Drawing.Size(87, 88);
+            this.LabelTime.Size = new System.Drawing.Size(75, 27);
             this.LabelTime.TabIndex = 19;
             // 
             // SeekiTimer
