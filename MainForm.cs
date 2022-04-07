@@ -312,6 +312,11 @@ namespace MediaPlayer_X_Ark
             TimeSpan time2 = TimeSpan.FromMilliseconds(SldTrack.Maximum);
 
             LabelTime.Value.Text = time1.ToString(@"mm\:ss") + "/" + time2.ToString(@"mm\:ss");
+
+            if (player.lastError != "")
+            {
+                LabelTitle.Value.Text = player.lastError;
+            }
         }
         #endregion
 

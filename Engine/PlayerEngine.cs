@@ -138,7 +138,7 @@ namespace MediaPlayer_X_Ark
 						spectrum = new FmodSpectrum(ref FmodSystem, 1024, ref this.FmodChannelGroup);
 						LoadPlugins();
 
-						FmodCallFunction(FmodSystem.getChannel(0, out FmodChannel));
+//						FmodCallFunction(FmodSystem.getChannel(0, out FmodChannel));
 
 						PlayList = new BindingList<Engine.PlayList>();
 						initialized = true;
@@ -154,7 +154,7 @@ namespace MediaPlayer_X_Ark
 			uint version;
 
 			FmodCallFunction(FmodSystem.setPluginPath(".\\Plugins"));
-			FmodCallFunction(FmodSystem.loadPlugin(".\\Plugins\\codec_aac.dll", out handle));
+			FmodCallFunction(FmodSystem.loadPlugin("codec_aac.dll", out handle));
 			FmodSystem.getPluginInfo(handle, out plugintype, out version);
 			return;
         }
@@ -340,7 +340,8 @@ namespace MediaPlayer_X_Ark
 		public uint GetPosition()
         {
 			uint position = 0;
-			FmodCallFunction(FmodChannel.getPosition(out position, TIMEUNIT.MS));
+			if (FmodChannel.hasHandle())
+				FmodCallFunction(FmodChannel.getPosition(out position, TIMEUNIT.MS));
 			return position;
         }
 		public void SetPosition(uint position)
