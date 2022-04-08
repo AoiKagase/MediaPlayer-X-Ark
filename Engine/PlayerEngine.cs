@@ -154,8 +154,8 @@ namespace MediaPlayer_X_Ark
 			uint version;
 
 			FmodCallFunction(FmodSystem.setPluginPath(".\\Plugins"));
-			FmodCallFunction(FmodSystem.loadPlugin("codec_aac.dll", out handle));
-			FmodSystem.getPluginInfo(handle, out plugintype, out version);
+//			FmodCallFunction(FmodSystem.loadPlugin("codec_aac.dll", out handle));
+//			FmodSystem.getPluginInfo(handle, out plugintype, out version);
 			return;
         }
 
@@ -220,11 +220,14 @@ namespace MediaPlayer_X_Ark
 		/// <returns>boolean</returns>
 		public bool IsPlaying()
 		{
-			RESULT fResult;
+			RESULT fResult = FMOD.RESULT.OK;
 			bool result = false;
-			if ((fResult = FmodCallFunction(FmodChannel.isPlaying(out result))) == RESULT.OK)
+			if (FmodChannel.hasHandle())
             {
-				return result;
+				if ((fResult = FmodCallFunction(FmodChannel.isPlaying(out result))) == RESULT.OK)
+				{
+					return result;
+				}
 			}
 			return (fResult == RESULT.OK);
 		}
@@ -431,7 +434,7 @@ namespace MediaPlayer_X_Ark
 			PlayList[index].SoundType = soundtype;
 			PlayList[index].Format = soundformat;
 			PlayList[index].Bit = bit;
-			PlayList[index].length = length;
+			PlayList[index].SetLength(length);
 		}
 
 		/// <summary>

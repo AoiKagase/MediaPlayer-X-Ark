@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.PlayListGrid = new System.Windows.Forms.DataGridView();
             this.PBtnOpen = new System.Windows.Forms.Button();
             this.PBtnSave = new System.Windows.Forms.Button();
@@ -43,14 +44,22 @@
             // 
             this.PlayListGrid.AllowUserToAddRows = false;
             this.PlayListGrid.AllowUserToDeleteRows = false;
+            this.PlayListGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.PlayListGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.PlayListGrid.Location = new System.Drawing.Point(12, 12);
             this.PlayListGrid.Name = "PlayListGrid";
             this.PlayListGrid.ReadOnly = true;
+            this.PlayListGrid.RowHeadersVisible = false;
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            this.PlayListGrid.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.PlayListGrid.RowTemplate.Height = 25;
+            this.PlayListGrid.RowTemplate.ReadOnly = true;
             this.PlayListGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.PlayListGrid.Size = new System.Drawing.Size(38, 22);
             this.PlayListGrid.TabIndex = 0;
+            this.PlayListGrid.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.PlayListGrid_CellDoubleClick);
             // 
             // PBtnOpen
             // 

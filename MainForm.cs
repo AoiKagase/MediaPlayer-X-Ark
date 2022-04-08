@@ -108,7 +108,8 @@ namespace MediaPlayer_X_Ark
                     ((ScrollLabel)c).Timer.Enabled = ((GraphicComponents)oldSkinSystem[cName]).Interval > 0 ? true : false;
                 }
             }
-
+            this.Refresh();
+            playListForm.Refresh();
             playListForm.Left = Left - ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Left;
             playListForm.Top = Top - ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Top;
             playListForm.BackgroundImage = ((FormComponents)oldSkinSystem["PlayListForm"]).BackImage;
@@ -121,6 +122,8 @@ namespace MediaPlayer_X_Ark
                 if (c.GetType() == typeof(DataGridView))
                 {
                     ((DataGridView)c).BackgroundColor = ((PListGrid)oldSkinSystem[cName]).ListBackColor;
+                    ((DataGridView)c).RowsDefaultCellStyle.BackColor = ((PListGrid)oldSkinSystem[cName]).ListBackColor;
+                    ((DataGridView)c).RowsDefaultCellStyle.ForeColor = ((PListGrid)oldSkinSystem[cName]).ListForeColor;
                     ((DataGridView)c).ForeColor = ((PListGrid)oldSkinSystem[cName]).ListForeColor;
                     ((DataGridView)c).Left = ((PListGrid)oldSkinSystem[cName]).ListPosition.Left;
                     ((DataGridView)c).Top = ((PListGrid)oldSkinSystem[cName]).ListPosition.Top;
@@ -152,6 +155,16 @@ namespace MediaPlayer_X_Ark
             {
                 PlayLoad();
             }
+        }
+
+        /// <summary>
+        /// Indexを指定して再生する。(主にプレイリストから直接再生)
+        /// </summary>
+        /// <param name="index"></param>
+        public void PlayLoad(int index)
+        {
+            playingIndex = index;
+            PlayLoad();
         }
 
         private void PlayLoad()
@@ -222,7 +235,7 @@ namespace MediaPlayer_X_Ark
             // FMODサウンドエンジン
             player = new PlayerEngine();
             playListForm = new PlayListForm(this);
-
+            playListForm.Show();
             // 予定：設定ファイルの読み込み スキンファイルの指定も含む
             // 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
             // 新形式（JSON）の場合はNewSkinSystemへインスタンス切替
@@ -236,7 +249,7 @@ namespace MediaPlayer_X_Ark
 
             initialize = true;
 
-            playListForm.Show();
+
         }
 
         /// <summary>
@@ -256,6 +269,7 @@ namespace MediaPlayer_X_Ark
             {
                 //位置を記憶する
                 mousePoint = new Point(e.X, e.Y);
+                playListForm.Activate();
             }
         }
 
@@ -311,9 +325,17 @@ namespace MediaPlayer_X_Ark
             TimeSpan time1 = TimeSpan.FromMilliseconds(SldTrack.Value);
             TimeSpan time2 = TimeSpan.FromMilliseconds(SldTrack.Maximum);
 
+            if (!player.IsPlaying())
+            {
+                if (playingIndex > -1 && playingIndex < player.PlayList.Count - 1)
+                {
+                    playingIndex++;
+                    PlayLoad();
+                }
+            }
             LabelTime.Value.Text = time1.ToString(@"mm\:ss") + "/" + time2.ToString(@"mm\:ss");
 
-            if (player.lastError != "")
+            if (player.lastError != "" && player.lastErrCode != FMOD.RESULT.OK)
             {
                 LabelTitle.Value.Text = player.lastError;
             }
