@@ -18,6 +18,7 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		{
 			get
 			{
+				GetParameterFloat((int)FMOD.DSP_DISTORTION.LEVEL, out _level);
 				return _level;
 			}
 			set

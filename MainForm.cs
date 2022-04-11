@@ -17,6 +17,7 @@ namespace MediaPlayer_X_Ark
 		private ToolTip _toolTip;
         private int playingIndex = 0;
         private PlayListForm playListForm;
+        private OptionsForm optionsForm;
 
         public MainForm()
         {
@@ -236,6 +237,8 @@ namespace MediaPlayer_X_Ark
             player = new PlayerEngine();
             playListForm = new PlayListForm(this);
             playListForm.Show();
+            optionsForm = new OptionsForm(ref player);
+            optionsForm.Show();
             // 予定：設定ファイルの読み込み スキンファイルの指定も含む
             // 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
             // 新形式（JSON）の場合はNewSkinSystemへインスタンス切替

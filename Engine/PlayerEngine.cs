@@ -60,6 +60,7 @@ namespace MediaPlayer_X_Ark
 
 		public FmodSpectrum spectrum;
 
+		public Engine.Effector.Effectors effector;
 		protected FMOD.RESULT FmodCallFunction(FMOD.RESULT result)
         {
 			lastError = FMOD.Error.String(result);
@@ -141,6 +142,8 @@ namespace MediaPlayer_X_Ark
 //						FmodCallFunction(FmodSystem.getChannel(0, out FmodChannel));
 
 						PlayList = new BindingList<Engine.PlayList>();
+
+						effector = new Engine.Effector.Effectors(FmodSystem);
 						initialized = true;
 					}
 				}

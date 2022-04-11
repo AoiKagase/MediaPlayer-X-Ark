@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 namespace MediaPlayer_X_Ark.Engine.Effector
 {
-	public class SfxReverb : AbstractEffectorBase 
+	public class SFXReverb : AbstractEffectorBase 
 	{
 		private float _DecayTime;
 		private float _EarlyDelay;
@@ -55,8 +55,8 @@ namespace MediaPlayer_X_Ark.Engine.Effector
             }
             set
             {
-				_DecayTime = Math.Clamp(value, 0.0F, 300.0F);
-				SetParameterFloat((int)FMOD.DSP_SFXREVERB.EARLYLATEMIX, _DecayTime);
+				_EarlyDelay = Math.Clamp(value, 0.0F, 300.0F);
+				SetParameterFloat((int)FMOD.DSP_SFXREVERB.EARLYLATEMIX, _EarlyDelay);
 			}
 		}
 
@@ -89,8 +89,8 @@ namespace MediaPlayer_X_Ark.Engine.Effector
             }
 			set
 			{
-				_LateDelay = Math.Clamp(value, 20.0F, 20000.0F);
-				SetParameterFloat((int)FMOD.DSP_SFXREVERB.HFREFERENCE, _LateDelay);
+				_HFReference = Math.Clamp(value, 20.0F, 20000.0F);
+				SetParameterFloat((int)FMOD.DSP_SFXREVERB.HFREFERENCE, _HFReference);
 			}
 		}
 
@@ -156,8 +156,8 @@ namespace MediaPlayer_X_Ark.Engine.Effector
             }
             set
             {
-				_Density = Math.Clamp(value, 20.0F, 1000.0F);
-				SetParameterFloat((int)FMOD.DSP_SFXREVERB.LOWSHELFFREQUENCY, _Density);
+				_LowShelfFrequency = Math.Clamp(value, 20.0F, 1000.0F);
+				SetParameterFloat((int)FMOD.DSP_SFXREVERB.LOWSHELFFREQUENCY, _LowShelfFrequency);
 			}
 		}
 		/// <summary>
@@ -249,7 +249,7 @@ namespace MediaPlayer_X_Ark.Engine.Effector
         /// CREATE DSP FOR LOWPASS FILTER
         /// </summary>
         /// <param name="system"></param>
-        public SfxReverb(FMOD.System system) : base(system, FMOD.DSP_TYPE.SFXREVERB)
+        public SFXReverb(FMOD.System system) : base(system, FMOD.DSP_TYPE.SFXREVERB)
 		{
 		}
 
