@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MediaPlayer_X_Ark.Engine
+namespace MediaPlayer_X_Ark.Engine.Effector
 {
-	public class FmodEffectorLowpass : FmodEffectorBase
+	public class Highpass : AbstractEffectorBase
 	{
 		private float _cutoff;
 		private float _resonance;
 
 		/// <summary>
-		/// Lowpass cutoff frequency.
+		/// highpass cutoff frequency.
 		/// Type: float Units: Hertz Range: [1, 22000] Default: 5000
 		/// </summary>
 		public float CutOff
@@ -25,13 +25,8 @@ namespace MediaPlayer_X_Ark.Engine
 			{
 				if (_cutoff != value)
 				{
-					if (value < 1.0F)
-						value = 1.0F;
-					if (value > 22000.0F)
-						value = 22000.0F;
-
-					_cutoff = value;
-					SetParameter((int)FMOD.DSP_LOWPASS.CUTOFF, value);
+					_cutoff = Math.Clamp(value, 1.0F, 22000.0F);
+					SetParameterFloat((int)FMOD.DSP_HIGHPASS.CUTOFF, _cutoff);
 				}
 			}
 		}
@@ -50,13 +45,8 @@ namespace MediaPlayer_X_Ark.Engine
 			{
 				if (value != _resonance)
 				{
-					if (value < 0.0F)
-						value = 0.0F;
-					if (value > 10.0F)
-						value = 10.0F;
-
-					_resonance = value;
-					SetParameter((int)FMOD.DSP_LOWPASS.RESONANCE, value);
+					_resonance = Math.Clamp(value, 0.0F, 10.0F); ;
+					SetParameterFloat((int)FMOD.DSP_HIGHPASS.RESONANCE, _resonance);
 				}
 			}
 		}
@@ -65,7 +55,7 @@ namespace MediaPlayer_X_Ark.Engine
 		/// CREATE DSP FOR LOWPASS FILTER
 		/// </summary>
 		/// <param name="system"></param>
-		public FmodEffectorLowpass(FMOD.System system) : base(system, FMOD.DSP_TYPE.LOWPASS)
+		public Highpass(FMOD.System system) : base(system, FMOD.DSP_TYPE.HIGHPASS)
 		{
 		}
 	}

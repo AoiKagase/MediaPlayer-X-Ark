@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MediaPlayer_X_Ark.Engine
+namespace MediaPlayer_X_Ark.Engine.Effector
 {
-    public class FmodEffectorBase
+    public class AbstractEffectorBase
     {
         protected FMOD.System _system;
         protected FMOD.DSP _dsp;
         protected FMOD.ChannelGroup _channelGroup;
 
-        public FmodEffectorBase(FMOD.System system, FMOD.DSP_TYPE dspType)
+        public AbstractEffectorBase(FMOD.System system, FMOD.DSP_TYPE dspType)
         {
             if (system.createDSPByType(dspType, out _dsp) == FMOD.RESULT.OK)
             {
@@ -22,7 +22,7 @@ namespace MediaPlayer_X_Ark.Engine
             }
         }
 
-        ~FmodEffectorBase()
+        ~AbstractEffectorBase()
         {
             if (_dsp.hasHandle())
                 _channelGroup.removeDSP(_dsp);
@@ -35,20 +35,28 @@ namespace MediaPlayer_X_Ark.Engine
         {
             FMOD.RESULT result = FMOD.RESULT.OK;
             bool active;
-            _dsp.getActive(out active);
+            _dsp.getBypass(out active);
             if (active)
                 if (sw == false)
-                    _dsp.setActive(false);
+                    _dsp.setBypass(false);
             else
                 if (sw == true)
-                    _dsp.setActive(true);
+                    _dsp.setBypass(true);
 
             return result;
         }
 
-        public FMOD.RESULT SetParameter(int type, float value)
+        public FMOD.RESULT SetParameterFloat(int type, float value)
         {
             return _dsp.setParameterFloat(type, value);
+        }
+        public FMOD.RESULT SetParameterBool(int type, bool value)
+        {
+            return _dsp.setParameterBool(type, value);
+        }
+        public FMOD.RESULT SetParameterData(int type, byte[] value)
+        {
+            return _dsp.setParameterData(type, value);
         }
     }
 }
