@@ -21,7 +21,8 @@ namespace MediaPlayer_X_Ark
 
         private void DistortionLevel_ValueChanged(object sender, EventArgs e)
         {
-            _engine.effector.Distortion.Level = ((UI.Knob) sender).Value / 10F;
+            _engine.effector.Distortion.Level = ((UI.Knob) sender).Value / 100F;
+            lblValDistortionLevel.Text = _engine.effector.Distortion.Level.ToString("##0.00");
         }
 
         private void CheckDistortion_CheckedChanged(object sender, EventArgs e)
@@ -31,7 +32,7 @@ namespace MediaPlayer_X_Ark
 
         private void OptionsForm_Load(object sender, EventArgs e)
         {
-            DistortionLevel.Value = (int)(_engine.effector.Distortion.Level * 10);
+            KnobDistortionLevel.Value = (int)(_engine.effector.Distortion.Level * 100);
         }
     }
 }
