@@ -78,5 +78,12 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		public Flanger(FMOD.System system) : base(system, FMOD.DSP_TYPE.FLANGE)
 		{
 		}
-	}
+
+        public override void SetDefault()
+        {
+			Mix = 50;
+			Rate = 0.1f;
+			Depth = 1;
+        }
+    }
 }

@@ -99,5 +99,13 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		public Echo(FMOD.System system) : base(system, FMOD.DSP_TYPE.ECHO)
 		{
 		}
+
+        public override void SetDefault()
+        {
+			Delay = 500;
+			Feedback = 50;
+			DryLevel = 0;
+			WetLevel = 0;
+		}
 	}
 }

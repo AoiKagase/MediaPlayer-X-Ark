@@ -104,9 +104,7 @@ namespace MediaPlayer_X_Ark
 		public void UpdateSpectrum(Graphics g1,ref Bitmap g2, int width, int height, int mode)
 		{
 			// BitBlt用にPictureBoxのHDCを取得
-			RECT line1 = new RECT();
 			RECT line2 = new RECT(0, 0, width, height);	// BackGround
-			RECT line3 = new RECT(0, 0, 0, 0);	// Snow
 
 			int lineHeight = 0;
 			bool isPlaying;
@@ -147,6 +145,8 @@ namespace MediaPlayer_X_Ark
 						// channel = 0? 
 						// スペクトラム値の取得
 						fftData.getSpectrum(0, ref mFFTSpectrum);
+						RECT line1 = new RECT();
+						RECT line3 = new RECT(0, 0, 0, 0);  // Snow
 
 
 						int step = (mode > 0) ? mode * 2 : 1;

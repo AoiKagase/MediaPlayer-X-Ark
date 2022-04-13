@@ -78,5 +78,15 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		public Chorus(FMOD.System system) : base(system, FMOD.DSP_TYPE.CHORUS)
 		{
 		}
+
+		/// <summary>
+		/// Set default parameters.
+		/// </summary>
+		public override void SetDefault()
+        {
+			Mix = 50;
+			Rate = 0.8f;
+			Depth = 3;
+        }
 	}
 }

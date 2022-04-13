@@ -11,6 +11,15 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		protected FMOD.System _system;
 		protected FMOD.DSP _dsp;
 		protected FMOD.ChannelGroup _channelGroup;
+		public bool Enabled
+		{
+			get
+			{
+				bool active;
+				_dsp.getBypass(out active);
+				return active;
+			}
+		}
 
 		public AbstractEffectorBase(FMOD.System system, FMOD.DSP_TYPE dspType)
 		{
@@ -19,6 +28,7 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 				_system = system;
 				_system.getMasterChannelGroup(out _channelGroup);
 				_channelGroup.addDSP(0, _dsp);
+				SetDefault();
 			}
 		}
 
@@ -66,5 +76,9 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		{
 			return _dsp.setParameterData(type, value);
 		}
+		public virtual void SetDefault()
+        {
+
+        }
 	}
 }

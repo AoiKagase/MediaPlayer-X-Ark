@@ -253,9 +253,26 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		{
 		}
 
-		//public FMOD.PRESET SetPreset()
-  //      {
-		//	FMOD.PRESET.OFF;
-  //      }
+		public override void SetDefault()
+		{
+			SetPreset(FMOD.PRESET.OFF());
+		}
+
+		public void SetPreset(FMOD.REVERB_PROPERTIES preset)
+        {
+			DecayTime = preset.DecayTime;
+			EarlyDelay = preset.EarlyDelay;
+			LateDelay = preset.LateDelay;
+			HFReference = preset.HFReference;
+			HFDecayRatio = preset.HFDecayRatio;
+			Diffusion = preset.Diffusion;
+			Density = preset.Density;
+			LowShelfFrequency = preset.LowShelfFrequency;
+			LowShelfGain = preset.LowShelfGain;
+			HighCut = preset.HighCut;
+			EarlyLateMix = preset.EarlyLateMix;
+			WetLevel = preset.WetLevel;
+			DryLevel = 0;
+		}
 	}
 }

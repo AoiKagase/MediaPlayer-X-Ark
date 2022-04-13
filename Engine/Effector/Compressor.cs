@@ -176,5 +176,19 @@ namespace MediaPlayer_X_Ark.Engine.Effector
         public Compressor(FMOD.System system) : base(system, FMOD.DSP_TYPE.COMPRESSOR)
 		{
 		}
+
+		/// <summary>
+		/// Set default parameters.
+		/// </summary>
+		public override void SetDefault()
+        {
+			Threshold = 0;
+			Ratio = 2.5f;
+			Attack = 20;
+			Release = 100;
+			Gain = 0;
+			SideChain = false;
+			Linked = false;
+        }
 	}
 }

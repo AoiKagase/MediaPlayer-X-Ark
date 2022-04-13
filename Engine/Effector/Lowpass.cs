@@ -58,5 +58,10 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		public Lowpass(FMOD.System system) : base(system, FMOD.DSP_TYPE.LOWPASS)
 		{
 		}
+		public override void SetDefault()
+		{
+			CutOff = 5000;
+			Resonance = 1;
+		}
 	}
 }

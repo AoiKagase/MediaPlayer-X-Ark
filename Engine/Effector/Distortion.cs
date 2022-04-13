@@ -39,5 +39,10 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		public Distortion(FMOD.System system) : base(system, FMOD.DSP_TYPE.DISTORTION)
 		{
 		}
-	}
+
+        public override void SetDefault()
+        {
+			Level = 0.5f;
+        }
+    }
 }

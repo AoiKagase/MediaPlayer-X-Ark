@@ -58,5 +58,10 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		public Highpass(FMOD.System system) : base(system, FMOD.DSP_TYPE.HIGHPASS)
 		{
 		}
-	}
+        public override void SetDefault()
+        {
+			CutOff = 5000;
+			Resonance = 1;
+        }
+    }
 }
