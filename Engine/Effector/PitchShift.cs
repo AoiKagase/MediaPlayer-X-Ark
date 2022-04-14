@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+
 namespace MediaPlayer_X_Ark.Engine.Effector
 {
-	public class PitchShift : AbstractEffectorBase, INotifyPropertyChanged
+	public class PitchShift : AbstractEffectorBase
 	{
 		private float _pitch;
 		private float _fftsize;
@@ -53,24 +52,7 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 				}
 			}
 		}
-		private bool _enabled;
-		public new bool Enabled
-		{
-			get { return _enabled; }
-			set
-			{
-				_enabled = value;
-				NotifyPropertyChanged("Enabled");
-			}
-		}
-		public event PropertyChangedEventHandler PropertyChanged;
-		private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-		{
-			if (PropertyChanged != null)
-			{
-				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
+
 		/// <summary>
 		/// Removed. Do not use. FMOD now uses 4 overlaps and cannot be changed.
 		/// </summary>

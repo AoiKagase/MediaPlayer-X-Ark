@@ -3,21 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace MediaPlayer_X_Ark.Engine.Effector
 {
-	public class AbstractEffectorBase
+	public class AbstractEffectorBase : INotifyPropertyChanged
 	{
 		protected FMOD.System _system;
 		protected FMOD.DSP _dsp;
 		protected FMOD.ChannelGroup _channelGroup;
+
+		private bool _enabled;
+
 		public bool Enabled
 		{
 			get
 			{
-				bool active;
-				_dsp.getBypass(out active);
-				return active;
+				return _enabled;
+			}
+			set
+			{
+				if (_enabled != value)
+					_enabled = value;
+				NotifyPropertyChanged("Enabled");
+			}
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+		protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+		{
+			if (PropertyChanged != null)
+			{
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
 
@@ -56,7 +74,7 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 				if (sw == false)
 					_dsp.setBypass(true);
 			}
-
+			Enabled = sw;
 			return result;
 		}
 		public FMOD.RESULT GetParameterFloat(int type, out float value)

@@ -22,6 +22,7 @@ namespace MediaPlayer_X_Ark
 		private void OptionsForm_Load(object sender, EventArgs e)
 		{
 			// Distortion
+			CheckDistortion.Checked = _engine.effector.Distortion.Enabled;
 			// Min:0.0	- Max:1.0		Def:0.5
 			KnobDistortionLevel.Maximum = 100;
 			KnobDistortionLevel.Minimum	= 0;
@@ -30,6 +31,7 @@ namespace MediaPlayer_X_Ark
 			KnobDistortionLevel.Refresh();
 
 			// Chorus
+			CheckChorus.Checked = _engine.effector.Chorus.Enabled;
 			// Min:0.0	- Max:100.0		Def:50.0
 			KnobChorusMix.Maximum = 1000;
 			KnobChorusMix.Minimum = 0;
@@ -50,6 +52,7 @@ namespace MediaPlayer_X_Ark
 			KnobChorusDepth.Refresh();
 
 			// Echo
+			CheckEcho.Checked = _engine.effector.Echo.Enabled;
 			// Min:1.0	- Max:5000		Def:500.0
 			KnobEchoDelay.Maximum = 50000;
 			KnobEchoDelay.Minimum = 0;
@@ -76,6 +79,7 @@ namespace MediaPlayer_X_Ark
 			KnobEchoWet.Refresh();
 
 			// Flanger
+			CheckFlanger.Checked = _engine.effector.Flanger.Enabled;
 			// Min:0	- Max:100.0		Def:50
 			KnobFlangerMix.Maximum = 1000;
 			KnobFlangerMix.Minimum = 0;
@@ -93,6 +97,7 @@ namespace MediaPlayer_X_Ark
 			KnobFlangerDepth.Value = (int)(_engine.effector.Flanger.Depth * 100);
 
 			// Highpass
+			CheckHighpass.Checked = _engine.effector.Highpass.Enabled;
 			// Min:1	- Max:22000		Def:5000
 			KnobHighpassCutoff.Maximum = 220000;
 			KnobHighpassCutoff.Minimum = 1;
@@ -105,6 +110,7 @@ namespace MediaPlayer_X_Ark
 			KnobHighpassResonance.Value = (int)(_engine.effector.Highpass.Resonance * 10);
 
 			// Lowpass
+			CheckLowpass.Checked = _engine.effector.Lowpass.Enabled;
 			// Min:1	- Max:22000		Def:5000
 			KnobLowpassCutoff.Maximum = 220000;
 			KnobLowpassCutoff.Minimum = 1;
@@ -117,6 +123,7 @@ namespace MediaPlayer_X_Ark
 			KnobLowpassResonance.Value = (int)(_engine.effector.Lowpass.Resonance * 10);
 
 			// Compressor
+			CheckCompressor.Checked = _engine.effector.Compressor.Enabled;
 			// Min:-60	- Max:0			Def:0
 			KnobCompThreshold.Maximum = 0;
 			KnobCompThreshold.Minimum = -600;
@@ -142,6 +149,9 @@ namespace MediaPlayer_X_Ark
 			KnobCompGain.Minimum = -300;
 			KnobCompGain.LargeChange = 10;
 			KnobCompGain.Value = (int)(_engine.effector.Compressor.Gain * 10);
+
+			// PichShift
+			CheckPitch.Checked = _engine.effector.PitchShift.Enabled;
 			// Min:0.5	- Max:2.0	Def:1
 			_engine.effector.PitchShift.PropertyChanged += new PropertyChangedEventHandler(PitchChenged);
 			KnobPitchPitch.Maximum = 150;
@@ -155,6 +165,10 @@ namespace MediaPlayer_X_Ark
 			KnobPitchFFT.LargeChange = 1;
 			float[] fftsize = { 256, 512, 1024, 2048, 4096 };
 			KnobPitchFFT.Value = Array.IndexOf(fftsize, _engine.effector.PitchShift.FFTSize);
+
+			CheckFrequency.Checked = _engine.effector.Frequency.Enabled;
+			_engine.effector.Frequency.PropertyChanged += new PropertyChangedEventHandler(FrequencyChenged);
+			CheckSpeed.Checked = _engine.effector.SpeedEnabled;
 
 			// Def:false
 			CheckCompLinked.Checked = (bool)(_engine.effector.Compressor.Linked);
@@ -177,77 +191,85 @@ namespace MediaPlayer_X_Ark
 			if (CheckSpeed.Checked)
 			{
 				CheckFrequency.Checked = _engine.effector.Frequency.Enabled;
-				KnobFrequency.Value = (int)(_engine.effector.Frequency.Hz / 44100 * 100 + 100);
+				KnobFrequency.Value = (int)(_engine.effector.Frequency.Hz / 44100f * 100f - 100f);
 			}
 		}
-		/// <summary>
-		/// Effectors On/Off
-		/// </summary>
+		//// <summary>
+		//// Effectors On/Off
+		//// </summary>
 
 		#region Effectors ON/OFF
+		/// <summary>
+		/// Distortion
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void CheckDistortion_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Distortion.Switch(((CheckBox)sender).Checked);
-			GroupDistortion.Enabled = _engine.effector.Distortion.Enabled;
+			_engine.effector.Distortion.Switch(GroupControl(sender));
 		}
+		/// <summary>
+		/// Chorus
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void CheckChorus_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Chorus.Switch(((CheckBox)sender).Checked);
-			GroupChorus.Enabled = _engine.effector.Chorus.Enabled;
+			_engine.effector.Chorus.Switch(GroupControl(sender));
 		}
-
+		/// <summary>
+		/// Echo
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void CheckEcho_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Echo.Switch(((CheckBox)sender).Checked);
-			GroupEcho.Enabled = _engine.effector.Echo.Enabled;
+			_engine.effector.Echo.Switch(GroupControl(sender));
 		}
-
+		/// <summary>
+		/// Highpass
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void CheckHighpass_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Highpass.Switch(((CheckBox)sender).Checked);
-			GroupHighpass.Enabled = _engine.effector.Highpass.Enabled;
+			_engine.effector.Highpass.Switch(GroupControl(sender));
 		}
 
 		private void CheckLowpass_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Lowpass.Switch(((CheckBox)sender).Checked);
-			GroupLowpass.Enabled = (_engine.effector.Lowpass.Enabled);
+			_engine.effector.Lowpass.Switch(GroupControl(sender));
 		}
 
 		private void CheckFlanger_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Flanger.Switch(((CheckBox)sender).Checked);
-			GroupFlanger.Enabled = _engine.effector.Flanger.Enabled;
+			_engine.effector.Flanger.Switch(GroupControl(sender));
 		}
 		private void CheckCompressor_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Compressor.Switch(((CheckBox)sender).Checked);
-			GroupCompressor.Enabled = (_engine.effector.Compressor.Enabled);
+			_engine.effector.Compressor.Switch(GroupControl(sender));
 		}
 		private void CheckPitch_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.PitchShift.Switch(((CheckBox)sender).Checked);
-			GroupPitchShift.Enabled = (_engine.effector.PitchShift.Enabled);
+			_engine.effector.PitchShift.Switch(GroupControl(sender));
 		}
 		private void CheckFrequency_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Frequency.Switch(((CheckBox)sender).Checked);
-			GroupFrequency.Enabled = (_engine.effector.Frequency.Enabled);
+			_engine.effector.Frequency.Switch(GroupControl(sender));
 		}
 		private void CheckSpeed_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.SpeedEnabled = ((CheckBox)sender).Checked;
-			GroupSpeed.Enabled = ((CheckBox)sender).Checked;
+			_engine.effector.SpeedEnabled = GroupControl(sender);
 			if (_engine.effector.SpeedEnabled)
             {
+				_engine.effector.PitchShift.Switch(true);
+				_engine.effector.Frequency.Switch(true);
 				GroupFrequency.Enabled = false;
 				GroupPitchShift.Enabled = false;
 			} else
             {
-				if (_engine.effector.PitchShift.Enabled)
-					GroupPitchShift.Enabled = true;
-				if (_engine.effector.Frequency.Enabled)
-					GroupFrequency.Enabled = true;
+				GroupPitchShift.Enabled = true;
+				GroupFrequency.Enabled = true;
             }
 		}
 		#endregion
@@ -373,7 +395,7 @@ namespace MediaPlayer_X_Ark
 
         private void KnobPitchPitch_ValueChanged(object sender, EventArgs e)
         {
-			if (!CheckSpeed.Checked)
+//			if (!CheckSpeed.Checked)
             {
 				_engine.effector.PitchShift.Pitch = (((UI.Knob)sender).Value + 50) / 100F;
 			}
@@ -389,7 +411,7 @@ namespace MediaPlayer_X_Ark
 
         private void KnobFrequency_ValueChanged(object sender, EventArgs e)
         {
-			if (!CheckSpeed.Checked)
+//			if (!CheckSpeed.Checked)
             {
 				_engine.effector.Frequency.SetFrequency(((UI.Knob)sender).Value);
 			}
@@ -402,5 +424,19 @@ namespace MediaPlayer_X_Ark
 			lblValSpeed.Text = _engine.effector.Speed.ToString();
         }
 
+		private bool GroupControl(object sender)
+        {
+			if (sender.GetType() == typeof(CheckBox))
+            {
+				foreach(Control control in ((CheckBox)sender).Parent.Controls)
+                {
+					if (control != sender)
+                    {
+						control.Enabled = ((CheckBox)sender).Checked;
+                    }
+                }
+            }
+			return ((CheckBox)sender).Checked;
+		}
 	}
 }

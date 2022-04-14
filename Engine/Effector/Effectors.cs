@@ -33,7 +33,8 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 					_speed = value;
 
 					float pitch = PitchShiftPercentage(_speed);
-					Frequency.Hz = (44100f / pitch);
+					if (pitch != 0.0)
+						Frequency.Hz = (44100f / pitch);
 					PitchShift.Pitch = pitch;
 				}
 			}

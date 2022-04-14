@@ -28,6 +28,7 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 					if (Enabled)
                     {
 						_frequency = value;
+						_channel.setFrequency(_frequency);
 					}
 					NotifyPropertyChanged("Hz");
 				}
@@ -88,7 +89,7 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		}
 		public void SetFrequency(int value)
         {
-			Hz = 44100 * ((_frequency + 100) / 100);
+			Hz = 44100f * ((value + 100f) / 100f);
 		}
 	}
 }
