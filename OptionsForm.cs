@@ -21,162 +21,8 @@ namespace MediaPlayer_X_Ark
 
 		private void OptionsForm_Load(object sender, EventArgs e)
 		{
-			// Distortion
-			CheckDistortion.Checked = _engine.effector.Distortion.Enabled;
-			// Min:0.0	- Max:1.0		Def:0.5
-			KnobDistortionLevel.Maximum = 100;
-			KnobDistortionLevel.Minimum	= 0;
-			KnobDistortionLevel.LargeChange = 10;
-			KnobDistortionLevel.Value = (int)(_engine.effector.Distortion.Level * 100);
-			KnobDistortionLevel.Refresh();
-
-			// Chorus
-			CheckChorus.Checked = _engine.effector.Chorus.Enabled;
-			// Min:0.0	- Max:100.0		Def:50.0
-			KnobChorusMix.Maximum = 1000;
-			KnobChorusMix.Minimum = 0;
-			KnobChorusMix.LargeChange = 10;
-			KnobChorusMix.Value = (int)(_engine.effector.Chorus.Mix * 10);
-			KnobChorusMix.Refresh();
-			// Min:0.0	- Max:20.00		Def:0.8
-			KnobChorusRate.Maximum = 200;
-			KnobChorusRate.Minimum = 0;
-			KnobChorusRate.LargeChange = 10;
-			KnobChorusRate.Value = (int)(_engine.effector.Chorus.Rate * 10);
-			KnobChorusRate.Refresh();
-			// Min:0.0	- Max:100.0		Def:3.00
-			KnobChorusDepth.Maximum = 1000;
-			KnobChorusDepth.Minimum = 0;
-			KnobChorusDepth.LargeChange = 10;
-			KnobChorusDepth.Value = (int)(_engine.effector.Chorus.Depth * 10);
-			KnobChorusDepth.Refresh();
-
-			// Echo
-			CheckEcho.Checked = _engine.effector.Echo.Enabled;
-			// Min:1.0	- Max:5000		Def:500.0
-			KnobEchoDelay.Maximum = 50000;
-			KnobEchoDelay.Minimum = 0;
-			KnobEchoDelay.LargeChange = 2000;
-			KnobEchoDelay.Value = (int)(_engine.effector.Echo.Delay * 10);
-			KnobEchoDelay.Refresh();
-			// Min:0.0	- Max:100.0		Def:50
-			KnobEchoFeedback.Maximum = 1000;
-			KnobEchoFeedback.Minimum = 0;
-			KnobEchoFeedback.LargeChange = 100;
-			KnobEchoFeedback.Value = (int)(_engine.effector.Echo.Feedback * 10);
-			KnobEchoFeedback.Refresh();
-			// Min:-80  - Max:10.0		Def:0
-			KnobEchoDry.Maximum = 100;
-			KnobEchoDry.Minimum = -800;
-			KnobEchoDry.LargeChange = 10;
-			KnobEchoDry.Value = (int)(_engine.effector.Echo.DryLevel * 10);
-			KnobEchoDry.Refresh();
-			// Min:-80  - Max:10.0		Def:0
-			KnobEchoWet.Maximum = 100;
-			KnobEchoWet.Minimum = -800;
-			KnobEchoWet.LargeChange = 10;
-			KnobEchoWet.Value = (int)(_engine.effector.Echo.WetLevel * 10);
-			KnobEchoWet.Refresh();
-
-			// Flanger
-			CheckFlanger.Checked = _engine.effector.Flanger.Enabled;
-			// Min:0	- Max:100.0		Def:50
-			KnobFlangerMix.Maximum = 1000;
-			KnobFlangerMix.Minimum = 0;
-			KnobFlangerMix.LargeChange = 10;
-			KnobFlangerMix.Value = (int)(_engine.effector.Flanger.Mix * 10);
-			// Min:0	- Max:20.0		Def:0.1
-			KnobFlangerRate.Maximum = 200;
-			KnobFlangerRate.Minimum = 0;
-			KnobFlangerRate.LargeChange = 10;
-			KnobFlangerRate.Value = (int)(_engine.effector.Flanger.Rate * 10);
-			// Min:0.01 - Max:1.0		Def:1
-			KnobFlangerDepth.Maximum = 100;
-			KnobFlangerDepth.Minimum = 1;
-			KnobFlangerDepth.LargeChange = 10;
-			KnobFlangerDepth.Value = (int)(_engine.effector.Flanger.Depth * 100);
-
-			// Highpass
-			CheckHighpass.Checked = _engine.effector.Highpass.Enabled;
-			// Min:1	- Max:22000		Def:5000
-			KnobHighpassCutoff.Maximum = 220000;
-			KnobHighpassCutoff.Minimum = 1;
-			KnobHighpassCutoff.LargeChange = 1000;
-			KnobHighpassCutoff.Value = (int)(_engine.effector.Highpass.CutOff * 10);
-			// Min:0	- Max:10		Def:1
-			KnobHighpassResonance.Maximum = 100;
-			KnobHighpassResonance.Minimum = 0;
-			KnobHighpassResonance.LargeChange = 10;
-			KnobHighpassResonance.Value = (int)(_engine.effector.Highpass.Resonance * 10);
-
-			// Lowpass
-			CheckLowpass.Checked = _engine.effector.Lowpass.Enabled;
-			// Min:1	- Max:22000		Def:5000
-			KnobLowpassCutoff.Maximum = 220000;
-			KnobLowpassCutoff.Minimum = 1;
-			KnobLowpassCutoff.LargeChange = 1000;
-			KnobLowpassCutoff.Value = (int)(_engine.effector.Lowpass.CutOff * 10);
-			// Min:0	- Max:10		Def:1
-			KnobLowpassResonance.Maximum = 100;
-			KnobLowpassResonance.Minimum = 0;
-			KnobLowpassResonance.LargeChange = 10;
-			KnobLowpassResonance.Value = (int)(_engine.effector.Lowpass.Resonance * 10);
-
-			// Compressor
-			CheckCompressor.Checked = _engine.effector.Compressor.Enabled;
-			// Min:-60	- Max:0			Def:0
-			KnobCompThreshold.Maximum = 0;
-			KnobCompThreshold.Minimum = -600;
-			KnobCompThreshold.LargeChange = 10;
-			KnobCompThreshold.Value = (int)(_engine.effector.Compressor.Threshold * 10);
-			// Min:1	- Max:50		Def:2.5
-			KnobCompRatio.Maximum = 500;
-			KnobCompRatio.Minimum = 1;
-			KnobCompRatio.LargeChange = 10;
-			KnobCompRatio.Value = (int)(_engine.effector.Compressor.Ratio * 10);
-			// Min:0.1	- Max:500		Def:20
-			KnobCompAttack.Maximum = 5000;
-			KnobCompAttack.Minimum = 1;
-			KnobCompAttack.LargeChange = 10;
-			KnobCompAttack.Value = (int)(_engine.effector.Compressor.Attack * 10);
-			// Min:10	- Max:5000		Def:100
-			KnobCompRelease.Maximum = 50000;
-			KnobCompRelease.Minimum = 100;
-			KnobCompRelease.LargeChange = 10;
-			KnobCompRelease.Value = (int)(_engine.effector.Compressor.Release * 10);
-			// Min:-30	- Max:30		Def:0
-			KnobCompGain.Maximum = 300;
-			KnobCompGain.Minimum = -300;
-			KnobCompGain.LargeChange = 10;
-			KnobCompGain.Value = (int)(_engine.effector.Compressor.Gain * 10);
-
-			// PichShift
-			CheckPitch.Checked = _engine.effector.PitchShift.Enabled;
-			// Min:0.5	- Max:2.0	Def:1
-			_engine.effector.PitchShift.PropertyChanged += new PropertyChangedEventHandler(PitchChenged);
-			KnobPitchPitch.Maximum = 150;
-			KnobPitchPitch.Minimum = 0;
-			KnobPitchPitch.LargeChange = 1;
-			KnobPitchPitch.Value = (int)(_engine.effector.PitchShift.Pitch * 100) - 50;
-
-			// Min:0.5	- Max:2.0	Def:1
-			KnobPitchFFT.Maximum = 4;
-			KnobPitchFFT.Minimum = 0;
-			KnobPitchFFT.LargeChange = 1;
-			float[] fftsize = { 256, 512, 1024, 2048, 4096 };
-			KnobPitchFFT.Value = Array.IndexOf(fftsize, _engine.effector.PitchShift.FFTSize);
-
-			CheckFrequency.Checked = _engine.effector.Frequency.Enabled;
-			_engine.effector.Frequency.PropertyChanged += new PropertyChangedEventHandler(FrequencyChenged);
-			CheckSpeed.Checked = _engine.effector.SpeedEnabled;
-
-			// Def:false
-			CheckCompLinked.Checked = (bool)(_engine.effector.Compressor.Linked);
-			// Def:false
-			CheckCompSidechain.Checked = (bool)(_engine.effector.Compressor.SideChain);
-
-			// SFX Reverb
-			this.Refresh();
+			TreeMenu.ExpandAll();
+			EffectControlInitialize();
 		}
 		private void PitchChenged(object sender, PropertyChangedEventArgs e)
 		{
@@ -438,5 +284,214 @@ namespace MediaPlayer_X_Ark
             }
 			return ((CheckBox)sender).Checked;
 		}
-	}
+
+		private void EffectControlInitialize()
+        {
+			// Distortion
+			CheckDistortion.Checked = _engine.effector.Distortion.Enabled;
+			// Min:0.0	- Max:1.0		Def:0.5
+			KnobDistortionLevel.Maximum = 100;
+			KnobDistortionLevel.Minimum = 0;
+			KnobDistortionLevel.LargeChange = 10;
+			KnobDistortionLevel.Value = (int)(_engine.effector.Distortion.Level * 100);
+			KnobDistortionLevel.Refresh();
+
+			// Chorus
+			CheckChorus.Checked = _engine.effector.Chorus.Enabled;
+			// Min:0.0	- Max:100.0		Def:50.0
+			KnobChorusMix.Maximum = 1000;
+			KnobChorusMix.Minimum = 0;
+			KnobChorusMix.LargeChange = 10;
+			KnobChorusMix.Value = (int)(_engine.effector.Chorus.Mix * 10);
+			KnobChorusMix.Refresh();
+			// Min:0.0	- Max:20.00		Def:0.8
+			KnobChorusRate.Maximum = 200;
+			KnobChorusRate.Minimum = 0;
+			KnobChorusRate.LargeChange = 10;
+			KnobChorusRate.Value = (int)(_engine.effector.Chorus.Rate * 10);
+			KnobChorusRate.Refresh();
+			// Min:0.0	- Max:100.0		Def:3.00
+			KnobChorusDepth.Maximum = 1000;
+			KnobChorusDepth.Minimum = 0;
+			KnobChorusDepth.LargeChange = 10;
+			KnobChorusDepth.Value = (int)(_engine.effector.Chorus.Depth * 10);
+			KnobChorusDepth.Refresh();
+
+			// Echo
+			CheckEcho.Checked = _engine.effector.Echo.Enabled;
+			// Min:1.0	- Max:5000		Def:500.0
+			KnobEchoDelay.Maximum = 50000;
+			KnobEchoDelay.Minimum = 0;
+			KnobEchoDelay.LargeChange = 2000;
+			KnobEchoDelay.Value = (int)(_engine.effector.Echo.Delay * 10);
+			KnobEchoDelay.Refresh();
+			// Min:0.0	- Max:100.0		Def:50
+			KnobEchoFeedback.Maximum = 1000;
+			KnobEchoFeedback.Minimum = 0;
+			KnobEchoFeedback.LargeChange = 100;
+			KnobEchoFeedback.Value = (int)(_engine.effector.Echo.Feedback * 10);
+			KnobEchoFeedback.Refresh();
+			// Min:-80  - Max:10.0		Def:0
+			KnobEchoDry.Maximum = 100;
+			KnobEchoDry.Minimum = -800;
+			KnobEchoDry.LargeChange = 10;
+			KnobEchoDry.Value = (int)(_engine.effector.Echo.DryLevel * 10);
+			KnobEchoDry.Refresh();
+			// Min:-80  - Max:10.0		Def:0
+			KnobEchoWet.Maximum = 100;
+			KnobEchoWet.Minimum = -800;
+			KnobEchoWet.LargeChange = 10;
+			KnobEchoWet.Value = (int)(_engine.effector.Echo.WetLevel * 10);
+			KnobEchoWet.Refresh();
+
+			// Flanger
+			CheckFlanger.Checked = _engine.effector.Flanger.Enabled;
+			// Min:0	- Max:100.0		Def:50
+			KnobFlangerMix.Maximum = 1000;
+			KnobFlangerMix.Minimum = 0;
+			KnobFlangerMix.LargeChange = 10;
+			KnobFlangerMix.Value = (int)(_engine.effector.Flanger.Mix * 10);
+			// Min:0	- Max:20.0		Def:0.1
+			KnobFlangerRate.Maximum = 200;
+			KnobFlangerRate.Minimum = 0;
+			KnobFlangerRate.LargeChange = 10;
+			KnobFlangerRate.Value = (int)(_engine.effector.Flanger.Rate * 10);
+			// Min:0.01 - Max:1.0		Def:1
+			KnobFlangerDepth.Maximum = 100;
+			KnobFlangerDepth.Minimum = 1;
+			KnobFlangerDepth.LargeChange = 10;
+			KnobFlangerDepth.Value = (int)(_engine.effector.Flanger.Depth * 100);
+
+			// Highpass
+			CheckHighpass.Checked = _engine.effector.Highpass.Enabled;
+			// Min:1	- Max:22000		Def:5000
+			KnobHighpassCutoff.Maximum = 220000;
+			KnobHighpassCutoff.Minimum = 1;
+			KnobHighpassCutoff.LargeChange = 1000;
+			KnobHighpassCutoff.Value = (int)(_engine.effector.Highpass.CutOff * 10);
+			// Min:0	- Max:10		Def:1
+			KnobHighpassResonance.Maximum = 100;
+			KnobHighpassResonance.Minimum = 0;
+			KnobHighpassResonance.LargeChange = 10;
+			KnobHighpassResonance.Value = (int)(_engine.effector.Highpass.Resonance * 10);
+
+			// Lowpass
+			CheckLowpass.Checked = _engine.effector.Lowpass.Enabled;
+			// Min:1	- Max:22000		Def:5000
+			KnobLowpassCutoff.Maximum = 220000;
+			KnobLowpassCutoff.Minimum = 1;
+			KnobLowpassCutoff.LargeChange = 1000;
+			KnobLowpassCutoff.Value = (int)(_engine.effector.Lowpass.CutOff * 10);
+			// Min:0	- Max:10		Def:1
+			KnobLowpassResonance.Maximum = 100;
+			KnobLowpassResonance.Minimum = 0;
+			KnobLowpassResonance.LargeChange = 10;
+			KnobLowpassResonance.Value = (int)(_engine.effector.Lowpass.Resonance * 10);
+
+			// Compressor
+			CheckCompressor.Checked = _engine.effector.Compressor.Enabled;
+			// Min:-60	- Max:0			Def:0
+			KnobCompThreshold.Maximum = 0;
+			KnobCompThreshold.Minimum = -600;
+			KnobCompThreshold.LargeChange = 10;
+			KnobCompThreshold.Value = (int)(_engine.effector.Compressor.Threshold * 10);
+			// Min:1	- Max:50		Def:2.5
+			KnobCompRatio.Maximum = 500;
+			KnobCompRatio.Minimum = 1;
+			KnobCompRatio.LargeChange = 10;
+			KnobCompRatio.Value = (int)(_engine.effector.Compressor.Ratio * 10);
+			// Min:0.1	- Max:500		Def:20
+			KnobCompAttack.Maximum = 5000;
+			KnobCompAttack.Minimum = 1;
+			KnobCompAttack.LargeChange = 10;
+			KnobCompAttack.Value = (int)(_engine.effector.Compressor.Attack * 10);
+			// Min:10	- Max:5000		Def:100
+			KnobCompRelease.Maximum = 50000;
+			KnobCompRelease.Minimum = 100;
+			KnobCompRelease.LargeChange = 10;
+			KnobCompRelease.Value = (int)(_engine.effector.Compressor.Release * 10);
+			// Min:-30	- Max:30		Def:0
+			KnobCompGain.Maximum = 300;
+			KnobCompGain.Minimum = -300;
+			KnobCompGain.LargeChange = 10;
+			KnobCompGain.Value = (int)(_engine.effector.Compressor.Gain * 10);
+
+			// PichShift
+			CheckPitch.Checked = _engine.effector.PitchShift.Enabled;
+			// Min:0.5	- Max:2.0	Def:1
+			_engine.effector.PitchShift.PropertyChanged += new PropertyChangedEventHandler(PitchChenged);
+			KnobPitchPitch.Maximum = 150;
+			KnobPitchPitch.Minimum = 0;
+			KnobPitchPitch.LargeChange = 1;
+			KnobPitchPitch.Value = (int)(_engine.effector.PitchShift.Pitch * 100) - 50;
+
+			// Min:0.5	- Max:2.0	Def:1
+			KnobPitchFFT.Maximum = 4;
+			KnobPitchFFT.Minimum = 0;
+			KnobPitchFFT.LargeChange = 1;
+			float[] fftsize = { 256, 512, 1024, 2048, 4096 };
+			KnobPitchFFT.Value = Array.IndexOf(fftsize, _engine.effector.PitchShift.FFTSize);
+
+			CheckFrequency.Checked = _engine.effector.Frequency.Enabled;
+			_engine.effector.Frequency.PropertyChanged += new PropertyChangedEventHandler(FrequencyChenged);
+			CheckSpeed.Checked = _engine.effector.SpeedEnabled;
+
+			// Def:false
+//			CheckCompLinked.Checked = (bool)(_engine.effector.Compressor.Linked);
+			// Def:false
+//			CheckCompSidechain.Checked = (bool)(_engine.effector.Compressor.SideChain);
+
+			// SFX Reverb
+			this.Refresh();
+
+		}
+
+        private void TreeMenu_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+			if (e.Node.Name == "EFFECTS" || (e.Node.Parent != null && e.Node.Parent.Name == "EFFECTS"))
+            {
+				tabControlEffects.Visible = true;
+				if (e.Node.Name == "GEQ")
+				{
+					tabControlEffects.SelectedIndex = 0;
+				}
+				else if (e.Node.Name == "PITCH")
+				{
+					tabControlEffects.SelectedIndex = 1;
+				}
+				else if (e.Node.Name == "DISTORTION")
+				{
+					tabControlEffects.SelectedIndex = 2;
+				}
+				else if (e.Node.Name == "CHORUS")
+				{
+					tabControlEffects.SelectedIndex = 3;
+				}
+				else if (e.Node.Name == "ECHO")
+				{
+					tabControlEffects.SelectedIndex = 4;
+				}
+				else if (e.Node.Name == "FLANGER")
+				{
+					tabControlEffects.SelectedIndex = 5;
+				}
+				else if (e.Node.Name == "HIGHPASS")
+				{
+					tabControlEffects.SelectedIndex = 6;
+				}
+				else if (e.Node.Name == "LOWPASS")
+				{
+					tabControlEffects.SelectedIndex = 7;
+				}
+				else if (e.Node.Name == "COMPRESSOR")
+				{
+					tabControlEffects.SelectedIndex = 8;
+				}
+				else if (e.Node.Name == "REVERB")
+				{
+					tabControlEffects.SelectedIndex = 9;
+				}
+			}
+		}
+    }
 }
