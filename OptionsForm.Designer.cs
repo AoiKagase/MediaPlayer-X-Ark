@@ -28,30 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("出力設定");
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Graphic Equalizer");
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Pitch / Freq / Speed");
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Distortion");
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Chorus");
-            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Echo");
-            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Flanger");
-            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Highpass");
-            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Lowpass");
-            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Compressor");
-            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Reverb");
-            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("エフェクト", new System.Windows.Forms.TreeNode[] {
-            treeNode16,
-            treeNode17,
-            treeNode18,
-            treeNode19,
-            treeNode20,
-            treeNode21,
-            treeNode22,
-            treeNode23,
-            treeNode24,
-            treeNode25});
-            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("スキン");
-            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("その他");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("出力設定");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Graphic Equalizer");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Pitch / Freq / Speed");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Distortion");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Chorus");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Echo");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Flanger");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Highpass");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Lowpass");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Compressor");
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Reverb");
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("エフェクト", new System.Windows.Forms.TreeNode[] {
+            treeNode2,
+            treeNode3,
+            treeNode4,
+            treeNode5,
+            treeNode6,
+            treeNode7,
+            treeNode8,
+            treeNode9,
+            treeNode10,
+            treeNode11});
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("スキン");
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("その他");
             this.TreeMenu = new System.Windows.Forms.TreeView();
             this.tabControlEffects = new System.Windows.Forms.TabControl();
             this.tabGEqualizer = new System.Windows.Forms.TabPage();
@@ -75,6 +75,10 @@
             this.KnobPitchPitch = new UI.Knob();
             this.CheckPitch = new System.Windows.Forms.CheckBox();
             this.tabDistortion = new System.Windows.Forms.TabPage();
+            this.lblValDistortionLevel = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.KnobDistortionLevel = new UI.Knob();
+            this.CheckDistortion = new System.Windows.Forms.CheckBox();
             this.tabChorus = new System.Windows.Forms.TabPage();
             this.GroupChorus = new System.Windows.Forms.GroupBox();
             this.lblValChorusDepth = new System.Windows.Forms.TextBox();
@@ -193,10 +197,21 @@
             this.label18 = new System.Windows.Forms.Label();
             this.knob5 = new UI.Knob();
             this.CheckReverb = new System.Windows.Forms.CheckBox();
-            this.CheckDistortion = new System.Windows.Forms.CheckBox();
-            this.lblValDistortionLevel = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.KnobDistortionLevel = new UI.Knob();
+            this.pnlOptionOutput = new System.Windows.Forms.Panel();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.smbSpeaker = new System.Windows.Forms.ComboBox();
+            this.label43 = new System.Windows.Forms.Label();
+            this.cmbSampling = new System.Windows.Forms.ComboBox();
+            this.label42 = new System.Windows.Forms.Label();
+            this.cmbFormat = new System.Windows.Forms.ComboBox();
+            this.label41 = new System.Windows.Forms.Label();
+            this.cmdSampleRate = new System.Windows.Forms.ComboBox();
+            this.label40 = new System.Windows.Forms.Label();
+            this.cmbDevice = new System.Windows.Forms.ComboBox();
+            this.label38 = new System.Windows.Forms.Label();
+            this.cmbOutput = new System.Windows.Forms.ComboBox();
+            this.label36 = new System.Windows.Forms.Label();
             this.tabControlEffects.SuspendLayout();
             this.tabPitch.SuspendLayout();
             this.GroupSpeed.SuspendLayout();
@@ -217,6 +232,8 @@
             this.GroupCompressor.SuspendLayout();
             this.tabReverb.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.pnlOptionOutput.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // TreeMenu
@@ -224,39 +241,39 @@
             this.TreeMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.TreeMenu.Location = new System.Drawing.Point(0, 0);
             this.TreeMenu.Name = "TreeMenu";
-            treeNode15.Name = "OUTPUT";
-            treeNode15.Text = "出力設定";
-            treeNode16.Name = "GEQ";
-            treeNode16.Text = "Graphic Equalizer";
-            treeNode17.Name = "PITCH";
-            treeNode17.Text = "Pitch / Freq / Speed";
-            treeNode18.Name = "DISTORTION";
-            treeNode18.Text = "Distortion";
-            treeNode19.Name = "CHORUS";
-            treeNode19.Text = "Chorus";
-            treeNode20.Name = "ECHO";
-            treeNode20.Text = "Echo";
-            treeNode21.Name = "FLANGER";
-            treeNode21.Text = "Flanger";
-            treeNode22.Name = "HIGHPASS";
-            treeNode22.Text = "Highpass";
-            treeNode23.Name = "LOWPASS";
-            treeNode23.Text = "Lowpass";
-            treeNode24.Name = "COMPRESSOR";
-            treeNode24.Text = "Compressor";
-            treeNode25.Name = "REVERB";
-            treeNode25.Text = "Reverb";
-            treeNode26.Name = "EFFECTS";
-            treeNode26.Text = "エフェクト";
-            treeNode27.Name = "SKIN";
-            treeNode27.Text = "スキン";
-            treeNode28.Name = "OTHER";
-            treeNode28.Text = "その他";
+            treeNode1.Name = "OUTPUT";
+            treeNode1.Text = "出力設定";
+            treeNode2.Name = "GEQ";
+            treeNode2.Text = "Graphic Equalizer";
+            treeNode3.Name = "PITCH";
+            treeNode3.Text = "Pitch / Freq / Speed";
+            treeNode4.Name = "DISTORTION";
+            treeNode4.Text = "Distortion";
+            treeNode5.Name = "CHORUS";
+            treeNode5.Text = "Chorus";
+            treeNode6.Name = "ECHO";
+            treeNode6.Text = "Echo";
+            treeNode7.Name = "FLANGER";
+            treeNode7.Text = "Flanger";
+            treeNode8.Name = "HIGHPASS";
+            treeNode8.Text = "Highpass";
+            treeNode9.Name = "LOWPASS";
+            treeNode9.Text = "Lowpass";
+            treeNode10.Name = "COMPRESSOR";
+            treeNode10.Text = "Compressor";
+            treeNode11.Name = "REVERB";
+            treeNode11.Text = "Reverb";
+            treeNode12.Name = "EFFECTS";
+            treeNode12.Text = "エフェクト";
+            treeNode13.Name = "SKIN";
+            treeNode13.Text = "スキン";
+            treeNode14.Name = "OTHER";
+            treeNode14.Text = "その他";
             this.TreeMenu.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode15,
-            treeNode26,
-            treeNode27,
-            treeNode28});
+            treeNode1,
+            treeNode12,
+            treeNode13,
+            treeNode14});
             this.TreeMenu.Size = new System.Drawing.Size(199, 419);
             this.TreeMenu.TabIndex = 3;
             this.TreeMenu.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeMenu_AfterSelect);
@@ -561,6 +578,60 @@
             this.tabDistortion.TabIndex = 0;
             this.tabDistortion.Text = "Distortion";
             // 
+            // lblValDistortionLevel
+            // 
+            this.lblValDistortionLevel.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lblValDistortionLevel.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lblValDistortionLevel.Location = new System.Drawing.Point(6, 116);
+            this.lblValDistortionLevel.Name = "lblValDistortionLevel";
+            this.lblValDistortionLevel.Size = new System.Drawing.Size(64, 16);
+            this.lblValDistortionLevel.TabIndex = 11;
+            this.lblValDistortionLevel.Text = "0.0";
+            this.lblValDistortionLevel.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label1
+            // 
+            this.label1.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label1.Location = new System.Drawing.Point(6, 27);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(64, 16);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Level";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // KnobDistortionLevel
+            // 
+            this.KnobDistortionLevel.BackColor = System.Drawing.SystemColors.Control;
+            this.KnobDistortionLevel.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.KnobDistortionLevel.BorderWidth = 2;
+            this.KnobDistortionLevel.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.KnobDistortionLevel.HasTicks = true;
+            this.KnobDistortionLevel.KnobColor = System.Drawing.SystemColors.ControlLightLight;
+            this.KnobDistortionLevel.LargeChange = 5;
+            this.KnobDistortionLevel.Location = new System.Drawing.Point(6, 44);
+            this.KnobDistortionLevel.Name = "KnobDistortionLevel";
+            this.KnobDistortionLevel.PointerColor = System.Drawing.SystemColors.ControlText;
+            this.KnobDistortionLevel.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
+            this.KnobDistortionLevel.PointerOffset = 4;
+            this.KnobDistortionLevel.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
+            this.KnobDistortionLevel.PointerWidth = 2;
+            this.KnobDistortionLevel.Size = new System.Drawing.Size(64, 64);
+            this.KnobDistortionLevel.TabIndex = 9;
+            this.KnobDistortionLevel.Text = "Level";
+            this.KnobDistortionLevel.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+            // 
+            // CheckDistortion
+            // 
+            this.CheckDistortion.AutoSize = true;
+            this.CheckDistortion.Dock = System.Windows.Forms.DockStyle.Top;
+            this.CheckDistortion.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.CheckDistortion.Location = new System.Drawing.Point(3, 3);
+            this.CheckDistortion.Name = "CheckDistortion";
+            this.CheckDistortion.Size = new System.Drawing.Size(571, 19);
+            this.CheckDistortion.TabIndex = 5;
+            this.CheckDistortion.Text = "Distortion";
+            this.CheckDistortion.UseVisualStyleBackColor = true;
+            // 
             // tabChorus
             // 
             this.tabChorus.BackColor = System.Drawing.Color.Transparent;
@@ -584,10 +655,11 @@
             this.GroupChorus.Controls.Add(this.label3);
             this.GroupChorus.Controls.Add(this.KnobChorusMix);
             this.GroupChorus.Controls.Add(this.CheckChorus);
+            this.GroupChorus.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GroupChorus.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.GroupChorus.Location = new System.Drawing.Point(-6, 120);
+            this.GroupChorus.Location = new System.Drawing.Point(3, 3);
             this.GroupChorus.Name = "GroupChorus";
-            this.GroupChorus.Size = new System.Drawing.Size(226, 150);
+            this.GroupChorus.Size = new System.Drawing.Size(571, 385);
             this.GroupChorus.TabIndex = 4;
             this.GroupChorus.TabStop = false;
             // 
@@ -719,7 +791,7 @@
             // 
             this.CheckChorus.AutoSize = true;
             this.CheckChorus.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckChorus.Location = new System.Drawing.Point(6, 3);
+            this.CheckChorus.Location = new System.Drawing.Point(3, 3);
             this.CheckChorus.Name = "CheckChorus";
             this.CheckChorus.Size = new System.Drawing.Size(63, 19);
             this.CheckChorus.TabIndex = 0;
@@ -738,6 +810,7 @@
             // 
             // GroupEcho
             // 
+            this.GroupEcho.BackColor = System.Drawing.Color.Transparent;
             this.GroupEcho.Controls.Add(this.lblValEchoWet);
             this.GroupEcho.Controls.Add(this.label15);
             this.GroupEcho.Controls.Add(this.KnobEchoWet);
@@ -751,10 +824,11 @@
             this.GroupEcho.Controls.Add(this.label13);
             this.GroupEcho.Controls.Add(this.KnobEchoDelay);
             this.GroupEcho.Controls.Add(this.CheckEcho);
+            this.GroupEcho.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GroupEcho.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.GroupEcho.Location = new System.Drawing.Point(208, 118);
+            this.GroupEcho.Location = new System.Drawing.Point(0, 0);
             this.GroupEcho.Name = "GroupEcho";
-            this.GroupEcho.Size = new System.Drawing.Size(322, 150);
+            this.GroupEcho.Size = new System.Drawing.Size(577, 391);
             this.GroupEcho.TabIndex = 10;
             this.GroupEcho.TabStop = false;
             // 
@@ -932,7 +1006,7 @@
             // 
             this.CheckEcho.AutoSize = true;
             this.CheckEcho.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckEcho.Location = new System.Drawing.Point(6, 3);
+            this.CheckEcho.Location = new System.Drawing.Point(373, 118);
             this.CheckEcho.Name = "CheckEcho";
             this.CheckEcho.Size = new System.Drawing.Size(52, 19);
             this.CheckEcho.TabIndex = 0;
@@ -961,10 +1035,11 @@
             this.GroupFlanger.Controls.Add(this.label37);
             this.GroupFlanger.Controls.Add(this.KnobFlangerMix);
             this.GroupFlanger.Controls.Add(this.CheckFlanger);
+            this.GroupFlanger.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GroupFlanger.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.GroupFlanger.Location = new System.Drawing.Point(-2, 120);
+            this.GroupFlanger.Location = new System.Drawing.Point(0, 0);
             this.GroupFlanger.Name = "GroupFlanger";
-            this.GroupFlanger.Size = new System.Drawing.Size(218, 150);
+            this.GroupFlanger.Size = new System.Drawing.Size(577, 391);
             this.GroupFlanger.TabIndex = 10;
             this.GroupFlanger.TabStop = false;
             // 
@@ -1123,10 +1198,11 @@
             this.GroupHighpass.Controls.Add(this.label23);
             this.GroupHighpass.Controls.Add(this.KnobHighpassCutoff);
             this.GroupHighpass.Controls.Add(this.CheckHighpass);
+            this.GroupHighpass.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GroupHighpass.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.GroupHighpass.Location = new System.Drawing.Point(32, 120);
+            this.GroupHighpass.Location = new System.Drawing.Point(0, 0);
             this.GroupHighpass.Name = "GroupHighpass";
-            this.GroupHighpass.Size = new System.Drawing.Size(151, 150);
+            this.GroupHighpass.Size = new System.Drawing.Size(577, 391);
             this.GroupHighpass.TabIndex = 13;
             this.GroupHighpass.TabStop = false;
             // 
@@ -1244,10 +1320,11 @@
             this.GroupLowpass.Controls.Add(this.label19);
             this.GroupLowpass.Controls.Add(this.KnobLowpassCutoff);
             this.GroupLowpass.Controls.Add(this.CheckLowpass);
+            this.GroupLowpass.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GroupLowpass.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.GroupLowpass.Location = new System.Drawing.Point(32, 120);
+            this.GroupLowpass.Location = new System.Drawing.Point(0, 0);
             this.GroupLowpass.Name = "GroupLowpass";
-            this.GroupLowpass.Size = new System.Drawing.Size(151, 150);
+            this.GroupLowpass.Size = new System.Drawing.Size(577, 391);
             this.GroupLowpass.TabIndex = 14;
             this.GroupLowpass.TabStop = false;
             // 
@@ -1375,10 +1452,11 @@
             this.GroupCompressor.Controls.Add(this.label31);
             this.GroupCompressor.Controls.Add(this.KnobCompThreshold);
             this.GroupCompressor.Controls.Add(this.CheckCompressor);
+            this.GroupCompressor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GroupCompressor.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.GroupCompressor.Location = new System.Drawing.Point(-79, 120);
+            this.GroupCompressor.Location = new System.Drawing.Point(0, 0);
             this.GroupCompressor.Name = "GroupCompressor";
-            this.GroupCompressor.Size = new System.Drawing.Size(373, 150);
+            this.GroupCompressor.Size = new System.Drawing.Size(577, 391);
             this.GroupCompressor.TabIndex = 13;
             this.GroupCompressor.TabStop = false;
             // 
@@ -1672,10 +1750,11 @@
             this.groupBox1.Controls.Add(this.label18);
             this.groupBox1.Controls.Add(this.knob5);
             this.groupBox1.Controls.Add(this.CheckReverb);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.groupBox1.Location = new System.Drawing.Point(-132, 52);
+            this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(479, 286);
+            this.groupBox1.Size = new System.Drawing.Size(577, 391);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             // 
@@ -2249,59 +2328,199 @@
             this.CheckReverb.Text = "Reverb";
             this.CheckReverb.UseVisualStyleBackColor = true;
             // 
-            // CheckDistortion
+            // pnlOptionOutput
             // 
-            this.CheckDistortion.AutoSize = true;
-            this.CheckDistortion.Dock = System.Windows.Forms.DockStyle.Top;
-            this.CheckDistortion.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckDistortion.Location = new System.Drawing.Point(3, 3);
-            this.CheckDistortion.Name = "CheckDistortion";
-            this.CheckDistortion.Size = new System.Drawing.Size(571, 19);
-            this.CheckDistortion.TabIndex = 5;
-            this.CheckDistortion.Text = "Distortion";
-            this.CheckDistortion.UseVisualStyleBackColor = true;
+            this.pnlOptionOutput.Controls.Add(this.groupBox2);
+            this.pnlOptionOutput.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlOptionOutput.Location = new System.Drawing.Point(0, 0);
+            this.pnlOptionOutput.Name = "pnlOptionOutput";
+            this.pnlOptionOutput.Size = new System.Drawing.Size(784, 419);
+            this.pnlOptionOutput.TabIndex = 5;
             // 
-            // lblValDistortionLevel
+            // groupBox2
             // 
-            this.lblValDistortionLevel.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lblValDistortionLevel.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValDistortionLevel.Location = new System.Drawing.Point(6, 116);
-            this.lblValDistortionLevel.Name = "lblValDistortionLevel";
-            this.lblValDistortionLevel.Size = new System.Drawing.Size(64, 16);
-            this.lblValDistortionLevel.TabIndex = 11;
-            this.lblValDistortionLevel.Text = "0.0";
-            this.lblValDistortionLevel.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.groupBox2.Controls.Add(this.button1);
+            this.groupBox2.Controls.Add(this.smbSpeaker);
+            this.groupBox2.Controls.Add(this.label43);
+            this.groupBox2.Controls.Add(this.cmbSampling);
+            this.groupBox2.Controls.Add(this.label42);
+            this.groupBox2.Controls.Add(this.cmbFormat);
+            this.groupBox2.Controls.Add(this.label41);
+            this.groupBox2.Controls.Add(this.cmdSampleRate);
+            this.groupBox2.Controls.Add(this.label40);
+            this.groupBox2.Controls.Add(this.cmbDevice);
+            this.groupBox2.Controls.Add(this.label38);
+            this.groupBox2.Controls.Add(this.cmbOutput);
+            this.groupBox2.Controls.Add(this.label36);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox2.Location = new System.Drawing.Point(0, 0);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(784, 419);
+            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "出力設定";
             // 
-            // label1
+            // button1
             // 
-            this.label1.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(6, 27);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(64, 16);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Level";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.button1.Location = new System.Drawing.Point(280, 212);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 12;
+            this.button1.Text = "適用";
+            this.button1.UseVisualStyleBackColor = true;
             // 
-            // KnobDistortionLevel
+            // smbSpeaker
             // 
-            this.KnobDistortionLevel.BackColor = System.Drawing.SystemColors.Control;
-            this.KnobDistortionLevel.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.KnobDistortionLevel.BorderWidth = 2;
-            this.KnobDistortionLevel.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.KnobDistortionLevel.HasTicks = true;
-            this.KnobDistortionLevel.KnobColor = System.Drawing.SystemColors.ControlLightLight;
-            this.KnobDistortionLevel.LargeChange = 5;
-            this.KnobDistortionLevel.Location = new System.Drawing.Point(6, 46);
-            this.KnobDistortionLevel.Name = "KnobDistortionLevel";
-            this.KnobDistortionLevel.PointerColor = System.Drawing.SystemColors.ControlText;
-            this.KnobDistortionLevel.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
-            this.KnobDistortionLevel.PointerOffset = 4;
-            this.KnobDistortionLevel.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
-            this.KnobDistortionLevel.PointerWidth = 2;
-            this.KnobDistortionLevel.Size = new System.Drawing.Size(64, 64);
-            this.KnobDistortionLevel.TabIndex = 9;
-            this.KnobDistortionLevel.Text = "Level";
-            this.KnobDistortionLevel.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.smbSpeaker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.smbSpeaker.FormattingEnabled = true;
+            this.smbSpeaker.Items.AddRange(new object[] {
+            "デフォルト",
+            "モノラル",
+            "ステレオ",
+            "4.0",
+            "5.0",
+            "5.1",
+            "7.1",
+            "7.1.4"});
+            this.smbSpeaker.Location = new System.Drawing.Point(113, 167);
+            this.smbSpeaker.Name = "smbSpeaker";
+            this.smbSpeaker.Size = new System.Drawing.Size(242, 23);
+            this.smbSpeaker.TabIndex = 11;
+            // 
+            // label43
+            // 
+            this.label43.AutoSize = true;
+            this.label43.Location = new System.Drawing.Point(32, 170);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(75, 15);
+            this.label43.TabIndex = 10;
+            this.label43.Text = "スピーカーモード";
+            this.label43.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmbSampling
+            // 
+            this.cmbSampling.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSampling.FormattingEnabled = true;
+            this.cmbSampling.Items.AddRange(new object[] {
+            "補完無し",
+            "リニア補完",
+            "キュービック補完",
+            "５ポイントスプライン補完"});
+            this.cmbSampling.Location = new System.Drawing.Point(113, 138);
+            this.cmbSampling.Name = "cmbSampling";
+            this.cmbSampling.Size = new System.Drawing.Size(242, 23);
+            this.cmbSampling.TabIndex = 9;
+            // 
+            // label42
+            // 
+            this.label42.AutoSize = true;
+            this.label42.Location = new System.Drawing.Point(21, 141);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(86, 15);
+            this.label42.TabIndex = 8;
+            this.label42.Text = "サンプリングモード";
+            this.label42.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmbFormat
+            // 
+            this.cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFormat.FormattingEnabled = true;
+            this.cmbFormat.Items.AddRange(new object[] {
+            "8bit integer PCM",
+            "16bit integer PCM",
+            "24bit integer PCM",
+            "32bit integer PCM",
+            "32bit floating point PCM"});
+            this.cmbFormat.Location = new System.Drawing.Point(113, 109);
+            this.cmbFormat.Name = "cmbFormat";
+            this.cmbFormat.Size = new System.Drawing.Size(242, 23);
+            this.cmbFormat.TabIndex = 7;
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.Location = new System.Drawing.Point(51, 112);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(56, 15);
+            this.label41.TabIndex = 6;
+            this.label41.Text = "フォーマット";
+            this.label41.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmdSampleRate
+            // 
+            this.cmdSampleRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmdSampleRate.FormattingEnabled = true;
+            this.cmdSampleRate.Items.AddRange(new object[] {
+            "192000",
+            "96000",
+            "88200",
+            "48000",
+            "44100",
+            "32000",
+            "22050",
+            "16000",
+            "11025",
+            "8000",
+            "7333",
+            "6000",
+            "5500"});
+            this.cmdSampleRate.Location = new System.Drawing.Point(113, 80);
+            this.cmdSampleRate.Name = "cmdSampleRate";
+            this.cmdSampleRate.Size = new System.Drawing.Size(242, 23);
+            this.cmdSampleRate.TabIndex = 5;
+            // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(37, 83);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(70, 15);
+            this.label40.TabIndex = 4;
+            this.label40.Text = "サンプルレート";
+            this.label40.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmbDevice
+            // 
+            this.cmbDevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDevice.FormattingEnabled = true;
+            this.cmbDevice.Location = new System.Drawing.Point(113, 51);
+            this.cmbDevice.Name = "cmbDevice";
+            this.cmbDevice.Size = new System.Drawing.Size(242, 23);
+            this.cmbDevice.TabIndex = 3;
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(63, 54);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(44, 15);
+            this.label38.TabIndex = 2;
+            this.label38.Text = "デバイス";
+            this.label38.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmbOutput
+            // 
+            this.cmbOutput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbOutput.FormattingEnabled = true;
+            this.cmbOutput.Items.AddRange(new object[] {
+            "自動検出",
+            "Windows Audio Session API  (WASAPI)",
+            "Windows Sonic",
+            "Low Latency ASIO 2.0"});
+            this.cmbOutput.Location = new System.Drawing.Point(113, 22);
+            this.cmbOutput.Name = "cmbOutput";
+            this.cmbOutput.Size = new System.Drawing.Size(242, 23);
+            this.cmbOutput.TabIndex = 1;
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(52, 25);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(55, 15);
+            this.label36.TabIndex = 0;
+            this.label36.Text = "出力形式";
+            this.label36.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // OptionsForm
             // 
@@ -2310,6 +2529,7 @@
             this.ClientSize = new System.Drawing.Size(784, 419);
             this.Controls.Add(this.tabControlEffects);
             this.Controls.Add(this.TreeMenu);
+            this.Controls.Add(this.pnlOptionOutput);
             this.DoubleBuffered = true;
             this.Name = "OptionsForm";
             this.Text = "Options";
@@ -2345,6 +2565,9 @@
             this.tabReverb.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.pnlOptionOutput.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -2495,5 +2718,20 @@
         private System.Windows.Forms.Label label1;
         private UI.Knob KnobDistortionLevel;
         private System.Windows.Forms.CheckBox CheckDistortion;
+        private System.Windows.Forms.Panel pnlOptionOutput;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.ComboBox smbSpeaker;
+        private System.Windows.Forms.Label label43;
+        private System.Windows.Forms.ComboBox cmbSampling;
+        private System.Windows.Forms.Label label42;
+        private System.Windows.Forms.ComboBox cmbFormat;
+        private System.Windows.Forms.Label label41;
+        private System.Windows.Forms.ComboBox cmdSampleRate;
+        private System.Windows.Forms.Label label40;
+        private System.Windows.Forms.ComboBox cmbDevice;
+        private System.Windows.Forms.Label label38;
+        private System.Windows.Forms.ComboBox cmbOutput;
+        private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.Button button1;
     }
 }

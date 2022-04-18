@@ -61,6 +61,12 @@ namespace MediaPlayer_X_Ark
 		public FmodSpectrum spectrum;
 
 		public Engine.Effector.Effectors effector;
+
+		public List<DEVICE_INFO> DeviceList
+        {
+            get { return FmodDeviceList; }
+        }
+
 		protected FMOD.RESULT FmodCallFunction(FMOD.RESULT result)
         {
 			lastError = FMOD.Error.String(result);
@@ -144,6 +150,9 @@ namespace MediaPlayer_X_Ark
 						PlayList = new BindingList<Engine.PlayList>();
 
 						effector = new Engine.Effector.Effectors(FmodSystem);
+
+						GetDeviceList();
+
 						initialized = true;
 					}
 				}

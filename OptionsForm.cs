@@ -22,6 +22,7 @@ namespace MediaPlayer_X_Ark
 		private void OptionsForm_Load(object sender, EventArgs e)
 		{
 			TreeMenu.ExpandAll();
+			OptionOutput();
 			EffectControlInitialize();
 		}
 		private void PitchChenged(object sender, PropertyChangedEventArgs e)
@@ -445,9 +446,24 @@ namespace MediaPlayer_X_Ark
 			this.Refresh();
 
 		}
-
-        private void TreeMenu_AfterSelect(object sender, TreeViewEventArgs e)
+		private void OptionOutput()
         {
+			//			cmbOutput.Items.Add("WAVEファイル出力");
+
+			foreach (DEVICE_INFO device in _engine.DeviceList)
+            {
+				cmbDevice.Items.Add(device.name);
+			}
+		}
+		private void TreeMenu_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+			pnlOptionOutput.Visible = false;
+			tabControlEffects.Visible = false;
+
+			if (e.Node.Name == "OUTPUT")
+            {
+				pnlOptionOutput.Visible = true;
+            }
 			if (e.Node.Name == "EFFECTS" || (e.Node.Parent != null && e.Node.Parent.Name == "EFFECTS"))
             {
 				tabControlEffects.Visible = true;
