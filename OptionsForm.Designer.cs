@@ -28,33 +28,60 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("出力設定");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Graphic Equalizer");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Pitch / Freq / Speed");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Distortion");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Chorus");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Echo");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Flanger");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Highpass");
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Lowpass");
-            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Compressor");
-            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Reverb");
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("エフェクト", new System.Windows.Forms.TreeNode[] {
-            treeNode2,
-            treeNode3,
-            treeNode4,
-            treeNode5,
-            treeNode6,
-            treeNode7,
-            treeNode8,
-            treeNode9,
-            treeNode10,
-            treeNode11});
-            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("スキン");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("その他");
+            System.Windows.Forms.TreeNode treeNode155 = new System.Windows.Forms.TreeNode("出力設定");
+            System.Windows.Forms.TreeNode treeNode156 = new System.Windows.Forms.TreeNode("Graphic Equalizer");
+            System.Windows.Forms.TreeNode treeNode157 = new System.Windows.Forms.TreeNode("Pitch / Freq / Speed");
+            System.Windows.Forms.TreeNode treeNode158 = new System.Windows.Forms.TreeNode("Distortion");
+            System.Windows.Forms.TreeNode treeNode159 = new System.Windows.Forms.TreeNode("Chorus");
+            System.Windows.Forms.TreeNode treeNode160 = new System.Windows.Forms.TreeNode("Echo");
+            System.Windows.Forms.TreeNode treeNode161 = new System.Windows.Forms.TreeNode("Flanger");
+            System.Windows.Forms.TreeNode treeNode162 = new System.Windows.Forms.TreeNode("Highpass");
+            System.Windows.Forms.TreeNode treeNode163 = new System.Windows.Forms.TreeNode("Lowpass");
+            System.Windows.Forms.TreeNode treeNode164 = new System.Windows.Forms.TreeNode("Compressor");
+            System.Windows.Forms.TreeNode treeNode165 = new System.Windows.Forms.TreeNode("Reverb");
+            System.Windows.Forms.TreeNode treeNode166 = new System.Windows.Forms.TreeNode("エフェクト", new System.Windows.Forms.TreeNode[] {
+            treeNode156,
+            treeNode157,
+            treeNode158,
+            treeNode159,
+            treeNode160,
+            treeNode161,
+            treeNode162,
+            treeNode163,
+            treeNode164,
+            treeNode165});
+            System.Windows.Forms.TreeNode treeNode167 = new System.Windows.Forms.TreeNode("スキン");
+            System.Windows.Forms.TreeNode treeNode168 = new System.Windows.Forms.TreeNode("その他");
             this.TreeMenu = new System.Windows.Forms.TreeView();
             this.tabControlEffects = new System.Windows.Forms.TabControl();
+            this.tabSetting = new System.Windows.Forms.TabPage();
+            this.BtnUpdate = new System.Windows.Forms.Button();
+            this.smbSpeaker = new System.Windows.Forms.ComboBox();
+            this.label43 = new System.Windows.Forms.Label();
+            this.cmbSampling = new System.Windows.Forms.ComboBox();
+            this.label42 = new System.Windows.Forms.Label();
+            this.cmbFormat = new System.Windows.Forms.ComboBox();
+            this.label41 = new System.Windows.Forms.Label();
+            this.cmdSampleRate = new System.Windows.Forms.ComboBox();
+            this.label40 = new System.Windows.Forms.Label();
+            this.cmbDevice = new System.Windows.Forms.ComboBox();
+            this.label38 = new System.Windows.Forms.Label();
+            this.cmbOutput = new System.Windows.Forms.ComboBox();
+            this.label36 = new System.Windows.Forms.Label();
             this.tabGEqualizer = new System.Windows.Forms.TabPage();
+            this.TrkGEQ22K = new System.Windows.Forms.TrackBar();
+            this.TrkGEQ20K = new System.Windows.Forms.TrackBar();
+            this.TrkGEQ16K = new System.Windows.Forms.TrackBar();
+            this.TrkGEQ8K = new System.Windows.Forms.TrackBar();
+            this.TrkGEQ4K = new System.Windows.Forms.TrackBar();
+            this.TrkGEQ2K = new System.Windows.Forms.TrackBar();
+            this.TrkGEQ1K = new System.Windows.Forms.TrackBar();
+            this.TrkGEQ500 = new System.Windows.Forms.TrackBar();
+            this.TrkGEQ250 = new System.Windows.Forms.TrackBar();
+            this.TrkGEQ125 = new System.Windows.Forms.TrackBar();
+            this.TrkGEQ60 = new System.Windows.Forms.TrackBar();
+            this.TrkGEQ32 = new System.Windows.Forms.TrackBar();
+            this.PictGEQGraph = new System.Windows.Forms.PictureBox();
             this.tabPitch = new System.Windows.Forms.TabPage();
             this.GroupSpeed = new System.Windows.Forms.GroupBox();
             this.lblValSpeed = new System.Windows.Forms.TextBox();
@@ -197,22 +224,22 @@
             this.label18 = new System.Windows.Forms.Label();
             this.knob5 = new UI.Knob();
             this.CheckReverb = new System.Windows.Forms.CheckBox();
-            this.pnlOptionOutput = new System.Windows.Forms.Panel();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.smbSpeaker = new System.Windows.Forms.ComboBox();
-            this.label43 = new System.Windows.Forms.Label();
-            this.cmbSampling = new System.Windows.Forms.ComboBox();
-            this.label42 = new System.Windows.Forms.Label();
-            this.cmbFormat = new System.Windows.Forms.ComboBox();
-            this.label41 = new System.Windows.Forms.Label();
-            this.cmdSampleRate = new System.Windows.Forms.ComboBox();
-            this.label40 = new System.Windows.Forms.Label();
-            this.cmbDevice = new System.Windows.Forms.ComboBox();
-            this.label38 = new System.Windows.Forms.Label();
-            this.cmbOutput = new System.Windows.Forms.ComboBox();
-            this.label36 = new System.Windows.Forms.Label();
             this.tabControlEffects.SuspendLayout();
+            this.tabSetting.SuspendLayout();
+            this.tabGEqualizer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ22K)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ20K)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ16K)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ8K)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ4K)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ2K)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ1K)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ500)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ250)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ125)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ60)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ32)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictGEQGraph)).BeginInit();
             this.tabPitch.SuspendLayout();
             this.GroupSpeed.SuspendLayout();
             this.GroupFrequency.SuspendLayout();
@@ -232,8 +259,6 @@
             this.GroupCompressor.SuspendLayout();
             this.tabReverb.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.pnlOptionOutput.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // TreeMenu
@@ -241,45 +266,46 @@
             this.TreeMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.TreeMenu.Location = new System.Drawing.Point(0, 0);
             this.TreeMenu.Name = "TreeMenu";
-            treeNode1.Name = "OUTPUT";
-            treeNode1.Text = "出力設定";
-            treeNode2.Name = "GEQ";
-            treeNode2.Text = "Graphic Equalizer";
-            treeNode3.Name = "PITCH";
-            treeNode3.Text = "Pitch / Freq / Speed";
-            treeNode4.Name = "DISTORTION";
-            treeNode4.Text = "Distortion";
-            treeNode5.Name = "CHORUS";
-            treeNode5.Text = "Chorus";
-            treeNode6.Name = "ECHO";
-            treeNode6.Text = "Echo";
-            treeNode7.Name = "FLANGER";
-            treeNode7.Text = "Flanger";
-            treeNode8.Name = "HIGHPASS";
-            treeNode8.Text = "Highpass";
-            treeNode9.Name = "LOWPASS";
-            treeNode9.Text = "Lowpass";
-            treeNode10.Name = "COMPRESSOR";
-            treeNode10.Text = "Compressor";
-            treeNode11.Name = "REVERB";
-            treeNode11.Text = "Reverb";
-            treeNode12.Name = "EFFECTS";
-            treeNode12.Text = "エフェクト";
-            treeNode13.Name = "SKIN";
-            treeNode13.Text = "スキン";
-            treeNode14.Name = "OTHER";
-            treeNode14.Text = "その他";
+            treeNode155.Name = "OUTPUT";
+            treeNode155.Text = "出力設定";
+            treeNode156.Name = "GEQ";
+            treeNode156.Text = "Graphic Equalizer";
+            treeNode157.Name = "PITCH";
+            treeNode157.Text = "Pitch / Freq / Speed";
+            treeNode158.Name = "DISTORTION";
+            treeNode158.Text = "Distortion";
+            treeNode159.Name = "CHORUS";
+            treeNode159.Text = "Chorus";
+            treeNode160.Name = "ECHO";
+            treeNode160.Text = "Echo";
+            treeNode161.Name = "FLANGER";
+            treeNode161.Text = "Flanger";
+            treeNode162.Name = "HIGHPASS";
+            treeNode162.Text = "Highpass";
+            treeNode163.Name = "LOWPASS";
+            treeNode163.Text = "Lowpass";
+            treeNode164.Name = "COMPRESSOR";
+            treeNode164.Text = "Compressor";
+            treeNode165.Name = "REVERB";
+            treeNode165.Text = "Reverb";
+            treeNode166.Name = "EFFECTS";
+            treeNode166.Text = "エフェクト";
+            treeNode167.Name = "SKIN";
+            treeNode167.Text = "スキン";
+            treeNode168.Name = "OTHER";
+            treeNode168.Text = "その他";
             this.TreeMenu.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode12,
-            treeNode13,
-            treeNode14});
+            treeNode155,
+            treeNode166,
+            treeNode167,
+            treeNode168});
             this.TreeMenu.Size = new System.Drawing.Size(199, 419);
             this.TreeMenu.TabIndex = 3;
             this.TreeMenu.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeMenu_AfterSelect);
             // 
             // tabControlEffects
             // 
+            this.tabControlEffects.Controls.Add(this.tabSetting);
             this.tabControlEffects.Controls.Add(this.tabGEqualizer);
             this.tabControlEffects.Controls.Add(this.tabPitch);
             this.tabControlEffects.Controls.Add(this.tabDistortion);
@@ -297,14 +323,364 @@
             this.tabControlEffects.Size = new System.Drawing.Size(585, 419);
             this.tabControlEffects.TabIndex = 4;
             // 
+            // tabSetting
+            // 
+            this.tabSetting.BackColor = System.Drawing.Color.Transparent;
+            this.tabSetting.Controls.Add(this.BtnUpdate);
+            this.tabSetting.Controls.Add(this.smbSpeaker);
+            this.tabSetting.Controls.Add(this.label43);
+            this.tabSetting.Controls.Add(this.cmbSampling);
+            this.tabSetting.Controls.Add(this.label42);
+            this.tabSetting.Controls.Add(this.cmbFormat);
+            this.tabSetting.Controls.Add(this.label41);
+            this.tabSetting.Controls.Add(this.cmdSampleRate);
+            this.tabSetting.Controls.Add(this.label40);
+            this.tabSetting.Controls.Add(this.cmbDevice);
+            this.tabSetting.Controls.Add(this.label38);
+            this.tabSetting.Controls.Add(this.cmbOutput);
+            this.tabSetting.Controls.Add(this.label36);
+            this.tabSetting.Location = new System.Drawing.Point(4, 24);
+            this.tabSetting.Name = "tabSetting";
+            this.tabSetting.Size = new System.Drawing.Size(577, 391);
+            this.tabSetting.TabIndex = 10;
+            this.tabSetting.Text = "出力設定";
+            // 
+            // BtnUpdate
+            // 
+            this.BtnUpdate.Location = new System.Drawing.Point(272, 204);
+            this.BtnUpdate.Name = "BtnUpdate";
+            this.BtnUpdate.Size = new System.Drawing.Size(75, 23);
+            this.BtnUpdate.TabIndex = 25;
+            this.BtnUpdate.Text = "適用";
+            this.BtnUpdate.UseVisualStyleBackColor = true;
+            // 
+            // smbSpeaker
+            // 
+            this.smbSpeaker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.smbSpeaker.FormattingEnabled = true;
+            this.smbSpeaker.Items.AddRange(new object[] {
+            "デフォルト",
+            "モノラル",
+            "ステレオ",
+            "4.0",
+            "5.0",
+            "5.1",
+            "7.1",
+            "7.1.4"});
+            this.smbSpeaker.Location = new System.Drawing.Point(105, 159);
+            this.smbSpeaker.Name = "smbSpeaker";
+            this.smbSpeaker.Size = new System.Drawing.Size(242, 23);
+            this.smbSpeaker.TabIndex = 24;
+            // 
+            // label43
+            // 
+            this.label43.AutoSize = true;
+            this.label43.Location = new System.Drawing.Point(24, 162);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(75, 15);
+            this.label43.TabIndex = 23;
+            this.label43.Text = "スピーカーモード";
+            this.label43.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmbSampling
+            // 
+            this.cmbSampling.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSampling.FormattingEnabled = true;
+            this.cmbSampling.Items.AddRange(new object[] {
+            "補完無し",
+            "リニア補完",
+            "キュービック補完",
+            "５ポイントスプライン補完"});
+            this.cmbSampling.Location = new System.Drawing.Point(105, 130);
+            this.cmbSampling.Name = "cmbSampling";
+            this.cmbSampling.Size = new System.Drawing.Size(242, 23);
+            this.cmbSampling.TabIndex = 22;
+            // 
+            // label42
+            // 
+            this.label42.AutoSize = true;
+            this.label42.Location = new System.Drawing.Point(13, 133);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(86, 15);
+            this.label42.TabIndex = 21;
+            this.label42.Text = "サンプリングモード";
+            this.label42.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmbFormat
+            // 
+            this.cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFormat.FormattingEnabled = true;
+            this.cmbFormat.Items.AddRange(new object[] {
+            "8bit integer PCM",
+            "16bit integer PCM",
+            "24bit integer PCM",
+            "32bit integer PCM",
+            "32bit floating point PCM"});
+            this.cmbFormat.Location = new System.Drawing.Point(105, 101);
+            this.cmbFormat.Name = "cmbFormat";
+            this.cmbFormat.Size = new System.Drawing.Size(242, 23);
+            this.cmbFormat.TabIndex = 20;
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.Location = new System.Drawing.Point(43, 104);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(56, 15);
+            this.label41.TabIndex = 19;
+            this.label41.Text = "フォーマット";
+            this.label41.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmdSampleRate
+            // 
+            this.cmdSampleRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmdSampleRate.FormattingEnabled = true;
+            this.cmdSampleRate.Items.AddRange(new object[] {
+            "192000",
+            "96000",
+            "88200",
+            "48000",
+            "44100",
+            "32000",
+            "22050",
+            "16000",
+            "11025",
+            "8000",
+            "7333",
+            "6000",
+            "5500"});
+            this.cmdSampleRate.Location = new System.Drawing.Point(105, 72);
+            this.cmdSampleRate.Name = "cmdSampleRate";
+            this.cmdSampleRate.Size = new System.Drawing.Size(242, 23);
+            this.cmdSampleRate.TabIndex = 18;
+            // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(29, 75);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(70, 15);
+            this.label40.TabIndex = 17;
+            this.label40.Text = "サンプルレート";
+            this.label40.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmbDevice
+            // 
+            this.cmbDevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDevice.FormattingEnabled = true;
+            this.cmbDevice.Location = new System.Drawing.Point(105, 43);
+            this.cmbDevice.Name = "cmbDevice";
+            this.cmbDevice.Size = new System.Drawing.Size(242, 23);
+            this.cmbDevice.TabIndex = 16;
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(55, 46);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(44, 15);
+            this.label38.TabIndex = 15;
+            this.label38.Text = "デバイス";
+            this.label38.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmbOutput
+            // 
+            this.cmbOutput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbOutput.FormattingEnabled = true;
+            this.cmbOutput.Items.AddRange(new object[] {
+            "自動検出",
+            "Windows Audio Session API  (WASAPI)",
+            "Windows Sonic",
+            "Low Latency ASIO 2.0"});
+            this.cmbOutput.Location = new System.Drawing.Point(105, 14);
+            this.cmbOutput.Name = "cmbOutput";
+            this.cmbOutput.Size = new System.Drawing.Size(242, 23);
+            this.cmbOutput.TabIndex = 14;
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(44, 17);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(55, 15);
+            this.label36.TabIndex = 13;
+            this.label36.Text = "出力形式";
+            this.label36.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // tabGEqualizer
             // 
             this.tabGEqualizer.BackColor = System.Drawing.Color.Transparent;
+            this.tabGEqualizer.Controls.Add(this.TrkGEQ22K);
+            this.tabGEqualizer.Controls.Add(this.TrkGEQ20K);
+            this.tabGEqualizer.Controls.Add(this.TrkGEQ16K);
+            this.tabGEqualizer.Controls.Add(this.TrkGEQ8K);
+            this.tabGEqualizer.Controls.Add(this.TrkGEQ4K);
+            this.tabGEqualizer.Controls.Add(this.TrkGEQ2K);
+            this.tabGEqualizer.Controls.Add(this.TrkGEQ1K);
+            this.tabGEqualizer.Controls.Add(this.TrkGEQ500);
+            this.tabGEqualizer.Controls.Add(this.TrkGEQ250);
+            this.tabGEqualizer.Controls.Add(this.TrkGEQ125);
+            this.tabGEqualizer.Controls.Add(this.TrkGEQ60);
+            this.tabGEqualizer.Controls.Add(this.TrkGEQ32);
+            this.tabGEqualizer.Controls.Add(this.PictGEQGraph);
             this.tabGEqualizer.Location = new System.Drawing.Point(4, 24);
             this.tabGEqualizer.Name = "tabGEqualizer";
             this.tabGEqualizer.Size = new System.Drawing.Size(577, 391);
             this.tabGEqualizer.TabIndex = 9;
             this.tabGEqualizer.Text = "Graphic Equalizer";
+            // 
+            // TrkGEQ22K
+            // 
+            this.TrkGEQ22K.LargeChange = 10;
+            this.TrkGEQ22K.Location = new System.Drawing.Point(523, 187);
+            this.TrkGEQ22K.Maximum = 30;
+            this.TrkGEQ22K.Minimum = -30;
+            this.TrkGEQ22K.Name = "TrkGEQ22K";
+            this.TrkGEQ22K.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ22K.Size = new System.Drawing.Size(45, 177);
+            this.TrkGEQ22K.TabIndex = 12;
+            this.TrkGEQ22K.ValueChanged += new System.EventHandler(this.TrkGEQ22K_ValueChanged);
+            // 
+            // TrkGEQ20K
+            // 
+            this.TrkGEQ20K.LargeChange = 10;
+            this.TrkGEQ20K.Location = new System.Drawing.Point(477, 187);
+            this.TrkGEQ20K.Maximum = 30;
+            this.TrkGEQ20K.Minimum = -30;
+            this.TrkGEQ20K.Name = "TrkGEQ20K";
+            this.TrkGEQ20K.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ20K.Size = new System.Drawing.Size(45, 177);
+            this.TrkGEQ20K.TabIndex = 11;
+            this.TrkGEQ20K.ValueChanged += new System.EventHandler(this.TrkGEQ20K_ValueChanged);
+            // 
+            // TrkGEQ16K
+            // 
+            this.TrkGEQ16K.LargeChange = 10;
+            this.TrkGEQ16K.Location = new System.Drawing.Point(431, 187);
+            this.TrkGEQ16K.Maximum = 30;
+            this.TrkGEQ16K.Minimum = -30;
+            this.TrkGEQ16K.Name = "TrkGEQ16K";
+            this.TrkGEQ16K.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ16K.Size = new System.Drawing.Size(45, 177);
+            this.TrkGEQ16K.TabIndex = 10;
+            this.TrkGEQ16K.ValueChanged += new System.EventHandler(this.TrkGEQ16K_ValueChanged);
+            // 
+            // TrkGEQ8K
+            // 
+            this.TrkGEQ8K.LargeChange = 10;
+            this.TrkGEQ8K.Location = new System.Drawing.Point(385, 187);
+            this.TrkGEQ8K.Maximum = 30;
+            this.TrkGEQ8K.Minimum = -30;
+            this.TrkGEQ8K.Name = "TrkGEQ8K";
+            this.TrkGEQ8K.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ8K.Size = new System.Drawing.Size(45, 177);
+            this.TrkGEQ8K.TabIndex = 9;
+            this.TrkGEQ8K.ValueChanged += new System.EventHandler(this.TrkGEQ8K_ValueChanged);
+            // 
+            // TrkGEQ4K
+            // 
+            this.TrkGEQ4K.LargeChange = 10;
+            this.TrkGEQ4K.Location = new System.Drawing.Point(339, 187);
+            this.TrkGEQ4K.Maximum = 30;
+            this.TrkGEQ4K.Minimum = -30;
+            this.TrkGEQ4K.Name = "TrkGEQ4K";
+            this.TrkGEQ4K.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ4K.Size = new System.Drawing.Size(45, 177);
+            this.TrkGEQ4K.TabIndex = 8;
+            this.TrkGEQ4K.ValueChanged += new System.EventHandler(this.TrkGEQ4K_ValueChanged);
+            // 
+            // TrkGEQ2K
+            // 
+            this.TrkGEQ2K.LargeChange = 10;
+            this.TrkGEQ2K.Location = new System.Drawing.Point(293, 187);
+            this.TrkGEQ2K.Maximum = 30;
+            this.TrkGEQ2K.Minimum = -30;
+            this.TrkGEQ2K.Name = "TrkGEQ2K";
+            this.TrkGEQ2K.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ2K.Size = new System.Drawing.Size(45, 177);
+            this.TrkGEQ2K.TabIndex = 7;
+            this.TrkGEQ2K.ValueChanged += new System.EventHandler(this.TrkGEQ2K_ValueChanged);
+            // 
+            // TrkGEQ1K
+            // 
+            this.TrkGEQ1K.LargeChange = 10;
+            this.TrkGEQ1K.Location = new System.Drawing.Point(247, 187);
+            this.TrkGEQ1K.Maximum = 30;
+            this.TrkGEQ1K.Minimum = -30;
+            this.TrkGEQ1K.Name = "TrkGEQ1K";
+            this.TrkGEQ1K.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ1K.Size = new System.Drawing.Size(45, 177);
+            this.TrkGEQ1K.TabIndex = 6;
+            this.TrkGEQ1K.ValueChanged += new System.EventHandler(this.TrkGEQ1K_ValueChanged);
+            // 
+            // TrkGEQ500
+            // 
+            this.TrkGEQ500.LargeChange = 10;
+            this.TrkGEQ500.Location = new System.Drawing.Point(201, 187);
+            this.TrkGEQ500.Maximum = 30;
+            this.TrkGEQ500.Minimum = -30;
+            this.TrkGEQ500.Name = "TrkGEQ500";
+            this.TrkGEQ500.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ500.Size = new System.Drawing.Size(45, 177);
+            this.TrkGEQ500.TabIndex = 5;
+            this.TrkGEQ500.ValueChanged += new System.EventHandler(this.TrkGEQ500_ValueChanged);
+            // 
+            // TrkGEQ250
+            // 
+            this.TrkGEQ250.LargeChange = 10;
+            this.TrkGEQ250.Location = new System.Drawing.Point(155, 187);
+            this.TrkGEQ250.Maximum = 30;
+            this.TrkGEQ250.Minimum = -30;
+            this.TrkGEQ250.Name = "TrkGEQ250";
+            this.TrkGEQ250.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ250.Size = new System.Drawing.Size(45, 177);
+            this.TrkGEQ250.TabIndex = 4;
+            this.TrkGEQ250.ValueChanged += new System.EventHandler(this.TrkGEQ250_ValueChanged);
+            // 
+            // TrkGEQ125
+            // 
+            this.TrkGEQ125.LargeChange = 10;
+            this.TrkGEQ125.Location = new System.Drawing.Point(109, 187);
+            this.TrkGEQ125.Maximum = 30;
+            this.TrkGEQ125.Minimum = -30;
+            this.TrkGEQ125.Name = "TrkGEQ125";
+            this.TrkGEQ125.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ125.Size = new System.Drawing.Size(45, 177);
+            this.TrkGEQ125.TabIndex = 3;
+            this.TrkGEQ125.ValueChanged += new System.EventHandler(this.TrkGEQ125_ValueChanged);
+            // 
+            // TrkGEQ60
+            // 
+            this.TrkGEQ60.LargeChange = 10;
+            this.TrkGEQ60.Location = new System.Drawing.Point(63, 187);
+            this.TrkGEQ60.Maximum = 30;
+            this.TrkGEQ60.Minimum = -30;
+            this.TrkGEQ60.Name = "TrkGEQ60";
+            this.TrkGEQ60.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ60.Size = new System.Drawing.Size(45, 177);
+            this.TrkGEQ60.TabIndex = 2;
+            this.TrkGEQ60.ValueChanged += new System.EventHandler(this.TrkGEQ60_ValueChanged);
+            // 
+            // TrkGEQ32
+            // 
+            this.TrkGEQ32.LargeChange = 10;
+            this.TrkGEQ32.Location = new System.Drawing.Point(17, 187);
+            this.TrkGEQ32.Maximum = 30;
+            this.TrkGEQ32.Minimum = -30;
+            this.TrkGEQ32.Name = "TrkGEQ32";
+            this.TrkGEQ32.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ32.Size = new System.Drawing.Size(45, 177);
+            this.TrkGEQ32.TabIndex = 1;
+            this.TrkGEQ32.ValueChanged += new System.EventHandler(this.TrkGEQ32_ValueChanged);
+            // 
+            // PictGEQGraph
+            // 
+            this.PictGEQGraph.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.PictGEQGraph.Location = new System.Drawing.Point(3, 3);
+            this.PictGEQGraph.Name = "PictGEQGraph";
+            this.PictGEQGraph.Size = new System.Drawing.Size(571, 178);
+            this.PictGEQGraph.TabIndex = 0;
+            this.PictGEQGraph.TabStop = false;
             // 
             // tabPitch
             // 
@@ -2328,200 +2704,6 @@
             this.CheckReverb.Text = "Reverb";
             this.CheckReverb.UseVisualStyleBackColor = true;
             // 
-            // pnlOptionOutput
-            // 
-            this.pnlOptionOutput.Controls.Add(this.groupBox2);
-            this.pnlOptionOutput.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlOptionOutput.Location = new System.Drawing.Point(0, 0);
-            this.pnlOptionOutput.Name = "pnlOptionOutput";
-            this.pnlOptionOutput.Size = new System.Drawing.Size(784, 419);
-            this.pnlOptionOutput.TabIndex = 5;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.button1);
-            this.groupBox2.Controls.Add(this.smbSpeaker);
-            this.groupBox2.Controls.Add(this.label43);
-            this.groupBox2.Controls.Add(this.cmbSampling);
-            this.groupBox2.Controls.Add(this.label42);
-            this.groupBox2.Controls.Add(this.cmbFormat);
-            this.groupBox2.Controls.Add(this.label41);
-            this.groupBox2.Controls.Add(this.cmdSampleRate);
-            this.groupBox2.Controls.Add(this.label40);
-            this.groupBox2.Controls.Add(this.cmbDevice);
-            this.groupBox2.Controls.Add(this.label38);
-            this.groupBox2.Controls.Add(this.cmbOutput);
-            this.groupBox2.Controls.Add(this.label36);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox2.Location = new System.Drawing.Point(0, 0);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(784, 419);
-            this.groupBox2.TabIndex = 1;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "出力設定";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(280, 212);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 12;
-            this.button1.Text = "適用";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // smbSpeaker
-            // 
-            this.smbSpeaker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.smbSpeaker.FormattingEnabled = true;
-            this.smbSpeaker.Items.AddRange(new object[] {
-            "デフォルト",
-            "モノラル",
-            "ステレオ",
-            "4.0",
-            "5.0",
-            "5.1",
-            "7.1",
-            "7.1.4"});
-            this.smbSpeaker.Location = new System.Drawing.Point(113, 167);
-            this.smbSpeaker.Name = "smbSpeaker";
-            this.smbSpeaker.Size = new System.Drawing.Size(242, 23);
-            this.smbSpeaker.TabIndex = 11;
-            // 
-            // label43
-            // 
-            this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(32, 170);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(75, 15);
-            this.label43.TabIndex = 10;
-            this.label43.Text = "スピーカーモード";
-            this.label43.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cmbSampling
-            // 
-            this.cmbSampling.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbSampling.FormattingEnabled = true;
-            this.cmbSampling.Items.AddRange(new object[] {
-            "補完無し",
-            "リニア補完",
-            "キュービック補完",
-            "５ポイントスプライン補完"});
-            this.cmbSampling.Location = new System.Drawing.Point(113, 138);
-            this.cmbSampling.Name = "cmbSampling";
-            this.cmbSampling.Size = new System.Drawing.Size(242, 23);
-            this.cmbSampling.TabIndex = 9;
-            // 
-            // label42
-            // 
-            this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(21, 141);
-            this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(86, 15);
-            this.label42.TabIndex = 8;
-            this.label42.Text = "サンプリングモード";
-            this.label42.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cmbFormat
-            // 
-            this.cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbFormat.FormattingEnabled = true;
-            this.cmbFormat.Items.AddRange(new object[] {
-            "8bit integer PCM",
-            "16bit integer PCM",
-            "24bit integer PCM",
-            "32bit integer PCM",
-            "32bit floating point PCM"});
-            this.cmbFormat.Location = new System.Drawing.Point(113, 109);
-            this.cmbFormat.Name = "cmbFormat";
-            this.cmbFormat.Size = new System.Drawing.Size(242, 23);
-            this.cmbFormat.TabIndex = 7;
-            // 
-            // label41
-            // 
-            this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(51, 112);
-            this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(56, 15);
-            this.label41.TabIndex = 6;
-            this.label41.Text = "フォーマット";
-            this.label41.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cmdSampleRate
-            // 
-            this.cmdSampleRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmdSampleRate.FormattingEnabled = true;
-            this.cmdSampleRate.Items.AddRange(new object[] {
-            "192000",
-            "96000",
-            "88200",
-            "48000",
-            "44100",
-            "32000",
-            "22050",
-            "16000",
-            "11025",
-            "8000",
-            "7333",
-            "6000",
-            "5500"});
-            this.cmdSampleRate.Location = new System.Drawing.Point(113, 80);
-            this.cmdSampleRate.Name = "cmdSampleRate";
-            this.cmdSampleRate.Size = new System.Drawing.Size(242, 23);
-            this.cmdSampleRate.TabIndex = 5;
-            // 
-            // label40
-            // 
-            this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(37, 83);
-            this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(70, 15);
-            this.label40.TabIndex = 4;
-            this.label40.Text = "サンプルレート";
-            this.label40.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cmbDevice
-            // 
-            this.cmbDevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbDevice.FormattingEnabled = true;
-            this.cmbDevice.Location = new System.Drawing.Point(113, 51);
-            this.cmbDevice.Name = "cmbDevice";
-            this.cmbDevice.Size = new System.Drawing.Size(242, 23);
-            this.cmbDevice.TabIndex = 3;
-            // 
-            // label38
-            // 
-            this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(63, 54);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(44, 15);
-            this.label38.TabIndex = 2;
-            this.label38.Text = "デバイス";
-            this.label38.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cmbOutput
-            // 
-            this.cmbOutput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbOutput.FormattingEnabled = true;
-            this.cmbOutput.Items.AddRange(new object[] {
-            "自動検出",
-            "Windows Audio Session API  (WASAPI)",
-            "Windows Sonic",
-            "Low Latency ASIO 2.0"});
-            this.cmbOutput.Location = new System.Drawing.Point(113, 22);
-            this.cmbOutput.Name = "cmbOutput";
-            this.cmbOutput.Size = new System.Drawing.Size(242, 23);
-            this.cmbOutput.TabIndex = 1;
-            // 
-            // label36
-            // 
-            this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(52, 25);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(55, 15);
-            this.label36.TabIndex = 0;
-            this.label36.Text = "出力形式";
-            this.label36.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // OptionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -2529,12 +2711,28 @@
             this.ClientSize = new System.Drawing.Size(784, 419);
             this.Controls.Add(this.tabControlEffects);
             this.Controls.Add(this.TreeMenu);
-            this.Controls.Add(this.pnlOptionOutput);
             this.DoubleBuffered = true;
             this.Name = "OptionsForm";
             this.Text = "Options";
             this.Load += new System.EventHandler(this.OptionsForm_Load);
             this.tabControlEffects.ResumeLayout(false);
+            this.tabSetting.ResumeLayout(false);
+            this.tabSetting.PerformLayout();
+            this.tabGEqualizer.ResumeLayout(false);
+            this.tabGEqualizer.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ22K)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ20K)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ16K)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ8K)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ4K)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ2K)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ1K)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ500)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ250)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ125)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ60)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ32)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictGEQGraph)).EndInit();
             this.tabPitch.ResumeLayout(false);
             this.GroupSpeed.ResumeLayout(false);
             this.GroupSpeed.PerformLayout();
@@ -2565,9 +2763,6 @@
             this.tabReverb.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.pnlOptionOutput.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -2718,8 +2913,8 @@
         private System.Windows.Forms.Label label1;
         private UI.Knob KnobDistortionLevel;
         private System.Windows.Forms.CheckBox CheckDistortion;
-        private System.Windows.Forms.Panel pnlOptionOutput;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TabPage tabSetting;
+        private System.Windows.Forms.Button BtnUpdate;
         private System.Windows.Forms.ComboBox smbSpeaker;
         private System.Windows.Forms.Label label43;
         private System.Windows.Forms.ComboBox cmbSampling;
@@ -2732,6 +2927,18 @@
         private System.Windows.Forms.Label label38;
         private System.Windows.Forms.ComboBox cmbOutput;
         private System.Windows.Forms.Label label36;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TrackBar TrkGEQ22K;
+        private System.Windows.Forms.TrackBar TrkGEQ20K;
+        private System.Windows.Forms.TrackBar TrkGEQ16K;
+        private System.Windows.Forms.TrackBar TrkGEQ8K;
+        private System.Windows.Forms.TrackBar TrkGEQ4K;
+        private System.Windows.Forms.TrackBar TrkGEQ2K;
+        private System.Windows.Forms.TrackBar TrkGEQ1K;
+        private System.Windows.Forms.TrackBar TrkGEQ500;
+        private System.Windows.Forms.TrackBar TrkGEQ250;
+        private System.Windows.Forms.TrackBar TrkGEQ125;
+        private System.Windows.Forms.TrackBar TrkGEQ60;
+        private System.Windows.Forms.TrackBar TrkGEQ32;
+        private System.Windows.Forms.PictureBox PictGEQGraph;
     }
 }

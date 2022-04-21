@@ -502,7 +502,7 @@ namespace MediaPlayer_X_Ark
             if (player.IsPlaying())
                 player.Pause();
             else
-                player.PlaySound(playingIndex);
+                PlayLoad();
         }
 
         /// <summary>

@@ -24,11 +24,12 @@ namespace MediaPlayer_X_Ark
 			TreeMenu.ExpandAll();
 			OptionOutput();
 			EffectControlInitialize();
+			PaintGEQGraph();
 		}
 		private void PitchChenged(object sender, PropertyChangedEventArgs e)
 		{
 			if (CheckSpeed.Checked)
-            {
+			{
 				CheckPitch.Checked = _engine.effector.PitchShift.Enabled;
 				KnobPitchPitch.Value = (int)(_engine.effector.PitchShift.Pitch * 100) - 50;
 			}
@@ -108,16 +109,17 @@ namespace MediaPlayer_X_Ark
 		{
 			_engine.effector.SpeedEnabled = GroupControl(sender);
 			if (_engine.effector.SpeedEnabled)
-            {
+			{
 				_engine.effector.PitchShift.Switch(true);
 				_engine.effector.Frequency.Switch(true);
 				GroupFrequency.Enabled = false;
 				GroupPitchShift.Enabled = false;
-			} else
-            {
+			}
+			else
+			{
 				GroupPitchShift.Enabled = true;
 				GroupFrequency.Enabled = true;
-            }
+			}
 		}
 		#endregion
 		private void DistortionLevel_ValueChanged(object sender, EventArgs e)
@@ -127,167 +129,167 @@ namespace MediaPlayer_X_Ark
 		}
 
 		private void KnobChorusMix_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Chorus.Mix = ((UI.Knob)sender).Value / 10F;
 			lblValChorusMix.Text = _engine.effector.Chorus.Mix.ToString("##0.0");
 		}
 
 		private void KnobChorusRate_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Chorus.Rate = ((UI.Knob)sender).Value / 10F;
 			lblValChorusRate.Text = _engine.effector.Chorus.Rate.ToString("##0.0");
 		}
 
 		private void KnobChorusDepth_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Chorus.Depth = ((UI.Knob)sender).Value / 10F;
 			lblValChorusDepth.Text = _engine.effector.Chorus.Depth.ToString("##0.0");
 		}
 
 		private void KnobEchoDelay_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Echo.Delay = ((UI.Knob)sender).Value / 10F;
 			lblValEchoDelay.Text = _engine.effector.Echo.Delay.ToString("##0.0");
 		}
 
 		private void KnobEchoFeedback_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Echo.Feedback = ((UI.Knob)sender).Value / 10F;
 			lblValEchoFeedback.Text = _engine.effector.Echo.Feedback.ToString("##0.0");
 		}
 
 		private void KnobEchoDry_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Echo.DryLevel = ((UI.Knob)sender).Value / 10F;
 			lblValEchoDry.Text = _engine.effector.Echo.DryLevel.ToString("##0.0");
 		}
 
 		private void KnobEchoWet_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Echo.WetLevel = ((UI.Knob)sender).Value / 10F;
 			lblValEchoWet.Text = _engine.effector.Echo.WetLevel.ToString("##0.0");
 		}
 
 		private void KnobHighpassCutoff_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Highpass.CutOff = ((UI.Knob)sender).Value / 10F;
 			lblValHighpassCutoff.Text = _engine.effector.Highpass.CutOff.ToString("##0.0");
 		}
 
 		private void KnobHighpassResonance_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Highpass.Resonance = ((UI.Knob)sender).Value / 10F;
 			lblValHighpassResonance.Text = _engine.effector.Highpass.Resonance.ToString("##0.0");
 		}
 
 		private void KnobLowpassCutoff_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Lowpass.CutOff = ((UI.Knob)sender).Value / 10F;
 			lblValLowpassCutoff.Text = _engine.effector.Lowpass.CutOff.ToString("##0.0");
 		}
 
 		private void KnobLowpassResonance_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Lowpass.Resonance = ((UI.Knob)sender).Value / 10F;
 			lblValLowpassResonance.Text = _engine.effector.Lowpass.Resonance.ToString("##0.0");
 		}
 
 		private void KnobFlangerMix_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Flanger.Mix = ((UI.Knob)sender).Value / 10F;
 			lblValFlangerMix.Text = _engine.effector.Flanger.Mix.ToString("##0.0");
 		}
 
 		private void KnobFlangerRate_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Flanger.Rate = ((UI.Knob)sender).Value / 10F;
 			lblValFlangerRate.Text = _engine.effector.Flanger.Rate.ToString("##0.0");
 		}
 
 		private void KnobFlangerDepth_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Flanger.Depth = ((UI.Knob)sender).Value / 100F;
 			lblValFlangerDepth.Text = _engine.effector.Flanger.Depth.ToString("##0.0");
 		}
 
 		private void KnobCompThreshold_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Compressor.Threshold = ((UI.Knob)sender).Value / 10F;
 			lblValCompThreshold.Text = _engine.effector.Compressor.Threshold.ToString("##0.0");
 		}
 
 		private void KnobCompRatio_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Compressor.Ratio = ((UI.Knob)sender).Value / 10F;
 			lblValCompRatio.Text = _engine.effector.Compressor.Ratio.ToString("##0.0");
 		}
 
 		private void KnobCompAttack_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Compressor.Attack = ((UI.Knob)sender).Value / 10F;
 			lblValCompAttack.Text = _engine.effector.Compressor.Attack.ToString("##0.0");
 		}
 
 		private void KnobCompRelease_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Compressor.Release = ((UI.Knob)sender).Value / 10F;
 			lblValCompRelease.Text = _engine.effector.Compressor.Release.ToString("##0.0");
 		}
 
 		private void KnobCompGain_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			_engine.effector.Compressor.Gain = ((UI.Knob)sender).Value / 10F;
 			lblValCompGain.Text = _engine.effector.Compressor.Gain.ToString("##0.0");
 		}
 
-        private void KnobPitchPitch_ValueChanged(object sender, EventArgs e)
-        {
-//			if (!CheckSpeed.Checked)
-            {
+		private void KnobPitchPitch_ValueChanged(object sender, EventArgs e)
+		{
+			//			if (!CheckSpeed.Checked)
+			{
 				_engine.effector.PitchShift.Pitch = (((UI.Knob)sender).Value + 50) / 100F;
 			}
 			lblValPitchPitch.Text = _engine.effector.PitchShift.Pitch.ToString("##0.00");
 		}
 
 		private void KnobPitchFFT_ValueChanged(object sender, EventArgs e)
-        {
+		{
 			float[] fftsize = { 256, 512, 1024, 2048, 4096 };
 			_engine.effector.PitchShift.FFTSize = fftsize[((UI.Knob)sender).Value];
 			lblValPitchFFT.Text = _engine.effector.PitchShift.FFTSize.ToString("###0");
 		}
 
-        private void KnobFrequency_ValueChanged(object sender, EventArgs e)
-        {
-//			if (!CheckSpeed.Checked)
-            {
+		private void KnobFrequency_ValueChanged(object sender, EventArgs e)
+		{
+			//			if (!CheckSpeed.Checked)
+			{
 				_engine.effector.Frequency.SetFrequency(((UI.Knob)sender).Value);
 			}
 			lblValFrequency.Text = _engine.effector.Frequency.Hz.ToString();
-        }
+		}
 
-        private void KnobSpeed_ValueChanged(object sender, EventArgs e)
-        {
+		private void KnobSpeed_ValueChanged(object sender, EventArgs e)
+		{
 			_engine.effector.Speed = ((UI.Knob)sender).Value;
 			lblValSpeed.Text = _engine.effector.Speed.ToString();
-        }
+		}
 
 		private bool GroupControl(object sender)
-        {
+		{
 			if (sender.GetType() == typeof(CheckBox))
-            {
-				foreach(Control control in ((CheckBox)sender).Parent.Controls)
-                {
+			{
+				foreach (Control control in ((CheckBox)sender).Parent.Controls)
+				{
 					if (control != sender)
-                    {
+					{
 						control.Enabled = ((CheckBox)sender).Checked;
-                    }
-                }
-            }
+					}
+				}
+			}
 			return ((CheckBox)sender).Checked;
 		}
 
 		private void EffectControlInitialize()
-        {
+		{
 			// Distortion
 			CheckDistortion.Checked = _engine.effector.Distortion.Enabled;
 			// Min:0.0	- Max:1.0		Def:0.5
@@ -438,76 +440,205 @@ namespace MediaPlayer_X_Ark
 			CheckSpeed.Checked = _engine.effector.SpeedEnabled;
 
 			// Def:false
-//			CheckCompLinked.Checked = (bool)(_engine.effector.Compressor.Linked);
+			//			CheckCompLinked.Checked = (bool)(_engine.effector.Compressor.Linked);
 			// Def:false
-//			CheckCompSidechain.Checked = (bool)(_engine.effector.Compressor.SideChain);
+			//			CheckCompSidechain.Checked = (bool)(_engine.effector.Compressor.SideChain);
 
 			// SFX Reverb
 			this.Refresh();
 
 		}
 		private void OptionOutput()
-        {
+		{
 			//			cmbOutput.Items.Add("WAVEファイル出力");
 
-			foreach (DEVICE_INFO device in _engine.DeviceList)
-            {
-				cmbDevice.Items.Add(device.name);
-			}
+			cmbDevice.DataSource = _engine.DeviceList;
+			cmbDevice.DisplayMember = "Name";
+			cmbDevice.ValueMember = "GUID";
 		}
 		private void TreeMenu_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-			pnlOptionOutput.Visible = false;
-			tabControlEffects.Visible = false;
-
+		{
 			if (e.Node.Name == "OUTPUT")
-            {
-				pnlOptionOutput.Visible = true;
-            }
-			if (e.Node.Name == "EFFECTS" || (e.Node.Parent != null && e.Node.Parent.Name == "EFFECTS"))
-            {
-				tabControlEffects.Visible = true;
-				if (e.Node.Name == "GEQ")
-				{
-					tabControlEffects.SelectedIndex = 0;
-				}
-				else if (e.Node.Name == "PITCH")
-				{
-					tabControlEffects.SelectedIndex = 1;
-				}
-				else if (e.Node.Name == "DISTORTION")
-				{
-					tabControlEffects.SelectedIndex = 2;
-				}
-				else if (e.Node.Name == "CHORUS")
-				{
-					tabControlEffects.SelectedIndex = 3;
-				}
-				else if (e.Node.Name == "ECHO")
-				{
-					tabControlEffects.SelectedIndex = 4;
-				}
-				else if (e.Node.Name == "FLANGER")
-				{
-					tabControlEffects.SelectedIndex = 5;
-				}
-				else if (e.Node.Name == "HIGHPASS")
-				{
-					tabControlEffects.SelectedIndex = 6;
-				}
-				else if (e.Node.Name == "LOWPASS")
-				{
-					tabControlEffects.SelectedIndex = 7;
-				}
-				else if (e.Node.Name == "COMPRESSOR")
-				{
-					tabControlEffects.SelectedIndex = 8;
-				}
-				else if (e.Node.Name == "REVERB")
-				{
-					tabControlEffects.SelectedIndex = 9;
-				}
+			{
+				tabControlEffects.SelectedIndex = 0;
+			}
+			if (e.Node.Name == "GEQ")
+			{
+				tabControlEffects.SelectedIndex = 1;
+			}
+			else if (e.Node.Name == "PITCH")
+			{
+				tabControlEffects.SelectedIndex = 2;
+			}
+			else if (e.Node.Name == "DISTORTION")
+			{
+				tabControlEffects.SelectedIndex = 3;
+			}
+			else if (e.Node.Name == "CHORUS")
+			{
+				tabControlEffects.SelectedIndex = 4;
+			}
+			else if (e.Node.Name == "ECHO")
+			{
+				tabControlEffects.SelectedIndex = 5;
+			}
+			else if (e.Node.Name == "FLANGER")
+			{
+				tabControlEffects.SelectedIndex = 6;
+			}
+			else if (e.Node.Name == "HIGHPASS")
+			{
+				tabControlEffects.SelectedIndex = 7;
+			}
+			else if (e.Node.Name == "LOWPASS")
+			{
+				tabControlEffects.SelectedIndex = 8;
+			}
+			else if (e.Node.Name == "COMPRESSOR")
+			{
+				tabControlEffects.SelectedIndex = 9;
+			}
+			else if (e.Node.Name == "REVERB")
+			{
+				tabControlEffects.SelectedIndex = 10;
 			}
 		}
-    }
+
+		private void PaintGEQGraph()
+		{
+			//描画先とするImageオブジェクトを作成する
+			Bitmap canvas = new Bitmap(PictGEQGraph.Width, PictGEQGraph.Height);
+			//ImageオブジェクトのGraphicsオブジェクトを作成する
+			Graphics g = Graphics.FromImage(canvas);
+
+			int hCenter = this.PictGEQGraph.Height / 2;
+			int wWidth = this.PictGEQGraph.Width / 14;
+			int hHeight = this.PictGEQGraph.Height / 60;
+			int value = 0;
+			Point[] curvePoints = new Point[14];
+			curvePoints[0] = new Point(0, hCenter);
+			curvePoints[13] = new Point(PictGEQGraph.Width, hCenter);
+			for (int i = 0; i < 12; i++)
+			{
+				value = GetIndexToTrackValue(i);
+				curvePoints[1 + i] = new Point(wWidth * i + wWidth, hCenter - hHeight * value);
+			}
+
+			//幅3の赤色のPenオブジェクトを作成
+			Pen pen = new Pen(Color.Black, 1);
+			//テンション1のカーディナルスプラインを描画
+			g.DrawCurve(pen, curvePoints, 1);
+
+			//リソースを解放する
+			pen.Dispose();
+			g.Dispose();
+
+			PictGEQGraph.Image = canvas;
+		}
+
+		private int GetIndexToTrackValue(int index)
+		{
+			int value = 0;
+			switch (index)
+			{
+				case 0:
+					value = TrkGEQ32.Value;
+					break;
+				case 1:
+					value = TrkGEQ60.Value;
+					break;
+				case 2:
+					value = TrkGEQ125.Value;
+					break;
+				case 3: 
+					value = TrkGEQ250.Value; 
+					break;
+				case 4: 
+					value = TrkGEQ500.Value; 
+					break;
+				case 5: 
+					value = TrkGEQ1K.Value; 
+					break;
+				case 6: 
+					value = TrkGEQ2K.Value; 
+					break;
+				case 7: 
+					value = TrkGEQ4K.Value; 
+					break;
+				case 8: 
+					value = TrkGEQ8K.Value; 
+					break;
+				case 9: 
+					value = TrkGEQ16K.Value; 
+					break;
+				case 10: 
+					value = TrkGEQ20K.Value; 
+					break;
+				case 11: 
+					value = TrkGEQ22K.Value; 
+					break;
+			}
+			return value;
+		}
+
+        private void TrkGEQ32_ValueChanged(object sender, EventArgs e)
+        {
+			PaintGEQGraph();
+		}
+
+        private void TrkGEQ60_ValueChanged(object sender, EventArgs e)
+        {
+			PaintGEQGraph();
+		}
+
+		private void TrkGEQ125_ValueChanged(object sender, EventArgs e)
+        {
+			PaintGEQGraph();
+		}
+
+		private void TrkGEQ250_ValueChanged(object sender, EventArgs e)
+        {
+			PaintGEQGraph();
+		}
+
+		private void TrkGEQ500_ValueChanged(object sender, EventArgs e)
+        {
+			PaintGEQGraph();
+		}
+
+		private void TrkGEQ1K_ValueChanged(object sender, EventArgs e)
+        {
+			PaintGEQGraph();
+		}
+
+		private void TrkGEQ2K_ValueChanged(object sender, EventArgs e)
+        {
+			PaintGEQGraph();
+		}
+
+		private void TrkGEQ4K_ValueChanged(object sender, EventArgs e)
+        {
+			PaintGEQGraph();
+		}
+
+		private void TrkGEQ8K_ValueChanged(object sender, EventArgs e)
+        {
+			PaintGEQGraph();
+		}
+
+		private void TrkGEQ16K_ValueChanged(object sender, EventArgs e)
+        {
+			PaintGEQGraph();
+		}
+
+		private void TrkGEQ20K_ValueChanged(object sender, EventArgs e)
+        {
+			PaintGEQGraph();
+		}
+
+		private void TrkGEQ22K_ValueChanged(object sender, EventArgs e)
+		{
+			PaintGEQGraph();
+		}
+	}
 }

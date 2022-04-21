@@ -17,7 +17,16 @@ namespace MediaPlayer_X_Ark
 		public int systemrate;
 		public FMOD.SPEAKERMODE speakermode;
 		public int speakerModeChannels;
-	}
+
+		public string Name
+        {
+			get { return name; }
+        }
+		public string GUID
+        {
+			get { return guid.ToString(); }
+        }
+    }
 
 	public enum SOFTWARE_SAMPLE_RATE
 	{
@@ -387,8 +396,12 @@ namespace MediaPlayer_X_Ark
 		/// <param name="channel"></param>
 		public RESULT PlaySound(int index)
         {
-			FMOD.RESULT result = FmodCallFunction(FmodSystem.playSound(PlayList[index].Sound, FmodChannelGroup, false, out FmodChannel));
-			GetTags(index);
+			FMOD.RESULT result = RESULT.OK;
+			if (PlayList[index].Sound.hasHandle())
+            {
+				result = FmodCallFunction(FmodSystem.playSound(PlayList[index].Sound, FmodChannelGroup, false, out FmodChannel));
+				GetTags(index);
+			}
 			return result;
         }
 
