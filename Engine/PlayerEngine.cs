@@ -213,26 +213,26 @@ namespace MediaPlayer_X_Ark
 		/// [ ]	AUDIO3D,			PS4 - Audio3D.
 		/// [ ] WEBAUDIO,			HTML5 - Web Audio ScriptProcessorNode output. (Default on HTML5 if AudioWorkletNode isn't available)
 		/// [ ]	NNAUDIO,			Switch - nn::audio. (Default on Switch)
-		/// [ ] WINSONIC,			Win10 / Xbox One / Game Core - Windows Sonic.
+		/// [X] WINSONIC,			Win10 / Xbox One / Game Core - Windows Sonic.
 		/// [ ]	AAUDIO,				Android - AAudio. (Default on Android 8.1 and above)
 		/// [ ] AUDIOWORKLET,		HTML5 - Web Audio AudioWorkletNode output. (Default on HTML5 if available)
 		/// [ ] MAX,				Maximum number of output types supported.
 		/// </param>
 		public void SetOutputType(FMOD.OUTPUTTYPE outputtype)
 		{
-			if (GetOutputType() == RESULT.OK)
+			GetOutputType();
+
+			if (FmodOutputType != outputtype)
 			{
-				if (FmodOutputType != outputtype)
-				{
-					FmodOutputType = outputtype;
-					FmodCallFunction(FmodSystem.setOutput(outputtype));
-				}
+				FmodOutputType = outputtype;
+				FmodCallFunction(FmodSystem.setOutput(outputtype));
 			}
 		}
 
-		public RESULT GetOutputType()
+		public FMOD.OUTPUTTYPE GetOutputType()
         {
-			return FmodCallFunction(FmodSystem.getOutput(out FmodOutputType));
+			FmodCallFunction(FmodSystem.getOutput(out FmodOutputType));
+			return FmodOutputType;
         }
 
 		/// <summary>
@@ -287,7 +287,19 @@ namespace MediaPlayer_X_Ark
 			FmodSystem.getDriver(out driver);
 			return driver;
         }
-
+		public string GetDeviceGUID()
+        {
+			int driver;
+			FmodSystem.getDriver(out driver);
+			for(int i = 0; i < FmodDeviceList.Count(); i++)
+            {
+				if(FmodDeviceList[i].deviceId == driver)
+                {
+					return FmodDeviceList[i].GUID;
+                }
+            }
+			return "";
+		}
 		/// <summary>
 		/// Set selected device.
 		/// </summary>
@@ -322,7 +334,14 @@ namespace MediaPlayer_X_Ark
         {
 			FmodSystem.setSoftwareFormat((int) samplerate, speakermode, GetNumberRawSpeakers(speakermode));
         }
+		public void GetSoftwareFormat(out int samplerate, out FMOD.SPEAKERMODE speakermode, out int speakernum)
+		{
+			FmodSystem.getSoftwareFormat(out samplerate, out speakermode, out speakernum);
+		}
+		public void SetFormat()
+        {
 
+        }
 		/// <summary>
 		/// Raw Speaker Count
 		/// </summary>

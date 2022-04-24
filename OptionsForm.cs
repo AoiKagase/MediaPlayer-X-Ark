@@ -13,10 +13,12 @@ namespace MediaPlayer_X_Ark
 	public partial class OptionsForm : Form
 	{
 		private PlayerEngine _engine;
-		public OptionsForm(ref PlayerEngine engine)
+		private Engine.Configration _config;
+		public OptionsForm(ref PlayerEngine engine, ref Engine.Configration config)
 		{
 			InitializeComponent();
 			_engine = engine;
+			_config = config;
 		}
 
 		private void OptionsForm_Load(object sender, EventArgs e)
@@ -25,6 +27,7 @@ namespace MediaPlayer_X_Ark
 			OptionOutput();
 			EffectControlInitialize();
 			PaintGEQGraph();
+			
 		}
 		private void PitchChenged(object sender, PropertyChangedEventArgs e)
 		{
@@ -450,11 +453,16 @@ namespace MediaPlayer_X_Ark
 		}
 		private void OptionOutput()
 		{
+			cmbOutput.SelectedIndex = _config.settings.OutputType;
 			//			cmbOutput.Items.Add("WAVEファイル出力");
-
 			cmbDevice.DataSource = _engine.DeviceList;
 			cmbDevice.DisplayMember = "Name";
 			cmbDevice.ValueMember = "GUID";
+			cmbDevice.SelectedValue = _config.settings.Device;
+			cmbSampleRate.SelectedIndex = _config.settings.SampleRate;
+			cmbFormat.SelectedIndex = _config.settings.Format;
+			cmbSampling.SelectedIndex = _config.settings.SamplingMode;
+			cmbSpeaker.SelectedIndex = _config.settings.SpeakerMode;
 		}
 		private void TreeMenu_AfterSelect(object sender, TreeViewEventArgs e)
 		{
@@ -640,5 +648,10 @@ namespace MediaPlayer_X_Ark
 		{
 			PaintGEQGraph();
 		}
-	}
+
+        private void BtnUpdate_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
 }

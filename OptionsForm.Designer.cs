@@ -28,41 +28,41 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode155 = new System.Windows.Forms.TreeNode("出力設定");
-            System.Windows.Forms.TreeNode treeNode156 = new System.Windows.Forms.TreeNode("Graphic Equalizer");
-            System.Windows.Forms.TreeNode treeNode157 = new System.Windows.Forms.TreeNode("Pitch / Freq / Speed");
-            System.Windows.Forms.TreeNode treeNode158 = new System.Windows.Forms.TreeNode("Distortion");
-            System.Windows.Forms.TreeNode treeNode159 = new System.Windows.Forms.TreeNode("Chorus");
-            System.Windows.Forms.TreeNode treeNode160 = new System.Windows.Forms.TreeNode("Echo");
-            System.Windows.Forms.TreeNode treeNode161 = new System.Windows.Forms.TreeNode("Flanger");
-            System.Windows.Forms.TreeNode treeNode162 = new System.Windows.Forms.TreeNode("Highpass");
-            System.Windows.Forms.TreeNode treeNode163 = new System.Windows.Forms.TreeNode("Lowpass");
-            System.Windows.Forms.TreeNode treeNode164 = new System.Windows.Forms.TreeNode("Compressor");
-            System.Windows.Forms.TreeNode treeNode165 = new System.Windows.Forms.TreeNode("Reverb");
-            System.Windows.Forms.TreeNode treeNode166 = new System.Windows.Forms.TreeNode("エフェクト", new System.Windows.Forms.TreeNode[] {
-            treeNode156,
-            treeNode157,
-            treeNode158,
-            treeNode159,
-            treeNode160,
-            treeNode161,
-            treeNode162,
-            treeNode163,
-            treeNode164,
-            treeNode165});
-            System.Windows.Forms.TreeNode treeNode167 = new System.Windows.Forms.TreeNode("スキン");
-            System.Windows.Forms.TreeNode treeNode168 = new System.Windows.Forms.TreeNode("その他");
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("出力設定");
+            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Graphic Equalizer");
+            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Pitch / Freq / Speed");
+            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Distortion");
+            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Chorus");
+            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Echo");
+            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Flanger");
+            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Highpass");
+            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Lowpass");
+            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Compressor");
+            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Reverb");
+            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("エフェクト", new System.Windows.Forms.TreeNode[] {
+            treeNode16,
+            treeNode17,
+            treeNode18,
+            treeNode19,
+            treeNode20,
+            treeNode21,
+            treeNode22,
+            treeNode23,
+            treeNode24,
+            treeNode25});
+            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("スキン");
+            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("その他");
             this.TreeMenu = new System.Windows.Forms.TreeView();
             this.tabControlEffects = new System.Windows.Forms.TabControl();
             this.tabSetting = new System.Windows.Forms.TabPage();
             this.BtnUpdate = new System.Windows.Forms.Button();
-            this.smbSpeaker = new System.Windows.Forms.ComboBox();
+            this.cmbSpeaker = new System.Windows.Forms.ComboBox();
             this.label43 = new System.Windows.Forms.Label();
             this.cmbSampling = new System.Windows.Forms.ComboBox();
             this.label42 = new System.Windows.Forms.Label();
             this.cmbFormat = new System.Windows.Forms.ComboBox();
             this.label41 = new System.Windows.Forms.Label();
-            this.cmdSampleRate = new System.Windows.Forms.ComboBox();
+            this.cmbSampleRate = new System.Windows.Forms.ComboBox();
             this.label40 = new System.Windows.Forms.Label();
             this.cmbDevice = new System.Windows.Forms.ComboBox();
             this.label38 = new System.Windows.Forms.Label();
@@ -266,39 +266,39 @@
             this.TreeMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.TreeMenu.Location = new System.Drawing.Point(0, 0);
             this.TreeMenu.Name = "TreeMenu";
-            treeNode155.Name = "OUTPUT";
-            treeNode155.Text = "出力設定";
-            treeNode156.Name = "GEQ";
-            treeNode156.Text = "Graphic Equalizer";
-            treeNode157.Name = "PITCH";
-            treeNode157.Text = "Pitch / Freq / Speed";
-            treeNode158.Name = "DISTORTION";
-            treeNode158.Text = "Distortion";
-            treeNode159.Name = "CHORUS";
-            treeNode159.Text = "Chorus";
-            treeNode160.Name = "ECHO";
-            treeNode160.Text = "Echo";
-            treeNode161.Name = "FLANGER";
-            treeNode161.Text = "Flanger";
-            treeNode162.Name = "HIGHPASS";
-            treeNode162.Text = "Highpass";
-            treeNode163.Name = "LOWPASS";
-            treeNode163.Text = "Lowpass";
-            treeNode164.Name = "COMPRESSOR";
-            treeNode164.Text = "Compressor";
-            treeNode165.Name = "REVERB";
-            treeNode165.Text = "Reverb";
-            treeNode166.Name = "EFFECTS";
-            treeNode166.Text = "エフェクト";
-            treeNode167.Name = "SKIN";
-            treeNode167.Text = "スキン";
-            treeNode168.Name = "OTHER";
-            treeNode168.Text = "その他";
+            treeNode15.Name = "OUTPUT";
+            treeNode15.Text = "出力設定";
+            treeNode16.Name = "GEQ";
+            treeNode16.Text = "Graphic Equalizer";
+            treeNode17.Name = "PITCH";
+            treeNode17.Text = "Pitch / Freq / Speed";
+            treeNode18.Name = "DISTORTION";
+            treeNode18.Text = "Distortion";
+            treeNode19.Name = "CHORUS";
+            treeNode19.Text = "Chorus";
+            treeNode20.Name = "ECHO";
+            treeNode20.Text = "Echo";
+            treeNode21.Name = "FLANGER";
+            treeNode21.Text = "Flanger";
+            treeNode22.Name = "HIGHPASS";
+            treeNode22.Text = "Highpass";
+            treeNode23.Name = "LOWPASS";
+            treeNode23.Text = "Lowpass";
+            treeNode24.Name = "COMPRESSOR";
+            treeNode24.Text = "Compressor";
+            treeNode25.Name = "REVERB";
+            treeNode25.Text = "Reverb";
+            treeNode26.Name = "EFFECTS";
+            treeNode26.Text = "エフェクト";
+            treeNode27.Name = "SKIN";
+            treeNode27.Text = "スキン";
+            treeNode28.Name = "OTHER";
+            treeNode28.Text = "その他";
             this.TreeMenu.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode155,
-            treeNode166,
-            treeNode167,
-            treeNode168});
+            treeNode15,
+            treeNode26,
+            treeNode27,
+            treeNode28});
             this.TreeMenu.Size = new System.Drawing.Size(199, 419);
             this.TreeMenu.TabIndex = 3;
             this.TreeMenu.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeMenu_AfterSelect);
@@ -327,13 +327,13 @@
             // 
             this.tabSetting.BackColor = System.Drawing.Color.Transparent;
             this.tabSetting.Controls.Add(this.BtnUpdate);
-            this.tabSetting.Controls.Add(this.smbSpeaker);
+            this.tabSetting.Controls.Add(this.cmbSpeaker);
             this.tabSetting.Controls.Add(this.label43);
             this.tabSetting.Controls.Add(this.cmbSampling);
             this.tabSetting.Controls.Add(this.label42);
             this.tabSetting.Controls.Add(this.cmbFormat);
             this.tabSetting.Controls.Add(this.label41);
-            this.tabSetting.Controls.Add(this.cmdSampleRate);
+            this.tabSetting.Controls.Add(this.cmbSampleRate);
             this.tabSetting.Controls.Add(this.label40);
             this.tabSetting.Controls.Add(this.cmbDevice);
             this.tabSetting.Controls.Add(this.label38);
@@ -353,12 +353,13 @@
             this.BtnUpdate.TabIndex = 25;
             this.BtnUpdate.Text = "適用";
             this.BtnUpdate.UseVisualStyleBackColor = true;
+            this.BtnUpdate.Click += new System.EventHandler(this.BtnUpdate_Click);
             // 
-            // smbSpeaker
+            // cmbSpeaker
             // 
-            this.smbSpeaker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.smbSpeaker.FormattingEnabled = true;
-            this.smbSpeaker.Items.AddRange(new object[] {
+            this.cmbSpeaker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSpeaker.FormattingEnabled = true;
+            this.cmbSpeaker.Items.AddRange(new object[] {
             "デフォルト",
             "モノラル",
             "ステレオ",
@@ -367,10 +368,10 @@
             "5.1",
             "7.1",
             "7.1.4"});
-            this.smbSpeaker.Location = new System.Drawing.Point(105, 159);
-            this.smbSpeaker.Name = "smbSpeaker";
-            this.smbSpeaker.Size = new System.Drawing.Size(242, 23);
-            this.smbSpeaker.TabIndex = 24;
+            this.cmbSpeaker.Location = new System.Drawing.Point(105, 159);
+            this.cmbSpeaker.Name = "cmbSpeaker";
+            this.cmbSpeaker.Size = new System.Drawing.Size(242, 23);
+            this.cmbSpeaker.TabIndex = 24;
             // 
             // label43
             // 
@@ -431,11 +432,11 @@
             this.label41.Text = "フォーマット";
             this.label41.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // cmdSampleRate
+            // cmbSampleRate
             // 
-            this.cmdSampleRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmdSampleRate.FormattingEnabled = true;
-            this.cmdSampleRate.Items.AddRange(new object[] {
+            this.cmbSampleRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSampleRate.FormattingEnabled = true;
+            this.cmbSampleRate.Items.AddRange(new object[] {
             "192000",
             "96000",
             "88200",
@@ -449,10 +450,10 @@
             "7333",
             "6000",
             "5500"});
-            this.cmdSampleRate.Location = new System.Drawing.Point(105, 72);
-            this.cmdSampleRate.Name = "cmdSampleRate";
-            this.cmdSampleRate.Size = new System.Drawing.Size(242, 23);
-            this.cmdSampleRate.TabIndex = 18;
+            this.cmbSampleRate.Location = new System.Drawing.Point(105, 72);
+            this.cmbSampleRate.Name = "cmbSampleRate";
+            this.cmbSampleRate.Size = new System.Drawing.Size(242, 23);
+            this.cmbSampleRate.TabIndex = 18;
             // 
             // label40
             // 
@@ -489,9 +490,9 @@
             this.cmbOutput.FormattingEnabled = true;
             this.cmbOutput.Items.AddRange(new object[] {
             "自動検出",
-            "Windows Audio Session API  (WASAPI)",
-            "Windows Sonic",
-            "Low Latency ASIO 2.0"});
+            "Windows Audio Session API",
+            "Low latency ASIO 2.0",
+            "Windows Sonic"});
             this.cmbOutput.Location = new System.Drawing.Point(105, 14);
             this.cmbOutput.Name = "cmbOutput";
             this.cmbOutput.Size = new System.Drawing.Size(242, 23);
@@ -2915,13 +2916,13 @@
         private System.Windows.Forms.CheckBox CheckDistortion;
         private System.Windows.Forms.TabPage tabSetting;
         private System.Windows.Forms.Button BtnUpdate;
-        private System.Windows.Forms.ComboBox smbSpeaker;
+        private System.Windows.Forms.ComboBox cmbSpeaker;
         private System.Windows.Forms.Label label43;
         private System.Windows.Forms.ComboBox cmbSampling;
         private System.Windows.Forms.Label label42;
         private System.Windows.Forms.ComboBox cmbFormat;
         private System.Windows.Forms.Label label41;
-        private System.Windows.Forms.ComboBox cmdSampleRate;
+        private System.Windows.Forms.ComboBox cmbSampleRate;
         private System.Windows.Forms.Label label40;
         private System.Windows.Forms.ComboBox cmbDevice;
         private System.Windows.Forms.Label label38;

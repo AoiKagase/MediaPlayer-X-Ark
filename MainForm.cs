@@ -18,6 +18,7 @@ namespace MediaPlayer_X_Ark
         private int playingIndex = 0;
         private PlayListForm playListForm;
         private OptionsForm optionsForm;
+        private static Engine.Configration config;
 
         public MainForm()
         {
@@ -235,15 +236,18 @@ namespace MediaPlayer_X_Ark
             _toolTip = new ToolTip(components);
             // FMODサウンドエンジン
             player = new PlayerEngine();
+            config = new Engine.Configration(ref player);
+
             playListForm = new PlayListForm(this);
             playListForm.Show();
-            optionsForm = new OptionsForm(ref player);
+            optionsForm = new OptionsForm(ref player, ref config);
             optionsForm.Show();
             // 予定：設定ファイルの読み込み スキンファイルの指定も含む
             // 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
             // 新形式（JSON）の場合はNewSkinSystemへインスタンス切替
             // スキンシステム
             oldSkinSystem = new OldSkinSystem();
+
             // スキンロード
             SkinLoad("bbbs\\bs.xsf");
 
@@ -251,8 +255,6 @@ namespace MediaPlayer_X_Ark
             SldVolume.Maximum = 100;
 
             initialize = true;
-
-
         }
 
         /// <summary>
