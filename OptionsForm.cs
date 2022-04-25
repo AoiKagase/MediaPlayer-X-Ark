@@ -651,7 +651,13 @@ namespace MediaPlayer_X_Ark
 
         private void BtnUpdate_Click(object sender, EventArgs e)
         {
-
+			_config.settings.Format = cmbFormat.SelectedIndex;
+			_config.settings.Device = cmbDevice.SelectedValue.ToString();
+			_config.settings.SampleRate = cmbSampleRate.SelectedIndex;
+			_config.settings.OutputType = cmbOutput.SelectedIndex;
+			_config.settings.SamplingMode = cmbSampling.SelectedIndex;
+			_config.settings.SpeakerMode = cmbSpeaker.SelectedIndex;
+			_config.Save();
         }
 
         private void OptionsForm_FormClosing(object sender, FormClosingEventArgs e)

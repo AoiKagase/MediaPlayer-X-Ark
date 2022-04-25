@@ -197,5 +197,114 @@ namespace MediaPlayer_X_Ark.Engine
 
             File.WriteAllText("config.json", jsonString);
         }
+
+        public FMOD.SOUND_FORMAT getSoundFormat()
+        {
+            switch(settings.Format)
+            {
+                // 8bit integer PCM
+                case 0:
+                    return FMOD.SOUND_FORMAT.PCM8;
+                // 16bit integer PCM
+                case 1:
+                    return FMOD.SOUND_FORMAT.PCM16;
+                // 24bit integer PCM
+                case 2:
+                    return FMOD.SOUND_FORMAT.PCM24;
+                // 32bit integer PCM
+                case 3:
+                    return FMOD.SOUND_FORMAT.PCM32;
+                // 32bit floating point PCM
+                case 4:
+                    return FMOD.SOUND_FORMAT.PCMFLOAT;
+                default:
+                    return FMOD.SOUND_FORMAT.PCM16;
+            }
+        }
+
+        public FMOD.OUTPUTTYPE getOutputType()
+        {
+            switch(settings.OutputType)
+            {
+                case 0:
+                    return FMOD.OUTPUTTYPE.AUTODETECT;
+                case 1:
+                    return FMOD.OUTPUTTYPE.WASAPI;
+                case 2:
+                    return FMOD.OUTPUTTYPE.ASIO;
+                case 3:
+                    return FMOD.OUTPUTTYPE.WINSONIC;
+                default:
+                    return FMOD.OUTPUTTYPE.AUTODETECT;
+            }
+        }
+
+        public SOFTWARE_SAMPLE_RATE getSampleRate()
+        {
+            switch (settings.SampleRate)
+            {
+                case 0:
+                    return SOFTWARE_SAMPLE_RATE.SAMPLE_192000HZ;
+                case 1:
+                    return SOFTWARE_SAMPLE_RATE.SAMPLE_96000HZ;
+                case 2:
+                    return SOFTWARE_SAMPLE_RATE.SAMPLE_88200HZ;
+                case 3:
+                    return SOFTWARE_SAMPLE_RATE.SAMPLE_48000HZ;
+                case 4:
+                    return SOFTWARE_SAMPLE_RATE.SAMPLE_44100HZ;
+                case 5:
+                    return SOFTWARE_SAMPLE_RATE.SAMPLE_32000HZ;
+                case 6:
+                    return SOFTWARE_SAMPLE_RATE.SAMPLE_22050HZ;
+                case 7:
+                    return SOFTWARE_SAMPLE_RATE.SAMPLE_16000HZ;
+                case 8:
+                    return SOFTWARE_SAMPLE_RATE.SAMPLE_11025HZ;
+                case 9:
+                    return SOFTWARE_SAMPLE_RATE.SAMPLE_8000HZ;
+                case 10:
+                    return SOFTWARE_SAMPLE_RATE.SAMPLE_7333HZ;
+                case 11:
+                    return SOFTWARE_SAMPLE_RATE.SAMPLE_6000HZ;
+                case 12:
+                    return SOFTWARE_SAMPLE_RATE.SAMPLE_5500HZ;
+                default:
+                    return SOFTWARE_SAMPLE_RATE.SAMPLE_44100HZ;
+            }
+        }
+
+        public FMOD.SPEAKERMODE getSpeakerMode()
+        {
+            switch (settings.SpeakerMode)
+            {
+                // デフォルト
+                case 0:
+                    return FMOD.SPEAKERMODE.DEFAULT;
+                // モノラル
+                case 1:
+                    return FMOD.SPEAKERMODE.MONO;
+                // ステレオ
+                case 2:
+                    return FMOD.SPEAKERMODE.STEREO;
+                // 4.0
+                case 3:
+                    return FMOD.SPEAKERMODE.QUAD;
+                // 5.0
+                case 4:
+                    return FMOD.SPEAKERMODE.SURROUND;
+                // 5.1
+                case 5:
+                    return FMOD.SPEAKERMODE._5POINT1;
+                // 7.1
+                case 6:
+                    return FMOD.SPEAKERMODE._7POINT1;
+                // 7.1.4
+                case 7:
+                    return FMOD.SPEAKERMODE._7POINT1POINT4;
+                default:
+                    return FMOD.SPEAKERMODE.DEFAULT;
+            }
+        }
     }
 }

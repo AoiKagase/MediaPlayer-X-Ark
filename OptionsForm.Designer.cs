@@ -320,7 +320,7 @@
             this.tabControlEffects.Location = new System.Drawing.Point(199, 0);
             this.tabControlEffects.Name = "tabControlEffects";
             this.tabControlEffects.SelectedIndex = 0;
-            this.tabControlEffects.Size = new System.Drawing.Size(585, 419);
+            this.tabControlEffects.Size = new System.Drawing.Size(582, 419);
             this.tabControlEffects.TabIndex = 4;
             // 
             // tabSetting
@@ -341,7 +341,7 @@
             this.tabSetting.Controls.Add(this.label36);
             this.tabSetting.Location = new System.Drawing.Point(4, 24);
             this.tabSetting.Name = "tabSetting";
-            this.tabSetting.Size = new System.Drawing.Size(577, 391);
+            this.tabSetting.Size = new System.Drawing.Size(574, 391);
             this.tabSetting.TabIndex = 10;
             this.tabSetting.Text = "出力設定";
             // 
@@ -446,10 +446,7 @@
             "22050",
             "16000",
             "11025",
-            "8000",
-            "7333",
-            "6000",
-            "5500"});
+            "8000"});
             this.cmbSampleRate.Location = new System.Drawing.Point(105, 72);
             this.cmbSampleRate.Name = "cmbSampleRate";
             this.cmbSampleRate.Size = new System.Drawing.Size(242, 23);
@@ -505,7 +502,7 @@
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(55, 15);
             this.label36.TabIndex = 13;
-            this.label36.Text = "出力形式";
+            this.label36.Text = "出力方式";
             this.label36.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // tabGEqualizer
@@ -526,7 +523,7 @@
             this.tabGEqualizer.Controls.Add(this.PictGEQGraph);
             this.tabGEqualizer.Location = new System.Drawing.Point(4, 24);
             this.tabGEqualizer.Name = "tabGEqualizer";
-            this.tabGEqualizer.Size = new System.Drawing.Size(577, 391);
+            this.tabGEqualizer.Size = new System.Drawing.Size(574, 391);
             this.tabGEqualizer.TabIndex = 9;
             this.tabGEqualizer.Text = "Graphic Equalizer";
             // 
@@ -691,7 +688,7 @@
             this.tabPitch.Controls.Add(this.GroupPitchShift);
             this.tabPitch.Location = new System.Drawing.Point(4, 24);
             this.tabPitch.Name = "tabPitch";
-            this.tabPitch.Size = new System.Drawing.Size(577, 391);
+            this.tabPitch.Size = new System.Drawing.Size(574, 391);
             this.tabPitch.TabIndex = 8;
             this.tabPitch.Text = "Pitch/Freq/Speed";
             // 
@@ -951,7 +948,7 @@
             this.tabDistortion.Location = new System.Drawing.Point(4, 24);
             this.tabDistortion.Name = "tabDistortion";
             this.tabDistortion.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDistortion.Size = new System.Drawing.Size(577, 391);
+            this.tabDistortion.Size = new System.Drawing.Size(574, 391);
             this.tabDistortion.TabIndex = 0;
             this.tabDistortion.Text = "Distortion";
             // 
@@ -1004,7 +1001,7 @@
             this.CheckDistortion.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.CheckDistortion.Location = new System.Drawing.Point(3, 3);
             this.CheckDistortion.Name = "CheckDistortion";
-            this.CheckDistortion.Size = new System.Drawing.Size(571, 19);
+            this.CheckDistortion.Size = new System.Drawing.Size(568, 19);
             this.CheckDistortion.TabIndex = 5;
             this.CheckDistortion.Text = "Distortion";
             this.CheckDistortion.UseVisualStyleBackColor = true;
@@ -1016,7 +1013,7 @@
             this.tabChorus.Location = new System.Drawing.Point(4, 24);
             this.tabChorus.Name = "tabChorus";
             this.tabChorus.Padding = new System.Windows.Forms.Padding(3);
-            this.tabChorus.Size = new System.Drawing.Size(577, 391);
+            this.tabChorus.Size = new System.Drawing.Size(574, 391);
             this.tabChorus.TabIndex = 1;
             this.tabChorus.Text = "Chorus";
             // 
@@ -1036,7 +1033,7 @@
             this.GroupChorus.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.GroupChorus.Location = new System.Drawing.Point(3, 3);
             this.GroupChorus.Name = "GroupChorus";
-            this.GroupChorus.Size = new System.Drawing.Size(571, 385);
+            this.GroupChorus.Size = new System.Drawing.Size(568, 385);
             this.GroupChorus.TabIndex = 4;
             this.GroupChorus.TabStop = false;
             // 
@@ -1181,7 +1178,7 @@
             this.tabEcho.Controls.Add(this.GroupEcho);
             this.tabEcho.Location = new System.Drawing.Point(4, 24);
             this.tabEcho.Name = "tabEcho";
-            this.tabEcho.Size = new System.Drawing.Size(577, 391);
+            this.tabEcho.Size = new System.Drawing.Size(574, 391);
             this.tabEcho.TabIndex = 2;
             this.tabEcho.Text = "Echo";
             // 
@@ -1205,7 +1202,7 @@
             this.GroupEcho.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.GroupEcho.Location = new System.Drawing.Point(0, 0);
             this.GroupEcho.Name = "GroupEcho";
-            this.GroupEcho.Size = new System.Drawing.Size(577, 391);
+            this.GroupEcho.Size = new System.Drawing.Size(574, 391);
             this.GroupEcho.TabIndex = 10;
             this.GroupEcho.TabStop = false;
             // 
@@ -1396,7 +1393,7 @@
             this.tabFlanger.Controls.Add(this.GroupFlanger);
             this.tabFlanger.Location = new System.Drawing.Point(4, 24);
             this.tabFlanger.Name = "tabFlanger";
-            this.tabFlanger.Size = new System.Drawing.Size(577, 391);
+            this.tabFlanger.Size = new System.Drawing.Size(574, 391);
             this.tabFlanger.TabIndex = 3;
             this.tabFlanger.Text = "Flanger";
             // 
@@ -1416,7 +1413,7 @@
             this.GroupFlanger.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.GroupFlanger.Location = new System.Drawing.Point(0, 0);
             this.GroupFlanger.Name = "GroupFlanger";
-            this.GroupFlanger.Size = new System.Drawing.Size(577, 391);
+            this.GroupFlanger.Size = new System.Drawing.Size(574, 391);
             this.GroupFlanger.TabIndex = 10;
             this.GroupFlanger.TabStop = false;
             // 
@@ -1562,7 +1559,7 @@
             this.tabHightpass.Controls.Add(this.GroupHighpass);
             this.tabHightpass.Location = new System.Drawing.Point(4, 24);
             this.tabHightpass.Name = "tabHightpass";
-            this.tabHightpass.Size = new System.Drawing.Size(577, 391);
+            this.tabHightpass.Size = new System.Drawing.Size(574, 391);
             this.tabHightpass.TabIndex = 4;
             this.tabHightpass.Text = "Highpass";
             // 
@@ -1579,7 +1576,7 @@
             this.GroupHighpass.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.GroupHighpass.Location = new System.Drawing.Point(0, 0);
             this.GroupHighpass.Name = "GroupHighpass";
-            this.GroupHighpass.Size = new System.Drawing.Size(577, 391);
+            this.GroupHighpass.Size = new System.Drawing.Size(574, 391);
             this.GroupHighpass.TabIndex = 13;
             this.GroupHighpass.TabStop = false;
             // 
@@ -1684,7 +1681,7 @@
             this.tabLowpass.Controls.Add(this.GroupLowpass);
             this.tabLowpass.Location = new System.Drawing.Point(4, 24);
             this.tabLowpass.Name = "tabLowpass";
-            this.tabLowpass.Size = new System.Drawing.Size(577, 391);
+            this.tabLowpass.Size = new System.Drawing.Size(574, 391);
             this.tabLowpass.TabIndex = 5;
             this.tabLowpass.Text = "Lowpass";
             // 
@@ -1701,7 +1698,7 @@
             this.GroupLowpass.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.GroupLowpass.Location = new System.Drawing.Point(0, 0);
             this.GroupLowpass.Name = "GroupLowpass";
-            this.GroupLowpass.Size = new System.Drawing.Size(577, 391);
+            this.GroupLowpass.Size = new System.Drawing.Size(574, 391);
             this.GroupLowpass.TabIndex = 14;
             this.GroupLowpass.TabStop = false;
             // 
@@ -1806,7 +1803,7 @@
             this.tabCompressor.Controls.Add(this.GroupCompressor);
             this.tabCompressor.Location = new System.Drawing.Point(4, 24);
             this.tabCompressor.Name = "tabCompressor";
-            this.tabCompressor.Size = new System.Drawing.Size(577, 391);
+            this.tabCompressor.Size = new System.Drawing.Size(574, 391);
             this.tabCompressor.TabIndex = 6;
             this.tabCompressor.Text = "Compressor";
             // 
@@ -1833,7 +1830,7 @@
             this.GroupCompressor.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.GroupCompressor.Location = new System.Drawing.Point(0, 0);
             this.GroupCompressor.Name = "GroupCompressor";
-            this.GroupCompressor.Size = new System.Drawing.Size(577, 391);
+            this.GroupCompressor.Size = new System.Drawing.Size(574, 391);
             this.GroupCompressor.TabIndex = 13;
             this.GroupCompressor.TabStop = false;
             // 
@@ -2081,7 +2078,7 @@
             this.tabReverb.Controls.Add(this.groupBox1);
             this.tabReverb.Location = new System.Drawing.Point(4, 24);
             this.tabReverb.Name = "tabReverb";
-            this.tabReverb.Size = new System.Drawing.Size(577, 391);
+            this.tabReverb.Size = new System.Drawing.Size(574, 391);
             this.tabReverb.TabIndex = 7;
             this.tabReverb.Text = "Reverb";
             // 
@@ -2131,7 +2128,7 @@
             this.groupBox1.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(577, 391);
+            this.groupBox1.Size = new System.Drawing.Size(574, 391);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             // 
@@ -2709,7 +2706,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 419);
+            this.ClientSize = new System.Drawing.Size(781, 419);
             this.Controls.Add(this.tabControlEffects);
             this.Controls.Add(this.TreeMenu);
             this.DoubleBuffered = true;

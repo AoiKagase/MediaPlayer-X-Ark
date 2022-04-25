@@ -153,7 +153,7 @@ namespace MediaPlayer_X_Ark
         private void OpenFile(string fileName)
         {
             // Open File
-            if (player.CreateSound(fileName, out playingIndex) == FMOD.RESULT.OK)
+            if (player.CreateSound(fileName, config.getSoundFormat(), out playingIndex) == FMOD.RESULT.OK)
             {
                 PlayLoad();
             }
@@ -176,6 +176,11 @@ namespace MediaPlayer_X_Ark
             // 設定するためのFMOD-Channelインスタンスが再生後に生成されるためやむを得ず
             // (何か方法があるかもしれない)
             // =====================================================================
+            // 出力方式
+            player.SetOutputType(config.getOutputType());
+
+            // デバイス
+            player.SetDevice(config.settings.Device);
 
             // 再生
             player.PlaySound(playingIndex);
@@ -237,6 +242,10 @@ namespace MediaPlayer_X_Ark
             // FMODサウンドエンジン
             player = new PlayerEngine();
             config = new Engine.Configration(ref player);
+
+            // サンプルレート・スピーカーモード
+            player.SetSoftwareFormat(config.getSampleRate(), config.getSpeakerMode());
+            player.Initialize();
 
             playListForm = new PlayListForm(this);
             playListForm.Show(this);

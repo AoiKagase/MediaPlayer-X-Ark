@@ -30,6 +30,9 @@ namespace MediaPlayer_X_Ark
 
 	public enum SOFTWARE_SAMPLE_RATE
 	{
+		SAMPLE_5500HZ	= 5500,
+		SAMPLE_6000HZ	= 6000,
+		SAMPLE_7333HZ	= 7333,
 		SAMPLE_8000HZ	= 8000,
 		SAMPLE_11025HZ	= 11025,
 		SAMPLE_16000HZ	= 16000,
@@ -88,7 +91,8 @@ namespace MediaPlayer_X_Ark
 		/// </summary>
 		public PlayerEngine()
         {
-			Initialize();
+			CreateSystem();
+//			Initialize();
 		}
 
 		/// <summary>
@@ -123,13 +127,16 @@ namespace MediaPlayer_X_Ark
 			}
 		}
 
+		protected FMOD.RESULT CreateSystem()
+        {
+			return FmodCallFunction(FMOD.Factory.System_Create(out FmodSystem));
+		}
 		/// <summary>
 		/// System Initialize.
 		/// </summary>
-		protected void Initialize()
+		public void Initialize()
 		{
 			// System Create.
-			if (FmodCallFunction(FMOD.Factory.System_Create(out FmodSystem)) == FMOD.RESULT.OK)
 			{
 				// Get Version.
 				if (FmodCallFunction(FmodSystem.getVersion(out FmodVersion)) == FMOD.RESULT.OK)
@@ -222,11 +229,8 @@ namespace MediaPlayer_X_Ark
 		{
 			GetOutputType();
 
-			if (FmodOutputType != outputtype)
-			{
-				FmodOutputType = outputtype;
-				FmodCallFunction(FmodSystem.setOutput(outputtype));
-			}
+			FmodOutputType = outputtype;
+			FmodCallFunction(FmodSystem.setOutput(outputtype));
 		}
 
 		public FMOD.OUTPUTTYPE GetOutputType()
@@ -295,7 +299,7 @@ namespace MediaPlayer_X_Ark
             {
 				if(FmodDeviceList[i].deviceId == driver)
                 {
-					return FmodDeviceList[i].GUID;
+					return FmodDeviceList[i].GUID.ToString();
                 }
             }
 			return "";
@@ -313,11 +317,11 @@ namespace MediaPlayer_X_Ark
 		/// Set selected device.
 		/// </summary>
 		/// <param name="driver">System GUID</param>
-		public void SetDevice(System.Guid driver)
+		public void SetDevice(string driver)
 		{
 			for(int i = 0; i < FmodDeviceList.Count(); i++)
             {
-				if (FmodDeviceList[i].guid.Equals(driver))
+				if (FmodDeviceList[i].GUID.Equals(driver))
                 {
 					FmodSystem.setDriver(FmodDeviceList[i].deviceId);
 					return;
@@ -330,18 +334,14 @@ namespace MediaPlayer_X_Ark
 		/// </summary>
 		/// <param name="samplerate"></param>
 		/// <param name="speakermode"></param>
-		public void SetSoftwareFormat(SOFTWARE_SAMPLE_RATE samplerate, FMOD.SPEAKERMODE speakermode)
+		public FMOD.RESULT SetSoftwareFormat(SOFTWARE_SAMPLE_RATE samplerate, FMOD.SPEAKERMODE speakermode)
         {
-			FmodSystem.setSoftwareFormat((int) samplerate, speakermode, GetNumberRawSpeakers(speakermode));
+			return FmodCallFunction(FmodSystem.setSoftwareFormat((int) samplerate, speakermode, GetNumberRawSpeakers(speakermode)));
         }
-		public void GetSoftwareFormat(out int samplerate, out FMOD.SPEAKERMODE speakermode, out int speakernum)
+		public FMOD.RESULT GetSoftwareFormat(out int samplerate, out FMOD.SPEAKERMODE speakermode, out int speakernum)
 		{
-			FmodSystem.getSoftwareFormat(out samplerate, out speakermode, out speakernum);
+			return FmodCallFunction(FmodSystem.getSoftwareFormat(out samplerate, out speakermode, out speakernum));
 		}
-		public void SetFormat()
-        {
-
-        }
 		/// <summary>
 		/// Raw Speaker Count
 		/// </summary>
@@ -486,7 +486,7 @@ namespace MediaPlayer_X_Ark
 		/// Removed CDDA support.
 		/// </summary>
 		/// <param name="filename"></param>
-		public RESULT CreateSound(string filename, out int index)
+		public RESULT CreateSound(string filename, SOUND_FORMAT format, out int index)
         {
 			// CD Player
 			//if (filename.Substring(0, 3).Equals("cd:"))
@@ -495,11 +495,11 @@ namespace MediaPlayer_X_Ark
 			//}
 			FMOD.Sound sound;
 			FMOD.RESULT result;
+			FMOD.CREATESOUNDEXINFO info = new FMOD.CREATESOUNDEXINFO();
+			info.cbsize = Marshal.SizeOf(info);
 			index = 0;
 			if (Path.GetExtension(filename).Equals("mid"))
 			{
-				FMOD.CREATESOUNDEXINFO info = new FMOD.CREATESOUNDEXINFO();
-				info.cbsize = Marshal.SizeOf(info);
 				info.suggestedsoundtype = FMOD.SOUND_TYPE.MIDI;
 				if ((result = FmodCallFunction(FmodSystem.createSound(filename, FMOD.MODE.DEFAULT, ref info, out sound))) == RESULT.OK)
 				{
@@ -510,7 +510,8 @@ namespace MediaPlayer_X_Ark
 			}
 			else
 			{
-				if ((result = FmodCallFunction(FmodSystem.createStream(filename, FMOD.MODE.DEFAULT, out sound))) == RESULT.OK)
+				info.format = format;
+				if ((result = FmodCallFunction(FmodSystem.createStream(filename, FMOD.MODE.DEFAULT, ref info, out sound))) == RESULT.OK)
 				{
 					Engine.PlayList plist = new Engine.PlayList(filename, sound);
 					PlayList.Add(plist);
