@@ -28,30 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("出力設定");
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Graphic Equalizer");
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Pitch / Freq / Speed");
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Distortion");
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Chorus");
-            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Echo");
-            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Flanger");
-            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Highpass");
-            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Lowpass");
-            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Compressor");
-            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Reverb");
-            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("エフェクト", new System.Windows.Forms.TreeNode[] {
-            treeNode16,
-            treeNode17,
-            treeNode18,
-            treeNode19,
-            treeNode20,
-            treeNode21,
-            treeNode22,
-            treeNode23,
-            treeNode24,
-            treeNode25});
-            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("スキン");
-            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("その他");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("出力設定");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Graphic Equalizer");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Pitch / Freq / Speed");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Distortion");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Chorus");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Echo");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Flanger");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Highpass");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Lowpass");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Compressor");
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Reverb");
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("エフェクト", new System.Windows.Forms.TreeNode[] {
+            treeNode2,
+            treeNode3,
+            treeNode4,
+            treeNode5,
+            treeNode6,
+            treeNode7,
+            treeNode8,
+            treeNode9,
+            treeNode10,
+            treeNode11});
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("スキン");
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("その他");
             this.TreeMenu = new System.Windows.Forms.TreeView();
             this.tabControlEffects = new System.Windows.Forms.TabControl();
             this.tabSetting = new System.Windows.Forms.TabPage();
@@ -266,39 +266,39 @@
             this.TreeMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.TreeMenu.Location = new System.Drawing.Point(0, 0);
             this.TreeMenu.Name = "TreeMenu";
-            treeNode15.Name = "OUTPUT";
-            treeNode15.Text = "出力設定";
-            treeNode16.Name = "GEQ";
-            treeNode16.Text = "Graphic Equalizer";
-            treeNode17.Name = "PITCH";
-            treeNode17.Text = "Pitch / Freq / Speed";
-            treeNode18.Name = "DISTORTION";
-            treeNode18.Text = "Distortion";
-            treeNode19.Name = "CHORUS";
-            treeNode19.Text = "Chorus";
-            treeNode20.Name = "ECHO";
-            treeNode20.Text = "Echo";
-            treeNode21.Name = "FLANGER";
-            treeNode21.Text = "Flanger";
-            treeNode22.Name = "HIGHPASS";
-            treeNode22.Text = "Highpass";
-            treeNode23.Name = "LOWPASS";
-            treeNode23.Text = "Lowpass";
-            treeNode24.Name = "COMPRESSOR";
-            treeNode24.Text = "Compressor";
-            treeNode25.Name = "REVERB";
-            treeNode25.Text = "Reverb";
-            treeNode26.Name = "EFFECTS";
-            treeNode26.Text = "エフェクト";
-            treeNode27.Name = "SKIN";
-            treeNode27.Text = "スキン";
-            treeNode28.Name = "OTHER";
-            treeNode28.Text = "その他";
+            treeNode1.Name = "OUTPUT";
+            treeNode1.Text = "出力設定";
+            treeNode2.Name = "GEQ";
+            treeNode2.Text = "Graphic Equalizer";
+            treeNode3.Name = "PITCH";
+            treeNode3.Text = "Pitch / Freq / Speed";
+            treeNode4.Name = "DISTORTION";
+            treeNode4.Text = "Distortion";
+            treeNode5.Name = "CHORUS";
+            treeNode5.Text = "Chorus";
+            treeNode6.Name = "ECHO";
+            treeNode6.Text = "Echo";
+            treeNode7.Name = "FLANGER";
+            treeNode7.Text = "Flanger";
+            treeNode8.Name = "HIGHPASS";
+            treeNode8.Text = "Highpass";
+            treeNode9.Name = "LOWPASS";
+            treeNode9.Text = "Lowpass";
+            treeNode10.Name = "COMPRESSOR";
+            treeNode10.Text = "Compressor";
+            treeNode11.Name = "REVERB";
+            treeNode11.Text = "Reverb";
+            treeNode12.Name = "EFFECTS";
+            treeNode12.Text = "エフェクト";
+            treeNode13.Name = "SKIN";
+            treeNode13.Text = "スキン";
+            treeNode14.Name = "OTHER";
+            treeNode14.Text = "その他";
             this.TreeMenu.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode15,
-            treeNode26,
-            treeNode27,
-            treeNode28});
+            treeNode1,
+            treeNode12,
+            treeNode13,
+            treeNode14});
             this.TreeMenu.Size = new System.Drawing.Size(199, 419);
             this.TreeMenu.TabIndex = 3;
             this.TreeMenu.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeMenu_AfterSelect);
@@ -2715,6 +2715,7 @@
             this.DoubleBuffered = true;
             this.Name = "OptionsForm";
             this.Text = "Options";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OptionsForm_FormClosing);
             this.Load += new System.EventHandler(this.OptionsForm_Load);
             this.tabControlEffects.ResumeLayout(false);
             this.tabSetting.ResumeLayout(false);

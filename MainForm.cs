@@ -239,9 +239,9 @@ namespace MediaPlayer_X_Ark
             config = new Engine.Configration(ref player);
 
             playListForm = new PlayListForm(this);
-            playListForm.Show();
+            playListForm.Show(this);
             optionsForm = new OptionsForm(ref player, ref config);
-            optionsForm.Show();
+            optionsForm.Show(this);
             // 予定：設定ファイルの読み込み スキンファイルの指定も含む
             // 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
             // 新形式（JSON）の場合はNewSkinSystemへインスタンス切替
@@ -249,11 +249,11 @@ namespace MediaPlayer_X_Ark
             oldSkinSystem = new OldSkinSystem();
 
             // スキンロード
-            SkinLoad("bbbs\\bs.xsf");
+            SkinLoad(config.settings.Skin);
 
             // ボリューム最大値を強制100（旧形式スキンはこの数値を変動出来ていた為、処理簡略化を考慮する）
             SldVolume.Maximum = 100;
-
+            SldVolume.Value = config.settings.Volume;
             initialize = true;
         }
 
@@ -303,6 +303,7 @@ namespace MediaPlayer_X_Ark
         /// <param name="e"></param>
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            config.Save();
             player = null;
         }
         #endregion
@@ -526,6 +527,11 @@ namespace MediaPlayer_X_Ark
         /// <param name="e"></param>
         private void BtnClose_Click(object sender, EventArgs e)
         {
+            playListForm.Close();
+            playListForm.Dispose();
+            optionsForm.Close();
+            optionsForm.Dispose();
+
             // 終了
             Close();
         }
@@ -562,6 +568,7 @@ namespace MediaPlayer_X_Ark
         }
         private void BtnSetting_Click(object sender, EventArgs e)
         {
+            optionsForm.Show();
         }
         private void BtnPlaylist_Click(object sender, EventArgs e)
         {
@@ -619,6 +626,9 @@ namespace MediaPlayer_X_Ark
         /// <param name="e"></param>
         private void SldPan_SliderMoved(object sender, MouseEventArgs e)
         {
+            float pan = ((float)SldPan.Value) / 10f;
+            player.SetPan(pan);
+            config.settings.Pan = SldPan.Value;
             _toolTip.Hide(this);
         }
 
@@ -644,9 +654,9 @@ namespace MediaPlayer_X_Ark
         {
             float volume = ((float)SldVolume.Value) / 100f;
             player.SetVolume(volume);
+            config.settings.Volume = SldVolume.Value;
             _toolTip.Hide(this);
         }
-        #endregion
 
         private void SldTrack_ValueChanged(object sender, EventArgs e)
         {
@@ -658,6 +668,7 @@ namespace MediaPlayer_X_Ark
                 player.SetPosition(time);
             }
         }
+        #endregion
 
         private void SeekiTimer_Tick(object sender, EventArgs e)
         {

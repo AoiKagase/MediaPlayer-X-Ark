@@ -88,6 +88,8 @@
             this.PBtnSave.Size = new System.Drawing.Size(31, 14);
             this.PBtnSave.TabIndex = 5;
             this.PBtnSave.UseVisualStyleBackColor = false;
+            this.PBtnSave.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PBtnSave_MouseDown);
+            this.PBtnSave.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PBtnSave_MouseUp);
             // 
             // PBtnRemove
             // 
@@ -101,6 +103,8 @@
             this.PBtnRemove.Size = new System.Drawing.Size(28, 14);
             this.PBtnRemove.TabIndex = 6;
             this.PBtnRemove.UseVisualStyleBackColor = false;
+            this.PBtnRemove.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PBtnRemove_MouseDown);
+            this.PBtnRemove.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PBtnRemove_MouseUp);
             // 
             // PBtnUp
             // 
@@ -114,6 +118,8 @@
             this.PBtnUp.Size = new System.Drawing.Size(38, 17);
             this.PBtnUp.TabIndex = 7;
             this.PBtnUp.UseVisualStyleBackColor = false;
+            this.PBtnUp.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PBtnUp_MouseDown);
+            this.PBtnUp.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PBtnUp_MouseUp);
             // 
             // PBtnDown
             // 
@@ -127,6 +133,8 @@
             this.PBtnDown.Size = new System.Drawing.Size(28, 14);
             this.PBtnDown.TabIndex = 8;
             this.PBtnDown.UseVisualStyleBackColor = false;
+            this.PBtnDown.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PBtnDown_MouseDown);
+            this.PBtnDown.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PBtnDown_MouseUp);
             // 
             // PBtnClose
             // 
@@ -140,6 +148,9 @@
             this.PBtnClose.Size = new System.Drawing.Size(38, 14);
             this.PBtnClose.TabIndex = 9;
             this.PBtnClose.UseVisualStyleBackColor = false;
+            this.PBtnClose.Click += new System.EventHandler(this.PBtnClose_Click);
+            this.PBtnClose.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PBtnClose_MouseDown);
+            this.PBtnClose.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PBtnClose_MouseUp);
             // 
             // PBtnClear
             // 
@@ -153,6 +164,8 @@
             this.PBtnClear.Size = new System.Drawing.Size(31, 14);
             this.PBtnClear.TabIndex = 10;
             this.PBtnClear.UseVisualStyleBackColor = false;
+            this.PBtnClear.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PBtnClear_MouseDown);
+            this.PBtnClear.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PBtnClear_MouseUp);
             // 
             // PlayListForm
             // 
@@ -176,6 +189,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.Text = "PlayList";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PlayListForm_FormClosing);
             this.Load += new System.EventHandler(this.PlayList_Load);
             ((System.ComponentModel.ISupportInitialize)(this.PlayListGrid)).EndInit();
             this.ResumeLayout(false);

@@ -83,16 +83,16 @@ namespace MediaPlayer_X_Ark.Engine
                 switch (engine.GetOutputType())
                 {
                     case FMOD.OUTPUTTYPE.AUTODETECT:
-                        settings.OutputType = 1;
+                        settings.OutputType = 0;
                         break;
                     case FMOD.OUTPUTTYPE.WASAPI:
-                        settings.OutputType = 2;
+                        settings.OutputType = 1;
                         break;
                     case FMOD.OUTPUTTYPE.ASIO:
-                        settings.OutputType = 3;
+                        settings.OutputType = 2;
                         break;
                     case FMOD.OUTPUTTYPE.WINSONIC:
-                        settings.OutputType = 4;
+                        settings.OutputType = 3;
                         break;
                 }
                 settings.Device = engine.GetDeviceGUID();
@@ -100,57 +100,61 @@ namespace MediaPlayer_X_Ark.Engine
                 FMOD.SPEAKERMODE speakermode;
                 int speakernum;
                 engine.GetSoftwareFormat(out sampleRate, out speakermode, out speakernum);
-                settings.Format = 2;
+                settings.Format = 1;
                 switch (sampleRate)
                 {
                     case 192000:
-                        settings.SampleRate = 1;
+                        settings.SampleRate = 0;
                         break;
                     case 96000:
-                        settings.SampleRate = 2;
+                        settings.SampleRate = 1;
                         break;
                     case 88200:
-                        settings.SampleRate = 3;
+                        settings.SampleRate = 2;
                         break;
                     case 48000:
-                        settings.SampleRate = 4;
+                        settings.SampleRate = 3;
                         break;
                     case 44100:
-                        settings.SampleRate = 5;
+                        settings.SampleRate = 4;
                         break;
                     case 32000:
-                        settings.SampleRate = 6;
+                        settings.SampleRate = 5;
                         break;
                     case 22050:
-                        settings.SampleRate = 7;
+                        settings.SampleRate = 6;
                         break;
                     case 16000:
-                        settings.SampleRate = 8;
+                        settings.SampleRate = 7;
                         break;
                     case 11025:
-                        settings.SampleRate = 9;
+                        settings.SampleRate = 8;
                         break;
                     case 8000:
-                        settings.SampleRate = 10;
+                        settings.SampleRate = 9;
                         break;
                     case 7333:
-                        settings.SampleRate = 11;
+                        settings.SampleRate = 10;
                         break;
                     case 6000:
-                        settings.SampleRate = 12;
+                        settings.SampleRate = 11;
                         break;
                     case 5500:
-                        settings.SampleRate = 13;
+                        settings.SampleRate = 12;
                         break;
                     default:
-                        settings.SampleRate = 5;
+                        settings.SampleRate = 4;
                         break;
                 }
 //                settings.SampleRate = sampleRate;
                 switch(speakermode)
                 {
-                    // モノラル
+                    // デフォルト
                     case FMOD.SPEAKERMODE.DEFAULT:
+                        settings.SpeakerMode = 0;
+                        break;
+                    // モノラル
+                    case FMOD.SPEAKERMODE.MONO:
                         settings.SpeakerMode = 1;
                         break;
                     // ステレオ

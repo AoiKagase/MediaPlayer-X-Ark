@@ -520,7 +520,7 @@ namespace MediaPlayer_X_Ark
 			Graphics g = Graphics.FromImage(canvas);
 
 			int hCenter = this.PictGEQGraph.Height / 2;
-			int wWidth = this.PictGEQGraph.Width / 14;
+			int wWidth = this.PictGEQGraph.Width / 13;
 			int hHeight = this.PictGEQGraph.Height / 60;
 			int value = 0;
 			Point[] curvePoints = new Point[14];
@@ -535,7 +535,7 @@ namespace MediaPlayer_X_Ark
 			//幅3の赤色のPenオブジェクトを作成
 			Pen pen = new Pen(Color.Black, 1);
 			//テンション1のカーディナルスプラインを描画
-			g.DrawCurve(pen, curvePoints, 1);
+			g.DrawCurve(pen, curvePoints, 0.5f);
 
 			//リソースを解放する
 			pen.Dispose();
@@ -652,6 +652,12 @@ namespace MediaPlayer_X_Ark
         private void BtnUpdate_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void OptionsForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+			e.Cancel = true;
+			this.Hide();
         }
     }
 }

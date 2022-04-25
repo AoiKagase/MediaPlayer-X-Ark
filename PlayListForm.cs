@@ -59,5 +59,76 @@ namespace MediaPlayer_X_Ark
             if (e.RowIndex >= 0)
                 mainForm.PlayLoad(e.RowIndex);
         }
+
+        private void PlayListForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+            this.Hide();
+        }
+
+        private void PBtnClear_MouseUp(object sender, MouseEventArgs e)
+        {
+            mainForm.BtnUpEvent(ref sender);
+        }
+
+        private void PBtnClear_MouseDown(object sender, MouseEventArgs e)
+        {
+            mainForm.BtnDownEvent(ref sender);
+        }
+
+        private void PBtnClose_MouseDown(object sender, MouseEventArgs e)
+        {
+            mainForm.BtnDownEvent(ref sender);
+        }
+
+        private void PBtnClose_MouseUp(object sender, MouseEventArgs e)
+        {
+            mainForm.BtnUpEvent(ref sender);
+        }
+
+        private void PBtnDown_MouseDown(object sender, MouseEventArgs e)
+        {
+            mainForm.BtnDownEvent(ref sender);
+        }
+
+        private void PBtnDown_MouseUp(object sender, MouseEventArgs e)
+        {
+            mainForm.BtnUpEvent(ref sender);
+        }
+
+        private void PBtnRemove_MouseDown(object sender, MouseEventArgs e)
+        {
+            mainForm.BtnDownEvent(ref sender);
+        }
+
+        private void PBtnRemove_MouseUp(object sender, MouseEventArgs e)
+        {
+            mainForm.BtnUpEvent(ref sender);
+        }
+
+        private void PBtnSave_MouseDown(object sender, MouseEventArgs e)
+        {
+            mainForm.BtnDownEvent(ref sender);
+        }
+
+        private void PBtnSave_MouseUp(object sender, MouseEventArgs e)
+        {
+            mainForm.BtnUpEvent(ref sender);
+        }
+
+        private void PBtnUp_MouseDown(object sender, MouseEventArgs e)
+        {
+            mainForm.BtnDownEvent(ref sender);
+        }
+
+        private void PBtnUp_MouseUp(object sender, MouseEventArgs e)
+        {
+            mainForm.BtnUpEvent(ref sender);
+        }
+
+        private void PBtnClose_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+        }
     }
 }
