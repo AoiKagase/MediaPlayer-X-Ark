@@ -10,6 +10,11 @@
     <PlatformTarget>x64</PlatformTarget>
     <Authors>Aoi.Kagase</Authors>
     <AssemblyName>x-ark</AssemblyName>
+    <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+    <DebugType>embedded</DebugType>
+    <SignAssembly>False</SignAssembly>
+    <IsPublishable>True</IsPublishable>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="resources\Skins\Temp\**" />
