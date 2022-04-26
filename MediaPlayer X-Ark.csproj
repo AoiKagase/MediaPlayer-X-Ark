@@ -17,12 +17,14 @@
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="resources\Skins\Temp\**" />
-    <EmbeddedResource Remove="resources\Skins\Temp\**" />
-    <None Remove="resources\Skins\Temp\**" />
+    <Compile Remove="Resources\Skins\Temp\**" />
+    <EmbeddedResource Remove="Resources\Skins\Temp\**" />
+    <None Remove="Resources\Skins\Temp\**" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="resources\fmod.dll" />
+    <Content Include="Resources\fmod.dll" />
+    <Content Include="Resources\Skins" />
+	<Content Include="Resources\Plugins" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
@@ -47,5 +49,8 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  </Target>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy Resources\* $(OutDir)\" />
   </Target>
 </Project>
