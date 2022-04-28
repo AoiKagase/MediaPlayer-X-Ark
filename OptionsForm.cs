@@ -124,6 +124,15 @@ namespace MediaPlayer_X_Ark
 				GroupFrequency.Enabled = true;
 			}
 		}
+		private void CheckReverb_CheckedChanged(object sender, EventArgs e)
+		{
+			_engine.effector.SFXReverb.Switch(GroupControl(sender));
+		}
+
+		private void CheckGEQ_CheckedChanged(object sender, EventArgs e)
+		{
+			_engine.effector.GEqualizer.Switch(GroupControl(sender));
+		}
 		#endregion
 		private void DistortionLevel_ValueChanged(object sender, EventArgs e)
 		{
@@ -550,40 +559,40 @@ namespace MediaPlayer_X_Ark
 			switch (index)
 			{
 				case 0:
-					value = TrkGEQ32.Value;
+					value = Convert.ToInt32(TrkGEQ32.Value);
 					break;
 				case 1:
-					value = TrkGEQ60.Value;
+					value = Convert.ToInt32(TrkGEQ60.Value);
 					break;
 				case 2:
-					value = TrkGEQ125.Value;
+					value = Convert.ToInt32(TrkGEQ125.Value);
 					break;
 				case 3: 
-					value = TrkGEQ250.Value; 
+					value = Convert.ToInt32(TrkGEQ250.Value); 
 					break;
 				case 4: 
-					value = TrkGEQ500.Value; 
+					value = Convert.ToInt32(TrkGEQ500.Value); 
 					break;
 				case 5: 
-					value = TrkGEQ1K.Value; 
+					value = Convert.ToInt32(TrkGEQ1K.Value); 
 					break;
 				case 6: 
-					value = TrkGEQ2K.Value; 
+					value = Convert.ToInt32(TrkGEQ2K.Value); 
 					break;
 				case 7: 
-					value = TrkGEQ4K.Value; 
+					value = Convert.ToInt32(TrkGEQ4K.Value); 
 					break;
 				case 8: 
-					value = TrkGEQ8K.Value; 
+					value = Convert.ToInt32(TrkGEQ8K.Value); 
 					break;
 				case 9: 
-					value = TrkGEQ16K.Value; 
+					value = Convert.ToInt32(TrkGEQ16K.Value); 
 					break;
 				case 10: 
-					value = TrkGEQ20K.Value; 
+					value = Convert.ToInt32(TrkGEQ20K.Value); 
 					break;
 				case 11: 
-					value = TrkGEQ22K.Value; 
+					value = Convert.ToInt32(TrkGEQ22K.Value); 
 					break;
 			}
 			return value;
@@ -665,5 +674,11 @@ namespace MediaPlayer_X_Ark
 			e.Cancel = true;
 			this.Hide();
         }
+
+        private void TrkGEQ20K_Scroll(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

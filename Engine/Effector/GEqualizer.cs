@@ -73,7 +73,7 @@ namespace MediaPlayer_X_Ark.Engine.Effector
         /// CREATE DSP FOR LOWPASS FILTER
         /// </summary>
         /// <param name="system"></param>
-        public GEqualizer(FMOD.System system, FMOD.DSP_TYPE dspType)
+        public GEqualizer(FMOD.System system)
 		{
 			_system = system;
 			_system.getMasterChannelGroup(out _channelGroup);
