@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.IO;
+using System.Text.Json.Serialization;
+
 namespace MediaPlayer_X_Ark.Engine
 {
     public class ConfigurationData
@@ -57,8 +59,7 @@ namespace MediaPlayer_X_Ark.Engine
         /// ===================================
         /// エフェクト
         /// ===================================
-        public int Effect_GEQ_10 { get; set; }
-
+        public CfgEffectors Effectors { get; set; } = new CfgEffectors();
         
         /// <summary>
         /// スキン
@@ -66,12 +67,155 @@ namespace MediaPlayer_X_Ark.Engine
         public string Skin { get; set; }
     }
 
+    public class CfgEffectors
+    {
+        /// <summary>
+        /// Graphic Equalizer
+        /// </summary>
+        [JsonPropertyName("GraphicEqualizer")]
+        public CfgGEqualizer GEqualizer { get; set; } = new CfgGEqualizer();
+        public CfgPitchShift PitchShift { get; set; } = new CfgPitchShift();
+        public CfgFrequency Frequency { get; set; } = new CfgFrequency();
+        public CfgSpeed Speed { get; set; } = new CfgSpeed();
+        public CfgDistortion Distortion { get; set; } = new CfgDistortion();
+        public CfgChorus Chorus { get; set; } = new CfgChorus();
+        public CfgEcho Echo { get; set; } = new CfgEcho();
+        public CfgFlanger Flanger { get; set; } = new CfgFlanger();
+        public CfgHightpass Highpass { get; set; } = new CfgHightpass();
+        public CfgLowpass Lowpass { get; set; } = new CfgLowpass();
+        public CfgCompressor Compressor { get; set; } = new CfgCompressor();
+        public CfgReverb Reverb { get; set; } = new CfgReverb();
+    }
+
+    public class CfgGEqualizer
+    {
+        public bool Enable { get; set; }
+        [JsonPropertyName("32")]
+        public int GEQ_32 { get; set; }
+        [JsonPropertyName("60")]
+        public int GEQ_60 { get; set; }
+        [JsonPropertyName("125")]
+        public int GEQ_125 { get; set; }
+        [JsonPropertyName("250")]
+        public int GEQ_250 { get; set; }
+        [JsonPropertyName("500")]
+        public int GEQ_500 { get; set; }
+        [JsonPropertyName("1000")]
+        public int GEQ_1K { get; set; }
+        [JsonPropertyName("2000")]
+        public int GEQ_2K { get; set; }
+        [JsonPropertyName("4000")]
+        public int GEQ_4K { get; set; }
+        [JsonPropertyName("8000")]
+        public int GEQ_8K { get; set; }
+        [JsonPropertyName("16000")]
+        public int GEQ_16K { get; set; }
+        [JsonPropertyName("20000")]
+        public int GEQ_20K { get; set; }
+        [JsonPropertyName("22000")]
+        public int GEQ_22K { get; set; }
+    }
+
+    public class CfgDistortion
+    {
+        public bool Enable { get; set; }
+        public int Level { get; set; }
+    }
+
+    public class CfgPitchShift
+    {
+        public bool Enable { get; set; }
+        public int Pitch { get; set; }
+        public int FFT { get; set; }
+    }
+
+    public class CfgFrequency
+    {
+        public bool Enable { get; set; }
+        public int Frequency { get; set; }
+    }
+
+    public class CfgSpeed
+    {
+        public bool Enable { get; set; }
+
+        public int Speed { get; set; }
+    }
+
+    public class CfgChorus
+    {
+        public bool Enable { get; set; }
+        public int Mix { get; set; }
+        public int Rate { get; set; }
+        public int Depth { get; set; }
+    }
+
+    public class CfgEcho
+    {
+        public bool Enable { get; set; }
+        public int Delay { get; set; }
+        public int Feedback { get; set; }
+        public int Dry { get; set; }
+        public int Wet { get; set; }
+    }
+
+    public class CfgFlanger
+    {
+        public bool Enable { get; set; }
+        public int Mix { get; set; }
+        public int Rate { get; set; }
+        public int Depth { get; set; }
+    }
+
+    public class CfgHightpass
+    {
+        public bool Enable { get; set; }
+        public int Cutoff { get; set; }
+        public int Resonance { get; set; }
+    }
+
+    public class CfgLowpass
+    {
+        public bool Enable { get; set; }
+        public int Cutoff { get; set; }
+        public int Resonance { get; set; }
+    }
+
+    public class CfgCompressor
+    {
+        public bool Enable { get; set; }
+        public int Threshold { get; set; }
+        public int Ratio { get; set; }
+        public int Attack { get; set; }
+        public int Release { get; set; }
+        public int Gain { get; set; }
+    }
+
+    public class CfgReverb
+    {
+        public bool Enable { get; set; }
+        public int DecayTime { get; set; }
+        public int EarlyDelay { get; set; }
+        public int LateDelay { get; set; }
+        public int HFRef { get; set; }
+        public int HFDecayRatio { get; set; }
+        public int Diffusion { get; set; }
+        public int Density { get; set; }
+        public int LowShelfFrequency { get; set; }
+        public int LowShelfGain { get; set; }
+        public int HighCut { get; set; }
+        public int EarlyLate { get; set; }
+        public int WetLevel { get; set; }
+        public int DryLevel { get; set; }
+    }
     public class Configration
     {
         public ConfigurationData settings;
+        protected PlayerEngine engine;
 
         public Configration(ref PlayerEngine engine)
         {
+            this.engine = engine;
             if (File.Exists("config.json"))
             {
                 string jsonString = File.ReadAllText("config.json", Encoding.UTF8);
@@ -80,6 +224,7 @@ namespace MediaPlayer_X_Ark.Engine
             else
             {
                 settings = new ConfigurationData();
+                settings.Effectors = new CfgEffectors();
                 switch (engine.GetOutputType())
                 {
                     case FMOD.OUTPUTTYPE.AUTODETECT:
@@ -95,6 +240,7 @@ namespace MediaPlayer_X_Ark.Engine
                         settings.OutputType = 3;
                         break;
                 }
+                engine.SetDevice(0);
                 settings.Device = engine.GetDeviceGUID();
                 int sampleRate;
                 FMOD.SPEAKERMODE speakermode;
@@ -198,7 +344,7 @@ namespace MediaPlayer_X_Ark.Engine
             File.WriteAllText("config.json", jsonString);
         }
 
-        public FMOD.SOUND_FORMAT getSoundFormat()
+        public FMOD.SOUND_FORMAT GetSoundFormat()
         {
             switch(settings.Format)
             {
@@ -222,7 +368,7 @@ namespace MediaPlayer_X_Ark.Engine
             }
         }
 
-        public FMOD.OUTPUTTYPE getOutputType()
+        public FMOD.OUTPUTTYPE GetOutputType()
         {
             switch(settings.OutputType)
             {
@@ -239,7 +385,7 @@ namespace MediaPlayer_X_Ark.Engine
             }
         }
 
-        public SOFTWARE_SAMPLE_RATE getSampleRate()
+        public SOFTWARE_SAMPLE_RATE GetSampleRate()
         {
             switch (settings.SampleRate)
             {
@@ -274,7 +420,7 @@ namespace MediaPlayer_X_Ark.Engine
             }
         }
 
-        public FMOD.SPEAKERMODE getSpeakerMode()
+        public FMOD.SPEAKERMODE GetSpeakerMode()
         {
             switch (settings.SpeakerMode)
             {
@@ -305,6 +451,11 @@ namespace MediaPlayer_X_Ark.Engine
                 default:
                     return FMOD.SPEAKERMODE.DEFAULT;
             }
+        }
+
+        public void GetEqualizerValue()
+        {
+//            settings.Effectors.GEqualizer.GEQ_32 = engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_32);
         }
     }
 }

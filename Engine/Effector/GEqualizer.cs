@@ -102,6 +102,11 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 			NotifyPropertyChanged("Gain");
 		}
 
+		public float GetGain(EQ_HZ hz)
+		{
+			return _gain[(int)hz];
+		}
+
 		private float GetIndexToHz(int index)
         {
             switch (index)

@@ -674,11 +674,5 @@ namespace MediaPlayer_X_Ark
 			e.Cancel = true;
 			this.Hide();
         }
-
-        private void TrkGEQ20K_Scroll(object sender, EventArgs e)
-        {
-
-        }
-
     }
 }

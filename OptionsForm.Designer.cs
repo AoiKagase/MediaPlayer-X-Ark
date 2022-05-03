@@ -28,30 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode57 = new System.Windows.Forms.TreeNode("出力設定");
-            System.Windows.Forms.TreeNode treeNode58 = new System.Windows.Forms.TreeNode("Graphic Equalizer");
-            System.Windows.Forms.TreeNode treeNode59 = new System.Windows.Forms.TreeNode("Pitch / Freq / Speed");
-            System.Windows.Forms.TreeNode treeNode60 = new System.Windows.Forms.TreeNode("Distortion");
-            System.Windows.Forms.TreeNode treeNode61 = new System.Windows.Forms.TreeNode("Chorus");
-            System.Windows.Forms.TreeNode treeNode62 = new System.Windows.Forms.TreeNode("Echo");
-            System.Windows.Forms.TreeNode treeNode63 = new System.Windows.Forms.TreeNode("Flanger");
-            System.Windows.Forms.TreeNode treeNode64 = new System.Windows.Forms.TreeNode("Highpass");
-            System.Windows.Forms.TreeNode treeNode65 = new System.Windows.Forms.TreeNode("Lowpass");
-            System.Windows.Forms.TreeNode treeNode66 = new System.Windows.Forms.TreeNode("Compressor");
-            System.Windows.Forms.TreeNode treeNode67 = new System.Windows.Forms.TreeNode("Reverb");
-            System.Windows.Forms.TreeNode treeNode68 = new System.Windows.Forms.TreeNode("エフェクト", new System.Windows.Forms.TreeNode[] {
-            treeNode58,
-            treeNode59,
-            treeNode60,
-            treeNode61,
-            treeNode62,
-            treeNode63,
-            treeNode64,
-            treeNode65,
-            treeNode66,
-            treeNode67});
-            System.Windows.Forms.TreeNode treeNode69 = new System.Windows.Forms.TreeNode("スキン");
-            System.Windows.Forms.TreeNode treeNode70 = new System.Windows.Forms.TreeNode("その他");
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("出力設定");
+            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Graphic Equalizer");
+            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Pitch / Freq / Speed");
+            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Distortion");
+            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Chorus");
+            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Echo");
+            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Flanger");
+            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Highpass");
+            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Lowpass");
+            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Compressor");
+            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Reverb");
+            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("エフェクト", new System.Windows.Forms.TreeNode[] {
+            treeNode16,
+            treeNode17,
+            treeNode18,
+            treeNode19,
+            treeNode20,
+            treeNode21,
+            treeNode22,
+            treeNode23,
+            treeNode24,
+            treeNode25});
+            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("スキン");
+            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("その他");
             this.TreeMenu = new System.Windows.Forms.TreeView();
             this.tabControlEffects = new System.Windows.Forms.TabControl();
             this.tabSetting = new System.Windows.Forms.TabPage();
@@ -70,11 +70,34 @@
             this.label36 = new System.Windows.Forms.Label();
             this.tabGEqualizer = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.TrkGEQ32 = new ColorSlider.ColorSlider();
+            this.label56 = new System.Windows.Forms.Label();
+            this.label55 = new System.Windows.Forms.Label();
+            this.label54 = new System.Windows.Forms.Label();
+            this.label53 = new System.Windows.Forms.Label();
+            this.label52 = new System.Windows.Forms.Label();
+            this.label51 = new System.Windows.Forms.Label();
+            this.label50 = new System.Windows.Forms.Label();
+            this.label49 = new System.Windows.Forms.Label();
+            this.label48 = new System.Windows.Forms.Label();
+            this.label47 = new System.Windows.Forms.Label();
+            this.label46 = new System.Windows.Forms.Label();
+            this.label45 = new System.Windows.Forms.Label();
             this.label44 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.CheckGEQ = new System.Windows.Forms.CheckBox();
             this.PictGEQGraph = new System.Windows.Forms.PictureBox();
+            this.TrkGEQ60 = new ColorSlider.ColorSlider();
+            this.TrkGEQ32 = new ColorSlider.ColorSlider();
+            this.TrkGEQ125 = new ColorSlider.ColorSlider();
+            this.TrkGEQ250 = new ColorSlider.ColorSlider();
+            this.TrkGEQ500 = new ColorSlider.ColorSlider();
+            this.TrkGEQ1K = new ColorSlider.ColorSlider();
+            this.TrkGEQ2K = new ColorSlider.ColorSlider();
+            this.TrkGEQ4K = new ColorSlider.ColorSlider();
+            this.TrkGEQ8K = new ColorSlider.ColorSlider();
+            this.TrkGEQ16K = new ColorSlider.ColorSlider();
+            this.TrkGEQ20K = new ColorSlider.ColorSlider();
+            this.TrkGEQ22K = new ColorSlider.ColorSlider();
             this.tabPitch = new System.Windows.Forms.TabPage();
             this.GroupSpeed = new System.Windows.Forms.GroupBox();
             this.lblValSpeed = new System.Windows.Forms.TextBox();
@@ -218,35 +241,23 @@
             this.label18 = new System.Windows.Forms.Label();
             this.knob5 = new UI.Knob();
             this.CheckReverb = new System.Windows.Forms.CheckBox();
-            this.TrkGEQ60 = new ColorSlider.ColorSlider();
-            this.TrkGEQ125 = new ColorSlider.ColorSlider();
-            this.TrkGEQ250 = new ColorSlider.ColorSlider();
-            this.TrkGEQ500 = new ColorSlider.ColorSlider();
-            this.TrkGEQ1K = new ColorSlider.ColorSlider();
-            this.TrkGEQ2K = new ColorSlider.ColorSlider();
-            this.TrkGEQ4K = new ColorSlider.ColorSlider();
-            this.TrkGEQ8K = new ColorSlider.ColorSlider();
-            this.TrkGEQ16K = new ColorSlider.ColorSlider();
-            this.TrkGEQ20K = new ColorSlider.ColorSlider();
-            this.TrkGEQ22K = new ColorSlider.ColorSlider();
-            this.label45 = new System.Windows.Forms.Label();
-            this.label46 = new System.Windows.Forms.Label();
-            this.label47 = new System.Windows.Forms.Label();
-            this.label48 = new System.Windows.Forms.Label();
-            this.label49 = new System.Windows.Forms.Label();
-            this.label50 = new System.Windows.Forms.Label();
-            this.label51 = new System.Windows.Forms.Label();
-            this.label52 = new System.Windows.Forms.Label();
-            this.label53 = new System.Windows.Forms.Label();
-            this.label54 = new System.Windows.Forms.Label();
-            this.label55 = new System.Windows.Forms.Label();
-            this.label56 = new System.Windows.Forms.Label();
             this.tabControlEffects.SuspendLayout();
             this.tabSetting.SuspendLayout();
             this.tabGEqualizer.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ32)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictGEQGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ60)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ32)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ125)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ250)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ500)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ1K)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ2K)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ4K)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ8K)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ16K)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ20K)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ22K)).BeginInit();
             this.tabPitch.SuspendLayout();
             this.GroupSpeed.SuspendLayout();
             this.GroupFrequency.SuspendLayout();
@@ -267,17 +278,6 @@
             this.GroupCompressor.SuspendLayout();
             this.tabReverb.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ60)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ125)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ250)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ500)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ1K)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ2K)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ4K)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ8K)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ16K)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ20K)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ22K)).BeginInit();
             this.SuspendLayout();
             // 
             // TreeMenu
@@ -285,39 +285,39 @@
             this.TreeMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.TreeMenu.Location = new System.Drawing.Point(0, 0);
             this.TreeMenu.Name = "TreeMenu";
-            treeNode57.Name = "OUTPUT";
-            treeNode57.Text = "出力設定";
-            treeNode58.Name = "GEQ";
-            treeNode58.Text = "Graphic Equalizer";
-            treeNode59.Name = "PITCH";
-            treeNode59.Text = "Pitch / Freq / Speed";
-            treeNode60.Name = "DISTORTION";
-            treeNode60.Text = "Distortion";
-            treeNode61.Name = "CHORUS";
-            treeNode61.Text = "Chorus";
-            treeNode62.Name = "ECHO";
-            treeNode62.Text = "Echo";
-            treeNode63.Name = "FLANGER";
-            treeNode63.Text = "Flanger";
-            treeNode64.Name = "HIGHPASS";
-            treeNode64.Text = "Highpass";
-            treeNode65.Name = "LOWPASS";
-            treeNode65.Text = "Lowpass";
-            treeNode66.Name = "COMPRESSOR";
-            treeNode66.Text = "Compressor";
-            treeNode67.Name = "REVERB";
-            treeNode67.Text = "Reverb";
-            treeNode68.Name = "EFFECTS";
-            treeNode68.Text = "エフェクト";
-            treeNode69.Name = "SKIN";
-            treeNode69.Text = "スキン";
-            treeNode70.Name = "OTHER";
-            treeNode70.Text = "その他";
+            treeNode15.Name = "OUTPUT";
+            treeNode15.Text = "出力設定";
+            treeNode16.Name = "GEQ";
+            treeNode16.Text = "Graphic Equalizer";
+            treeNode17.Name = "PITCH";
+            treeNode17.Text = "Pitch / Freq / Speed";
+            treeNode18.Name = "DISTORTION";
+            treeNode18.Text = "Distortion";
+            treeNode19.Name = "CHORUS";
+            treeNode19.Text = "Chorus";
+            treeNode20.Name = "ECHO";
+            treeNode20.Text = "Echo";
+            treeNode21.Name = "FLANGER";
+            treeNode21.Text = "Flanger";
+            treeNode22.Name = "HIGHPASS";
+            treeNode22.Text = "Highpass";
+            treeNode23.Name = "LOWPASS";
+            treeNode23.Text = "Lowpass";
+            treeNode24.Name = "COMPRESSOR";
+            treeNode24.Text = "Compressor";
+            treeNode25.Name = "REVERB";
+            treeNode25.Text = "Reverb";
+            treeNode26.Name = "EFFECTS";
+            treeNode26.Text = "エフェクト";
+            treeNode27.Name = "SKIN";
+            treeNode27.Text = "スキン";
+            treeNode28.Name = "OTHER";
+            treeNode28.Text = "その他";
             this.TreeMenu.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode57,
-            treeNode68,
-            treeNode69,
-            treeNode70});
+            treeNode15,
+            treeNode26,
+            treeNode27,
+            treeNode28});
             this.TreeMenu.Size = new System.Drawing.Size(199, 419);
             this.TreeMenu.TabIndex = 3;
             this.TreeMenu.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeMenu_AfterSelect);
@@ -570,6 +570,217 @@
             this.groupBox3.TabIndex = 13;
             this.groupBox3.TabStop = false;
             // 
+            // label56
+            // 
+            this.label56.AutoSize = true;
+            this.label56.Location = new System.Drawing.Point(518, 348);
+            this.label56.Name = "label56";
+            this.label56.Size = new System.Drawing.Size(26, 15);
+            this.label56.TabIndex = 28;
+            this.label56.Text = "22K";
+            // 
+            // label55
+            // 
+            this.label55.AutoSize = true;
+            this.label55.Location = new System.Drawing.Point(469, 348);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(26, 15);
+            this.label55.TabIndex = 28;
+            this.label55.Text = "20K";
+            // 
+            // label54
+            // 
+            this.label54.AutoSize = true;
+            this.label54.Location = new System.Drawing.Point(424, 348);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(26, 15);
+            this.label54.TabIndex = 28;
+            this.label54.Text = "16K";
+            // 
+            // label53
+            // 
+            this.label53.AutoSize = true;
+            this.label53.Location = new System.Drawing.Point(385, 348);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(20, 15);
+            this.label53.TabIndex = 28;
+            this.label53.Text = "8K";
+            // 
+            // label52
+            // 
+            this.label52.AutoSize = true;
+            this.label52.Location = new System.Drawing.Point(343, 348);
+            this.label52.Name = "label52";
+            this.label52.Size = new System.Drawing.Size(20, 15);
+            this.label52.TabIndex = 28;
+            this.label52.Text = "4K";
+            // 
+            // label51
+            // 
+            this.label51.AutoSize = true;
+            this.label51.Location = new System.Drawing.Point(295, 348);
+            this.label51.Name = "label51";
+            this.label51.Size = new System.Drawing.Size(20, 15);
+            this.label51.TabIndex = 28;
+            this.label51.Text = "2K";
+            // 
+            // label50
+            // 
+            this.label50.AutoSize = true;
+            this.label50.Location = new System.Drawing.Point(250, 348);
+            this.label50.Name = "label50";
+            this.label50.Size = new System.Drawing.Size(20, 15);
+            this.label50.TabIndex = 28;
+            this.label50.Text = "1K";
+            // 
+            // label49
+            // 
+            this.label49.AutoSize = true;
+            this.label49.Location = new System.Drawing.Point(200, 348);
+            this.label49.Name = "label49";
+            this.label49.Size = new System.Drawing.Size(25, 15);
+            this.label49.TabIndex = 28;
+            this.label49.Text = "500";
+            // 
+            // label48
+            // 
+            this.label48.AutoSize = true;
+            this.label48.Location = new System.Drawing.Point(155, 348);
+            this.label48.Name = "label48";
+            this.label48.Size = new System.Drawing.Size(25, 15);
+            this.label48.TabIndex = 28;
+            this.label48.Text = "250";
+            // 
+            // label47
+            // 
+            this.label47.AutoSize = true;
+            this.label47.Location = new System.Drawing.Point(110, 348);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(25, 15);
+            this.label47.TabIndex = 28;
+            this.label47.Text = "125";
+            // 
+            // label46
+            // 
+            this.label46.AutoSize = true;
+            this.label46.Location = new System.Drawing.Point(73, 348);
+            this.label46.Name = "label46";
+            this.label46.Size = new System.Drawing.Size(19, 15);
+            this.label46.TabIndex = 28;
+            this.label46.Text = "60";
+            // 
+            // label45
+            // 
+            this.label45.AutoSize = true;
+            this.label45.Location = new System.Drawing.Point(26, 348);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(19, 15);
+            this.label45.TabIndex = 28;
+            this.label45.Text = "32";
+            // 
+            // label44
+            // 
+            this.label44.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label44.Location = new System.Drawing.Point(23, 274);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(521, 1);
+            this.label44.TabIndex = 15;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(6, 25);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 23);
+            this.comboBox1.TabIndex = 14;
+            // 
+            // CheckGEQ
+            // 
+            this.CheckGEQ.AutoSize = true;
+            this.CheckGEQ.BackColor = System.Drawing.SystemColors.Control;
+            this.CheckGEQ.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.CheckGEQ.Location = new System.Drawing.Point(6, 0);
+            this.CheckGEQ.Name = "CheckGEQ";
+            this.CheckGEQ.Size = new System.Drawing.Size(117, 19);
+            this.CheckGEQ.TabIndex = 13;
+            this.CheckGEQ.Text = "Graphic Equalizer";
+            this.CheckGEQ.UseVisualStyleBackColor = false;
+            this.CheckGEQ.CheckedChanged += new System.EventHandler(this.CheckGEQ_CheckedChanged);
+            // 
+            // PictGEQGraph
+            // 
+            this.PictGEQGraph.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.PictGEQGraph.Location = new System.Drawing.Point(6, 54);
+            this.PictGEQGraph.Name = "PictGEQGraph";
+            this.PictGEQGraph.Size = new System.Drawing.Size(551, 137);
+            this.PictGEQGraph.TabIndex = 0;
+            this.PictGEQGraph.TabStop = false;
+            // 
+            // TrkGEQ60
+            // 
+            this.TrkGEQ60.AutoSize = false;
+            this.TrkGEQ60.BackColor = System.Drawing.Color.Transparent;
+            this.TrkGEQ60.BarInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ60.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ60.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ60.BorderRoundRectSize = new System.Drawing.Size(8, 8);
+            this.TrkGEQ60.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ60.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ60.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ60.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.TrkGEQ60.LargeChange = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ60.Location = new System.Drawing.Point(51, 197);
+            this.TrkGEQ60.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.TrkGEQ60.Minimum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            -2147483648});
+            this.TrkGEQ60.Name = "TrkGEQ60";
+            this.TrkGEQ60.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ60.Padding = 10;
+            this.TrkGEQ60.ScaleDivisions = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.TrkGEQ60.ScaleSubDivisions = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ60.ShowDivisionsText = false;
+            this.TrkGEQ60.ShowSmallScale = false;
+            this.TrkGEQ60.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ60.SmallChange = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.TrkGEQ60.TabIndex = 17;
+            this.TrkGEQ60.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ60.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ60.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ60.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
+            this.TrkGEQ60.ThumbSize = new System.Drawing.Size(16, 8);
+            this.TrkGEQ60.TickAdd = 0F;
+            this.TrkGEQ60.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ60.TickDivide = 1F;
+            this.TrkGEQ60.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.TrkGEQ60.ValueChanged += new System.EventHandler(this.TrkGEQ60_ValueChanged);
+            // 
             // TrkGEQ32
             // 
             this.TrkGEQ32.AutoSize = false;
@@ -635,43 +846,656 @@
             0});
             this.TrkGEQ32.ValueChanged += new System.EventHandler(this.TrkGEQ32_ValueChanged);
             // 
-            // label44
+            // TrkGEQ125
             // 
-            this.label44.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label44.Location = new System.Drawing.Point(23, 274);
-            this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(521, 1);
-            this.label44.TabIndex = 15;
+            this.TrkGEQ125.AutoSize = false;
+            this.TrkGEQ125.BackColor = System.Drawing.Color.Transparent;
+            this.TrkGEQ125.BarInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ125.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ125.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ125.BorderRoundRectSize = new System.Drawing.Size(8, 8);
+            this.TrkGEQ125.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ125.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ125.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ125.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.TrkGEQ125.LargeChange = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ125.Location = new System.Drawing.Point(96, 197);
+            this.TrkGEQ125.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.TrkGEQ125.Minimum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            -2147483648});
+            this.TrkGEQ125.Name = "TrkGEQ125";
+            this.TrkGEQ125.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ125.Padding = 10;
+            this.TrkGEQ125.ScaleDivisions = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.TrkGEQ125.ScaleSubDivisions = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ125.ShowDivisionsText = false;
+            this.TrkGEQ125.ShowSmallScale = false;
+            this.TrkGEQ125.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ125.SmallChange = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.TrkGEQ125.TabIndex = 18;
+            this.TrkGEQ125.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ125.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ125.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ125.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
+            this.TrkGEQ125.ThumbSize = new System.Drawing.Size(16, 8);
+            this.TrkGEQ125.TickAdd = 0F;
+            this.TrkGEQ125.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ125.TickDivide = 1F;
+            this.TrkGEQ125.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.TrkGEQ125.ValueChanged += new System.EventHandler(this.TrkGEQ125_ValueChanged);
             // 
-            // comboBox1
+            // TrkGEQ250
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(6, 25);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 23);
-            this.comboBox1.TabIndex = 14;
+            this.TrkGEQ250.AutoSize = false;
+            this.TrkGEQ250.BackColor = System.Drawing.Color.Transparent;
+            this.TrkGEQ250.BarInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ250.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ250.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ250.BorderRoundRectSize = new System.Drawing.Size(8, 8);
+            this.TrkGEQ250.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ250.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ250.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ250.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.TrkGEQ250.LargeChange = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ250.Location = new System.Drawing.Point(141, 197);
+            this.TrkGEQ250.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.TrkGEQ250.Minimum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            -2147483648});
+            this.TrkGEQ250.Name = "TrkGEQ250";
+            this.TrkGEQ250.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ250.Padding = 10;
+            this.TrkGEQ250.ScaleDivisions = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.TrkGEQ250.ScaleSubDivisions = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ250.ShowDivisionsText = false;
+            this.TrkGEQ250.ShowSmallScale = false;
+            this.TrkGEQ250.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ250.SmallChange = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.TrkGEQ250.TabIndex = 19;
+            this.TrkGEQ250.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ250.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ250.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ250.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
+            this.TrkGEQ250.ThumbSize = new System.Drawing.Size(16, 8);
+            this.TrkGEQ250.TickAdd = 0F;
+            this.TrkGEQ250.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ250.TickDivide = 1F;
+            this.TrkGEQ250.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.TrkGEQ250.ValueChanged += new System.EventHandler(this.TrkGEQ250_ValueChanged);
             // 
-            // CheckGEQ
+            // TrkGEQ500
             // 
-            this.CheckGEQ.AutoSize = true;
-            this.CheckGEQ.BackColor = System.Drawing.SystemColors.Control;
-            this.CheckGEQ.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckGEQ.Location = new System.Drawing.Point(6, 0);
-            this.CheckGEQ.Name = "CheckGEQ";
-            this.CheckGEQ.Size = new System.Drawing.Size(117, 19);
-            this.CheckGEQ.TabIndex = 13;
-            this.CheckGEQ.Text = "Graphic Equalizer";
-            this.CheckGEQ.UseVisualStyleBackColor = false;
-            this.CheckGEQ.CheckedChanged += new System.EventHandler(this.CheckGEQ_CheckedChanged);
+            this.TrkGEQ500.AutoSize = false;
+            this.TrkGEQ500.BackColor = System.Drawing.Color.Transparent;
+            this.TrkGEQ500.BarInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ500.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ500.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ500.BorderRoundRectSize = new System.Drawing.Size(8, 8);
+            this.TrkGEQ500.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ500.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ500.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ500.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.TrkGEQ500.LargeChange = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ500.Location = new System.Drawing.Point(186, 197);
+            this.TrkGEQ500.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.TrkGEQ500.Minimum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            -2147483648});
+            this.TrkGEQ500.Name = "TrkGEQ500";
+            this.TrkGEQ500.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ500.Padding = 10;
+            this.TrkGEQ500.ScaleDivisions = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.TrkGEQ500.ScaleSubDivisions = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ500.ShowDivisionsText = false;
+            this.TrkGEQ500.ShowSmallScale = false;
+            this.TrkGEQ500.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ500.SmallChange = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.TrkGEQ500.TabIndex = 20;
+            this.TrkGEQ500.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ500.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ500.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ500.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
+            this.TrkGEQ500.ThumbSize = new System.Drawing.Size(16, 8);
+            this.TrkGEQ500.TickAdd = 0F;
+            this.TrkGEQ500.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ500.TickDivide = 1F;
+            this.TrkGEQ500.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.TrkGEQ500.ValueChanged += new System.EventHandler(this.TrkGEQ500_ValueChanged);
             // 
-            // PictGEQGraph
+            // TrkGEQ1K
             // 
-            this.PictGEQGraph.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.PictGEQGraph.Location = new System.Drawing.Point(6, 54);
-            this.PictGEQGraph.Name = "PictGEQGraph";
-            this.PictGEQGraph.Size = new System.Drawing.Size(551, 137);
-            this.PictGEQGraph.TabIndex = 0;
-            this.PictGEQGraph.TabStop = false;
+            this.TrkGEQ1K.AutoSize = false;
+            this.TrkGEQ1K.BackColor = System.Drawing.Color.Transparent;
+            this.TrkGEQ1K.BarInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ1K.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ1K.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ1K.BorderRoundRectSize = new System.Drawing.Size(8, 8);
+            this.TrkGEQ1K.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ1K.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ1K.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ1K.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.TrkGEQ1K.LargeChange = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ1K.Location = new System.Drawing.Point(231, 197);
+            this.TrkGEQ1K.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.TrkGEQ1K.Minimum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            -2147483648});
+            this.TrkGEQ1K.Name = "TrkGEQ1K";
+            this.TrkGEQ1K.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ1K.Padding = 10;
+            this.TrkGEQ1K.ScaleDivisions = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.TrkGEQ1K.ScaleSubDivisions = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ1K.ShowDivisionsText = false;
+            this.TrkGEQ1K.ShowSmallScale = false;
+            this.TrkGEQ1K.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ1K.SmallChange = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.TrkGEQ1K.TabIndex = 21;
+            this.TrkGEQ1K.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ1K.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ1K.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ1K.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
+            this.TrkGEQ1K.ThumbSize = new System.Drawing.Size(16, 8);
+            this.TrkGEQ1K.TickAdd = 0F;
+            this.TrkGEQ1K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ1K.TickDivide = 1F;
+            this.TrkGEQ1K.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.TrkGEQ1K.ValueChanged += new System.EventHandler(this.TrkGEQ1K_ValueChanged);
+            // 
+            // TrkGEQ2K
+            // 
+            this.TrkGEQ2K.AutoSize = false;
+            this.TrkGEQ2K.BackColor = System.Drawing.Color.Transparent;
+            this.TrkGEQ2K.BarInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ2K.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ2K.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ2K.BorderRoundRectSize = new System.Drawing.Size(8, 8);
+            this.TrkGEQ2K.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ2K.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ2K.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ2K.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.TrkGEQ2K.LargeChange = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ2K.Location = new System.Drawing.Point(276, 197);
+            this.TrkGEQ2K.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.TrkGEQ2K.Minimum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            -2147483648});
+            this.TrkGEQ2K.Name = "TrkGEQ2K";
+            this.TrkGEQ2K.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ2K.Padding = 10;
+            this.TrkGEQ2K.ScaleDivisions = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.TrkGEQ2K.ScaleSubDivisions = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ2K.ShowDivisionsText = false;
+            this.TrkGEQ2K.ShowSmallScale = false;
+            this.TrkGEQ2K.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ2K.SmallChange = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.TrkGEQ2K.TabIndex = 22;
+            this.TrkGEQ2K.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ2K.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ2K.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ2K.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
+            this.TrkGEQ2K.ThumbSize = new System.Drawing.Size(16, 8);
+            this.TrkGEQ2K.TickAdd = 0F;
+            this.TrkGEQ2K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ2K.TickDivide = 1F;
+            this.TrkGEQ2K.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.TrkGEQ2K.ValueChanged += new System.EventHandler(this.TrkGEQ2K_ValueChanged);
+            // 
+            // TrkGEQ4K
+            // 
+            this.TrkGEQ4K.AutoSize = false;
+            this.TrkGEQ4K.BackColor = System.Drawing.Color.Transparent;
+            this.TrkGEQ4K.BarInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ4K.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ4K.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ4K.BorderRoundRectSize = new System.Drawing.Size(8, 8);
+            this.TrkGEQ4K.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ4K.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ4K.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ4K.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.TrkGEQ4K.LargeChange = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ4K.Location = new System.Drawing.Point(321, 197);
+            this.TrkGEQ4K.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.TrkGEQ4K.Minimum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            -2147483648});
+            this.TrkGEQ4K.Name = "TrkGEQ4K";
+            this.TrkGEQ4K.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ4K.Padding = 10;
+            this.TrkGEQ4K.ScaleDivisions = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.TrkGEQ4K.ScaleSubDivisions = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ4K.ShowDivisionsText = false;
+            this.TrkGEQ4K.ShowSmallScale = false;
+            this.TrkGEQ4K.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ4K.SmallChange = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.TrkGEQ4K.TabIndex = 23;
+            this.TrkGEQ4K.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ4K.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ4K.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ4K.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
+            this.TrkGEQ4K.ThumbSize = new System.Drawing.Size(16, 8);
+            this.TrkGEQ4K.TickAdd = 0F;
+            this.TrkGEQ4K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ4K.TickDivide = 1F;
+            this.TrkGEQ4K.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.TrkGEQ4K.ValueChanged += new System.EventHandler(this.TrkGEQ4K_ValueChanged);
+            // 
+            // TrkGEQ8K
+            // 
+            this.TrkGEQ8K.AutoSize = false;
+            this.TrkGEQ8K.BackColor = System.Drawing.Color.Transparent;
+            this.TrkGEQ8K.BarInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ8K.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ8K.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ8K.BorderRoundRectSize = new System.Drawing.Size(8, 8);
+            this.TrkGEQ8K.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ8K.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ8K.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ8K.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.TrkGEQ8K.LargeChange = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ8K.Location = new System.Drawing.Point(366, 197);
+            this.TrkGEQ8K.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.TrkGEQ8K.Minimum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            -2147483648});
+            this.TrkGEQ8K.Name = "TrkGEQ8K";
+            this.TrkGEQ8K.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ8K.Padding = 10;
+            this.TrkGEQ8K.ScaleDivisions = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.TrkGEQ8K.ScaleSubDivisions = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ8K.ShowDivisionsText = false;
+            this.TrkGEQ8K.ShowSmallScale = false;
+            this.TrkGEQ8K.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ8K.SmallChange = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.TrkGEQ8K.TabIndex = 24;
+            this.TrkGEQ8K.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ8K.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ8K.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ8K.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
+            this.TrkGEQ8K.ThumbSize = new System.Drawing.Size(16, 8);
+            this.TrkGEQ8K.TickAdd = 0F;
+            this.TrkGEQ8K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ8K.TickDivide = 1F;
+            this.TrkGEQ8K.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.TrkGEQ8K.ValueChanged += new System.EventHandler(this.TrkGEQ8K_ValueChanged);
+            // 
+            // TrkGEQ16K
+            // 
+            this.TrkGEQ16K.AutoSize = false;
+            this.TrkGEQ16K.BackColor = System.Drawing.Color.Transparent;
+            this.TrkGEQ16K.BarInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ16K.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ16K.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ16K.BorderRoundRectSize = new System.Drawing.Size(8, 8);
+            this.TrkGEQ16K.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ16K.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ16K.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ16K.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.TrkGEQ16K.LargeChange = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ16K.Location = new System.Drawing.Point(411, 197);
+            this.TrkGEQ16K.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.TrkGEQ16K.Minimum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            -2147483648});
+            this.TrkGEQ16K.Name = "TrkGEQ16K";
+            this.TrkGEQ16K.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ16K.Padding = 10;
+            this.TrkGEQ16K.ScaleDivisions = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.TrkGEQ16K.ScaleSubDivisions = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ16K.ShowDivisionsText = false;
+            this.TrkGEQ16K.ShowSmallScale = false;
+            this.TrkGEQ16K.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ16K.SmallChange = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.TrkGEQ16K.TabIndex = 25;
+            this.TrkGEQ16K.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ16K.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ16K.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ16K.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
+            this.TrkGEQ16K.ThumbSize = new System.Drawing.Size(16, 8);
+            this.TrkGEQ16K.TickAdd = 0F;
+            this.TrkGEQ16K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ16K.TickDivide = 1F;
+            this.TrkGEQ16K.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.TrkGEQ16K.ValueChanged += new System.EventHandler(this.TrkGEQ16K_ValueChanged);
+            // 
+            // TrkGEQ20K
+            // 
+            this.TrkGEQ20K.AutoSize = false;
+            this.TrkGEQ20K.BackColor = System.Drawing.Color.Transparent;
+            this.TrkGEQ20K.BarInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ20K.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ20K.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ20K.BorderRoundRectSize = new System.Drawing.Size(8, 8);
+            this.TrkGEQ20K.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ20K.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ20K.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ20K.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.TrkGEQ20K.LargeChange = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ20K.Location = new System.Drawing.Point(456, 197);
+            this.TrkGEQ20K.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.TrkGEQ20K.Minimum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            -2147483648});
+            this.TrkGEQ20K.Name = "TrkGEQ20K";
+            this.TrkGEQ20K.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ20K.Padding = 10;
+            this.TrkGEQ20K.ScaleDivisions = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.TrkGEQ20K.ScaleSubDivisions = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ20K.ShowDivisionsText = false;
+            this.TrkGEQ20K.ShowSmallScale = false;
+            this.TrkGEQ20K.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ20K.SmallChange = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.TrkGEQ20K.TabIndex = 26;
+            this.TrkGEQ20K.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ20K.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ20K.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ20K.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
+            this.TrkGEQ20K.ThumbSize = new System.Drawing.Size(16, 8);
+            this.TrkGEQ20K.TickAdd = 0F;
+            this.TrkGEQ20K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ20K.TickDivide = 1F;
+            this.TrkGEQ20K.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.TrkGEQ20K.ValueChanged += new System.EventHandler(this.TrkGEQ20K_ValueChanged);
+            // 
+            // TrkGEQ22K
+            // 
+            this.TrkGEQ22K.AutoSize = false;
+            this.TrkGEQ22K.BackColor = System.Drawing.Color.Transparent;
+            this.TrkGEQ22K.BarInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ22K.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ22K.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ22K.BorderRoundRectSize = new System.Drawing.Size(8, 8);
+            this.TrkGEQ22K.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
+            this.TrkGEQ22K.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ22K.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ22K.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.TrkGEQ22K.LargeChange = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ22K.Location = new System.Drawing.Point(501, 197);
+            this.TrkGEQ22K.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.TrkGEQ22K.Minimum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            -2147483648});
+            this.TrkGEQ22K.Name = "TrkGEQ22K";
+            this.TrkGEQ22K.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.TrkGEQ22K.Padding = 10;
+            this.TrkGEQ22K.ScaleDivisions = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.TrkGEQ22K.ScaleSubDivisions = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.TrkGEQ22K.ShowDivisionsText = true;
+            this.TrkGEQ22K.ShowSmallScale = false;
+            this.TrkGEQ22K.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ22K.SmallChange = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.TrkGEQ22K.TabIndex = 27;
+            this.TrkGEQ22K.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ22K.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ22K.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
+            this.TrkGEQ22K.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
+            this.TrkGEQ22K.ThumbSize = new System.Drawing.Size(16, 8);
+            this.TrkGEQ22K.TickAdd = 0F;
+            this.TrkGEQ22K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TrkGEQ22K.TickDivide = 1F;
+            this.TrkGEQ22K.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.TrkGEQ22K.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.TrkGEQ22K.ValueChanged += new System.EventHandler(this.TrkGEQ22K_ValueChanged);
             // 
             // tabPitch
             // 
@@ -2718,830 +3542,6 @@
             this.CheckReverb.UseVisualStyleBackColor = false;
             this.CheckReverb.CheckedChanged += new System.EventHandler(this.CheckReverb_CheckedChanged);
             // 
-            // TrkGEQ60
-            // 
-            this.TrkGEQ60.AutoSize = false;
-            this.TrkGEQ60.BackColor = System.Drawing.Color.Transparent;
-            this.TrkGEQ60.BarInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ60.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ60.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ60.BorderRoundRectSize = new System.Drawing.Size(8, 8);
-            this.TrkGEQ60.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ60.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ60.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ60.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.TrkGEQ60.LargeChange = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ60.Location = new System.Drawing.Point(51, 197);
-            this.TrkGEQ60.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            this.TrkGEQ60.Minimum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            -2147483648});
-            this.TrkGEQ60.Name = "TrkGEQ60";
-            this.TrkGEQ60.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.TrkGEQ60.Padding = 10;
-            this.TrkGEQ60.ScaleDivisions = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.TrkGEQ60.ScaleSubDivisions = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ60.ShowDivisionsText = false;
-            this.TrkGEQ60.ShowSmallScale = false;
-            this.TrkGEQ60.Size = new System.Drawing.Size(61, 154);
-            this.TrkGEQ60.SmallChange = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.TrkGEQ60.TabIndex = 17;
-            this.TrkGEQ60.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ60.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ60.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ60.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
-            this.TrkGEQ60.ThumbSize = new System.Drawing.Size(16, 8);
-            this.TrkGEQ60.TickAdd = 0F;
-            this.TrkGEQ60.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ60.TickDivide = 1F;
-            this.TrkGEQ60.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.TrkGEQ60.ValueChanged += new System.EventHandler(this.TrkGEQ60_ValueChanged);
-            // 
-            // TrkGEQ125
-            // 
-            this.TrkGEQ125.AutoSize = false;
-            this.TrkGEQ125.BackColor = System.Drawing.Color.Transparent;
-            this.TrkGEQ125.BarInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ125.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ125.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ125.BorderRoundRectSize = new System.Drawing.Size(8, 8);
-            this.TrkGEQ125.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ125.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ125.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ125.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.TrkGEQ125.LargeChange = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ125.Location = new System.Drawing.Point(96, 197);
-            this.TrkGEQ125.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            this.TrkGEQ125.Minimum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            -2147483648});
-            this.TrkGEQ125.Name = "TrkGEQ125";
-            this.TrkGEQ125.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.TrkGEQ125.Padding = 10;
-            this.TrkGEQ125.ScaleDivisions = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.TrkGEQ125.ScaleSubDivisions = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ125.ShowDivisionsText = false;
-            this.TrkGEQ125.ShowSmallScale = false;
-            this.TrkGEQ125.Size = new System.Drawing.Size(61, 154);
-            this.TrkGEQ125.SmallChange = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.TrkGEQ125.TabIndex = 18;
-            this.TrkGEQ125.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ125.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ125.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ125.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
-            this.TrkGEQ125.ThumbSize = new System.Drawing.Size(16, 8);
-            this.TrkGEQ125.TickAdd = 0F;
-            this.TrkGEQ125.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ125.TickDivide = 1F;
-            this.TrkGEQ125.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.TrkGEQ125.ValueChanged += new System.EventHandler(this.TrkGEQ125_ValueChanged);
-            // 
-            // TrkGEQ250
-            // 
-            this.TrkGEQ250.AutoSize = false;
-            this.TrkGEQ250.BackColor = System.Drawing.Color.Transparent;
-            this.TrkGEQ250.BarInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ250.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ250.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ250.BorderRoundRectSize = new System.Drawing.Size(8, 8);
-            this.TrkGEQ250.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ250.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ250.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ250.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.TrkGEQ250.LargeChange = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ250.Location = new System.Drawing.Point(141, 197);
-            this.TrkGEQ250.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            this.TrkGEQ250.Minimum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            -2147483648});
-            this.TrkGEQ250.Name = "TrkGEQ250";
-            this.TrkGEQ250.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.TrkGEQ250.Padding = 10;
-            this.TrkGEQ250.ScaleDivisions = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.TrkGEQ250.ScaleSubDivisions = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ250.ShowDivisionsText = false;
-            this.TrkGEQ250.ShowSmallScale = false;
-            this.TrkGEQ250.Size = new System.Drawing.Size(61, 154);
-            this.TrkGEQ250.SmallChange = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.TrkGEQ250.TabIndex = 19;
-            this.TrkGEQ250.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ250.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ250.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ250.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
-            this.TrkGEQ250.ThumbSize = new System.Drawing.Size(16, 8);
-            this.TrkGEQ250.TickAdd = 0F;
-            this.TrkGEQ250.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ250.TickDivide = 1F;
-            this.TrkGEQ250.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.TrkGEQ250.ValueChanged += new System.EventHandler(this.TrkGEQ250_ValueChanged);
-            // 
-            // TrkGEQ500
-            // 
-            this.TrkGEQ500.AutoSize = false;
-            this.TrkGEQ500.BackColor = System.Drawing.Color.Transparent;
-            this.TrkGEQ500.BarInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ500.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ500.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ500.BorderRoundRectSize = new System.Drawing.Size(8, 8);
-            this.TrkGEQ500.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ500.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ500.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ500.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.TrkGEQ500.LargeChange = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ500.Location = new System.Drawing.Point(186, 197);
-            this.TrkGEQ500.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            this.TrkGEQ500.Minimum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            -2147483648});
-            this.TrkGEQ500.Name = "TrkGEQ500";
-            this.TrkGEQ500.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.TrkGEQ500.Padding = 10;
-            this.TrkGEQ500.ScaleDivisions = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.TrkGEQ500.ScaleSubDivisions = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ500.ShowDivisionsText = false;
-            this.TrkGEQ500.ShowSmallScale = false;
-            this.TrkGEQ500.Size = new System.Drawing.Size(61, 154);
-            this.TrkGEQ500.SmallChange = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.TrkGEQ500.TabIndex = 20;
-            this.TrkGEQ500.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ500.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ500.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ500.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
-            this.TrkGEQ500.ThumbSize = new System.Drawing.Size(16, 8);
-            this.TrkGEQ500.TickAdd = 0F;
-            this.TrkGEQ500.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ500.TickDivide = 1F;
-            this.TrkGEQ500.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.TrkGEQ500.ValueChanged += new System.EventHandler(this.TrkGEQ500_ValueChanged);
-            // 
-            // TrkGEQ1K
-            // 
-            this.TrkGEQ1K.AutoSize = false;
-            this.TrkGEQ1K.BackColor = System.Drawing.Color.Transparent;
-            this.TrkGEQ1K.BarInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ1K.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ1K.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ1K.BorderRoundRectSize = new System.Drawing.Size(8, 8);
-            this.TrkGEQ1K.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ1K.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ1K.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ1K.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.TrkGEQ1K.LargeChange = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ1K.Location = new System.Drawing.Point(231, 197);
-            this.TrkGEQ1K.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            this.TrkGEQ1K.Minimum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            -2147483648});
-            this.TrkGEQ1K.Name = "TrkGEQ1K";
-            this.TrkGEQ1K.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.TrkGEQ1K.Padding = 10;
-            this.TrkGEQ1K.ScaleDivisions = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.TrkGEQ1K.ScaleSubDivisions = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ1K.ShowDivisionsText = false;
-            this.TrkGEQ1K.ShowSmallScale = false;
-            this.TrkGEQ1K.Size = new System.Drawing.Size(61, 154);
-            this.TrkGEQ1K.SmallChange = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.TrkGEQ1K.TabIndex = 21;
-            this.TrkGEQ1K.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ1K.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ1K.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ1K.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
-            this.TrkGEQ1K.ThumbSize = new System.Drawing.Size(16, 8);
-            this.TrkGEQ1K.TickAdd = 0F;
-            this.TrkGEQ1K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ1K.TickDivide = 1F;
-            this.TrkGEQ1K.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.TrkGEQ1K.ValueChanged += new System.EventHandler(this.TrkGEQ1K_ValueChanged);
-            // 
-            // TrkGEQ2K
-            // 
-            this.TrkGEQ2K.AutoSize = false;
-            this.TrkGEQ2K.BackColor = System.Drawing.Color.Transparent;
-            this.TrkGEQ2K.BarInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ2K.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ2K.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ2K.BorderRoundRectSize = new System.Drawing.Size(8, 8);
-            this.TrkGEQ2K.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ2K.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ2K.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ2K.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.TrkGEQ2K.LargeChange = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ2K.Location = new System.Drawing.Point(276, 197);
-            this.TrkGEQ2K.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            this.TrkGEQ2K.Minimum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            -2147483648});
-            this.TrkGEQ2K.Name = "TrkGEQ2K";
-            this.TrkGEQ2K.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.TrkGEQ2K.Padding = 10;
-            this.TrkGEQ2K.ScaleDivisions = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.TrkGEQ2K.ScaleSubDivisions = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ2K.ShowDivisionsText = false;
-            this.TrkGEQ2K.ShowSmallScale = false;
-            this.TrkGEQ2K.Size = new System.Drawing.Size(61, 154);
-            this.TrkGEQ2K.SmallChange = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.TrkGEQ2K.TabIndex = 22;
-            this.TrkGEQ2K.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ2K.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ2K.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ2K.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
-            this.TrkGEQ2K.ThumbSize = new System.Drawing.Size(16, 8);
-            this.TrkGEQ2K.TickAdd = 0F;
-            this.TrkGEQ2K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ2K.TickDivide = 1F;
-            this.TrkGEQ2K.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.TrkGEQ2K.ValueChanged += new System.EventHandler(this.TrkGEQ2K_ValueChanged);
-            // 
-            // TrkGEQ4K
-            // 
-            this.TrkGEQ4K.AutoSize = false;
-            this.TrkGEQ4K.BackColor = System.Drawing.Color.Transparent;
-            this.TrkGEQ4K.BarInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ4K.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ4K.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ4K.BorderRoundRectSize = new System.Drawing.Size(8, 8);
-            this.TrkGEQ4K.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ4K.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ4K.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ4K.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.TrkGEQ4K.LargeChange = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ4K.Location = new System.Drawing.Point(321, 197);
-            this.TrkGEQ4K.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            this.TrkGEQ4K.Minimum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            -2147483648});
-            this.TrkGEQ4K.Name = "TrkGEQ4K";
-            this.TrkGEQ4K.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.TrkGEQ4K.Padding = 10;
-            this.TrkGEQ4K.ScaleDivisions = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.TrkGEQ4K.ScaleSubDivisions = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ4K.ShowDivisionsText = false;
-            this.TrkGEQ4K.ShowSmallScale = false;
-            this.TrkGEQ4K.Size = new System.Drawing.Size(61, 154);
-            this.TrkGEQ4K.SmallChange = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.TrkGEQ4K.TabIndex = 23;
-            this.TrkGEQ4K.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ4K.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ4K.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ4K.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
-            this.TrkGEQ4K.ThumbSize = new System.Drawing.Size(16, 8);
-            this.TrkGEQ4K.TickAdd = 0F;
-            this.TrkGEQ4K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ4K.TickDivide = 1F;
-            this.TrkGEQ4K.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.TrkGEQ4K.ValueChanged += new System.EventHandler(this.TrkGEQ4K_ValueChanged);
-            // 
-            // TrkGEQ8K
-            // 
-            this.TrkGEQ8K.AutoSize = false;
-            this.TrkGEQ8K.BackColor = System.Drawing.Color.Transparent;
-            this.TrkGEQ8K.BarInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ8K.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ8K.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ8K.BorderRoundRectSize = new System.Drawing.Size(8, 8);
-            this.TrkGEQ8K.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ8K.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ8K.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ8K.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.TrkGEQ8K.LargeChange = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ8K.Location = new System.Drawing.Point(366, 197);
-            this.TrkGEQ8K.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            this.TrkGEQ8K.Minimum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            -2147483648});
-            this.TrkGEQ8K.Name = "TrkGEQ8K";
-            this.TrkGEQ8K.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.TrkGEQ8K.Padding = 10;
-            this.TrkGEQ8K.ScaleDivisions = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.TrkGEQ8K.ScaleSubDivisions = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ8K.ShowDivisionsText = false;
-            this.TrkGEQ8K.ShowSmallScale = false;
-            this.TrkGEQ8K.Size = new System.Drawing.Size(61, 154);
-            this.TrkGEQ8K.SmallChange = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.TrkGEQ8K.TabIndex = 24;
-            this.TrkGEQ8K.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ8K.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ8K.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ8K.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
-            this.TrkGEQ8K.ThumbSize = new System.Drawing.Size(16, 8);
-            this.TrkGEQ8K.TickAdd = 0F;
-            this.TrkGEQ8K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ8K.TickDivide = 1F;
-            this.TrkGEQ8K.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.TrkGEQ8K.ValueChanged += new System.EventHandler(this.TrkGEQ8K_ValueChanged);
-            // 
-            // TrkGEQ16K
-            // 
-            this.TrkGEQ16K.AutoSize = false;
-            this.TrkGEQ16K.BackColor = System.Drawing.Color.Transparent;
-            this.TrkGEQ16K.BarInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ16K.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ16K.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ16K.BorderRoundRectSize = new System.Drawing.Size(8, 8);
-            this.TrkGEQ16K.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ16K.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ16K.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ16K.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.TrkGEQ16K.LargeChange = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ16K.Location = new System.Drawing.Point(411, 197);
-            this.TrkGEQ16K.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            this.TrkGEQ16K.Minimum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            -2147483648});
-            this.TrkGEQ16K.Name = "TrkGEQ16K";
-            this.TrkGEQ16K.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.TrkGEQ16K.Padding = 10;
-            this.TrkGEQ16K.ScaleDivisions = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.TrkGEQ16K.ScaleSubDivisions = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ16K.ShowDivisionsText = false;
-            this.TrkGEQ16K.ShowSmallScale = false;
-            this.TrkGEQ16K.Size = new System.Drawing.Size(61, 154);
-            this.TrkGEQ16K.SmallChange = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.TrkGEQ16K.TabIndex = 25;
-            this.TrkGEQ16K.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ16K.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ16K.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ16K.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
-            this.TrkGEQ16K.ThumbSize = new System.Drawing.Size(16, 8);
-            this.TrkGEQ16K.TickAdd = 0F;
-            this.TrkGEQ16K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ16K.TickDivide = 1F;
-            this.TrkGEQ16K.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.TrkGEQ16K.ValueChanged += new System.EventHandler(this.TrkGEQ16K_ValueChanged);
-            // 
-            // TrkGEQ20K
-            // 
-            this.TrkGEQ20K.AutoSize = false;
-            this.TrkGEQ20K.BackColor = System.Drawing.Color.Transparent;
-            this.TrkGEQ20K.BarInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ20K.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ20K.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ20K.BorderRoundRectSize = new System.Drawing.Size(8, 8);
-            this.TrkGEQ20K.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ20K.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ20K.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ20K.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.TrkGEQ20K.LargeChange = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ20K.Location = new System.Drawing.Point(456, 197);
-            this.TrkGEQ20K.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            this.TrkGEQ20K.Minimum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            -2147483648});
-            this.TrkGEQ20K.Name = "TrkGEQ20K";
-            this.TrkGEQ20K.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.TrkGEQ20K.Padding = 10;
-            this.TrkGEQ20K.ScaleDivisions = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.TrkGEQ20K.ScaleSubDivisions = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ20K.ShowDivisionsText = false;
-            this.TrkGEQ20K.ShowSmallScale = false;
-            this.TrkGEQ20K.Size = new System.Drawing.Size(61, 154);
-            this.TrkGEQ20K.SmallChange = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.TrkGEQ20K.TabIndex = 26;
-            this.TrkGEQ20K.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ20K.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ20K.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ20K.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
-            this.TrkGEQ20K.ThumbSize = new System.Drawing.Size(16, 8);
-            this.TrkGEQ20K.TickAdd = 0F;
-            this.TrkGEQ20K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ20K.TickDivide = 1F;
-            this.TrkGEQ20K.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.TrkGEQ20K.ValueChanged += new System.EventHandler(this.TrkGEQ20K_ValueChanged);
-            // 
-            // TrkGEQ22K
-            // 
-            this.TrkGEQ22K.AutoSize = false;
-            this.TrkGEQ22K.BackColor = System.Drawing.Color.Transparent;
-            this.TrkGEQ22K.BarInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ22K.BarPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ22K.BarPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ22K.BorderRoundRectSize = new System.Drawing.Size(8, 8);
-            this.TrkGEQ22K.ElapsedInnerColor = System.Drawing.SystemColors.ControlLight;
-            this.TrkGEQ22K.ElapsedPenColorBottom = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ22K.ElapsedPenColorTop = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ22K.Font = new System.Drawing.Font("Yu Gothic UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.TrkGEQ22K.LargeChange = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ22K.Location = new System.Drawing.Point(501, 197);
-            this.TrkGEQ22K.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            this.TrkGEQ22K.Minimum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            -2147483648});
-            this.TrkGEQ22K.Name = "TrkGEQ22K";
-            this.TrkGEQ22K.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.TrkGEQ22K.Padding = 10;
-            this.TrkGEQ22K.ScaleDivisions = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.TrkGEQ22K.ScaleSubDivisions = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.TrkGEQ22K.ShowDivisionsText = true;
-            this.TrkGEQ22K.ShowSmallScale = false;
-            this.TrkGEQ22K.Size = new System.Drawing.Size(61, 154);
-            this.TrkGEQ22K.SmallChange = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.TrkGEQ22K.TabIndex = 27;
-            this.TrkGEQ22K.ThumbInnerColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ22K.ThumbOuterColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ22K.ThumbPenColor = System.Drawing.SystemColors.ControlDark;
-            this.TrkGEQ22K.ThumbRoundRectSize = new System.Drawing.Size(1, 1);
-            this.TrkGEQ22K.ThumbSize = new System.Drawing.Size(16, 8);
-            this.TrkGEQ22K.TickAdd = 0F;
-            this.TrkGEQ22K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ22K.TickDivide = 1F;
-            this.TrkGEQ22K.TickStyle = System.Windows.Forms.TickStyle.Both;
-            this.TrkGEQ22K.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.TrkGEQ22K.ValueChanged += new System.EventHandler(this.TrkGEQ22K_ValueChanged);
-            // 
-            // label45
-            // 
-            this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(26, 348);
-            this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(19, 15);
-            this.label45.TabIndex = 28;
-            this.label45.Text = "32";
-            // 
-            // label46
-            // 
-            this.label46.AutoSize = true;
-            this.label46.Location = new System.Drawing.Point(73, 348);
-            this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(19, 15);
-            this.label46.TabIndex = 28;
-            this.label46.Text = "60";
-            // 
-            // label47
-            // 
-            this.label47.AutoSize = true;
-            this.label47.Location = new System.Drawing.Point(110, 348);
-            this.label47.Name = "label47";
-            this.label47.Size = new System.Drawing.Size(25, 15);
-            this.label47.TabIndex = 28;
-            this.label47.Text = "125";
-            // 
-            // label48
-            // 
-            this.label48.AutoSize = true;
-            this.label48.Location = new System.Drawing.Point(155, 348);
-            this.label48.Name = "label48";
-            this.label48.Size = new System.Drawing.Size(25, 15);
-            this.label48.TabIndex = 28;
-            this.label48.Text = "250";
-            // 
-            // label49
-            // 
-            this.label49.AutoSize = true;
-            this.label49.Location = new System.Drawing.Point(200, 348);
-            this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(25, 15);
-            this.label49.TabIndex = 28;
-            this.label49.Text = "500";
-            // 
-            // label50
-            // 
-            this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(250, 348);
-            this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(20, 15);
-            this.label50.TabIndex = 28;
-            this.label50.Text = "1K";
-            // 
-            // label51
-            // 
-            this.label51.AutoSize = true;
-            this.label51.Location = new System.Drawing.Point(295, 348);
-            this.label51.Name = "label51";
-            this.label51.Size = new System.Drawing.Size(20, 15);
-            this.label51.TabIndex = 28;
-            this.label51.Text = "2K";
-            // 
-            // label52
-            // 
-            this.label52.AutoSize = true;
-            this.label52.Location = new System.Drawing.Point(343, 348);
-            this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(20, 15);
-            this.label52.TabIndex = 28;
-            this.label52.Text = "4K";
-            // 
-            // label53
-            // 
-            this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(385, 348);
-            this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(20, 15);
-            this.label53.TabIndex = 28;
-            this.label53.Text = "8K";
-            // 
-            // label54
-            // 
-            this.label54.AutoSize = true;
-            this.label54.Location = new System.Drawing.Point(424, 348);
-            this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(26, 15);
-            this.label54.TabIndex = 28;
-            this.label54.Text = "16K";
-            // 
-            // label55
-            // 
-            this.label55.AutoSize = true;
-            this.label55.Location = new System.Drawing.Point(469, 348);
-            this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(26, 15);
-            this.label55.TabIndex = 28;
-            this.label55.Text = "20K";
-            // 
-            // label56
-            // 
-            this.label56.AutoSize = true;
-            this.label56.Location = new System.Drawing.Point(518, 348);
-            this.label56.Name = "label56";
-            this.label56.Size = new System.Drawing.Size(26, 15);
-            this.label56.TabIndex = 28;
-            this.label56.Text = "22K";
-            // 
             // OptionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -3560,8 +3560,19 @@
             this.tabGEqualizer.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ32)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictGEQGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ60)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ32)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ125)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ250)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ500)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ1K)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ2K)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ4K)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ8K)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ16K)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ20K)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ22K)).EndInit();
             this.tabPitch.ResumeLayout(false);
             this.GroupSpeed.ResumeLayout(false);
             this.GroupSpeed.PerformLayout();
@@ -3593,17 +3604,6 @@
             this.tabReverb.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ60)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ125)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ250)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ500)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ1K)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ2K)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ4K)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ8K)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ16K)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ20K)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TrkGEQ22K)).EndInit();
             this.ResumeLayout(false);
 
         }

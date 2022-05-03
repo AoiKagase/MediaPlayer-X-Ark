@@ -8,6 +8,7 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 {
 	public class Effectors
 	{
+		public GEqualizer GEqualizer { get; private set; }
 		public Frequency Frequency { get; private set; }
 		public PitchShift PitchShift { get; private set; }
 		public Chorus Chorus { get; private set; }
@@ -18,8 +19,6 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		public Highpass Highpass { get; private set; }
 		public Lowpass Lowpass { get; private set; }
 		public SFXReverb SFXReverb { get; private set; }
-
-		public GEqualizer GEqualizer { get; private set; }
 
 		private int _speed;
 		public int Speed
@@ -93,6 +92,7 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 
 		public void Initialize()
 		{
+			GEqualizer.Switch(false);
 			Frequency.Switch(false);
 			PitchShift.Switch(false);
 			Chorus.Switch(false);

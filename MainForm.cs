@@ -153,7 +153,7 @@ namespace MediaPlayer_X_Ark
         private void OpenFile(string fileName)
         {
             // Open File
-            if (player.CreateSound(fileName, config.getSoundFormat(), out playingIndex) == FMOD.RESULT.OK)
+            if (player.CreateSound(fileName, config.GetSoundFormat(), out playingIndex) == FMOD.RESULT.OK)
             {
                 PlayLoad();
             }
@@ -177,7 +177,7 @@ namespace MediaPlayer_X_Ark
             // (何か方法があるかもしれない)
             // =====================================================================
             // 出力方式
-            player.SetOutputType(config.getOutputType());
+            player.SetOutputType(config.GetOutputType());
 
             // デバイス
             player.SetDevice(config.settings.Device);
@@ -244,7 +244,7 @@ namespace MediaPlayer_X_Ark
             config = new Engine.Configration(ref player);
 
             // サンプルレート・スピーカーモード
-            player.SetSoftwareFormat(config.getSampleRate(), config.getSpeakerMode());
+            player.SetSoftwareFormat(config.GetSampleRate(), config.GetSpeakerMode());
             player.Initialize();
 
             playListForm = new PlayListForm(this);
