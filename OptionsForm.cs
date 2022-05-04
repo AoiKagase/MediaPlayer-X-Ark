@@ -29,6 +29,58 @@ namespace MediaPlayer_X_Ark
 			PaintGEQGraph();
 			
 		}
+		private bool internalChanged = false;
+		private void EqualizerChanged(object sender, PropertyChangedEventArgs e)
+        {
+			if (e.PropertyName == "Gain")
+            {
+				internalChanged = true;
+				for(int i = 0; i < (int)Engine.Effector.GEqualizer.EQ_HZ.HZ_MAX; i++)
+                {
+					switch(i)
+                    {
+						case 0:
+							TrkGEQ32.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
+							break;
+						case 1:
+							TrkGEQ60.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
+							break;
+						case 2:
+							TrkGEQ125.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
+							break;
+						case 3:
+							TrkGEQ250.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
+							break;
+						case 4:
+							TrkGEQ500.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
+							break;
+						case 5:
+							TrkGEQ1K.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
+							break;
+						case 6:
+							TrkGEQ2K.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
+							break;
+						case 7:
+							TrkGEQ4K.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
+							break;
+						case 8:
+							TrkGEQ8K.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
+							break;
+						case 9:
+							TrkGEQ16K.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
+							break;
+						case 10:
+							TrkGEQ20K.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
+							break;
+						case 11:
+							TrkGEQ22K.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
+							break;
+					}
+				}
+				internalChanged = false;
+			}
+		}
+
 		private void PitchChenged(object sender, PropertyChangedEventArgs e)
 		{
 			if (CheckSpeed.Checked)
@@ -302,6 +354,9 @@ namespace MediaPlayer_X_Ark
 
 		private void EffectControlInitialize()
 		{
+			// Equalizer
+			_engine.effector.GEqualizer.PropertyChanged += new PropertyChangedEventHandler(EqualizerChanged);
+
 			// Distortion
 			CheckDistortion.Checked = _engine.effector.Distortion.Enabled;
 			// Min:0.0	- Max:1.0		Def:0.5
@@ -530,7 +585,7 @@ namespace MediaPlayer_X_Ark
 
 			int hCenter = this.PictGEQGraph.Height / 2;
 			int wWidth = this.PictGEQGraph.Width / 13;
-			int hHeight = this.PictGEQGraph.Height / 60;
+			float hHeight = this.PictGEQGraph.Height / 200f;
 			int value = 0;
 			Point[] curvePoints = new Point[14];
 			curvePoints[0] = new Point(0, hCenter);
@@ -538,7 +593,7 @@ namespace MediaPlayer_X_Ark
 			for (int i = 0; i < 12; i++)
 			{
 				value = GetIndexToTrackValue(i);
-				curvePoints[1 + i] = new Point(wWidth * i + wWidth, hCenter - hHeight * value);
+				curvePoints[1 + i] = new Point(wWidth * i + wWidth, hCenter - (int)(hHeight * value));
 			}
 
 			//幅3の赤色のPenオブジェクトを作成
@@ -601,64 +656,88 @@ namespace MediaPlayer_X_Ark
         private void TrkGEQ32_ValueChanged(object sender, EventArgs e)
         {
 			PaintGEQGraph();
+			if (!internalChanged)
+			_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_32, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
 		}
 
         private void TrkGEQ60_ValueChanged(object sender, EventArgs e)
         {
 			PaintGEQGraph();
+			if (!internalChanged)
+				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_60, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
 		}
 
 		private void TrkGEQ125_ValueChanged(object sender, EventArgs e)
         {
 			PaintGEQGraph();
+			if (!internalChanged)
+				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_125, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
 		}
 
 		private void TrkGEQ250_ValueChanged(object sender, EventArgs e)
         {
 			PaintGEQGraph();
+			if (!internalChanged)
+				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_250, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
 		}
 
 		private void TrkGEQ500_ValueChanged(object sender, EventArgs e)
         {
 			PaintGEQGraph();
+			if (!internalChanged)
+				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_500, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
 		}
 
 		private void TrkGEQ1K_ValueChanged(object sender, EventArgs e)
         {
 			PaintGEQGraph();
+			if (!internalChanged)
+				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_1K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
 		}
 
 		private void TrkGEQ2K_ValueChanged(object sender, EventArgs e)
         {
 			PaintGEQGraph();
+			if (!internalChanged)
+				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_2K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
 		}
 
 		private void TrkGEQ4K_ValueChanged(object sender, EventArgs e)
         {
 			PaintGEQGraph();
+			if (!internalChanged)
+				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_4K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
 		}
 
 		private void TrkGEQ8K_ValueChanged(object sender, EventArgs e)
         {
 			PaintGEQGraph();
+			if (!internalChanged)
+				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_8K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
 		}
 
 		private void TrkGEQ16K_ValueChanged(object sender, EventArgs e)
         {
 			PaintGEQGraph();
+			if (!internalChanged)
+				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_16K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
 		}
 
 		private void TrkGEQ20K_ValueChanged(object sender, EventArgs e)
         {
 			PaintGEQGraph();
+			if (!internalChanged)
+				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_20K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
 		}
 
 		private void TrkGEQ22K_ValueChanged(object sender, EventArgs e)
 		{
 			PaintGEQGraph();
+			if (!internalChanged)
+				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_22K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
 		}
 
-        private void BtnUpdate_Click(object sender, EventArgs e)
+		private void BtnUpdate_Click(object sender, EventArgs e)
         {
 			_config.settings.Format = cmbFormat.SelectedIndex;
 			_config.settings.Device = cmbDevice.SelectedValue.ToString();
@@ -673,6 +752,11 @@ namespace MediaPlayer_X_Ark
         {
 			e.Cancel = true;
 			this.Hide();
+        }
+
+        private void cmbEqPreset_SelectedIndexChanged(object sender, EventArgs e)
+        {
+			_engine.effector.GEqualizer.SetPreset(((ComboBox)sender).SelectedIndex);
         }
     }
 }

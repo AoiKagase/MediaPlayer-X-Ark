@@ -108,10 +108,12 @@ namespace MediaPlayer_X_Ark
 
 			int lineHeight = 0;
 			bool isPlaying;
+			bool paused;
 
 			FmodChannelGroup.isPlaying(out isPlaying);
+			FmodChannelGroup.getPaused(out paused);
 
-			if (!isPlaying)
+			if (!isPlaying || paused)
 			{
 				Win32API.FillRect(hdc1Buffer, ref line2, Win32API.CreateSolidBrush(0xffffff00));
 				Win32API.BitBlt(hdc1Analyzer, 0, 0, width, height, hdc1Buffer, 0, 0, Win32API.TernaryRasterOperations.SRCCOPY);

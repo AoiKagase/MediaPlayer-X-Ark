@@ -19,7 +19,7 @@ namespace MediaPlayer_X_Ark
         private PlayListForm playListForm;
         private OptionsForm optionsForm;
         private static Engine.Configration config;
-
+        private bool nowplaying = false;
         public MainForm()
         {
             InitializeComponent();
@@ -201,6 +201,8 @@ namespace MediaPlayer_X_Ark
             LabelTitle.Value.Text = (!string.IsNullOrEmpty(player.PlayList[playingIndex].Title)) ? player.PlayList[playingIndex].Title : Path.GetFileName(player.PlayList[playingIndex].FileName);
             LabelTitle.Value.Text += (!string.IsNullOrEmpty(player.PlayList[playingIndex].Artist)) ? (" - " + player.PlayList[playingIndex].Artist) : "";
             LabelTitle.Value.Text += (!string.IsNullOrEmpty(player.PlayList[playingIndex].Album)) ? (" - " + player.PlayList[playingIndex].Album) : "";
+
+            nowplaying = true;
         }
         /// <summary>
         /// ボタンクリック時のイベント（MouseDown時）
@@ -337,22 +339,25 @@ namespace MediaPlayer_X_Ark
             // 曲調トラックバーの反映 (シーク中はボタン側で動作する為動かさない)
             if (this.seekValue == 0)
                 SldTrack.Value = (int)player.GetPosition();
-            TimeSpan time1 = TimeSpan.FromMilliseconds(SldTrack.Value);
-            TimeSpan time2 = TimeSpan.FromMilliseconds(SldTrack.Maximum);
-
             if (!player.IsPlaying())
             {
-                if (playingIndex > -1 && playingIndex < player.PlayList.Count - 1)
+                if (player.PlayList.Count > 1)
                 {
-                    playingIndex++;
-                    PlayLoad();
+                    if (nowplaying && playingIndex > -1 && playingIndex < player.PlayList.Count - 1)
+                    {
+                        playingIndex++;
+                        PlayLoad();
+                    }
                 }
             }
+
+            TimeSpan time1 = TimeSpan.FromMilliseconds(SldTrack.Value);
+            TimeSpan time2 = TimeSpan.FromMilliseconds(SldTrack.Maximum);
             LabelTime.Value.Text = time1.ToString(@"mm\:ss") + "/" + time2.ToString(@"mm\:ss");
 
             if (player.lastError != "" && player.lastErrCode != FMOD.RESULT.OK)
             {
-                LabelTitle.Value.Text = player.lastError;
+                LabelTitle.Value.Text = player.lastErrFunction + " - " + player.lastError;
             }
         }
         #endregion
@@ -526,6 +531,7 @@ namespace MediaPlayer_X_Ark
         {
             // 問答無用の停止
             player.Stop();
+            nowplaying = false;
         }
 
 
@@ -563,7 +569,7 @@ namespace MediaPlayer_X_Ark
         }
         private void BtnNext_Click(object sender, EventArgs e)
         {
-            if (playingIndex < player.PlayList.Count)
+            if (playingIndex < player.PlayList.Count - 1)
             {
                 playingIndex++;
             }

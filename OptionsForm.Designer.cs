@@ -28,30 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("出力設定");
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Graphic Equalizer");
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Pitch / Freq / Speed");
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Distortion");
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Chorus");
-            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Echo");
-            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Flanger");
-            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Highpass");
-            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Lowpass");
-            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Compressor");
-            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Reverb");
-            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("エフェクト", new System.Windows.Forms.TreeNode[] {
-            treeNode16,
-            treeNode17,
-            treeNode18,
-            treeNode19,
-            treeNode20,
-            treeNode21,
-            treeNode22,
-            treeNode23,
-            treeNode24,
-            treeNode25});
-            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("スキン");
-            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("その他");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("出力設定");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Graphic Equalizer");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Pitch / Freq / Speed");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Distortion");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Chorus");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Echo");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Flanger");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Highpass");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Lowpass");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Compressor");
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Reverb");
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("エフェクト", new System.Windows.Forms.TreeNode[] {
+            treeNode2,
+            treeNode3,
+            treeNode4,
+            treeNode5,
+            treeNode6,
+            treeNode7,
+            treeNode8,
+            treeNode9,
+            treeNode10,
+            treeNode11});
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("スキン");
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("その他");
             this.TreeMenu = new System.Windows.Forms.TreeView();
             this.tabControlEffects = new System.Windows.Forms.TabControl();
             this.tabSetting = new System.Windows.Forms.TabPage();
@@ -83,7 +83,7 @@
             this.label46 = new System.Windows.Forms.Label();
             this.label45 = new System.Windows.Forms.Label();
             this.label44 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cmbEqPreset = new System.Windows.Forms.ComboBox();
             this.CheckGEQ = new System.Windows.Forms.CheckBox();
             this.PictGEQGraph = new System.Windows.Forms.PictureBox();
             this.TrkGEQ60 = new ColorSlider.ColorSlider();
@@ -285,39 +285,39 @@
             this.TreeMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.TreeMenu.Location = new System.Drawing.Point(0, 0);
             this.TreeMenu.Name = "TreeMenu";
-            treeNode15.Name = "OUTPUT";
-            treeNode15.Text = "出力設定";
-            treeNode16.Name = "GEQ";
-            treeNode16.Text = "Graphic Equalizer";
-            treeNode17.Name = "PITCH";
-            treeNode17.Text = "Pitch / Freq / Speed";
-            treeNode18.Name = "DISTORTION";
-            treeNode18.Text = "Distortion";
-            treeNode19.Name = "CHORUS";
-            treeNode19.Text = "Chorus";
-            treeNode20.Name = "ECHO";
-            treeNode20.Text = "Echo";
-            treeNode21.Name = "FLANGER";
-            treeNode21.Text = "Flanger";
-            treeNode22.Name = "HIGHPASS";
-            treeNode22.Text = "Highpass";
-            treeNode23.Name = "LOWPASS";
-            treeNode23.Text = "Lowpass";
-            treeNode24.Name = "COMPRESSOR";
-            treeNode24.Text = "Compressor";
-            treeNode25.Name = "REVERB";
-            treeNode25.Text = "Reverb";
-            treeNode26.Name = "EFFECTS";
-            treeNode26.Text = "エフェクト";
-            treeNode27.Name = "SKIN";
-            treeNode27.Text = "スキン";
-            treeNode28.Name = "OTHER";
-            treeNode28.Text = "その他";
+            treeNode1.Name = "OUTPUT";
+            treeNode1.Text = "出力設定";
+            treeNode2.Name = "GEQ";
+            treeNode2.Text = "Graphic Equalizer";
+            treeNode3.Name = "PITCH";
+            treeNode3.Text = "Pitch / Freq / Speed";
+            treeNode4.Name = "DISTORTION";
+            treeNode4.Text = "Distortion";
+            treeNode5.Name = "CHORUS";
+            treeNode5.Text = "Chorus";
+            treeNode6.Name = "ECHO";
+            treeNode6.Text = "Echo";
+            treeNode7.Name = "FLANGER";
+            treeNode7.Text = "Flanger";
+            treeNode8.Name = "HIGHPASS";
+            treeNode8.Text = "Highpass";
+            treeNode9.Name = "LOWPASS";
+            treeNode9.Text = "Lowpass";
+            treeNode10.Name = "COMPRESSOR";
+            treeNode10.Text = "Compressor";
+            treeNode11.Name = "REVERB";
+            treeNode11.Text = "Reverb";
+            treeNode12.Name = "EFFECTS";
+            treeNode12.Text = "エフェクト";
+            treeNode13.Name = "SKIN";
+            treeNode13.Text = "スキン";
+            treeNode14.Name = "OTHER";
+            treeNode14.Text = "その他";
             this.TreeMenu.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode15,
-            treeNode26,
-            treeNode27,
-            treeNode28});
+            treeNode1,
+            treeNode12,
+            treeNode13,
+            treeNode14});
             this.TreeMenu.Size = new System.Drawing.Size(199, 419);
             this.TreeMenu.TabIndex = 3;
             this.TreeMenu.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeMenu_AfterSelect);
@@ -549,7 +549,7 @@
             this.groupBox3.Controls.Add(this.label46);
             this.groupBox3.Controls.Add(this.label45);
             this.groupBox3.Controls.Add(this.label44);
-            this.groupBox3.Controls.Add(this.comboBox1);
+            this.groupBox3.Controls.Add(this.cmbEqPreset);
             this.groupBox3.Controls.Add(this.CheckGEQ);
             this.groupBox3.Controls.Add(this.PictGEQGraph);
             this.groupBox3.Controls.Add(this.TrkGEQ60);
@@ -686,13 +686,23 @@
             this.label44.Size = new System.Drawing.Size(521, 1);
             this.label44.TabIndex = 15;
             // 
-            // comboBox1
+            // cmbEqPreset
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(6, 25);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 23);
-            this.comboBox1.TabIndex = 14;
+            this.cmbEqPreset.FormattingEnabled = true;
+            this.cmbEqPreset.Items.AddRange(new object[] {
+            "Normal",
+            "Rock",
+            "Pop",
+            "Bass Boost",
+            "Trable Boost",
+            "Total Boost",
+            "Total Reduce",
+            "Custom"});
+            this.cmbEqPreset.Location = new System.Drawing.Point(6, 25);
+            this.cmbEqPreset.Name = "cmbEqPreset";
+            this.cmbEqPreset.Size = new System.Drawing.Size(121, 23);
+            this.cmbEqPreset.TabIndex = 14;
+            this.cmbEqPreset.SelectedIndexChanged += new System.EventHandler(this.cmbEqPreset_SelectedIndexChanged);
             // 
             // CheckGEQ
             // 
@@ -735,12 +745,12 @@
             0});
             this.TrkGEQ60.Location = new System.Drawing.Point(51, 197);
             this.TrkGEQ60.Maximum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             0});
             this.TrkGEQ60.Minimum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             -2147483648});
@@ -773,7 +783,7 @@
             this.TrkGEQ60.ThumbSize = new System.Drawing.Size(16, 8);
             this.TrkGEQ60.TickAdd = 0F;
             this.TrkGEQ60.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ60.TickDivide = 1F;
+            this.TrkGEQ60.TickDivide = 10F;
             this.TrkGEQ60.Value = new decimal(new int[] {
             0,
             0,
@@ -800,12 +810,12 @@
             0});
             this.TrkGEQ32.Location = new System.Drawing.Point(6, 197);
             this.TrkGEQ32.Maximum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             0});
             this.TrkGEQ32.Minimum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             -2147483648});
@@ -838,7 +848,7 @@
             this.TrkGEQ32.ThumbSize = new System.Drawing.Size(16, 8);
             this.TrkGEQ32.TickAdd = 0F;
             this.TrkGEQ32.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ32.TickDivide = 1F;
+            this.TrkGEQ32.TickDivide = 10F;
             this.TrkGEQ32.Value = new decimal(new int[] {
             0,
             0,
@@ -865,12 +875,12 @@
             0});
             this.TrkGEQ125.Location = new System.Drawing.Point(96, 197);
             this.TrkGEQ125.Maximum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             0});
             this.TrkGEQ125.Minimum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             -2147483648});
@@ -903,7 +913,7 @@
             this.TrkGEQ125.ThumbSize = new System.Drawing.Size(16, 8);
             this.TrkGEQ125.TickAdd = 0F;
             this.TrkGEQ125.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ125.TickDivide = 1F;
+            this.TrkGEQ125.TickDivide = 10F;
             this.TrkGEQ125.Value = new decimal(new int[] {
             0,
             0,
@@ -930,12 +940,12 @@
             0});
             this.TrkGEQ250.Location = new System.Drawing.Point(141, 197);
             this.TrkGEQ250.Maximum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             0});
             this.TrkGEQ250.Minimum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             -2147483648});
@@ -968,7 +978,7 @@
             this.TrkGEQ250.ThumbSize = new System.Drawing.Size(16, 8);
             this.TrkGEQ250.TickAdd = 0F;
             this.TrkGEQ250.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ250.TickDivide = 1F;
+            this.TrkGEQ250.TickDivide = 10F;
             this.TrkGEQ250.Value = new decimal(new int[] {
             0,
             0,
@@ -995,12 +1005,12 @@
             0});
             this.TrkGEQ500.Location = new System.Drawing.Point(186, 197);
             this.TrkGEQ500.Maximum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             0});
             this.TrkGEQ500.Minimum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             -2147483648});
@@ -1033,7 +1043,7 @@
             this.TrkGEQ500.ThumbSize = new System.Drawing.Size(16, 8);
             this.TrkGEQ500.TickAdd = 0F;
             this.TrkGEQ500.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ500.TickDivide = 1F;
+            this.TrkGEQ500.TickDivide = 10F;
             this.TrkGEQ500.Value = new decimal(new int[] {
             0,
             0,
@@ -1060,12 +1070,12 @@
             0});
             this.TrkGEQ1K.Location = new System.Drawing.Point(231, 197);
             this.TrkGEQ1K.Maximum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             0});
             this.TrkGEQ1K.Minimum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             -2147483648});
@@ -1098,7 +1108,7 @@
             this.TrkGEQ1K.ThumbSize = new System.Drawing.Size(16, 8);
             this.TrkGEQ1K.TickAdd = 0F;
             this.TrkGEQ1K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ1K.TickDivide = 1F;
+            this.TrkGEQ1K.TickDivide = 10F;
             this.TrkGEQ1K.Value = new decimal(new int[] {
             0,
             0,
@@ -1125,12 +1135,12 @@
             0});
             this.TrkGEQ2K.Location = new System.Drawing.Point(276, 197);
             this.TrkGEQ2K.Maximum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             0});
             this.TrkGEQ2K.Minimum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             -2147483648});
@@ -1163,7 +1173,7 @@
             this.TrkGEQ2K.ThumbSize = new System.Drawing.Size(16, 8);
             this.TrkGEQ2K.TickAdd = 0F;
             this.TrkGEQ2K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ2K.TickDivide = 1F;
+            this.TrkGEQ2K.TickDivide = 10F;
             this.TrkGEQ2K.Value = new decimal(new int[] {
             0,
             0,
@@ -1190,12 +1200,12 @@
             0});
             this.TrkGEQ4K.Location = new System.Drawing.Point(321, 197);
             this.TrkGEQ4K.Maximum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             0});
             this.TrkGEQ4K.Minimum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             -2147483648});
@@ -1228,7 +1238,7 @@
             this.TrkGEQ4K.ThumbSize = new System.Drawing.Size(16, 8);
             this.TrkGEQ4K.TickAdd = 0F;
             this.TrkGEQ4K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ4K.TickDivide = 1F;
+            this.TrkGEQ4K.TickDivide = 10F;
             this.TrkGEQ4K.Value = new decimal(new int[] {
             0,
             0,
@@ -1255,12 +1265,12 @@
             0});
             this.TrkGEQ8K.Location = new System.Drawing.Point(366, 197);
             this.TrkGEQ8K.Maximum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             0});
             this.TrkGEQ8K.Minimum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             -2147483648});
@@ -1293,7 +1303,7 @@
             this.TrkGEQ8K.ThumbSize = new System.Drawing.Size(16, 8);
             this.TrkGEQ8K.TickAdd = 0F;
             this.TrkGEQ8K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ8K.TickDivide = 1F;
+            this.TrkGEQ8K.TickDivide = 10F;
             this.TrkGEQ8K.Value = new decimal(new int[] {
             0,
             0,
@@ -1320,12 +1330,12 @@
             0});
             this.TrkGEQ16K.Location = new System.Drawing.Point(411, 197);
             this.TrkGEQ16K.Maximum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             0});
             this.TrkGEQ16K.Minimum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             -2147483648});
@@ -1358,7 +1368,7 @@
             this.TrkGEQ16K.ThumbSize = new System.Drawing.Size(16, 8);
             this.TrkGEQ16K.TickAdd = 0F;
             this.TrkGEQ16K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ16K.TickDivide = 1F;
+            this.TrkGEQ16K.TickDivide = 10F;
             this.TrkGEQ16K.Value = new decimal(new int[] {
             0,
             0,
@@ -1385,12 +1395,12 @@
             0});
             this.TrkGEQ20K.Location = new System.Drawing.Point(456, 197);
             this.TrkGEQ20K.Maximum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             0});
             this.TrkGEQ20K.Minimum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             -2147483648});
@@ -1423,7 +1433,7 @@
             this.TrkGEQ20K.ThumbSize = new System.Drawing.Size(16, 8);
             this.TrkGEQ20K.TickAdd = 0F;
             this.TrkGEQ20K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ20K.TickDivide = 1F;
+            this.TrkGEQ20K.TickDivide = 10F;
             this.TrkGEQ20K.Value = new decimal(new int[] {
             0,
             0,
@@ -1450,12 +1460,12 @@
             0});
             this.TrkGEQ22K.Location = new System.Drawing.Point(501, 197);
             this.TrkGEQ22K.Maximum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             0});
             this.TrkGEQ22K.Minimum = new decimal(new int[] {
-            30,
+            100,
             0,
             0,
             -2147483648});
@@ -1488,7 +1498,7 @@
             this.TrkGEQ22K.ThumbSize = new System.Drawing.Size(16, 8);
             this.TrkGEQ22K.TickAdd = 0F;
             this.TrkGEQ22K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TrkGEQ22K.TickDivide = 1F;
+            this.TrkGEQ22K.TickDivide = 10F;
             this.TrkGEQ22K.TickStyle = System.Windows.Forms.TickStyle.Both;
             this.TrkGEQ22K.Value = new decimal(new int[] {
             0,
@@ -3772,7 +3782,7 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.CheckBox CheckGEQ;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cmbEqPreset;
         private System.Windows.Forms.Label label44;
         private ColorSlider.ColorSlider TrkGEQ32;
         private ColorSlider.ColorSlider TrkGEQ22K;

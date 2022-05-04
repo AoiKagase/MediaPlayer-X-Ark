@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace MediaPlayer_X_Ark
@@ -52,6 +53,7 @@ namespace MediaPlayer_X_Ark
 
 		protected bool initialized = false;
 		public string lastError = "";
+		public string lastErrFunction = "";
 		public FMOD.RESULT lastErrCode;
 
 		// FMOD SYSTEM.
@@ -79,10 +81,11 @@ namespace MediaPlayer_X_Ark
             get { return FmodDeviceList; }
         }
 
-		protected FMOD.RESULT FmodCallFunction(FMOD.RESULT result)
+		protected FMOD.RESULT FmodCallFunction(FMOD.RESULT result, [CallerMemberName] string callerMethodName = "")
         {
 			lastError = FMOD.Error.String(result);
 			lastErrCode = result;
+			lastErrFunction = callerMethodName;
 			return result;
         }
 
@@ -245,16 +248,15 @@ namespace MediaPlayer_X_Ark
 		/// <returns>boolean</returns>
 		public bool IsPlaying()
 		{
-			RESULT fResult = FMOD.RESULT.OK;
 			bool result = false;
 			if (FmodChannel.hasHandle())
             {
-				if ((fResult = FmodCallFunction(FmodChannel.isPlaying(out result))) == RESULT.OK)
-				{
-					return result;
-				}
+				// STOPした際にFmodChannelの関数は
+				// FMOD_ERR_INVALID_HANDLEを返すのでエラーチェックしない
+				FmodChannel.isPlaying(out result);
+				return result;
 			}
-			return (fResult == RESULT.OK);
+			return false;
 		}
 
 
@@ -383,7 +385,7 @@ namespace MediaPlayer_X_Ark
 		public uint GetPosition()
         {
 			uint position = 0;
-			if (FmodChannel.hasHandle())
+			if (FmodChannel.hasHandle() && IsPlaying())
 				FmodCallFunction(FmodChannel.getPosition(out position, TIMEUNIT.MS));
 			return position;
         }
@@ -531,8 +533,9 @@ namespace MediaPlayer_X_Ark
 		/// <param name="channel"></param>
 		public void Stop()
         {
-			FmodChannel.stop();
-        }
+			if (FmodChannel.hasHandle() && IsPlaying())
+				FmodCallFunction(FmodChannel.stop());
+		}
 
 		/// <summary>
 		/// Set Volume.

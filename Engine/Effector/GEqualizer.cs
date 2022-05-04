@@ -92,7 +92,7 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		{
 			SetParameterFloat(index, (int)FMOD.DSP_PARAMEQ.CENTER, GetIndexToHz(index));
 			SetParameterFloat(index, (int)FMOD.DSP_PARAMEQ.GAIN, 0);
-			SetParameterFloat(index, (int)FMOD.DSP_PARAMEQ.BANDWIDTH, 1);
+			SetParameterFloat(index, (int)FMOD.DSP_PARAMEQ.BANDWIDTH, 0.1f);
 		}
 
 		public void SetGain(EQ_HZ hz, float value)
@@ -170,6 +170,118 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		public FMOD.RESULT SetParameterFloat(int index, int type, float value)
 		{
 			return _dsp[index].setParameterFloat(type, value);
+		}
+
+		public void SetPreset(int index)
+        {
+			switch(index)
+            {
+				// Normal
+				case 0:
+					SetGain(EQ_HZ.HZ_32, 0.0f);
+					SetGain(EQ_HZ.HZ_60, 0.0f);
+					SetGain(EQ_HZ.HZ_125, 0.0f);
+					SetGain(EQ_HZ.HZ_250, 0.0f);
+					SetGain(EQ_HZ.HZ_500, 0.0f);
+					SetGain(EQ_HZ.HZ_1K, 0.0f);
+					SetGain(EQ_HZ.HZ_2K, 0.0f);
+					SetGain(EQ_HZ.HZ_4K, 0.0f);
+					SetGain(EQ_HZ.HZ_8K, 0.0f);
+					SetGain(EQ_HZ.HZ_16K, 0.0f);
+					SetGain(EQ_HZ.HZ_20K, 0.0f);
+					SetGain(EQ_HZ.HZ_22K, 0.0f);
+					break;
+				// Rock
+				case 1:
+					SetGain(EQ_HZ.HZ_32, 3.0f);
+					SetGain(EQ_HZ.HZ_60, 2.0f);
+					SetGain(EQ_HZ.HZ_125, 1.0f);
+					SetGain(EQ_HZ.HZ_250, 0.0f);
+					SetGain(EQ_HZ.HZ_500, -1.0f);
+					SetGain(EQ_HZ.HZ_1K, -1.0f);
+					SetGain(EQ_HZ.HZ_2K, 0.0f);
+					SetGain(EQ_HZ.HZ_4K, 1.0f);
+					SetGain(EQ_HZ.HZ_8K, 2.0f);
+					SetGain(EQ_HZ.HZ_16K, 3.0f);
+					SetGain(EQ_HZ.HZ_20K, 0.0f);
+					SetGain(EQ_HZ.HZ_22K, 0.0f);
+					break;
+				// Pop
+				case 2:
+					SetGain(EQ_HZ.HZ_32, 1.0f);
+					SetGain(EQ_HZ.HZ_60, 1.5f);
+					SetGain(EQ_HZ.HZ_125, 2.0f);
+					SetGain(EQ_HZ.HZ_250, 3.0f);
+					SetGain(EQ_HZ.HZ_500, 3.0f);
+					SetGain(EQ_HZ.HZ_1K, 2.0f);
+					SetGain(EQ_HZ.HZ_2K, 1.5f);
+					SetGain(EQ_HZ.HZ_4K, 1.0f);
+					SetGain(EQ_HZ.HZ_8K, 0.0f);
+					SetGain(EQ_HZ.HZ_16K, 0.0f);
+					SetGain(EQ_HZ.HZ_20K, 0.0f);
+					SetGain(EQ_HZ.HZ_22K, 0.0f);
+					break;
+				// Bass Boost
+				case 3:
+					SetGain(EQ_HZ.HZ_32, 3.0f);
+					SetGain(EQ_HZ.HZ_60, 4.0f);
+					SetGain(EQ_HZ.HZ_125, 2.0f);
+					SetGain(EQ_HZ.HZ_250, 1.0f);
+					SetGain(EQ_HZ.HZ_500, 0.0f);
+					SetGain(EQ_HZ.HZ_1K, 0.0f);
+					SetGain(EQ_HZ.HZ_2K, 0.0f);
+					SetGain(EQ_HZ.HZ_4K, 0.0f);
+					SetGain(EQ_HZ.HZ_8K, 0.0f);
+					SetGain(EQ_HZ.HZ_16K, 0.0f);
+					SetGain(EQ_HZ.HZ_20K, 0.0f);
+					SetGain(EQ_HZ.HZ_22K, 0.0f);
+					break;
+				// Trable Boost
+				case 4:
+					SetGain(EQ_HZ.HZ_32, 0.0f);
+					SetGain(EQ_HZ.HZ_60, 0.0f);
+					SetGain(EQ_HZ.HZ_125, 0.0f);
+					SetGain(EQ_HZ.HZ_250, 0.0f);
+					SetGain(EQ_HZ.HZ_500, 1.0f);
+					SetGain(EQ_HZ.HZ_1K, 1.5f);
+					SetGain(EQ_HZ.HZ_2K, 2.0f);
+					SetGain(EQ_HZ.HZ_4K, 3.0f);
+					SetGain(EQ_HZ.HZ_8K, 3.0f);
+					SetGain(EQ_HZ.HZ_16K, 3.0f);
+					SetGain(EQ_HZ.HZ_20K, 0.0f);
+					SetGain(EQ_HZ.HZ_22K, 0.0f);
+					break;
+				// Total Boost
+				case 5:
+					SetGain(EQ_HZ.HZ_32, 3.0f);
+					SetGain(EQ_HZ.HZ_60, 3.0f);
+					SetGain(EQ_HZ.HZ_125, 3.0f);
+					SetGain(EQ_HZ.HZ_250, 3.0f);
+					SetGain(EQ_HZ.HZ_500, 3.0f);
+					SetGain(EQ_HZ.HZ_1K, 3.0f);
+					SetGain(EQ_HZ.HZ_2K, 3.0f);
+					SetGain(EQ_HZ.HZ_4K, 3.0f);
+					SetGain(EQ_HZ.HZ_8K, 3.0f);
+					SetGain(EQ_HZ.HZ_16K, 3.0f);
+					SetGain(EQ_HZ.HZ_20K, 3.0f);
+					SetGain(EQ_HZ.HZ_22K, 3.0f);
+					break;
+				// Total Reduce
+				case 6:
+					SetGain(EQ_HZ.HZ_32, -3.0f);
+					SetGain(EQ_HZ.HZ_60, -3.0f);
+					SetGain(EQ_HZ.HZ_125, -3.0f);
+					SetGain(EQ_HZ.HZ_250, -3.0f);
+					SetGain(EQ_HZ.HZ_500, -3.0f);
+					SetGain(EQ_HZ.HZ_1K, -3.0f);
+					SetGain(EQ_HZ.HZ_2K, -3.0f);
+					SetGain(EQ_HZ.HZ_4K, -3.0f);
+					SetGain(EQ_HZ.HZ_8K, -3.0f);
+					SetGain(EQ_HZ.HZ_16K, -3.0f);
+					SetGain(EQ_HZ.HZ_20K, -3.0f);
+					SetGain(EQ_HZ.HZ_22K, -3.0f);
+					break;
+			}
 		}
 	}
 }
