@@ -56,11 +56,12 @@ namespace MediaPlayer_X_Ark
                 bmpSpectrumSrc = new Bitmap(Spectrum.Width, Spectrum.Height);
                 Graphics g = Graphics.FromImage(bmpSpectrumSrc);
                 g.Clear(oldSkinSystem.ImgSpectrum.Color);
+                g.Dispose();
             }
             // スペクトラム領域のグラフィックインスタンス生成
             gSpectrum = Spectrum.CreateGraphics();
             // スペクトラム領域の初期化
-            player.spectrum.Initialize(gSpectrum, bmpSpectrumSrc);
+            player.spectrum.Initialize(ref gSpectrum, ref bmpSpectrumSrc);
 
             string cName = "";
             foreach(Control c in Controls)
@@ -334,7 +335,7 @@ namespace MediaPlayer_X_Ark
                 return;
 
             // スペクトラム画像の反映
-            player.spectrum.UpdateSpectrum(gSpectrum, ref bmpSpectrumSrc, Spectrum.Width, Spectrum.Height, 0);
+            player.spectrum.UpdateSpectrum(Spectrum.Width, Spectrum.Height, 0);
 
             // 曲調トラックバーの反映 (シーク中はボタン側で動作する為動かさない)
             if (this.seekValue == 0)

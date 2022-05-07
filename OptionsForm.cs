@@ -110,6 +110,7 @@ namespace MediaPlayer_X_Ark
 		private void CheckDistortion_CheckedChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Distortion.Switch(GroupControl(sender));
+			_config.settings.Effectors.Distortion.Enable = _engine.effector.Distortion.Enabled;
 		}
 		/// <summary>
 		/// Chorus
@@ -119,6 +120,7 @@ namespace MediaPlayer_X_Ark
 		private void CheckChorus_CheckedChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Chorus.Switch(GroupControl(sender));
+			_config.settings.Effectors.Chorus.Enable = _engine.effector.Chorus.Enabled;
 		}
 		/// <summary>
 		/// Echo
@@ -128,6 +130,7 @@ namespace MediaPlayer_X_Ark
 		private void CheckEcho_CheckedChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Echo.Switch(GroupControl(sender));
+			_config.settings.Effectors.Echo.Enable = _engine.effector.Echo.Enabled;
 		}
 		/// <summary>
 		/// Highpass
@@ -137,32 +140,38 @@ namespace MediaPlayer_X_Ark
 		private void CheckHighpass_CheckedChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Highpass.Switch(GroupControl(sender));
+			_config.settings.Effectors.Highpass.Enable = _engine.effector.Highpass.Enabled;
 		}
 
 		private void CheckLowpass_CheckedChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Lowpass.Switch(GroupControl(sender));
+			_config.settings.Effectors.Lowpass.Enable = _engine.effector.Lowpass.Enabled;
 		}
 
 		private void CheckFlanger_CheckedChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Flanger.Switch(GroupControl(sender));
+			_config.settings.Effectors.Flanger.Enable = _engine.effector.Flanger.Enabled;
 		}
 		private void CheckCompressor_CheckedChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Compressor.Switch(GroupControl(sender));
+			_config.settings.Effectors.Compressor.Enable = _engine.effector.Compressor.Enabled;
 		}
 		private void CheckPitch_CheckedChanged(object sender, EventArgs e)
 		{
 			_engine.effector.PitchShift.Switch(GroupControl(sender));
+			_config.settings.Effectors.PitchShift.Enable = _engine.effector.PitchShift.Enabled;
 		}
 		private void CheckFrequency_CheckedChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Frequency.Switch(GroupControl(sender));
+			_config.settings.Effectors.Frequency.Enable = _engine.effector.Frequency.Enabled;
 		}
 		private void CheckSpeed_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.SpeedEnabled = GroupControl(sender);
+			_config.settings.Effectors.Speed.Enable = _engine.effector.SpeedEnabled = GroupControl(sender);
 			if (_engine.effector.SpeedEnabled)
 			{
 				_engine.effector.PitchShift.Switch(true);
@@ -179,14 +188,16 @@ namespace MediaPlayer_X_Ark
 		private void CheckReverb_CheckedChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.Switch(GroupControl(sender));
+			_config.settings.Effectors.Reverb.Enable = _engine.effector.SFXReverb.Enabled;
 		}
 
 		private void CheckGEQ_CheckedChanged(object sender, EventArgs e)
 		{
 			_engine.effector.GEqualizer.Switch(GroupControl(sender));
+			_config.settings.Effectors.GEqualizer.Enable = _engine.effector.GEqualizer.Enabled;
 		}
 		#endregion
-		private void DistortionLevel_ValueChanged(object sender, EventArgs e)
+		private void KnobDistortionLevel_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Distortion.Level = ((UI.Knob)sender).Value / 100F;
 			lblValDistortionLevel.Text = _engine.effector.Distortion.Level.ToString("##0.00");
@@ -196,114 +207,133 @@ namespace MediaPlayer_X_Ark
 		{
 			_engine.effector.Chorus.Mix = ((UI.Knob)sender).Value / 10F;
 			lblValChorusMix.Text = _engine.effector.Chorus.Mix.ToString("##0.0");
+			_config.settings.Effectors.Chorus.Mix = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobChorusRate_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Chorus.Rate = ((UI.Knob)sender).Value / 10F;
 			lblValChorusRate.Text = _engine.effector.Chorus.Rate.ToString("##0.0");
+			_config.settings.Effectors.Chorus.Rate = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobChorusDepth_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Chorus.Depth = ((UI.Knob)sender).Value / 10F;
 			lblValChorusDepth.Text = _engine.effector.Chorus.Depth.ToString("##0.0");
+			_config.settings.Effectors.Chorus.Depth = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobEchoDelay_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Echo.Delay = ((UI.Knob)sender).Value / 10F;
 			lblValEchoDelay.Text = _engine.effector.Echo.Delay.ToString("##0.0");
+			_config.settings.Effectors.Echo.Delay = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobEchoFeedback_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Echo.Feedback = ((UI.Knob)sender).Value / 10F;
 			lblValEchoFeedback.Text = _engine.effector.Echo.Feedback.ToString("##0.0");
+			_config.settings.Effectors.Echo.Feedback = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobEchoDry_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Echo.DryLevel = ((UI.Knob)sender).Value / 10F;
 			lblValEchoDry.Text = _engine.effector.Echo.DryLevel.ToString("##0.0");
+			_config.settings.Effectors.Echo.Dry = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobEchoWet_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Echo.WetLevel = ((UI.Knob)sender).Value / 10F;
 			lblValEchoWet.Text = _engine.effector.Echo.WetLevel.ToString("##0.0");
+			_config.settings.Effectors.Echo.Wet = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobHighpassCutoff_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Highpass.CutOff = ((UI.Knob)sender).Value / 10F;
 			lblValHighpassCutoff.Text = _engine.effector.Highpass.CutOff.ToString("##0.0");
+			_config.settings.Effectors.Highpass.Cutoff = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobHighpassResonance_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Highpass.Resonance = ((UI.Knob)sender).Value / 10F;
 			lblValHighpassResonance.Text = _engine.effector.Highpass.Resonance.ToString("##0.0");
+			_config.settings.Effectors.Highpass.Resonance = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobLowpassCutoff_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Lowpass.CutOff = ((UI.Knob)sender).Value / 10F;
 			lblValLowpassCutoff.Text = _engine.effector.Lowpass.CutOff.ToString("##0.0");
+			_config.settings.Effectors.Lowpass.Cutoff = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobLowpassResonance_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Lowpass.Resonance = ((UI.Knob)sender).Value / 10F;
 			lblValLowpassResonance.Text = _engine.effector.Lowpass.Resonance.ToString("##0.0");
+			_config.settings.Effectors.Lowpass.Resonance = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobFlangerMix_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Flanger.Mix = ((UI.Knob)sender).Value / 10F;
 			lblValFlangerMix.Text = _engine.effector.Flanger.Mix.ToString("##0.0");
+			_config.settings.Effectors.Flanger.Mix = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobFlangerRate_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Flanger.Rate = ((UI.Knob)sender).Value / 10F;
 			lblValFlangerRate.Text = _engine.effector.Flanger.Rate.ToString("##0.0");
+			_config.settings.Effectors.Flanger.Rate = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobFlangerDepth_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Flanger.Depth = ((UI.Knob)sender).Value / 100F;
 			lblValFlangerDepth.Text = _engine.effector.Flanger.Depth.ToString("##0.0");
+			_config.settings.Effectors.Flanger.Depth = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobCompThreshold_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Compressor.Threshold = ((UI.Knob)sender).Value / 10F;
 			lblValCompThreshold.Text = _engine.effector.Compressor.Threshold.ToString("##0.0");
+			_config.settings.Effectors.Compressor.Threshold = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobCompRatio_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Compressor.Ratio = ((UI.Knob)sender).Value / 10F;
 			lblValCompRatio.Text = _engine.effector.Compressor.Ratio.ToString("##0.0");
+			_config.settings.Effectors.Compressor.Ratio = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobCompAttack_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Compressor.Attack = ((UI.Knob)sender).Value / 10F;
 			lblValCompAttack.Text = _engine.effector.Compressor.Attack.ToString("##0.0");
+			_config.settings.Effectors.Compressor.Attack = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobCompRelease_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Compressor.Release = ((UI.Knob)sender).Value / 10F;
 			lblValCompRelease.Text = _engine.effector.Compressor.Release.ToString("##0.0");
+			_config.settings.Effectors.Compressor.Release = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobCompGain_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Compressor.Gain = ((UI.Knob)sender).Value / 10F;
 			lblValCompGain.Text = _engine.effector.Compressor.Gain.ToString("##0.0");
+			_config.settings.Effectors.Compressor.Gain = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobPitchPitch_ValueChanged(object sender, EventArgs e)
@@ -313,6 +343,7 @@ namespace MediaPlayer_X_Ark
 				_engine.effector.PitchShift.Pitch = (((UI.Knob)sender).Value + 50) / 100F;
 			}
 			lblValPitchPitch.Text = _engine.effector.PitchShift.Pitch.ToString("##0.00");
+			_config.settings.Effectors.PitchShift.Pitch = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobPitchFFT_ValueChanged(object sender, EventArgs e)
@@ -320,6 +351,7 @@ namespace MediaPlayer_X_Ark
 			float[] fftsize = { 256, 512, 1024, 2048, 4096 };
 			_engine.effector.PitchShift.FFTSize = fftsize[((UI.Knob)sender).Value];
 			lblValPitchFFT.Text = _engine.effector.PitchShift.FFTSize.ToString("###0");
+			_config.settings.Effectors.PitchShift.FFT = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobFrequency_ValueChanged(object sender, EventArgs e)
@@ -329,12 +361,14 @@ namespace MediaPlayer_X_Ark
 				_engine.effector.Frequency.SetFrequency(((UI.Knob)sender).Value);
 			}
 			lblValFrequency.Text = _engine.effector.Frequency.Hz.ToString();
+			_config.settings.Effectors.Frequency.Frequency = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobSpeed_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Speed = ((UI.Knob)sender).Value;
 			lblValSpeed.Text = _engine.effector.Speed.ToString();
+			_config.settings.Effectors.Speed.Speed = ((UI.Knob)sender).Value;
 		}
 
 		private bool GroupControl(object sender)
@@ -527,6 +561,24 @@ namespace MediaPlayer_X_Ark
 			cmbFormat.SelectedIndex = _config.settings.Format;
 			cmbSampling.SelectedIndex = _config.settings.SamplingMode;
 			cmbSpeaker.SelectedIndex = _config.settings.SpeakerMode;
+
+			// Equalizer
+			CheckGEQ.Checked = _config.settings.Effectors.GEqualizer.Enable;
+			cmbEqPreset.SelectedIndex = _config.settings.Effectors.GEqualizer.Preset;
+			TrkGEQ32.Value = _config.settings.Effectors.GEqualizer.GEQ_32;
+			TrkGEQ60.Value = _config.settings.Effectors.GEqualizer.GEQ_60;
+			TrkGEQ125.Value = _config.settings.Effectors.GEqualizer.GEQ_125;
+			TrkGEQ250.Value = _config.settings.Effectors.GEqualizer.GEQ_250;
+			TrkGEQ500.Value = _config.settings.Effectors.GEqualizer.GEQ_500;
+			TrkGEQ1K.Value = _config.settings.Effectors.GEqualizer.GEQ_1K;
+			TrkGEQ2K.Value = _config.settings.Effectors.GEqualizer.GEQ_2K;
+			TrkGEQ4K.Value = _config.settings.Effectors.GEqualizer.GEQ_4K;
+			TrkGEQ8K.Value = _config.settings.Effectors.GEqualizer.GEQ_8K;
+			TrkGEQ16K.Value = _config.settings.Effectors.GEqualizer.GEQ_16K;
+			TrkGEQ20K.Value = _config.settings.Effectors.GEqualizer.GEQ_20K;
+			TrkGEQ22K.Value = _config.settings.Effectors.GEqualizer.GEQ_22K;
+
+
 		}
 		private void TreeMenu_AfterSelect(object sender, TreeViewEventArgs e)
 		{
@@ -657,14 +709,16 @@ namespace MediaPlayer_X_Ark
         {
 			PaintGEQGraph();
 			if (!internalChanged)
-			_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_32, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
+				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_32, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
+			_config.settings.Effectors.GEqualizer.GEQ_32 = ((ColorSlider.ColorSlider)sender).Value;
 		}
 
-        private void TrkGEQ60_ValueChanged(object sender, EventArgs e)
+		private void TrkGEQ60_ValueChanged(object sender, EventArgs e)
         {
 			PaintGEQGraph();
 			if (!internalChanged)
 				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_60, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
+			_config.settings.Effectors.GEqualizer.GEQ_60 = ((ColorSlider.ColorSlider)sender).Value;
 		}
 
 		private void TrkGEQ125_ValueChanged(object sender, EventArgs e)
@@ -672,6 +726,7 @@ namespace MediaPlayer_X_Ark
 			PaintGEQGraph();
 			if (!internalChanged)
 				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_125, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
+			_config.settings.Effectors.GEqualizer.GEQ_125 = ((ColorSlider.ColorSlider)sender).Value;
 		}
 
 		private void TrkGEQ250_ValueChanged(object sender, EventArgs e)
@@ -679,6 +734,7 @@ namespace MediaPlayer_X_Ark
 			PaintGEQGraph();
 			if (!internalChanged)
 				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_250, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
+			_config.settings.Effectors.GEqualizer.GEQ_250 = ((ColorSlider.ColorSlider)sender).Value;
 		}
 
 		private void TrkGEQ500_ValueChanged(object sender, EventArgs e)
@@ -686,6 +742,7 @@ namespace MediaPlayer_X_Ark
 			PaintGEQGraph();
 			if (!internalChanged)
 				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_500, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
+			_config.settings.Effectors.GEqualizer.GEQ_500 = ((ColorSlider.ColorSlider)sender).Value;
 		}
 
 		private void TrkGEQ1K_ValueChanged(object sender, EventArgs e)
@@ -693,6 +750,7 @@ namespace MediaPlayer_X_Ark
 			PaintGEQGraph();
 			if (!internalChanged)
 				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_1K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
+			_config.settings.Effectors.GEqualizer.GEQ_1K = ((ColorSlider.ColorSlider)sender).Value;
 		}
 
 		private void TrkGEQ2K_ValueChanged(object sender, EventArgs e)
@@ -700,6 +758,7 @@ namespace MediaPlayer_X_Ark
 			PaintGEQGraph();
 			if (!internalChanged)
 				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_2K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
+			_config.settings.Effectors.GEqualizer.GEQ_2K = ((ColorSlider.ColorSlider)sender).Value;
 		}
 
 		private void TrkGEQ4K_ValueChanged(object sender, EventArgs e)
@@ -707,6 +766,7 @@ namespace MediaPlayer_X_Ark
 			PaintGEQGraph();
 			if (!internalChanged)
 				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_4K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
+			_config.settings.Effectors.GEqualizer.GEQ_4K = ((ColorSlider.ColorSlider)sender).Value;
 		}
 
 		private void TrkGEQ8K_ValueChanged(object sender, EventArgs e)
@@ -714,6 +774,7 @@ namespace MediaPlayer_X_Ark
 			PaintGEQGraph();
 			if (!internalChanged)
 				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_8K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
+			_config.settings.Effectors.GEqualizer.GEQ_8K = ((ColorSlider.ColorSlider)sender).Value;
 		}
 
 		private void TrkGEQ16K_ValueChanged(object sender, EventArgs e)
@@ -721,6 +782,7 @@ namespace MediaPlayer_X_Ark
 			PaintGEQGraph();
 			if (!internalChanged)
 				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_16K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
+			_config.settings.Effectors.GEqualizer.GEQ_16K = ((ColorSlider.ColorSlider)sender).Value;
 		}
 
 		private void TrkGEQ20K_ValueChanged(object sender, EventArgs e)
@@ -728,6 +790,7 @@ namespace MediaPlayer_X_Ark
 			PaintGEQGraph();
 			if (!internalChanged)
 				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_20K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
+			_config.settings.Effectors.GEqualizer.GEQ_20K = ((ColorSlider.ColorSlider)sender).Value;
 		}
 
 		private void TrkGEQ22K_ValueChanged(object sender, EventArgs e)
@@ -735,6 +798,7 @@ namespace MediaPlayer_X_Ark
 			PaintGEQGraph();
 			if (!internalChanged)
 				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_22K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
+			_config.settings.Effectors.GEqualizer.GEQ_22K = ((ColorSlider.ColorSlider)sender).Value;
 		}
 
 		private void BtnUpdate_Click(object sender, EventArgs e)
@@ -757,6 +821,12 @@ namespace MediaPlayer_X_Ark
         private void cmbEqPreset_SelectedIndexChanged(object sender, EventArgs e)
         {
 			_engine.effector.GEqualizer.SetPreset(((ComboBox)sender).SelectedIndex);
-        }
-    }
+			_config.settings.Effectors.GEqualizer.Preset = ((ComboBox)sender).SelectedIndex;
+		}
+
+        private void CheckCompLinked_CheckedChanged(object sender, EventArgs e)
+        {
+			_engine.effector.Compressor.Linked = ((CheckBox)sender).Checked;
+		}
+	}
 }

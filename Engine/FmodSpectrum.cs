@@ -38,7 +38,7 @@ namespace MediaPlayer_X_Ark
 
 		protected int[] analyzerSnow;
 
-		public void Initialize(Graphics g1, Bitmap src)
+		public void Initialize(ref Graphics g1, ref Bitmap src)
         {
 			gAnalyzer = g1;
 			hdc1Analyzer = g1.GetHdc();
@@ -101,7 +101,7 @@ namespace MediaPlayer_X_Ark
 
 
 		private static float[] lineBottom = new float[128];
-		public void UpdateSpectrum(Graphics g1,ref Bitmap g2, int width, int height, int mode)
+		public void UpdateSpectrum(int width, int height, int mode)
 		{
 			// BitBlt用にPictureBoxのHDCを取得
 			RECT line2 = new RECT(0, 0, width, height);	// BackGround

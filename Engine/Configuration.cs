@@ -90,30 +90,31 @@ namespace MediaPlayer_X_Ark.Engine
     public class CfgGEqualizer
     {
         public bool Enable { get; set; }
+        public int Preset { get; set; }
         [JsonPropertyName("32")]
-        public int GEQ_32 { get; set; }
+        public decimal GEQ_32 { get; set; }
         [JsonPropertyName("60")]
-        public int GEQ_60 { get; set; }
+        public decimal GEQ_60 { get; set; }
         [JsonPropertyName("125")]
-        public int GEQ_125 { get; set; }
+        public decimal GEQ_125 { get; set; }
         [JsonPropertyName("250")]
-        public int GEQ_250 { get; set; }
+        public decimal GEQ_250 { get; set; }
         [JsonPropertyName("500")]
-        public int GEQ_500 { get; set; }
+        public decimal GEQ_500 { get; set; }
         [JsonPropertyName("1000")]
-        public int GEQ_1K { get; set; }
+        public decimal GEQ_1K { get; set; }
         [JsonPropertyName("2000")]
-        public int GEQ_2K { get; set; }
+        public decimal GEQ_2K { get; set; }
         [JsonPropertyName("4000")]
-        public int GEQ_4K { get; set; }
+        public decimal GEQ_4K { get; set; }
         [JsonPropertyName("8000")]
-        public int GEQ_8K { get; set; }
+        public decimal GEQ_8K { get; set; }
         [JsonPropertyName("16000")]
-        public int GEQ_16K { get; set; }
+        public decimal GEQ_16K { get; set; }
         [JsonPropertyName("20000")]
-        public int GEQ_20K { get; set; }
+        public decimal GEQ_20K { get; set; }
         [JsonPropertyName("22000")]
-        public int GEQ_22K { get; set; }
+        public decimal GEQ_22K { get; set; }
     }
 
     public class CfgDistortion
@@ -338,6 +339,8 @@ namespace MediaPlayer_X_Ark.Engine
 
         public void Save()
         {
+            GetEqualizerValue();
+
             var options = new JsonSerializerOptions { WriteIndented = true };
             string jsonString = JsonSerializer.Serialize(settings, options);
 
@@ -455,7 +458,18 @@ namespace MediaPlayer_X_Ark.Engine
 
         public void GetEqualizerValue()
         {
-//            settings.Effectors.GEqualizer.GEQ_32 = engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_32);
+            settings.Effectors.GEqualizer.GEQ_32 = (int)(engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_32) * 10f);
+            settings.Effectors.GEqualizer.GEQ_60 = (int)(engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_60) * 10f);
+            settings.Effectors.GEqualizer.GEQ_125 = (int)(engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_125) * 10f);
+            settings.Effectors.GEqualizer.GEQ_250 = (int)(engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_250) * 10f);
+            settings.Effectors.GEqualizer.GEQ_500 = (int)(engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_500) * 10f);
+            settings.Effectors.GEqualizer.GEQ_1K = (int)(engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_1K) * 10f);
+            settings.Effectors.GEqualizer.GEQ_2K = (int)(engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_2K) * 10f);
+            settings.Effectors.GEqualizer.GEQ_4K = (int)(engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_4K) * 10f);
+            settings.Effectors.GEqualizer.GEQ_8K = (int)(engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_8K) * 10f);
+            settings.Effectors.GEqualizer.GEQ_16K = (int)(engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_16K) * 10f);
+            settings.Effectors.GEqualizer.GEQ_20K = (int)(engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_20K) * 10f);
+            settings.Effectors.GEqualizer.GEQ_22K = (int)(engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_22K) * 10f);
         }
     }
 }
