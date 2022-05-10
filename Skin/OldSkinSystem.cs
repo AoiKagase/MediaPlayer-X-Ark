@@ -52,6 +52,7 @@ namespace MediaPlayer_X_Ark.Skin
 
     public struct SpectrumComponents
     {
+		public string ImageFile;
 		public Image Image;
 		public Color Color;
 		public RECT Position;
@@ -152,7 +153,8 @@ namespace MediaPlayer_X_Ark.Skin
 
 
 			result = Win32API.GetPrivateProfileString("GraphicArea", "-SpectrumPicture", "", nValue, capacity, skinFile);
-			ImgSpectrum.Image = LoadImage(skinDir + "\\" + nValue.ToString());
+			ImgSpectrum.ImageFile = skinDir + "\\" + nValue.ToString();
+			ImgSpectrum.Image = LoadImage(ImgSpectrum.ImageFile);
 			if (ImgSpectrum.Image == null)
             {
 				result = Win32API.GetPrivateProfileString("GraphicArea", "-SpectrumColor", "FFFFFF", nValue, capacity, skinFile);

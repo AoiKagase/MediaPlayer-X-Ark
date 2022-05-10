@@ -24,39 +24,39 @@ namespace MediaPlayer_X_Ark
 		protected ChannelGroup FmodChannelGroup;
 		protected string lastError;
 
-		protected Graphics gAnalyzer;
-		protected Graphics gBuffer;
-		protected Graphics gSnow;
+		//protected Graphics gAnalyzer;
+		//protected Graphics gBuffer;
+		//protected Graphics gSnow;
 
-		protected IntPtr hdc1Analyzer;
-		protected IntPtr hdc1Buffer;
-		protected IntPtr hdc2AnalyzerSrc;
-		protected IntPtr hdc3AnalyzerSnow;
+		//protected IntPtr hdc1Analyzer;
+		//protected IntPtr hdc1Buffer;
+		//protected IntPtr hdc2AnalyzerSrc;
+		//protected IntPtr hdc3AnalyzerSnow;
 
-		protected IntPtr Prog1;
-		protected IntPtr Prog2;
+		//protected IntPtr Prog1;
+		//protected IntPtr Prog2;
 
-		protected int[] analyzerSnow;
+//		protected int[] analyzerSnow;
 
-		public void Initialize(ref Graphics g1, ref Bitmap src)
+		public void Initialize()
         {
-			gAnalyzer = g1;
-			hdc1Analyzer = g1.GetHdc();
-			hdc2AnalyzerSrc = Win32API.CreateCompatibleDC(hdc1Analyzer);
-			Prog1 = Win32API.SelectObject(hdc2AnalyzerSrc, src.GetHbitmap(Color.Black));
-			analyzerSnow = new int[windowSize];
+			//gAnalyzer = g1;
+			//hdc1Analyzer = g1.GetHdc();
+			//hdc2AnalyzerSrc = Win32API.CreateCompatibleDC(hdc1Analyzer);
+			//Prog1 = Win32API.SelectObject(hdc2AnalyzerSrc, src.GetHbitmap(Color.Black));
+//			analyzerSnow = new int[windowSize];
 
-			Bitmap snow = new Bitmap(src.Width, src.Height);
-			Bitmap buff = new Bitmap(src.Width, src.Height);
-			gSnow = Graphics.FromImage(snow);
-			gBuffer = Graphics.FromImage(buff);
-			using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 255, 255)))
-			{
-				gSnow.FillRectangle(brush, 0, 0, src.Width, src.Height);
-			}
-			hdc3AnalyzerSnow = gSnow.GetHdc();
-			hdc1Buffer = gBuffer.GetHdc();
-			Prog2 = Win32API.SelectObject(hdc3AnalyzerSnow, snow.GetHbitmap(Color.White));
+			//Bitmap snow = new Bitmap(src.Width, src.Height);
+			//Bitmap buff = new Bitmap(src.Width, src.Height);
+			//gSnow = Graphics.FromImage(snow);
+			//gBuffer = Graphics.FromImage(buff);
+			//using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 255, 255)))
+			//{
+			//	gSnow.FillRectangle(brush, 0, 0, src.Width, src.Height);
+			//}
+			//hdc3AnalyzerSnow = gSnow.GetHdc();
+			//hdc1Buffer = gBuffer.GetHdc();
+			//Prog2 = Win32API.SelectObject(hdc3AnalyzerSnow, snow.GetHbitmap(Color.White));
 		}
 
 		/// <summary>
@@ -87,26 +87,26 @@ namespace MediaPlayer_X_Ark
 
 			mFFT.release();
 
-			Win32API.DeleteObject(Prog2);
-			Win32API.DeleteObject(Prog1);
-			Win32API.DeleteDC(hdc3AnalyzerSnow);
-			Win32API.DeleteDC(hdc1Buffer);
-			Win32API.DeleteDC(hdc2AnalyzerSrc);
-			Win32API.DeleteDC(hdc1Analyzer);
-			gBuffer.ReleaseHdc(hdc1Buffer);
-			gSnow.ReleaseHdc(hdc3AnalyzerSnow);
-			gAnalyzer.ReleaseHdc(hdc1Analyzer);
+			//Win32API.DeleteObject(Prog2);
+			//Win32API.DeleteObject(Prog1);
+			//Win32API.DeleteDC(hdc3AnalyzerSnow);
+			//Win32API.DeleteDC(hdc1Buffer);
+			//Win32API.DeleteDC(hdc2AnalyzerSrc);
+			//Win32API.DeleteDC(hdc1Analyzer);
+			//gBuffer.ReleaseHdc(hdc1Buffer);
+			//gSnow.ReleaseHdc(hdc3AnalyzerSnow);
+			//gAnalyzer.ReleaseHdc(hdc1Analyzer);
 
 		}
 
 
 		private static float[] lineBottom = new float[128];
-		public void UpdateSpectrum(int width, int height, int mode)
+		public float[] UpdateSpectrum(int width, int height, int mode)
 		{
 			// BitBlt用にPictureBoxのHDCを取得
 			RECT line2 = new RECT(0, 0, width, height);	// BackGround
 
-			int lineHeight = 0;
+			//int lineHeight = 0;
 			bool isPlaying;
 			bool paused;
 
@@ -115,10 +115,10 @@ namespace MediaPlayer_X_Ark
 
 			if (!isPlaying || paused)
 			{
-				Win32API.FillRect(hdc1Buffer, ref line2, Win32API.CreateSolidBrush(0xffffff00));
-				Win32API.BitBlt(hdc1Analyzer, 0, 0, width, height, hdc1Buffer, 0, 0, Win32API.TernaryRasterOperations.SRCCOPY);
+				//Win32API.FillRect(hdc1Buffer, ref line2, Win32API.CreateSolidBrush(0xffffff00));
+				//Win32API.BitBlt(hdc1Analyzer, 0, 0, width, height, hdc1Buffer, 0, 0, Win32API.TernaryRasterOperations.SRCCOPY);
 
-				return;
+				return mFFTSpectrum;
 			}
 
 			// DSPを作成済み
@@ -127,7 +127,7 @@ namespace MediaPlayer_X_Ark
 				IntPtr unmanagedData;
 				uint length;
 
-				Win32API.FillRect(hdc1Buffer, ref line2, Win32API.CreateSolidBrush(0xffffff00));
+				//Win32API.FillRect(hdc1Buffer, ref line2, Win32API.CreateSolidBrush(0xffffff00));
 				// スペクトラムデータの取得（RAW）
 				if (mFFT.getParameterData((int) DSP_FFT.SPECTRUMDATA, out unmanagedData, out length) == RESULT.OK)
                 {
@@ -147,44 +147,44 @@ namespace MediaPlayer_X_Ark
 						// channel = 0? 
 						// スペクトラム値の取得
 						fftData.getSpectrum(0, ref mFFTSpectrum);
-						RECT line1 = new RECT();
-						RECT line3 = new RECT(0, 0, 0, 0);  // Snow
+						//RECT line1 = new RECT();
+						//RECT line3 = new RECT(0, 0, 0, 0);  // Snow
 
 
-						int step = (mode > 0) ? mode * 2 : 1;
-						// 画像処理用の座標計算開始
-						line1 = new Rectangle(0, 0, 0, 0);
-						for (int i = 0; i < windowSize; i+=step)
-                        {
-							lineHeight = height - (int)((lin2dB(mFFTSpectrum[i]) + 80) * 0.8);
+						//int step = (mode > 0) ? mode * 2 : 1;
+						//// 画像処理用の座標計算開始
+						//line1 = new Rectangle(0, 0, 0, 0);
+						//for (int i = 0; i < windowSize; i+=step)
+      //                  {
+						//	lineHeight = height - (int)((lin2dB(mFFTSpectrum[i]) + 80) * 0.8);
 
-							line3.Left = i;
-							if (width > windowSize)
-								line3.Right = i + (width / windowSize) + (mode / 2);
-							else
-								line3.Right = i + 1 + mode / 2;
+						//	line3.Left = i;
+						//	if (width > windowSize)
+						//		line3.Right = i + (width / windowSize) + (mode / 2);
+						//	else
+						//		line3.Right = i + 1 + mode / 2;
 
-							if (analyzerSnow[i] > lineHeight)
-								line3.Bottom = analyzerSnow[i] = lineHeight;
-							else if (analyzerSnow[i] < height)
-								line3.Bottom = analyzerSnow[i]++;
+						//	if (analyzerSnow[i] > lineHeight)
+						//		line3.Bottom = analyzerSnow[i] = lineHeight;
+						//	else if (analyzerSnow[i] < height)
+						//		line3.Bottom = analyzerSnow[i]++;
 
-							line3.Top = line3.Bottom - 1;
+						//	line3.Top = line3.Bottom - 1;
 
-							Win32API.BitBlt(hdc1Buffer, line3.Left, line3.Top, line3.Right - line3.Left, 1, hdc3AnalyzerSnow, line3.Left, line3.Top, Win32API.TernaryRasterOperations.SRCCOPY);
+						//	Win32API.BitBlt(hdc1Buffer, line3.Left, line3.Top, line3.Right - line3.Left, 1, hdc3AnalyzerSnow, line3.Left, line3.Top, Win32API.TernaryRasterOperations.SRCCOPY);
 
-							line1.Bottom = height;
-							line1.Top = lineHeight;
-							line1.Left = line3.Left;
-							line1.Right = line3.Right;
+						//	line1.Bottom = height;
+						//	line1.Top = lineHeight;
+						//	line1.Left = line3.Left;
+						//	line1.Right = line3.Right;
 
-							Win32API.BitBlt(hdc1Buffer, line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top, hdc2AnalyzerSrc, line1.Left, line1.Top, Win32API.TernaryRasterOperations.SRCCOPY);
-						}
+						//	Win32API.BitBlt(hdc1Buffer, line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top, hdc2AnalyzerSrc, line1.Left, line1.Top, Win32API.TernaryRasterOperations.SRCCOPY);
+						//}
 					}
                 }
             }
-			Win32API.BitBlt(hdc1Analyzer, 0, 0, width, height, hdc1Buffer, 0, 0, Win32API.TernaryRasterOperations.SRCCOPY);
-			return;
+			//Win32API.BitBlt(hdc1Analyzer, 0, 0, width, height, hdc1Buffer, 0, 0, Win32API.TernaryRasterOperations.SRCCOPY);
+			return mFFTSpectrum;
 		}
 
 		private float lin2dB(float linear)

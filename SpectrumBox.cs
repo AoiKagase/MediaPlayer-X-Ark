@@ -16,6 +16,7 @@ using SharpDX.Direct3D11;
 using SharpDX.Direct2D1;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace MediaPlayer_X_Ark
 {
@@ -67,7 +68,7 @@ namespace MediaPlayer_X_Ark
 		private SharpDX.Direct2D1.Bitmap _BitmapSnow;
 		private SharpDX.Direct2D1.Bitmap _BitmapWave;
 		#endregion
-
+		private const int windowSize = 1024;
 		public string BitmapSpectrum
         {
 			get
@@ -76,8 +77,11 @@ namespace MediaPlayer_X_Ark
 			}
 			set
 			{
-				_BitmapSpectrum = LoadFromFile(_RenderTarget2D, value);
-				_FileSpectrum = value;
+				if (value != null)
+                {
+					_BitmapSpectrum = LoadFromFile(_RenderTarget2D, value);
+					_FileSpectrum = value;
+				}
 			}
 		}
 
@@ -86,8 +90,11 @@ namespace MediaPlayer_X_Ark
 			get { return _FileSnow; }
 			set
 			{
-				_BitmapSnow = LoadFromFile(_RenderTarget2D, value);
-				_FileSnow = value;
+				if (value != null)
+                {
+					_BitmapSnow = LoadFromFile(_RenderTarget2D, value);
+					_FileSnow = value;
+				}
 			}
 		}
 
@@ -99,8 +106,11 @@ namespace MediaPlayer_X_Ark
 			}
 			set
 			{
-				_BitmapWave = LoadFromFile(_RenderTarget2D, value);
-				_FileWave = value;
+				if (value != null)
+                {
+					_BitmapWave = LoadFromFile(_RenderTarget2D, value);
+					_FileWave = value;
+				}
 			}
         }
 		/// <summary>
@@ -163,11 +173,17 @@ namespace MediaPlayer_X_Ark
 			factory.MakeWindowAssociation(DisplayHandle, WindowAssociationFlags.IgnoreAll);
 
 			// バックバッファーを保持する
-			_BackBuffer = Texture2D.FromSwapChain<Texture2D>(_SwapChain, 0);
-			_BackColor = new SharpDX.Color(backColor.R, backColor.G, backColor.B, backColor.A);
+			_BackBuffer		= Texture2D.FromSwapChain<Texture2D>(_SwapChain, 0);
+			_BackColor		= new SharpDX.Color(backColor.R, backColor.G, backColor.B, backColor.A);
+			analyzerSnow	= new int[windowSize];
 
 			// 2D用の初期化を行う
 			InitializeDirect2D();
+			var bitmapProperties = new BitmapProperties(new SharpDX.Direct2D1.PixelFormat(Format.R8G8B8A8_UNorm, SharpDX.Direct2D1.AlphaMode.Premultiplied));
+
+			_BitmapSpectrum = new SharpDX.Direct2D1.Bitmap(_RenderTarget2D, new Size2(1, 1), bitmapProperties);
+			_BitmapSnow		= new SharpDX.Direct2D1.Bitmap(_RenderTarget2D, new Size2(1, 1), bitmapProperties);
+			_BitmapWave		= new SharpDX.Direct2D1.Bitmap(_RenderTarget2D, new Size2(1, 1), bitmapProperties);
 		}
 		#region DirectXデバイス基本初期設定
 		/// <summary>
@@ -196,16 +212,19 @@ namespace MediaPlayer_X_Ark
 			//_ColorBrush = new SolidColorBrush(_RenderTarget2D, new SharpDX.Color(255, 255, 255, 255));
 		}
 		#endregion
-
+		private int[] analyzerSnow;
 		/// <summary>
 		/// メインループ処理
 		/// </summary>
-		public void MainLoop(System.Drawing.Color backColor, int[] mFFT)
+		public void DrawSpectrum(System.Drawing.Color backColor, float[] mFFT, int mode)
 		{
+			if (mFFT == null)
+				return;
+
 			_RenderTarget2D?.BeginDraw();
 			// 画面を特定の色(例．灰色)で初期化
 			_RenderTarget2D?.Clear(_BackColor);
-
+			
 			// 画像描画
 			if (_RenderTarget2D != null)
 			{
@@ -214,14 +233,47 @@ namespace MediaPlayer_X_Ark
 				// サイズ
 				var size = _BitmapSpectrum?.Size ?? new Size2F();
 
-				// 画像描画
-				_RenderTarget2D.DrawBitmap(_BitmapSpectrum, new SharpDX.Mathematics.Interop.RawRectangleF(pos.X, pos.Y, pos.X + size.Width, pos.Y + size.Height), 1.0f, BitmapInterpolationMode.Linear);
+				RECT line1 = new RECT();
+				RECT line3 = new RECT(0, 0, 0, 0);  // Snow
+
+				int lineHeight = 0;
+				int step = (mode > 0) ? mode * 2 : 1;
+				// 画像処理用の座標計算開始
+				line1 = new System.Drawing.Rectangle(0, 0, 0, 0);
+				for (int i = 0; i < windowSize; i += step)
+				{
+					lineHeight = this.Height - (int)((lin2dB(mFFT[i]) + 80) * 0.8);
+
+					line3.Left = i;
+					if (this.Width > windowSize)
+						line3.Right = i + (this.Width / windowSize) + (mode / 2);
+					else
+						line3.Right = i + 1 + mode / 2;
+
+					if (analyzerSnow[i] > lineHeight)
+						line3.Bottom = analyzerSnow[i] = lineHeight;
+					else if (analyzerSnow[i] < this.Height)
+						line3.Bottom = analyzerSnow[i]++;
+
+					line3.Top = line3.Bottom - 1;
+					_RenderTarget2D?.DrawBitmap(_BitmapSnow, new SharpDX.Mathematics.Interop.RawRectangleF(line3.Left, line3.Top, line3.Right - line3.Left, 1), 1.0f, BitmapInterpolationMode.Linear);
+
+					line1.Top = this.Height;
+					line1.Bottom = lineHeight;
+					line1.Left = line3.Left;
+					line1.Right = line3.Right;
+
+					_RenderTarget2D?.DrawBitmap(_BitmapSpectrum, new SharpDX.Mathematics.Interop.RawRectangleF(line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top), 1.0f, BitmapInterpolationMode.Linear);
+				}
 			}
 
 			_RenderTarget2D?.EndDraw();
 			_SwapChain?.Present(0, PresentFlags.None);
 		}
-
+		private float lin2dB(float linear)
+		{
+			return Math.Clamp((float)Math.Log10(linear) * 20.0f, -80.0f, 0.0f);
+		}
 		protected override void OnPaint(PaintEventArgs pe)
 		{
 			base.OnPaint(pe);
@@ -243,8 +295,12 @@ namespace MediaPlayer_X_Ark
 		/// <returns>Bitmap形式の画像データ</returns>
 		private static SharpDX.Direct2D1.Bitmap LoadFromFile(RenderTarget renderTarget, string file)
 		{
+			if (!File.Exists(file))
+            {
+				return new SharpDX.Direct2D1.Bitmap(renderTarget, new Size2(1, 1));
+			}
 			// System.Drawing.Imageを使ってファイルから画像を読み込む
-			using (var bitmap = (System.Drawing.Bitmap)System.Drawing.Image.FromFile(file))
+			using (System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)System.Drawing.Image.FromFile(file))
 			{
 				// BGRA から RGBA 形式へ変換する
 				// 1行のデータサイズを算出

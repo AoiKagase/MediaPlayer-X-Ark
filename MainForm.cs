@@ -11,8 +11,6 @@ namespace MediaPlayer_X_Ark
         bool initialize = false;
         public static PlayerEngine player;
 
-        Graphics gSpectrum;
-        Bitmap bmpSpectrumSrc;
         OldSkinSystem oldSkinSystem;
 		private ToolTip _toolTip;
         private int playingIndex = 0;
@@ -49,19 +47,16 @@ namespace MediaPlayer_X_Ark
             Spectrum.Width = oldSkinSystem.ImgSpectrum.Position.Width;
             Spectrum.Height = oldSkinSystem.ImgSpectrum.Position.Height;
             // スペクトラム画像の保持
-            if (oldSkinSystem.ImgSpectrum.Image != null)
-                bmpSpectrumSrc = new Bitmap(oldSkinSystem.ImgSpectrum.Image);
+            if (File.Exists(oldSkinSystem.ImgSpectrum.ImageFile))
+                Spectrum.BitmapSpectrum = oldSkinSystem.ImgSpectrum.ImageFile;
             else
             {
-                bmpSpectrumSrc = new Bitmap(Spectrum.Width, Spectrum.Height);
-                Graphics g = Graphics.FromImage(bmpSpectrumSrc);
+                Graphics g = Graphics.FromImage(oldSkinSystem.ImgSpectrum.Image);
                 g.Clear(oldSkinSystem.ImgSpectrum.Color);
                 g.Dispose();
             }
-            // スペクトラム領域のグラフィックインスタンス生成
-            gSpectrum = Spectrum.CreateGraphics();
             // スペクトラム領域の初期化
-            player.spectrum.Initialize(ref gSpectrum, ref bmpSpectrumSrc);
+            player.spectrum.Initialize();
 
             string cName = "";
             foreach(Control c in Controls)
@@ -245,7 +240,7 @@ namespace MediaPlayer_X_Ark
             // FMODサウンドエンジン
             player = new PlayerEngine();
             config = new Engine.Configration(ref player);
-
+            Spectrum.Initialize(Color.Black);
             // サンプルレート・スピーカーモード
             player.SetSoftwareFormat(config.GetSampleRate(), config.GetSpeakerMode());
             player.Initialize();
@@ -335,7 +330,8 @@ namespace MediaPlayer_X_Ark
                 return;
 
             // スペクトラム画像の反映
-            player.spectrum.UpdateSpectrum(Spectrum.Width, Spectrum.Height, 0);
+            float[] mFFT = player.spectrum.UpdateSpectrum(Spectrum.Width, Spectrum.Height, 0);
+            Spectrum.DrawSpectrum(oldSkinSystem.ImgSpectrum.Color, mFFT, 0);
 
             // 曲調トラックバーの反映 (シーク中はボタン側で動作する為動かさない)
             if (this.seekValue == 0)

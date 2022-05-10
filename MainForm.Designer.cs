@@ -33,7 +33,6 @@ namespace MediaPlayer_X_Ark
             this.components = new System.ComponentModel.Container();
             this.BtnPlay = new System.Windows.Forms.Button();
             this.BtnStop = new System.Windows.Forms.Button();
-            this.Spectrum = new System.Windows.Forms.PictureBox();
             this.Timer = new System.Windows.Forms.Timer(this.components);
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.BtnOpen = new System.Windows.Forms.Button();
@@ -54,6 +53,7 @@ namespace MediaPlayer_X_Ark
             this.LabelTitle = new MediaPlayer_X_Ark.ScrollLabel();
             this.LabelTime = new MediaPlayer_X_Ark.ScrollLabel();
             this.SeekiTimer = new System.Windows.Forms.Timer(this.components);
+            this.Spectrum = new MediaPlayer_X_Ark.SpectrumBox();
             ((System.ComponentModel.ISupportInitialize)(this.Spectrum)).BeginInit();
             this.SuspendLayout();
             // 
@@ -87,14 +87,6 @@ namespace MediaPlayer_X_Ark
             this.BtnStop.Click += new System.EventHandler(this.BtnStop_Click);
             this.BtnStop.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnStop_MouseDown);
             this.BtnStop.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnStop_MouseUp);
-            // 
-            // Spectrum
-            // 
-            this.Spectrum.Location = new System.Drawing.Point(12, 12);
-            this.Spectrum.Name = "Spectrum";
-            this.Spectrum.Size = new System.Drawing.Size(104, 42);
-            this.Spectrum.TabIndex = 1;
-            this.Spectrum.TabStop = false;
             // 
             // Timer
             // 
@@ -354,6 +346,17 @@ namespace MediaPlayer_X_Ark
             this.SeekiTimer.Enabled = true;
             this.SeekiTimer.Tick += new System.EventHandler(this.SeekiTimer_Tick);
             // 
+            // Spectrum
+            // 
+            this.Spectrum.BitmapSnow = null;
+            this.Spectrum.BitmapSpectrum = null;
+            this.Spectrum.BitmapWave = null;
+            this.Spectrum.Location = new System.Drawing.Point(138, 275);
+            this.Spectrum.Name = "Spectrum";
+            this.Spectrum.Size = new System.Drawing.Size(100, 50);
+            this.Spectrum.TabIndex = 20;
+            this.Spectrum.TabStop = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -362,6 +365,7 @@ namespace MediaPlayer_X_Ark
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(500, 500);
             this.ControlBox = false;
+            this.Controls.Add(this.Spectrum);
             this.Controls.Add(this.SldVolume);
             this.Controls.Add(this.SldPan);
             this.Controls.Add(this.SldTrack);
@@ -379,7 +383,6 @@ namespace MediaPlayer_X_Ark
             this.Controls.Add(this.BtnMinisize);
             this.Controls.Add(this.BtnClose);
             this.Controls.Add(this.BtnOpen);
-            this.Controls.Add(this.Spectrum);
             this.Controls.Add(this.BtnStop);
             this.Controls.Add(this.BtnPlay);
             this.DoubleBuffered = true;
@@ -400,7 +403,6 @@ namespace MediaPlayer_X_Ark
 
         private System.Windows.Forms.Button BtnPlay;
         private System.Windows.Forms.Button BtnStop;
-        private System.Windows.Forms.PictureBox Spectrum;
         private System.Windows.Forms.Timer Timer;
         private System.Windows.Forms.OpenFileDialog OpenFileDialog;
         private System.Windows.Forms.Button BtnOpen;
@@ -421,6 +423,7 @@ namespace MediaPlayer_X_Ark
         private ScrollLabel LabelTitle;
         private ScrollLabel LabelTime;
         private System.Windows.Forms.Timer SeekiTimer;
+        private SpectrumBox Spectrum;
     }
 }
 
