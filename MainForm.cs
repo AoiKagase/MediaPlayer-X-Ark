@@ -331,7 +331,7 @@ namespace MediaPlayer_X_Ark
 
             // スペクトラム画像の反映
             float[] mFFT = player.spectrum.UpdateSpectrum(Spectrum.Width, Spectrum.Height, 0);
-            Spectrum.DrawSpectrum(oldSkinSystem.ImgSpectrum.Color, mFFT, 0);
+            Spectrum.DrawSpectrum(ref mFFT, specmode);
 
             // 曲調トラックバーの反映 (シーク中はボタン側で動作する為動かさない)
             if (this.seekValue == 0)
@@ -697,6 +697,12 @@ namespace MediaPlayer_X_Ark
                     this.SldTrack.Value -= seekValue;
                     break;
             }
+        }
+
+        private int specmode = 0;
+        private void Spectrum_Click(object sender, EventArgs e)
+        {
+            specmode = (specmode + 1) % 3;
         }
     }
 }

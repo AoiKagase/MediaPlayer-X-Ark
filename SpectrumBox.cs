@@ -12,11 +12,12 @@ using SharpDX;
 using SharpDX.DXGI;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
-
 using SharpDX.Direct2D1;
+
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.IO;
+using SharpDX.Mathematics.Interop;
 
 namespace MediaPlayer_X_Ark
 {
@@ -198,7 +199,7 @@ namespace MediaPlayer_X_Ark
 				_RenderTarget2D = new RenderTarget(_Factory2D, surface, new RenderTargetProperties(new SharpDX.Direct2D1.PixelFormat(Format.Unknown, SharpDX.Direct2D1.AlphaMode.Premultiplied)));
 			}
 			// 非テキストプリミティブのエッジのレンダリング方法を指定
-			_RenderTarget2D.AntialiasMode = AntialiasMode.PerPrimitive;
+			_RenderTarget2D.AntialiasMode = AntialiasMode.Aliased;
 			// テキストの描画に使用されるアンチエイリアスモードについて指定
 			_RenderTarget2D.TextAntialiasMode = SharpDX.Direct2D1.TextAntialiasMode.Cleartype;
 
@@ -216,39 +217,36 @@ namespace MediaPlayer_X_Ark
 		/// <summary>
 		/// メインループ処理
 		/// </summary>
-		public void DrawSpectrum(System.Drawing.Color backColor, float[] mFFT, int mode)
+		public void DrawSpectrum(ref float[] mFFT, int mode)
 		{
-			if (mFFT == null)
-				return;
-
 			_RenderTarget2D?.BeginDraw();
 			// 画面を特定の色(例．灰色)で初期化
 			_RenderTarget2D?.Clear(_BackColor);
 			
 			// 画像描画
-			if (_RenderTarget2D != null)
+			if (_RenderTarget2D != null && mFFT != null)
 			{
 				// 位置
 				var pos = new Vector2(0.0f, 0.0f);
 				// サイズ
 				var size = _BitmapSpectrum?.Size ?? new Size2F();
 
-				RECT line1 = new RECT();
-				RECT line3 = new RECT(0, 0, 0, 0);  // Snow
+				RawRectangleF line1 = new RawRectangleF(0, 0, 0, 0);
+				RawRectangleF line3 = new RawRectangleF(0, 0, 0, 0);  // Snow
 
 				int lineHeight = 0;
 				int step = (mode > 0) ? mode * 2 : 1;
+
 				// 画像処理用の座標計算開始
-				line1 = new System.Drawing.Rectangle(0, 0, 0, 0);
 				for (int i = 0; i < windowSize; i += step)
 				{
 					lineHeight = this.Height - (int)((lin2dB(mFFT[i]) + 80) * 0.8);
 
 					line3.Left = i;
 					if (this.Width > windowSize)
-						line3.Right = i + (this.Width / windowSize) + (mode / 2);
+						line3.Right = i + ((float)this.Width / windowSize) + (mode / 2f);
 					else
-						line3.Right = i + 1 + mode / 2;
+						line3.Right = i + 0.6f + (mode / 2f);
 
 					if (analyzerSnow[i] > lineHeight)
 						line3.Bottom = analyzerSnow[i] = lineHeight;
@@ -256,14 +254,14 @@ namespace MediaPlayer_X_Ark
 						line3.Bottom = analyzerSnow[i]++;
 
 					line3.Top = line3.Bottom - 1;
-					_RenderTarget2D?.DrawBitmap(_BitmapSnow, new SharpDX.Mathematics.Interop.RawRectangleF(line3.Left, line3.Top, line3.Right - line3.Left, 1), 1.0f, BitmapInterpolationMode.Linear);
 
 					line1.Top = this.Height;
 					line1.Bottom = lineHeight;
 					line1.Left = line3.Left;
 					line1.Right = line3.Right;
 
-					_RenderTarget2D?.DrawBitmap(_BitmapSpectrum, new SharpDX.Mathematics.Interop.RawRectangleF(line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top), 1.0f, BitmapInterpolationMode.Linear);
+					_RenderTarget2D?.DrawBitmap(_BitmapSpectrum, line3, 1.0f, BitmapInterpolationMode.NearestNeighbor, line3);
+					_RenderTarget2D?.DrawBitmap(_BitmapSpectrum, line1, 1.0f, BitmapInterpolationMode.NearestNeighbor, line1);
 				}
 			}
 

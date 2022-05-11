@@ -348,14 +348,17 @@ namespace MediaPlayer_X_Ark
             // 
             // Spectrum
             // 
+            this.Spectrum.BackColor = System.Drawing.Color.Transparent;
+            this.Spectrum.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.Spectrum.BitmapSnow = null;
             this.Spectrum.BitmapSpectrum = null;
             this.Spectrum.BitmapWave = null;
             this.Spectrum.Location = new System.Drawing.Point(138, 275);
             this.Spectrum.Name = "Spectrum";
-            this.Spectrum.Size = new System.Drawing.Size(100, 50);
+            this.Spectrum.Size = new System.Drawing.Size(128, 54);
             this.Spectrum.TabIndex = 20;
             this.Spectrum.TabStop = false;
+            this.Spectrum.Click += new System.EventHandler(this.Spectrum_Click);
             // 
             // MainForm
             // 

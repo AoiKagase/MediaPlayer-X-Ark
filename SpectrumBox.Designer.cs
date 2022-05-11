@@ -1,6 +1,6 @@
 ﻿namespace MediaPlayer_X_Ark
 {
-    partial class SpectrumBox
+    partial class SpectrumBox : System.Windows.Forms.PictureBox
     {
         /// <summary>
         /// 必要なデザイナー変数です。
