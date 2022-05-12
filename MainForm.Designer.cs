@@ -354,6 +354,8 @@ namespace MediaPlayer_X_Ark
             this.Spectrum.BitmapSpectrum = null;
             this.Spectrum.BitmapWave = null;
             this.Spectrum.Location = new System.Drawing.Point(138, 275);
+            this.Spectrum.mFFT = null;
+            this.Spectrum.Mode = 0;
             this.Spectrum.Name = "Spectrum";
             this.Spectrum.Size = new System.Drawing.Size(128, 54);
             this.Spectrum.TabIndex = 20;
