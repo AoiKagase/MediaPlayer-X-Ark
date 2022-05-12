@@ -155,8 +155,9 @@ namespace MediaPlayer_X_Ark
 					// 画像描画
 					if ((double)System.Environment.TickCount < nextframe + wait)
 					{
-
-						Win32API.FillRect(hdcBuffer, ref line2, Win32API.CreateSolidBrush(0xffffff00));
+//						gAnalyzer.Clear(_BackColor);
+						Win32API.PatBlt(hdcBuffer, 0, 0, this.Width, this.Height, 0);
+//						Win32API.FillRect(hdcBuffer, ref line2, Win32API.CreateSolidBrush(0xffffff00));
 
 						// 計算処理
 						if (mFFT != null)

@@ -32,7 +32,9 @@ namespace MediaPlayer_X_Ark
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool BitBlt(IntPtr hdc, int nXDest, int nYDest, int nWidth, int nHeight,
 		  IntPtr hdcSrc, int nXSrc, int nYSrc, TernaryRasterOperations dwRop);
-
+		[DllImport("gdi32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool PatBlt(IntPtr hdc, int x, int y, int width, int height, int rop);
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetWindowDC(IntPtr hWnd);
 
