@@ -15,6 +15,9 @@
     <SignAssembly>False</SignAssembly>
     <IsPublishable>True</IsPublishable>
     <Platforms>AnyCPU;x64</Platforms>
+	<PublishSingleFile>true</PublishSingleFile>
+	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Resources\Skins\Temp\**" />
