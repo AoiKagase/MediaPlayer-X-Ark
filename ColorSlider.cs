@@ -84,14 +84,14 @@ namespace ColorSlider
         /// </summary>
         [Description("Event fires when the Value property changes")]
         [Category("Action")]
-        public event EventHandler ValueChanged;
+        public new event EventHandler ValueChanged;
 
         /// <summary>
         /// Fires when user scrolls the Slider
         /// </summary>
         [Description("Event fires when the Slider position is changed")]
         [Category("Behavior")]
-        public event ScrollEventHandler Scroll;
+        public new event ScrollEventHandler Scroll;
 
         #endregion
 
@@ -289,7 +289,7 @@ namespace ColorSlider
         [Description("Set Slider orientation")]
         [Category("ColorSlider")]
         [DefaultValue(Orientation.Horizontal)]
-        public Orientation Orientation
+        public new Orientation Orientation
         {
             get { return _barOrientation; }
             set
@@ -361,7 +361,7 @@ namespace ColorSlider
         [Description("Set Slider value")]
         [Category("ColorSlider")]
         [DefaultValue(30)]
-        public decimal Value
+        public new decimal Value
         {
             get { return _trackerValue; }
             set
@@ -385,7 +385,7 @@ namespace ColorSlider
         [Description("Set Slider minimal point")]
         [Category("ColorSlider")]
         [DefaultValue(0)]
-        public decimal Minimum
+        public new decimal Minimum
         {
             get { return _minimum; }
             set
@@ -413,7 +413,7 @@ namespace ColorSlider
         [Description("Set Slider maximal point")]
         [Category("ColorSlider")]
         [DefaultValue(100)]
-        public decimal Maximum
+        public new decimal Maximum
         {
             get { return _maximum; }
             set
@@ -440,7 +440,7 @@ namespace ColorSlider
         [Description("Set trackbar's small change")]
         [Category("ColorSlider")]
         [DefaultValue(1)]
-        public decimal SmallChange
+        public new decimal SmallChange
         {
             get { return _smallChange; }
             set { _smallChange = value; }
@@ -454,7 +454,7 @@ namespace ColorSlider
         [Description("Set trackbar's large change")]
         [Category("ColorSlider")]
         [DefaultValue(5)]
-        public decimal LargeChange
+        public new decimal LargeChange
         {
             get { return _largeChange; }
             set { _largeChange = value; }
@@ -696,7 +696,7 @@ namespace ColorSlider
         [Description("Gets or sets where to display the ticks")]
         [Category("ColorSlider")]
         [DefaultValue(TickStyle.TopLeft)]
-        public TickStyle TickStyle
+        public new TickStyle TickStyle
         {
             get { return _tickStyle; }
             set {

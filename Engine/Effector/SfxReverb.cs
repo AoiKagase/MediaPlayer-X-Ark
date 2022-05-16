@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 namespace MediaPlayer_X_Ark.Engine.Effector
 {
-	public class SFXReverb : AbstractEffectorBase 
+	public class SFXReverb : AbstractEffectorBase
 	{
 		private float _DecayTime;
 		private float _EarlyDelay;
@@ -23,6 +23,16 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		private float _DryLevel;
 
 		private FMOD.REVERB_PROPERTIES _preset;
+
+		public FMOD.REVERB_PROPERTIES Preset
+		{
+			get { return _preset; }
+			set
+			{
+				_preset = value;
+				SetPreset(_preset);
+			}
+		}
 		/// <summary>
 		/// Reverberation decay time at low-frequencies.
 		/// Type: float Units: Milliseconds Range: [100, 20000] Default: 1500

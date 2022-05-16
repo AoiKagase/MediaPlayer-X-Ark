@@ -63,9 +63,6 @@ namespace MediaPlayer_X_Ark
             g.Clear(oldSkinSystem.ImgSpectrum.Color);
             g.Dispose();
 
-            // スペクトラム領域の初期化
-            player.spectrum.Initialize();
-
             string cName = "";
             foreach(Control c in Controls)
             {
@@ -339,9 +336,8 @@ namespace MediaPlayer_X_Ark
                 return;
 
             // スペクトラム画像の反映
-            float[] mFFT = player.spectrum.UpdateSpectrum(Spectrum.Width, Spectrum.Height, 0);
+            float[] mFFT = player.spectrum.UpdateSpectrum();
             Spectrum.mFFT = mFFT;
-//            Spectrum.DrawSpectrum(ref mFFT, specmode);
 
             // 曲調トラックバーの反映 (シーク中はボタン側で動作する為動かさない)
             if (this.seekValue == 0)
@@ -709,7 +705,6 @@ namespace MediaPlayer_X_Ark
             }
         }
 
-        private int specmode = 0;
         private void Spectrum_Click(object sender, EventArgs e)
         {
             Spectrum.Mode = (Spectrum.Mode + 1) % 3;
