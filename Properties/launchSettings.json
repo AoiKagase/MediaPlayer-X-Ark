@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MediaPlayer X-Ark": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

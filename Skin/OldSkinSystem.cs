@@ -123,7 +123,7 @@ namespace MediaPlayer_X_Ark.Skin
 
 			if (!File.Exists(defaultSkinDir + loadSkinFile))
 			{
-				skinFile = Application.ExecutablePath + "\\" + defaultSkinDir + defaultSkin;
+				skinFile = Application.StartupPath + defaultSkinDir + defaultSkin;
 			}
 			skinFile = (defaultSkinDir + loadSkinFile);
 			skinDir = Path.GetDirectoryName(defaultSkinDir + loadSkinFile);
@@ -175,7 +175,7 @@ namespace MediaPlayer_X_Ark.Skin
 			result = Win32API.GetPrivateProfileString("GraphicArea", "-TitleFont", "", nValue, capacity, skinFile);
 			int bold = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TitleFontBold", 0, skinFile);
 			int italic = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TitleFontItalic", 0, skinFile);
-			int size = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TitleFontSize", 0, skinFile);
+			int size = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TitleFontSize", 9, skinFile);
 			string fontName = nValue.ToString();
 			result = Win32API.GetPrivateProfileString("GraphicArea", "-TitleFontColor", "", nValue, capacity, skinFile);
 			LabelTitle.FontColor = LoadColor(nValue.ToString());
@@ -191,7 +191,7 @@ namespace MediaPlayer_X_Ark.Skin
 			result = Win32API.GetPrivateProfileString("GraphicArea", "-TimeTxtFont", "", nValue, capacity, skinFile);
 			bold = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtFontBold", 0, skinFile);
 			italic = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtFontItalic", 0, skinFile);
-			size = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtFontSize", 0, skinFile);
+			size = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtFontSize", 9, skinFile);
 			fontName = nValue.ToString();
 			result = Win32API.GetPrivateProfileString("GraphicArea", "-TimeTxtColor", "", nValue, capacity, skinFile);
 			LabelTime.FontColor = LoadColor(nValue.ToString());
@@ -347,6 +347,8 @@ namespace MediaPlayer_X_Ark.Skin
 
 		private Color LoadColor(string color)
         {
+			if (color == "")
+				color = "0000000";
 			return ColorTranslator.FromWin32(Int32.Parse(color, System.Globalization.NumberStyles.HexNumber));
         }
 

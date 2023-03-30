@@ -552,8 +552,9 @@ namespace MediaPlayer_X_Ark
 		private void OptionOutput()
 		{
 			cmbOutput.SelectedIndex = _config.settings.OutputType;
-			//			cmbOutput.Items.Add("WAVEファイル出力");
-			cmbDevice.DataSource = _engine.DeviceList;
+            //			cmbOutput.Items.Add("WAVEファイル出力");
+            _engine.GetDeviceList();
+            cmbDevice.DataSource = _engine.DeviceList;
 			cmbDevice.DisplayMember = "Name";
 			cmbDevice.ValueMember = "GUID";
 			cmbDevice.SelectedValue = _config.settings.Device;
@@ -820,6 +821,7 @@ namespace MediaPlayer_X_Ark
 
         private void cmbEqPreset_SelectedIndexChanged(object sender, EventArgs e)
         {
+			if (_engine.effector != null)
 			_engine.effector.GEqualizer.SetPreset(((ComboBox)sender).SelectedIndex);
 			_config.settings.Effectors.GEqualizer.Preset = ((ComboBox)sender).SelectedIndex;
 		}
@@ -828,5 +830,35 @@ namespace MediaPlayer_X_Ark
         {
 			_engine.effector.Compressor.Linked = ((CheckBox)sender).Checked;
 		}
+
+		private void cmbOutput_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			switch(((ComboBox)sender).SelectedIndex)
+			{
+				case 0:
+					_engine.SetOutputType(FMOD.OUTPUTTYPE.AUTODETECT);
+					break;
+				case 1:
+					_engine.SetOutputType(FMOD.OUTPUTTYPE.WASAPI);
+					break;
+                case 2:
+                    _engine.SetOutputType(FMOD.OUTPUTTYPE.ASIO);
+                    break;
+                case 3:
+                    _engine.SetOutputType(FMOD.OUTPUTTYPE.WINSONIC);
+                    break;
+            }
+            cmbDevice.DataSource = null;
+            _engine.GetDeviceList();
+            cmbDevice.DataSource = _engine.DeviceList;
+            cmbDevice.DisplayMember = "Name";
+            cmbDevice.ValueMember = "GUID";
+            cmbDevice.SelectedValue = 0;
+        }
+
+		private void cmbDevice_SelectedIndexChanged(object sender, EventArgs e)
+		{
+            //_engine.SetDevice((string)((ComboBox)sender).SelectedValue.ToString());
+        }
 	}
 }

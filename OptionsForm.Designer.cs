@@ -28,30 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("出力設定");
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Graphic Equalizer");
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Pitch / Freq / Speed");
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Distortion");
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Chorus");
-            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Echo");
-            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Flanger");
-            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Highpass");
-            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Lowpass");
-            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Compressor");
-            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Reverb");
-            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("エフェクト", new System.Windows.Forms.TreeNode[] {
-            treeNode16,
-            treeNode17,
-            treeNode18,
-            treeNode19,
-            treeNode20,
-            treeNode21,
-            treeNode22,
-            treeNode23,
-            treeNode24,
-            treeNode25});
-            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("スキン");
-            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("その他");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("出力設定");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Graphic Equalizer");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Pitch / Freq / Speed");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Distortion");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Chorus");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Echo");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Flanger");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Highpass");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Lowpass");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Compressor");
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Reverb");
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("エフェクト", new System.Windows.Forms.TreeNode[] {
+            treeNode2,
+            treeNode3,
+            treeNode4,
+            treeNode5,
+            treeNode6,
+            treeNode7,
+            treeNode8,
+            treeNode9,
+            treeNode10,
+            treeNode11});
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("スキン");
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("その他");
             this.TreeMenu = new System.Windows.Forms.TreeView();
             this.tabControlEffects = new System.Windows.Forms.TabControl();
             this.tabSetting = new System.Windows.Forms.TabPage();
@@ -284,41 +284,42 @@
             // 
             this.TreeMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.TreeMenu.Location = new System.Drawing.Point(0, 0);
+            this.TreeMenu.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.TreeMenu.Name = "TreeMenu";
-            treeNode15.Name = "OUTPUT";
-            treeNode15.Text = "出力設定";
-            treeNode16.Name = "GEQ";
-            treeNode16.Text = "Graphic Equalizer";
-            treeNode17.Name = "PITCH";
-            treeNode17.Text = "Pitch / Freq / Speed";
-            treeNode18.Name = "DISTORTION";
-            treeNode18.Text = "Distortion";
-            treeNode19.Name = "CHORUS";
-            treeNode19.Text = "Chorus";
-            treeNode20.Name = "ECHO";
-            treeNode20.Text = "Echo";
-            treeNode21.Name = "FLANGER";
-            treeNode21.Text = "Flanger";
-            treeNode22.Name = "HIGHPASS";
-            treeNode22.Text = "Highpass";
-            treeNode23.Name = "LOWPASS";
-            treeNode23.Text = "Lowpass";
-            treeNode24.Name = "COMPRESSOR";
-            treeNode24.Text = "Compressor";
-            treeNode25.Name = "REVERB";
-            treeNode25.Text = "Reverb";
-            treeNode26.Name = "EFFECTS";
-            treeNode26.Text = "エフェクト";
-            treeNode27.Name = "SKIN";
-            treeNode27.Text = "スキン";
-            treeNode28.Name = "OTHER";
-            treeNode28.Text = "その他";
+            treeNode1.Name = "OUTPUT";
+            treeNode1.Text = "出力設定";
+            treeNode2.Name = "GEQ";
+            treeNode2.Text = "Graphic Equalizer";
+            treeNode3.Name = "PITCH";
+            treeNode3.Text = "Pitch / Freq / Speed";
+            treeNode4.Name = "DISTORTION";
+            treeNode4.Text = "Distortion";
+            treeNode5.Name = "CHORUS";
+            treeNode5.Text = "Chorus";
+            treeNode6.Name = "ECHO";
+            treeNode6.Text = "Echo";
+            treeNode7.Name = "FLANGER";
+            treeNode7.Text = "Flanger";
+            treeNode8.Name = "HIGHPASS";
+            treeNode8.Text = "Highpass";
+            treeNode9.Name = "LOWPASS";
+            treeNode9.Text = "Lowpass";
+            treeNode10.Name = "COMPRESSOR";
+            treeNode10.Text = "Compressor";
+            treeNode11.Name = "REVERB";
+            treeNode11.Text = "Reverb";
+            treeNode12.Name = "EFFECTS";
+            treeNode12.Text = "エフェクト";
+            treeNode13.Name = "SKIN";
+            treeNode13.Text = "スキン";
+            treeNode14.Name = "OTHER";
+            treeNode14.Text = "その他";
             this.TreeMenu.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode15,
-            treeNode26,
-            treeNode27,
-            treeNode28});
-            this.TreeMenu.Size = new System.Drawing.Size(199, 419);
+            treeNode1,
+            treeNode12,
+            treeNode13,
+            treeNode14});
+            this.TreeMenu.Size = new System.Drawing.Size(227, 559);
             this.TreeMenu.TabIndex = 3;
             this.TreeMenu.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeMenu_AfterSelect);
             // 
@@ -336,10 +337,11 @@
             this.tabControlEffects.Controls.Add(this.tabCompressor);
             this.tabControlEffects.Controls.Add(this.tabReverb);
             this.tabControlEffects.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControlEffects.Location = new System.Drawing.Point(199, 0);
+            this.tabControlEffects.Location = new System.Drawing.Point(227, 0);
+            this.tabControlEffects.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabControlEffects.Name = "tabControlEffects";
             this.tabControlEffects.SelectedIndex = 0;
-            this.tabControlEffects.Size = new System.Drawing.Size(582, 419);
+            this.tabControlEffects.Size = new System.Drawing.Size(666, 559);
             this.tabControlEffects.TabIndex = 4;
             // 
             // tabSetting
@@ -358,17 +360,19 @@
             this.tabSetting.Controls.Add(this.label38);
             this.tabSetting.Controls.Add(this.cmbOutput);
             this.tabSetting.Controls.Add(this.label36);
-            this.tabSetting.Location = new System.Drawing.Point(4, 24);
+            this.tabSetting.Location = new System.Drawing.Point(4, 29);
+            this.tabSetting.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabSetting.Name = "tabSetting";
-            this.tabSetting.Size = new System.Drawing.Size(574, 391);
+            this.tabSetting.Size = new System.Drawing.Size(658, 526);
             this.tabSetting.TabIndex = 10;
             this.tabSetting.Text = "出力設定";
             // 
             // BtnUpdate
             // 
-            this.BtnUpdate.Location = new System.Drawing.Point(272, 204);
+            this.BtnUpdate.Location = new System.Drawing.Point(311, 272);
+            this.BtnUpdate.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.BtnUpdate.Name = "BtnUpdate";
-            this.BtnUpdate.Size = new System.Drawing.Size(75, 23);
+            this.BtnUpdate.Size = new System.Drawing.Size(86, 31);
             this.BtnUpdate.TabIndex = 25;
             this.BtnUpdate.Text = "適用";
             this.BtnUpdate.UseVisualStyleBackColor = true;
@@ -387,17 +391,18 @@
             "5.1",
             "7.1",
             "7.1.4"});
-            this.cmbSpeaker.Location = new System.Drawing.Point(105, 159);
+            this.cmbSpeaker.Location = new System.Drawing.Point(120, 212);
+            this.cmbSpeaker.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cmbSpeaker.Name = "cmbSpeaker";
-            this.cmbSpeaker.Size = new System.Drawing.Size(242, 23);
+            this.cmbSpeaker.Size = new System.Drawing.Size(276, 28);
             this.cmbSpeaker.TabIndex = 24;
             // 
             // label43
             // 
             this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(24, 162);
+            this.label43.Location = new System.Drawing.Point(27, 216);
             this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(75, 15);
+            this.label43.Size = new System.Drawing.Size(94, 20);
             this.label43.TabIndex = 23;
             this.label43.Text = "スピーカーモード";
             this.label43.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -411,17 +416,18 @@
             "リニア補完",
             "キュービック補完",
             "５ポイントスプライン補完"});
-            this.cmbSampling.Location = new System.Drawing.Point(105, 130);
+            this.cmbSampling.Location = new System.Drawing.Point(120, 173);
+            this.cmbSampling.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cmbSampling.Name = "cmbSampling";
-            this.cmbSampling.Size = new System.Drawing.Size(242, 23);
+            this.cmbSampling.Size = new System.Drawing.Size(276, 28);
             this.cmbSampling.TabIndex = 22;
             // 
             // label42
             // 
             this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(13, 133);
+            this.label42.Location = new System.Drawing.Point(15, 177);
             this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(86, 15);
+            this.label42.Size = new System.Drawing.Size(107, 20);
             this.label42.TabIndex = 21;
             this.label42.Text = "サンプリングモード";
             this.label42.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -436,17 +442,18 @@
             "24bit integer PCM",
             "32bit integer PCM",
             "32bit floating point PCM"});
-            this.cmbFormat.Location = new System.Drawing.Point(105, 101);
+            this.cmbFormat.Location = new System.Drawing.Point(120, 135);
+            this.cmbFormat.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cmbFormat.Name = "cmbFormat";
-            this.cmbFormat.Size = new System.Drawing.Size(242, 23);
+            this.cmbFormat.Size = new System.Drawing.Size(276, 28);
             this.cmbFormat.TabIndex = 20;
             // 
             // label41
             // 
             this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(43, 104);
+            this.label41.Location = new System.Drawing.Point(49, 139);
             this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(56, 15);
+            this.label41.Size = new System.Drawing.Size(70, 20);
             this.label41.TabIndex = 19;
             this.label41.Text = "フォーマット";
             this.label41.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -466,17 +473,18 @@
             "16000",
             "11025",
             "8000"});
-            this.cmbSampleRate.Location = new System.Drawing.Point(105, 72);
+            this.cmbSampleRate.Location = new System.Drawing.Point(120, 96);
+            this.cmbSampleRate.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cmbSampleRate.Name = "cmbSampleRate";
-            this.cmbSampleRate.Size = new System.Drawing.Size(242, 23);
+            this.cmbSampleRate.Size = new System.Drawing.Size(276, 28);
             this.cmbSampleRate.TabIndex = 18;
             // 
             // label40
             // 
             this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(29, 75);
+            this.label40.Location = new System.Drawing.Point(33, 100);
             this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(70, 15);
+            this.label40.Size = new System.Drawing.Size(84, 20);
             this.label40.TabIndex = 17;
             this.label40.Text = "サンプルレート";
             this.label40.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -485,17 +493,19 @@
             // 
             this.cmbDevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbDevice.FormattingEnabled = true;
-            this.cmbDevice.Location = new System.Drawing.Point(105, 43);
+            this.cmbDevice.Location = new System.Drawing.Point(120, 57);
+            this.cmbDevice.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cmbDevice.Name = "cmbDevice";
-            this.cmbDevice.Size = new System.Drawing.Size(242, 23);
+            this.cmbDevice.Size = new System.Drawing.Size(276, 28);
             this.cmbDevice.TabIndex = 16;
+            this.cmbDevice.SelectedIndexChanged += new System.EventHandler(this.cmbDevice_SelectedIndexChanged);
             // 
             // label38
             // 
             this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(55, 46);
+            this.label38.Location = new System.Drawing.Point(63, 61);
             this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(44, 15);
+            this.label38.Size = new System.Drawing.Size(54, 20);
             this.label38.TabIndex = 15;
             this.label38.Text = "デバイス";
             this.label38.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -509,17 +519,19 @@
             "Windows Audio Session API",
             "Low latency ASIO 2.0",
             "Windows Sonic"});
-            this.cmbOutput.Location = new System.Drawing.Point(105, 14);
+            this.cmbOutput.Location = new System.Drawing.Point(120, 19);
+            this.cmbOutput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cmbOutput.Name = "cmbOutput";
-            this.cmbOutput.Size = new System.Drawing.Size(242, 23);
+            this.cmbOutput.Size = new System.Drawing.Size(276, 28);
             this.cmbOutput.TabIndex = 14;
+            this.cmbOutput.SelectedIndexChanged += new System.EventHandler(this.cmbOutput_SelectedIndexChanged);
             // 
             // label36
             // 
             this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(44, 17);
+            this.label36.Location = new System.Drawing.Point(50, 23);
             this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(55, 15);
+            this.label36.Size = new System.Drawing.Size(69, 20);
             this.label36.TabIndex = 13;
             this.label36.Text = "出力方式";
             this.label36.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -528,9 +540,10 @@
             // 
             this.tabGEqualizer.BackColor = System.Drawing.Color.Transparent;
             this.tabGEqualizer.Controls.Add(this.groupBox3);
-            this.tabGEqualizer.Location = new System.Drawing.Point(4, 24);
+            this.tabGEqualizer.Location = new System.Drawing.Point(4, 29);
+            this.tabGEqualizer.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabGEqualizer.Name = "tabGEqualizer";
-            this.tabGEqualizer.Size = new System.Drawing.Size(574, 391);
+            this.tabGEqualizer.Size = new System.Drawing.Size(658, 526);
             this.tabGEqualizer.TabIndex = 9;
             this.tabGEqualizer.Text = "Graphic Equalizer";
             // 
@@ -564,126 +577,128 @@
             this.groupBox3.Controls.Add(this.TrkGEQ16K);
             this.groupBox3.Controls.Add(this.TrkGEQ20K);
             this.groupBox3.Controls.Add(this.TrkGEQ22K);
-            this.groupBox3.Location = new System.Drawing.Point(3, 6);
+            this.groupBox3.Location = new System.Drawing.Point(3, 8);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(563, 377);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBox3.Size = new System.Drawing.Size(643, 503);
             this.groupBox3.TabIndex = 13;
             this.groupBox3.TabStop = false;
             // 
             // label56
             // 
             this.label56.AutoSize = true;
-            this.label56.Location = new System.Drawing.Point(518, 348);
+            this.label56.Location = new System.Drawing.Point(592, 464);
             this.label56.Name = "label56";
-            this.label56.Size = new System.Drawing.Size(26, 15);
+            this.label56.Size = new System.Drawing.Size(34, 20);
             this.label56.TabIndex = 28;
             this.label56.Text = "22K";
             // 
             // label55
             // 
             this.label55.AutoSize = true;
-            this.label55.Location = new System.Drawing.Point(469, 348);
+            this.label55.Location = new System.Drawing.Point(536, 464);
             this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(26, 15);
+            this.label55.Size = new System.Drawing.Size(34, 20);
             this.label55.TabIndex = 28;
             this.label55.Text = "20K";
             // 
             // label54
             // 
             this.label54.AutoSize = true;
-            this.label54.Location = new System.Drawing.Point(424, 348);
+            this.label54.Location = new System.Drawing.Point(485, 464);
             this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(26, 15);
+            this.label54.Size = new System.Drawing.Size(34, 20);
             this.label54.TabIndex = 28;
             this.label54.Text = "16K";
             // 
             // label53
             // 
             this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(385, 348);
+            this.label53.Location = new System.Drawing.Point(440, 464);
             this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(20, 15);
+            this.label53.Size = new System.Drawing.Size(26, 20);
             this.label53.TabIndex = 28;
             this.label53.Text = "8K";
             // 
             // label52
             // 
             this.label52.AutoSize = true;
-            this.label52.Location = new System.Drawing.Point(343, 348);
+            this.label52.Location = new System.Drawing.Point(392, 464);
             this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(20, 15);
+            this.label52.Size = new System.Drawing.Size(26, 20);
             this.label52.TabIndex = 28;
             this.label52.Text = "4K";
             // 
             // label51
             // 
             this.label51.AutoSize = true;
-            this.label51.Location = new System.Drawing.Point(295, 348);
+            this.label51.Location = new System.Drawing.Point(337, 464);
             this.label51.Name = "label51";
-            this.label51.Size = new System.Drawing.Size(20, 15);
+            this.label51.Size = new System.Drawing.Size(26, 20);
             this.label51.TabIndex = 28;
             this.label51.Text = "2K";
             // 
             // label50
             // 
             this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(250, 348);
+            this.label50.Location = new System.Drawing.Point(286, 464);
             this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(20, 15);
+            this.label50.Size = new System.Drawing.Size(26, 20);
             this.label50.TabIndex = 28;
             this.label50.Text = "1K";
             // 
             // label49
             // 
             this.label49.AutoSize = true;
-            this.label49.Location = new System.Drawing.Point(200, 348);
+            this.label49.Location = new System.Drawing.Point(229, 464);
             this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(25, 15);
+            this.label49.Size = new System.Drawing.Size(33, 20);
             this.label49.TabIndex = 28;
             this.label49.Text = "500";
             // 
             // label48
             // 
             this.label48.AutoSize = true;
-            this.label48.Location = new System.Drawing.Point(155, 348);
+            this.label48.Location = new System.Drawing.Point(177, 464);
             this.label48.Name = "label48";
-            this.label48.Size = new System.Drawing.Size(25, 15);
+            this.label48.Size = new System.Drawing.Size(33, 20);
             this.label48.TabIndex = 28;
             this.label48.Text = "250";
             // 
             // label47
             // 
             this.label47.AutoSize = true;
-            this.label47.Location = new System.Drawing.Point(110, 348);
+            this.label47.Location = new System.Drawing.Point(126, 464);
             this.label47.Name = "label47";
-            this.label47.Size = new System.Drawing.Size(25, 15);
+            this.label47.Size = new System.Drawing.Size(33, 20);
             this.label47.TabIndex = 28;
             this.label47.Text = "125";
             // 
             // label46
             // 
             this.label46.AutoSize = true;
-            this.label46.Location = new System.Drawing.Point(73, 348);
+            this.label46.Location = new System.Drawing.Point(83, 464);
             this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(19, 15);
+            this.label46.Size = new System.Drawing.Size(25, 20);
             this.label46.TabIndex = 28;
             this.label46.Text = "60";
             // 
             // label45
             // 
             this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(26, 348);
+            this.label45.Location = new System.Drawing.Point(30, 464);
             this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(19, 15);
+            this.label45.Size = new System.Drawing.Size(25, 20);
             this.label45.TabIndex = 28;
             this.label45.Text = "32";
             // 
             // label44
             // 
             this.label44.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label44.Location = new System.Drawing.Point(23, 274);
+            this.label44.Location = new System.Drawing.Point(26, 365);
             this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(521, 1);
+            this.label44.Size = new System.Drawing.Size(595, 1);
             this.label44.TabIndex = 15;
             // 
             // cmbEqPreset
@@ -698,9 +713,10 @@
             "Total Boost",
             "Total Reduce",
             "Custom"});
-            this.cmbEqPreset.Location = new System.Drawing.Point(6, 25);
+            this.cmbEqPreset.Location = new System.Drawing.Point(7, 33);
+            this.cmbEqPreset.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cmbEqPreset.Name = "cmbEqPreset";
-            this.cmbEqPreset.Size = new System.Drawing.Size(121, 23);
+            this.cmbEqPreset.Size = new System.Drawing.Size(138, 28);
             this.cmbEqPreset.TabIndex = 14;
             this.cmbEqPreset.SelectedIndexChanged += new System.EventHandler(this.cmbEqPreset_SelectedIndexChanged);
             // 
@@ -709,9 +725,10 @@
             this.CheckGEQ.AutoSize = true;
             this.CheckGEQ.BackColor = System.Drawing.SystemColors.Control;
             this.CheckGEQ.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckGEQ.Location = new System.Drawing.Point(6, 0);
+            this.CheckGEQ.Location = new System.Drawing.Point(7, 0);
+            this.CheckGEQ.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CheckGEQ.Name = "CheckGEQ";
-            this.CheckGEQ.Size = new System.Drawing.Size(117, 19);
+            this.CheckGEQ.Size = new System.Drawing.Size(147, 24);
             this.CheckGEQ.TabIndex = 13;
             this.CheckGEQ.Text = "Graphic Equalizer";
             this.CheckGEQ.UseVisualStyleBackColor = false;
@@ -720,9 +737,10 @@
             // PictGEQGraph
             // 
             this.PictGEQGraph.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.PictGEQGraph.Location = new System.Drawing.Point(6, 54);
+            this.PictGEQGraph.Location = new System.Drawing.Point(7, 72);
+            this.PictGEQGraph.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.PictGEQGraph.Name = "PictGEQGraph";
-            this.PictGEQGraph.Size = new System.Drawing.Size(551, 137);
+            this.PictGEQGraph.Size = new System.Drawing.Size(629, 181);
             this.PictGEQGraph.TabIndex = 0;
             this.PictGEQGraph.TabStop = false;
             // 
@@ -743,7 +761,8 @@
             0,
             0,
             0});
-            this.TrkGEQ60.Location = new System.Drawing.Point(51, 197);
+            this.TrkGEQ60.Location = new System.Drawing.Point(58, 263);
+            this.TrkGEQ60.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.TrkGEQ60.Maximum = new decimal(new int[] {
             100,
             0,
@@ -769,7 +788,7 @@
             0});
             this.TrkGEQ60.ShowDivisionsText = false;
             this.TrkGEQ60.ShowSmallScale = false;
-            this.TrkGEQ60.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ60.Size = new System.Drawing.Size(70, 205);
             this.TrkGEQ60.SmallChange = new decimal(new int[] {
             1,
             0,
@@ -808,7 +827,8 @@
             0,
             0,
             0});
-            this.TrkGEQ32.Location = new System.Drawing.Point(6, 197);
+            this.TrkGEQ32.Location = new System.Drawing.Point(7, 263);
+            this.TrkGEQ32.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.TrkGEQ32.Maximum = new decimal(new int[] {
             100,
             0,
@@ -834,7 +854,7 @@
             0});
             this.TrkGEQ32.ShowDivisionsText = true;
             this.TrkGEQ32.ShowSmallScale = false;
-            this.TrkGEQ32.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ32.Size = new System.Drawing.Size(70, 205);
             this.TrkGEQ32.SmallChange = new decimal(new int[] {
             1,
             0,
@@ -873,7 +893,8 @@
             0,
             0,
             0});
-            this.TrkGEQ125.Location = new System.Drawing.Point(96, 197);
+            this.TrkGEQ125.Location = new System.Drawing.Point(110, 263);
+            this.TrkGEQ125.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.TrkGEQ125.Maximum = new decimal(new int[] {
             100,
             0,
@@ -899,7 +920,7 @@
             0});
             this.TrkGEQ125.ShowDivisionsText = false;
             this.TrkGEQ125.ShowSmallScale = false;
-            this.TrkGEQ125.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ125.Size = new System.Drawing.Size(70, 205);
             this.TrkGEQ125.SmallChange = new decimal(new int[] {
             1,
             0,
@@ -938,7 +959,8 @@
             0,
             0,
             0});
-            this.TrkGEQ250.Location = new System.Drawing.Point(141, 197);
+            this.TrkGEQ250.Location = new System.Drawing.Point(161, 263);
+            this.TrkGEQ250.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.TrkGEQ250.Maximum = new decimal(new int[] {
             100,
             0,
@@ -964,7 +986,7 @@
             0});
             this.TrkGEQ250.ShowDivisionsText = false;
             this.TrkGEQ250.ShowSmallScale = false;
-            this.TrkGEQ250.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ250.Size = new System.Drawing.Size(70, 205);
             this.TrkGEQ250.SmallChange = new decimal(new int[] {
             1,
             0,
@@ -1003,7 +1025,8 @@
             0,
             0,
             0});
-            this.TrkGEQ500.Location = new System.Drawing.Point(186, 197);
+            this.TrkGEQ500.Location = new System.Drawing.Point(213, 263);
+            this.TrkGEQ500.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.TrkGEQ500.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1029,7 +1052,7 @@
             0});
             this.TrkGEQ500.ShowDivisionsText = false;
             this.TrkGEQ500.ShowSmallScale = false;
-            this.TrkGEQ500.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ500.Size = new System.Drawing.Size(70, 205);
             this.TrkGEQ500.SmallChange = new decimal(new int[] {
             1,
             0,
@@ -1068,7 +1091,8 @@
             0,
             0,
             0});
-            this.TrkGEQ1K.Location = new System.Drawing.Point(231, 197);
+            this.TrkGEQ1K.Location = new System.Drawing.Point(264, 263);
+            this.TrkGEQ1K.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.TrkGEQ1K.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1094,7 +1118,7 @@
             0});
             this.TrkGEQ1K.ShowDivisionsText = false;
             this.TrkGEQ1K.ShowSmallScale = false;
-            this.TrkGEQ1K.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ1K.Size = new System.Drawing.Size(70, 205);
             this.TrkGEQ1K.SmallChange = new decimal(new int[] {
             1,
             0,
@@ -1133,7 +1157,8 @@
             0,
             0,
             0});
-            this.TrkGEQ2K.Location = new System.Drawing.Point(276, 197);
+            this.TrkGEQ2K.Location = new System.Drawing.Point(315, 263);
+            this.TrkGEQ2K.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.TrkGEQ2K.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1159,7 +1184,7 @@
             0});
             this.TrkGEQ2K.ShowDivisionsText = false;
             this.TrkGEQ2K.ShowSmallScale = false;
-            this.TrkGEQ2K.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ2K.Size = new System.Drawing.Size(70, 205);
             this.TrkGEQ2K.SmallChange = new decimal(new int[] {
             1,
             0,
@@ -1198,7 +1223,8 @@
             0,
             0,
             0});
-            this.TrkGEQ4K.Location = new System.Drawing.Point(321, 197);
+            this.TrkGEQ4K.Location = new System.Drawing.Point(367, 263);
+            this.TrkGEQ4K.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.TrkGEQ4K.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1224,7 +1250,7 @@
             0});
             this.TrkGEQ4K.ShowDivisionsText = false;
             this.TrkGEQ4K.ShowSmallScale = false;
-            this.TrkGEQ4K.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ4K.Size = new System.Drawing.Size(70, 205);
             this.TrkGEQ4K.SmallChange = new decimal(new int[] {
             1,
             0,
@@ -1263,7 +1289,8 @@
             0,
             0,
             0});
-            this.TrkGEQ8K.Location = new System.Drawing.Point(366, 197);
+            this.TrkGEQ8K.Location = new System.Drawing.Point(418, 263);
+            this.TrkGEQ8K.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.TrkGEQ8K.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1289,7 +1316,7 @@
             0});
             this.TrkGEQ8K.ShowDivisionsText = false;
             this.TrkGEQ8K.ShowSmallScale = false;
-            this.TrkGEQ8K.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ8K.Size = new System.Drawing.Size(70, 205);
             this.TrkGEQ8K.SmallChange = new decimal(new int[] {
             1,
             0,
@@ -1328,7 +1355,8 @@
             0,
             0,
             0});
-            this.TrkGEQ16K.Location = new System.Drawing.Point(411, 197);
+            this.TrkGEQ16K.Location = new System.Drawing.Point(470, 263);
+            this.TrkGEQ16K.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.TrkGEQ16K.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1354,7 +1382,7 @@
             0});
             this.TrkGEQ16K.ShowDivisionsText = false;
             this.TrkGEQ16K.ShowSmallScale = false;
-            this.TrkGEQ16K.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ16K.Size = new System.Drawing.Size(70, 205);
             this.TrkGEQ16K.SmallChange = new decimal(new int[] {
             1,
             0,
@@ -1393,7 +1421,8 @@
             0,
             0,
             0});
-            this.TrkGEQ20K.Location = new System.Drawing.Point(456, 197);
+            this.TrkGEQ20K.Location = new System.Drawing.Point(521, 263);
+            this.TrkGEQ20K.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.TrkGEQ20K.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1419,7 +1448,7 @@
             0});
             this.TrkGEQ20K.ShowDivisionsText = false;
             this.TrkGEQ20K.ShowSmallScale = false;
-            this.TrkGEQ20K.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ20K.Size = new System.Drawing.Size(70, 205);
             this.TrkGEQ20K.SmallChange = new decimal(new int[] {
             1,
             0,
@@ -1458,7 +1487,8 @@
             0,
             0,
             0});
-            this.TrkGEQ22K.Location = new System.Drawing.Point(501, 197);
+            this.TrkGEQ22K.Location = new System.Drawing.Point(573, 263);
+            this.TrkGEQ22K.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.TrkGEQ22K.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1484,7 +1514,7 @@
             0});
             this.TrkGEQ22K.ShowDivisionsText = true;
             this.TrkGEQ22K.ShowSmallScale = false;
-            this.TrkGEQ22K.Size = new System.Drawing.Size(61, 154);
+            this.TrkGEQ22K.Size = new System.Drawing.Size(70, 205);
             this.TrkGEQ22K.SmallChange = new decimal(new int[] {
             1,
             0,
@@ -1513,9 +1543,10 @@
             this.tabPitch.Controls.Add(this.GroupSpeed);
             this.tabPitch.Controls.Add(this.GroupFrequency);
             this.tabPitch.Controls.Add(this.GroupPitchShift);
-            this.tabPitch.Location = new System.Drawing.Point(4, 24);
+            this.tabPitch.Location = new System.Drawing.Point(4, 29);
+            this.tabPitch.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabPitch.Name = "tabPitch";
-            this.tabPitch.Size = new System.Drawing.Size(574, 391);
+            this.tabPitch.Size = new System.Drawing.Size(658, 526);
             this.tabPitch.TabIndex = 8;
             this.tabPitch.Text = "Pitch/Freq/Speed";
             // 
@@ -1526,9 +1557,11 @@
             this.GroupSpeed.Controls.Add(this.KnobSpeed);
             this.GroupSpeed.Controls.Add(this.CheckSpeed);
             this.GroupSpeed.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.GroupSpeed.Location = new System.Drawing.Point(264, 3);
+            this.GroupSpeed.Location = new System.Drawing.Point(302, 4);
+            this.GroupSpeed.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.GroupSpeed.Name = "GroupSpeed";
-            this.GroupSpeed.Size = new System.Drawing.Size(100, 150);
+            this.GroupSpeed.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.GroupSpeed.Size = new System.Drawing.Size(114, 200);
             this.GroupSpeed.TabIndex = 16;
             this.GroupSpeed.TabStop = false;
             // 
@@ -1536,10 +1569,11 @@
             // 
             this.lblValSpeed.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValSpeed.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValSpeed.Location = new System.Drawing.Point(6, 111);
+            this.lblValSpeed.Location = new System.Drawing.Point(7, 148);
+            this.lblValSpeed.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValSpeed.Name = "lblValSpeed";
             this.lblValSpeed.ReadOnly = true;
-            this.lblValSpeed.Size = new System.Drawing.Size(64, 16);
+            this.lblValSpeed.Size = new System.Drawing.Size(73, 20);
             this.lblValSpeed.TabIndex = 2;
             this.lblValSpeed.Text = "0.0";
             this.lblValSpeed.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1547,9 +1581,9 @@
             // label6
             // 
             this.label6.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label6.Location = new System.Drawing.Point(6, 22);
+            this.label6.Location = new System.Drawing.Point(7, 29);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(64, 16);
+            this.label6.Size = new System.Drawing.Size(73, 21);
             this.label6.TabIndex = 2;
             this.label6.Text = "Speed";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1562,7 +1596,8 @@
             this.KnobSpeed.HasTicks = true;
             this.KnobSpeed.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobSpeed.LargeChange = 10;
-            this.KnobSpeed.Location = new System.Drawing.Point(6, 41);
+            this.KnobSpeed.Location = new System.Drawing.Point(7, 55);
+            this.KnobSpeed.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobSpeed.Minimum = -100;
             this.KnobSpeed.Name = "KnobSpeed";
             this.KnobSpeed.PointerColor = System.Drawing.SystemColors.ControlText;
@@ -1570,7 +1605,7 @@
             this.KnobSpeed.PointerOffset = 4;
             this.KnobSpeed.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobSpeed.PointerWidth = 2;
-            this.KnobSpeed.Size = new System.Drawing.Size(64, 64);
+            this.KnobSpeed.Size = new System.Drawing.Size(73, 73);
             this.KnobSpeed.TabIndex = 1;
             this.KnobSpeed.Text = "Level";
             this.KnobSpeed.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -1581,9 +1616,10 @@
             this.CheckSpeed.AutoSize = true;
             this.CheckSpeed.BackColor = System.Drawing.SystemColors.Control;
             this.CheckSpeed.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckSpeed.Location = new System.Drawing.Point(6, 3);
+            this.CheckSpeed.Location = new System.Drawing.Point(7, 4);
+            this.CheckSpeed.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CheckSpeed.Name = "CheckSpeed";
-            this.CheckSpeed.Size = new System.Drawing.Size(58, 19);
+            this.CheckSpeed.Size = new System.Drawing.Size(73, 24);
             this.CheckSpeed.TabIndex = 0;
             this.CheckSpeed.Text = "Speed";
             this.CheckSpeed.UseVisualStyleBackColor = false;
@@ -1596,9 +1632,11 @@
             this.GroupFrequency.Controls.Add(this.KnobFrequency);
             this.GroupFrequency.Controls.Add(this.CheckFrequency);
             this.GroupFrequency.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.GroupFrequency.Location = new System.Drawing.Point(158, 3);
+            this.GroupFrequency.Location = new System.Drawing.Point(181, 4);
+            this.GroupFrequency.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.GroupFrequency.Name = "GroupFrequency";
-            this.GroupFrequency.Size = new System.Drawing.Size(100, 150);
+            this.GroupFrequency.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.GroupFrequency.Size = new System.Drawing.Size(114, 200);
             this.GroupFrequency.TabIndex = 15;
             this.GroupFrequency.TabStop = false;
             // 
@@ -1606,10 +1644,11 @@
             // 
             this.lblValFrequency.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValFrequency.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValFrequency.Location = new System.Drawing.Point(6, 114);
+            this.lblValFrequency.Location = new System.Drawing.Point(7, 152);
+            this.lblValFrequency.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValFrequency.Name = "lblValFrequency";
             this.lblValFrequency.ReadOnly = true;
-            this.lblValFrequency.Size = new System.Drawing.Size(64, 16);
+            this.lblValFrequency.Size = new System.Drawing.Size(73, 20);
             this.lblValFrequency.TabIndex = 2;
             this.lblValFrequency.Text = "0.0";
             this.lblValFrequency.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1617,9 +1656,9 @@
             // label8
             // 
             this.label8.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label8.Location = new System.Drawing.Point(6, 25);
+            this.label8.Location = new System.Drawing.Point(7, 33);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(64, 16);
+            this.label8.Size = new System.Drawing.Size(73, 21);
             this.label8.TabIndex = 2;
             this.label8.Text = "Frequency";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1632,7 +1671,8 @@
             this.KnobFrequency.HasTicks = true;
             this.KnobFrequency.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobFrequency.LargeChange = 10;
-            this.KnobFrequency.Location = new System.Drawing.Point(6, 44);
+            this.KnobFrequency.Location = new System.Drawing.Point(7, 59);
+            this.KnobFrequency.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobFrequency.Minimum = -100;
             this.KnobFrequency.Name = "KnobFrequency";
             this.KnobFrequency.PointerColor = System.Drawing.SystemColors.ControlText;
@@ -1640,7 +1680,7 @@
             this.KnobFrequency.PointerOffset = 4;
             this.KnobFrequency.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobFrequency.PointerWidth = 2;
-            this.KnobFrequency.Size = new System.Drawing.Size(64, 64);
+            this.KnobFrequency.Size = new System.Drawing.Size(73, 73);
             this.KnobFrequency.TabIndex = 1;
             this.KnobFrequency.Text = "Level";
             this.KnobFrequency.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -1651,9 +1691,10 @@
             this.CheckFrequency.AutoSize = true;
             this.CheckFrequency.BackColor = System.Drawing.SystemColors.Control;
             this.CheckFrequency.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckFrequency.Location = new System.Drawing.Point(6, 3);
+            this.CheckFrequency.Location = new System.Drawing.Point(7, 4);
+            this.CheckFrequency.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CheckFrequency.Name = "CheckFrequency";
-            this.CheckFrequency.Size = new System.Drawing.Size(80, 19);
+            this.CheckFrequency.Size = new System.Drawing.Size(97, 24);
             this.CheckFrequency.TabIndex = 0;
             this.CheckFrequency.Text = "Frequency";
             this.CheckFrequency.UseVisualStyleBackColor = false;
@@ -1669,9 +1710,11 @@
             this.GroupPitchShift.Controls.Add(this.KnobPitchPitch);
             this.GroupPitchShift.Controls.Add(this.CheckPitch);
             this.GroupPitchShift.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.GroupPitchShift.Location = new System.Drawing.Point(3, 3);
+            this.GroupPitchShift.Location = new System.Drawing.Point(3, 4);
+            this.GroupPitchShift.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.GroupPitchShift.Name = "GroupPitchShift";
-            this.GroupPitchShift.Size = new System.Drawing.Size(149, 150);
+            this.GroupPitchShift.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.GroupPitchShift.Size = new System.Drawing.Size(170, 200);
             this.GroupPitchShift.TabIndex = 14;
             this.GroupPitchShift.TabStop = false;
             // 
@@ -1679,10 +1722,11 @@
             // 
             this.lblValPitchFFT.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValPitchFFT.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValPitchFFT.Location = new System.Drawing.Point(77, 114);
+            this.lblValPitchFFT.Location = new System.Drawing.Point(88, 152);
+            this.lblValPitchFFT.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValPitchFFT.Name = "lblValPitchFFT";
             this.lblValPitchFFT.ReadOnly = true;
-            this.lblValPitchFFT.Size = new System.Drawing.Size(64, 16);
+            this.lblValPitchFFT.Size = new System.Drawing.Size(73, 20);
             this.lblValPitchFFT.TabIndex = 5;
             this.lblValPitchFFT.Text = "0.0";
             this.lblValPitchFFT.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1690,9 +1734,9 @@
             // label2
             // 
             this.label2.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label2.Location = new System.Drawing.Point(76, 25);
+            this.label2.Location = new System.Drawing.Point(87, 33);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(64, 16);
+            this.label2.Size = new System.Drawing.Size(73, 21);
             this.label2.TabIndex = 4;
             this.label2.Text = "FFT";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1705,7 +1749,8 @@
             this.KnobPitchFFT.HasTicks = true;
             this.KnobPitchFFT.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobPitchFFT.LargeChange = 1;
-            this.KnobPitchFFT.Location = new System.Drawing.Point(77, 44);
+            this.KnobPitchFFT.Location = new System.Drawing.Point(88, 59);
+            this.KnobPitchFFT.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobPitchFFT.Maximum = 4;
             this.KnobPitchFFT.Name = "KnobPitchFFT";
             this.KnobPitchFFT.PointerColor = System.Drawing.SystemColors.ControlText;
@@ -1713,7 +1758,7 @@
             this.KnobPitchFFT.PointerOffset = 4;
             this.KnobPitchFFT.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobPitchFFT.PointerWidth = 2;
-            this.KnobPitchFFT.Size = new System.Drawing.Size(64, 64);
+            this.KnobPitchFFT.Size = new System.Drawing.Size(73, 73);
             this.KnobPitchFFT.TabIndex = 3;
             this.KnobPitchFFT.Text = "Level";
             this.KnobPitchFFT.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -1723,9 +1768,10 @@
             // 
             this.lblValPitchPitch.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValPitchPitch.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValPitchPitch.Location = new System.Drawing.Point(6, 114);
+            this.lblValPitchPitch.Location = new System.Drawing.Point(7, 152);
+            this.lblValPitchPitch.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValPitchPitch.Name = "lblValPitchPitch";
-            this.lblValPitchPitch.Size = new System.Drawing.Size(64, 16);
+            this.lblValPitchPitch.Size = new System.Drawing.Size(73, 20);
             this.lblValPitchPitch.TabIndex = 2;
             this.lblValPitchPitch.Text = "0.0";
             this.lblValPitchPitch.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1733,9 +1779,9 @@
             // label4
             // 
             this.label4.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label4.Location = new System.Drawing.Point(6, 25);
+            this.label4.Location = new System.Drawing.Point(7, 33);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(64, 16);
+            this.label4.Size = new System.Drawing.Size(73, 21);
             this.label4.TabIndex = 2;
             this.label4.Text = "Pitch";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1748,7 +1794,8 @@
             this.KnobPitchPitch.HasTicks = true;
             this.KnobPitchPitch.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobPitchPitch.LargeChange = 1;
-            this.KnobPitchPitch.Location = new System.Drawing.Point(6, 44);
+            this.KnobPitchPitch.Location = new System.Drawing.Point(7, 59);
+            this.KnobPitchPitch.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobPitchPitch.Maximum = 150;
             this.KnobPitchPitch.Name = "KnobPitchPitch";
             this.KnobPitchPitch.PointerColor = System.Drawing.SystemColors.ControlText;
@@ -1756,7 +1803,7 @@
             this.KnobPitchPitch.PointerOffset = 4;
             this.KnobPitchPitch.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobPitchPitch.PointerWidth = 2;
-            this.KnobPitchPitch.Size = new System.Drawing.Size(64, 64);
+            this.KnobPitchPitch.Size = new System.Drawing.Size(73, 73);
             this.KnobPitchPitch.TabIndex = 1;
             this.KnobPitchPitch.Text = "Level";
             this.KnobPitchPitch.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -1767,9 +1814,10 @@
             this.CheckPitch.AutoSize = true;
             this.CheckPitch.BackColor = System.Drawing.SystemColors.Control;
             this.CheckPitch.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckPitch.Location = new System.Drawing.Point(6, 3);
+            this.CheckPitch.Location = new System.Drawing.Point(7, 4);
+            this.CheckPitch.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CheckPitch.Name = "CheckPitch";
-            this.CheckPitch.Size = new System.Drawing.Size(77, 19);
+            this.CheckPitch.Size = new System.Drawing.Size(93, 24);
             this.CheckPitch.TabIndex = 0;
             this.CheckPitch.Text = "PitchShift";
             this.CheckPitch.UseVisualStyleBackColor = false;
@@ -1779,10 +1827,11 @@
             // 
             this.tabDistortion.BackColor = System.Drawing.Color.Transparent;
             this.tabDistortion.Controls.Add(this.groupBox2);
-            this.tabDistortion.Location = new System.Drawing.Point(4, 24);
+            this.tabDistortion.Location = new System.Drawing.Point(4, 29);
+            this.tabDistortion.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabDistortion.Name = "tabDistortion";
-            this.tabDistortion.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDistortion.Size = new System.Drawing.Size(574, 391);
+            this.tabDistortion.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.tabDistortion.Size = new System.Drawing.Size(658, 526);
             this.tabDistortion.TabIndex = 0;
             this.tabDistortion.Text = "Distortion";
             // 
@@ -1792,9 +1841,11 @@
             this.groupBox2.Controls.Add(this.lblValDistortionLevel);
             this.groupBox2.Controls.Add(this.KnobDistortionLevel);
             this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Location = new System.Drawing.Point(6, 6);
+            this.groupBox2.Location = new System.Drawing.Point(7, 8);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(103, 142);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBox2.Size = new System.Drawing.Size(118, 189);
             this.groupBox2.TabIndex = 12;
             this.groupBox2.TabStop = false;
             // 
@@ -1803,9 +1854,10 @@
             this.CheckDistortion.AutoSize = true;
             this.CheckDistortion.BackColor = System.Drawing.SystemColors.Control;
             this.CheckDistortion.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckDistortion.Location = new System.Drawing.Point(6, 0);
+            this.CheckDistortion.Location = new System.Drawing.Point(7, 0);
+            this.CheckDistortion.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CheckDistortion.Name = "CheckDistortion";
-            this.CheckDistortion.Size = new System.Drawing.Size(78, 19);
+            this.CheckDistortion.Size = new System.Drawing.Size(97, 24);
             this.CheckDistortion.TabIndex = 5;
             this.CheckDistortion.Text = "Distortion";
             this.CheckDistortion.UseVisualStyleBackColor = false;
@@ -1815,9 +1867,10 @@
             // 
             this.lblValDistortionLevel.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValDistortionLevel.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValDistortionLevel.Location = new System.Drawing.Point(20, 110);
+            this.lblValDistortionLevel.Location = new System.Drawing.Point(23, 147);
+            this.lblValDistortionLevel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValDistortionLevel.Name = "lblValDistortionLevel";
-            this.lblValDistortionLevel.Size = new System.Drawing.Size(64, 16);
+            this.lblValDistortionLevel.Size = new System.Drawing.Size(73, 20);
             this.lblValDistortionLevel.TabIndex = 11;
             this.lblValDistortionLevel.Text = "0.0";
             this.lblValDistortionLevel.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1831,14 +1884,15 @@
             this.KnobDistortionLevel.HasTicks = true;
             this.KnobDistortionLevel.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobDistortionLevel.LargeChange = 5;
-            this.KnobDistortionLevel.Location = new System.Drawing.Point(20, 38);
+            this.KnobDistortionLevel.Location = new System.Drawing.Point(23, 51);
+            this.KnobDistortionLevel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobDistortionLevel.Name = "KnobDistortionLevel";
             this.KnobDistortionLevel.PointerColor = System.Drawing.SystemColors.ControlText;
             this.KnobDistortionLevel.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobDistortionLevel.PointerOffset = 4;
             this.KnobDistortionLevel.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobDistortionLevel.PointerWidth = 2;
-            this.KnobDistortionLevel.Size = new System.Drawing.Size(64, 64);
+            this.KnobDistortionLevel.Size = new System.Drawing.Size(73, 73);
             this.KnobDistortionLevel.TabIndex = 9;
             this.KnobDistortionLevel.Text = "Level";
             this.KnobDistortionLevel.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -1847,9 +1901,9 @@
             // label1
             // 
             this.label1.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(20, 21);
+            this.label1.Location = new System.Drawing.Point(23, 28);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(64, 16);
+            this.label1.Size = new System.Drawing.Size(73, 21);
             this.label1.TabIndex = 8;
             this.label1.Text = "Level";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1858,10 +1912,11 @@
             // 
             this.tabChorus.BackColor = System.Drawing.Color.Transparent;
             this.tabChorus.Controls.Add(this.GroupChorus);
-            this.tabChorus.Location = new System.Drawing.Point(4, 24);
+            this.tabChorus.Location = new System.Drawing.Point(4, 29);
+            this.tabChorus.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabChorus.Name = "tabChorus";
-            this.tabChorus.Padding = new System.Windows.Forms.Padding(3);
-            this.tabChorus.Size = new System.Drawing.Size(574, 391);
+            this.tabChorus.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.tabChorus.Size = new System.Drawing.Size(658, 526);
             this.tabChorus.TabIndex = 1;
             this.tabChorus.Text = "Chorus";
             // 
@@ -1878,9 +1933,11 @@
             this.GroupChorus.Controls.Add(this.KnobChorusMix);
             this.GroupChorus.Controls.Add(this.CheckChorus);
             this.GroupChorus.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.GroupChorus.Location = new System.Drawing.Point(3, 3);
+            this.GroupChorus.Location = new System.Drawing.Point(3, 4);
+            this.GroupChorus.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.GroupChorus.Name = "GroupChorus";
-            this.GroupChorus.Size = new System.Drawing.Size(223, 152);
+            this.GroupChorus.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.GroupChorus.Size = new System.Drawing.Size(255, 203);
             this.GroupChorus.TabIndex = 4;
             this.GroupChorus.TabStop = false;
             // 
@@ -1888,9 +1945,10 @@
             // 
             this.lblValChorusDepth.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValChorusDepth.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValChorusDepth.Location = new System.Drawing.Point(146, 117);
+            this.lblValChorusDepth.Location = new System.Drawing.Point(167, 156);
+            this.lblValChorusDepth.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValChorusDepth.Name = "lblValChorusDepth";
-            this.lblValChorusDepth.Size = new System.Drawing.Size(64, 16);
+            this.lblValChorusDepth.Size = new System.Drawing.Size(73, 20);
             this.lblValChorusDepth.TabIndex = 8;
             this.lblValChorusDepth.Text = "0.0";
             this.lblValChorusDepth.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1898,9 +1956,9 @@
             // label7
             // 
             this.label7.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label7.Location = new System.Drawing.Point(146, 25);
+            this.label7.Location = new System.Drawing.Point(167, 33);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(64, 16);
+            this.label7.Size = new System.Drawing.Size(73, 21);
             this.label7.TabIndex = 7;
             this.label7.Text = "Depth";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1913,14 +1971,15 @@
             this.KnobChorusDepth.HasTicks = true;
             this.KnobChorusDepth.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobChorusDepth.LargeChange = 5;
-            this.KnobChorusDepth.Location = new System.Drawing.Point(146, 47);
+            this.KnobChorusDepth.Location = new System.Drawing.Point(167, 63);
+            this.KnobChorusDepth.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobChorusDepth.Name = "KnobChorusDepth";
             this.KnobChorusDepth.PointerColor = System.Drawing.SystemColors.ControlText;
             this.KnobChorusDepth.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobChorusDepth.PointerOffset = 4;
             this.KnobChorusDepth.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobChorusDepth.PointerWidth = 2;
-            this.KnobChorusDepth.Size = new System.Drawing.Size(64, 64);
+            this.KnobChorusDepth.Size = new System.Drawing.Size(73, 73);
             this.KnobChorusDepth.TabIndex = 6;
             this.KnobChorusDepth.Text = "Level";
             this.KnobChorusDepth.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -1930,9 +1989,10 @@
             // 
             this.lblValChorusRate.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValChorusRate.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValChorusRate.Location = new System.Drawing.Point(76, 117);
+            this.lblValChorusRate.Location = new System.Drawing.Point(87, 156);
+            this.lblValChorusRate.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValChorusRate.Name = "lblValChorusRate";
-            this.lblValChorusRate.Size = new System.Drawing.Size(64, 16);
+            this.lblValChorusRate.Size = new System.Drawing.Size(73, 20);
             this.lblValChorusRate.TabIndex = 5;
             this.lblValChorusRate.Text = "0.0";
             this.lblValChorusRate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1940,9 +2000,9 @@
             // label5
             // 
             this.label5.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label5.Location = new System.Drawing.Point(76, 25);
+            this.label5.Location = new System.Drawing.Point(87, 33);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(64, 16);
+            this.label5.Size = new System.Drawing.Size(73, 21);
             this.label5.TabIndex = 4;
             this.label5.Text = "Rate";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1955,7 +2015,8 @@
             this.KnobChorusRate.HasTicks = true;
             this.KnobChorusRate.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobChorusRate.LargeChange = 1;
-            this.KnobChorusRate.Location = new System.Drawing.Point(76, 47);
+            this.KnobChorusRate.Location = new System.Drawing.Point(87, 63);
+            this.KnobChorusRate.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobChorusRate.Maximum = 20;
             this.KnobChorusRate.Name = "KnobChorusRate";
             this.KnobChorusRate.PointerColor = System.Drawing.SystemColors.ControlText;
@@ -1963,7 +2024,7 @@
             this.KnobChorusRate.PointerOffset = 4;
             this.KnobChorusRate.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobChorusRate.PointerWidth = 2;
-            this.KnobChorusRate.Size = new System.Drawing.Size(64, 64);
+            this.KnobChorusRate.Size = new System.Drawing.Size(73, 73);
             this.KnobChorusRate.TabIndex = 3;
             this.KnobChorusRate.Text = "Level";
             this.KnobChorusRate.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -1973,9 +2034,10 @@
             // 
             this.lblValChorusMix.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValChorusMix.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValChorusMix.Location = new System.Drawing.Point(6, 117);
+            this.lblValChorusMix.Location = new System.Drawing.Point(7, 156);
+            this.lblValChorusMix.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValChorusMix.Name = "lblValChorusMix";
-            this.lblValChorusMix.Size = new System.Drawing.Size(64, 16);
+            this.lblValChorusMix.Size = new System.Drawing.Size(73, 20);
             this.lblValChorusMix.TabIndex = 2;
             this.lblValChorusMix.Text = "0.0";
             this.lblValChorusMix.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1983,9 +2045,9 @@
             // label3
             // 
             this.label3.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label3.Location = new System.Drawing.Point(6, 25);
+            this.label3.Location = new System.Drawing.Point(7, 33);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(64, 16);
+            this.label3.Size = new System.Drawing.Size(73, 21);
             this.label3.TabIndex = 2;
             this.label3.Text = "Mix";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1998,14 +2060,15 @@
             this.KnobChorusMix.HasTicks = true;
             this.KnobChorusMix.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobChorusMix.LargeChange = 5;
-            this.KnobChorusMix.Location = new System.Drawing.Point(6, 47);
+            this.KnobChorusMix.Location = new System.Drawing.Point(7, 63);
+            this.KnobChorusMix.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobChorusMix.Name = "KnobChorusMix";
             this.KnobChorusMix.PointerColor = System.Drawing.SystemColors.ControlText;
             this.KnobChorusMix.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobChorusMix.PointerOffset = 4;
             this.KnobChorusMix.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobChorusMix.PointerWidth = 2;
-            this.KnobChorusMix.Size = new System.Drawing.Size(64, 64);
+            this.KnobChorusMix.Size = new System.Drawing.Size(73, 73);
             this.KnobChorusMix.TabIndex = 1;
             this.KnobChorusMix.Text = "Level";
             this.KnobChorusMix.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2016,9 +2079,10 @@
             this.CheckChorus.AutoSize = true;
             this.CheckChorus.BackColor = System.Drawing.SystemColors.Control;
             this.CheckChorus.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckChorus.Location = new System.Drawing.Point(3, 3);
+            this.CheckChorus.Location = new System.Drawing.Point(3, 4);
+            this.CheckChorus.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CheckChorus.Name = "CheckChorus";
-            this.CheckChorus.Size = new System.Drawing.Size(63, 19);
+            this.CheckChorus.Size = new System.Drawing.Size(76, 24);
             this.CheckChorus.TabIndex = 0;
             this.CheckChorus.Text = "Chorus";
             this.CheckChorus.UseVisualStyleBackColor = false;
@@ -2028,9 +2092,10 @@
             // 
             this.tabEcho.BackColor = System.Drawing.Color.Transparent;
             this.tabEcho.Controls.Add(this.GroupEcho);
-            this.tabEcho.Location = new System.Drawing.Point(4, 24);
+            this.tabEcho.Location = new System.Drawing.Point(4, 29);
+            this.tabEcho.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabEcho.Name = "tabEcho";
-            this.tabEcho.Size = new System.Drawing.Size(574, 391);
+            this.tabEcho.Size = new System.Drawing.Size(658, 526);
             this.tabEcho.TabIndex = 2;
             this.tabEcho.Text = "Echo";
             // 
@@ -2051,9 +2116,11 @@
             this.GroupEcho.Controls.Add(this.KnobEchoDelay);
             this.GroupEcho.Controls.Add(this.CheckEcho);
             this.GroupEcho.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.GroupEcho.Location = new System.Drawing.Point(3, 3);
+            this.GroupEcho.Location = new System.Drawing.Point(3, 4);
+            this.GroupEcho.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.GroupEcho.Name = "GroupEcho";
-            this.GroupEcho.Size = new System.Drawing.Size(297, 152);
+            this.GroupEcho.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.GroupEcho.Size = new System.Drawing.Size(339, 203);
             this.GroupEcho.TabIndex = 10;
             this.GroupEcho.TabStop = false;
             // 
@@ -2061,9 +2128,10 @@
             // 
             this.lblValEchoWet.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValEchoWet.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValEchoWet.Location = new System.Drawing.Point(216, 114);
+            this.lblValEchoWet.Location = new System.Drawing.Point(247, 152);
+            this.lblValEchoWet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValEchoWet.Name = "lblValEchoWet";
-            this.lblValEchoWet.Size = new System.Drawing.Size(64, 16);
+            this.lblValEchoWet.Size = new System.Drawing.Size(73, 20);
             this.lblValEchoWet.TabIndex = 11;
             this.lblValEchoWet.Text = "0.0";
             this.lblValEchoWet.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2071,9 +2139,9 @@
             // label15
             // 
             this.label15.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label15.Location = new System.Drawing.Point(216, 25);
+            this.label15.Location = new System.Drawing.Point(247, 33);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(64, 16);
+            this.label15.Size = new System.Drawing.Size(73, 21);
             this.label15.TabIndex = 10;
             this.label15.Text = "Wet";
             this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2086,7 +2154,8 @@
             this.KnobEchoWet.HasTicks = true;
             this.KnobEchoWet.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobEchoWet.LargeChange = 5;
-            this.KnobEchoWet.Location = new System.Drawing.Point(216, 44);
+            this.KnobEchoWet.Location = new System.Drawing.Point(247, 59);
+            this.KnobEchoWet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobEchoWet.Maximum = 10;
             this.KnobEchoWet.Minimum = -80;
             this.KnobEchoWet.Name = "KnobEchoWet";
@@ -2095,7 +2164,7 @@
             this.KnobEchoWet.PointerOffset = 4;
             this.KnobEchoWet.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobEchoWet.PointerWidth = 2;
-            this.KnobEchoWet.Size = new System.Drawing.Size(64, 64);
+            this.KnobEchoWet.Size = new System.Drawing.Size(73, 73);
             this.KnobEchoWet.TabIndex = 9;
             this.KnobEchoWet.Text = "Level";
             this.KnobEchoWet.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2105,9 +2174,10 @@
             // 
             this.lblValEchoDry.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValEchoDry.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValEchoDry.Location = new System.Drawing.Point(146, 114);
+            this.lblValEchoDry.Location = new System.Drawing.Point(167, 152);
+            this.lblValEchoDry.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValEchoDry.Name = "lblValEchoDry";
-            this.lblValEchoDry.Size = new System.Drawing.Size(64, 16);
+            this.lblValEchoDry.Size = new System.Drawing.Size(73, 20);
             this.lblValEchoDry.TabIndex = 8;
             this.lblValEchoDry.Text = "0.0";
             this.lblValEchoDry.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2115,9 +2185,9 @@
             // label9
             // 
             this.label9.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label9.Location = new System.Drawing.Point(146, 25);
+            this.label9.Location = new System.Drawing.Point(167, 33);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(64, 16);
+            this.label9.Size = new System.Drawing.Size(73, 21);
             this.label9.TabIndex = 7;
             this.label9.Text = "Dry";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2130,7 +2200,8 @@
             this.KnobEchoDry.HasTicks = true;
             this.KnobEchoDry.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobEchoDry.LargeChange = 5;
-            this.KnobEchoDry.Location = new System.Drawing.Point(146, 44);
+            this.KnobEchoDry.Location = new System.Drawing.Point(167, 59);
+            this.KnobEchoDry.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobEchoDry.Maximum = 10;
             this.KnobEchoDry.Minimum = -80;
             this.KnobEchoDry.Name = "KnobEchoDry";
@@ -2139,7 +2210,7 @@
             this.KnobEchoDry.PointerOffset = 4;
             this.KnobEchoDry.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobEchoDry.PointerWidth = 2;
-            this.KnobEchoDry.Size = new System.Drawing.Size(64, 64);
+            this.KnobEchoDry.Size = new System.Drawing.Size(73, 73);
             this.KnobEchoDry.TabIndex = 6;
             this.KnobEchoDry.Text = "Level";
             this.KnobEchoDry.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2149,9 +2220,10 @@
             // 
             this.lblValEchoFeedback.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValEchoFeedback.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValEchoFeedback.Location = new System.Drawing.Point(76, 114);
+            this.lblValEchoFeedback.Location = new System.Drawing.Point(87, 152);
+            this.lblValEchoFeedback.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValEchoFeedback.Name = "lblValEchoFeedback";
-            this.lblValEchoFeedback.Size = new System.Drawing.Size(64, 16);
+            this.lblValEchoFeedback.Size = new System.Drawing.Size(73, 20);
             this.lblValEchoFeedback.TabIndex = 5;
             this.lblValEchoFeedback.Text = "0.0";
             this.lblValEchoFeedback.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2159,9 +2231,9 @@
             // label11
             // 
             this.label11.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label11.Location = new System.Drawing.Point(76, 25);
+            this.label11.Location = new System.Drawing.Point(87, 33);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(64, 16);
+            this.label11.Size = new System.Drawing.Size(73, 21);
             this.label11.TabIndex = 4;
             this.label11.Text = "Feedback";
             this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2174,14 +2246,15 @@
             this.KnobEchoFeedback.HasTicks = true;
             this.KnobEchoFeedback.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobEchoFeedback.LargeChange = 5;
-            this.KnobEchoFeedback.Location = new System.Drawing.Point(76, 44);
+            this.KnobEchoFeedback.Location = new System.Drawing.Point(87, 59);
+            this.KnobEchoFeedback.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobEchoFeedback.Name = "KnobEchoFeedback";
             this.KnobEchoFeedback.PointerColor = System.Drawing.SystemColors.ControlText;
             this.KnobEchoFeedback.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobEchoFeedback.PointerOffset = 4;
             this.KnobEchoFeedback.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobEchoFeedback.PointerWidth = 2;
-            this.KnobEchoFeedback.Size = new System.Drawing.Size(64, 64);
+            this.KnobEchoFeedback.Size = new System.Drawing.Size(73, 73);
             this.KnobEchoFeedback.TabIndex = 3;
             this.KnobEchoFeedback.Text = "Level";
             this.KnobEchoFeedback.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2191,9 +2264,10 @@
             // 
             this.lblValEchoDelay.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValEchoDelay.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValEchoDelay.Location = new System.Drawing.Point(6, 114);
+            this.lblValEchoDelay.Location = new System.Drawing.Point(7, 152);
+            this.lblValEchoDelay.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValEchoDelay.Name = "lblValEchoDelay";
-            this.lblValEchoDelay.Size = new System.Drawing.Size(64, 16);
+            this.lblValEchoDelay.Size = new System.Drawing.Size(73, 20);
             this.lblValEchoDelay.TabIndex = 2;
             this.lblValEchoDelay.Text = "0.0";
             this.lblValEchoDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2201,9 +2275,9 @@
             // label13
             // 
             this.label13.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label13.Location = new System.Drawing.Point(6, 25);
+            this.label13.Location = new System.Drawing.Point(7, 33);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(64, 16);
+            this.label13.Size = new System.Drawing.Size(73, 21);
             this.label13.TabIndex = 2;
             this.label13.Text = "Delay";
             this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2216,7 +2290,8 @@
             this.KnobEchoDelay.HasTicks = true;
             this.KnobEchoDelay.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobEchoDelay.LargeChange = 100;
-            this.KnobEchoDelay.Location = new System.Drawing.Point(6, 44);
+            this.KnobEchoDelay.Location = new System.Drawing.Point(7, 59);
+            this.KnobEchoDelay.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobEchoDelay.Maximum = 5000;
             this.KnobEchoDelay.Minimum = 1;
             this.KnobEchoDelay.Name = "KnobEchoDelay";
@@ -2225,7 +2300,7 @@
             this.KnobEchoDelay.PointerOffset = 4;
             this.KnobEchoDelay.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobEchoDelay.PointerWidth = 2;
-            this.KnobEchoDelay.Size = new System.Drawing.Size(64, 64);
+            this.KnobEchoDelay.Size = new System.Drawing.Size(73, 73);
             this.KnobEchoDelay.TabIndex = 1;
             this.KnobEchoDelay.Text = "Level";
             this.KnobEchoDelay.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2236,9 +2311,10 @@
             this.CheckEcho.AutoSize = true;
             this.CheckEcho.BackColor = System.Drawing.SystemColors.Control;
             this.CheckEcho.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckEcho.Location = new System.Drawing.Point(6, 3);
+            this.CheckEcho.Location = new System.Drawing.Point(7, 4);
+            this.CheckEcho.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CheckEcho.Name = "CheckEcho";
-            this.CheckEcho.Size = new System.Drawing.Size(52, 19);
+            this.CheckEcho.Size = new System.Drawing.Size(63, 24);
             this.CheckEcho.TabIndex = 0;
             this.CheckEcho.Text = "Echo";
             this.CheckEcho.UseVisualStyleBackColor = false;
@@ -2248,9 +2324,10 @@
             // 
             this.tabFlanger.BackColor = System.Drawing.Color.Transparent;
             this.tabFlanger.Controls.Add(this.GroupFlanger);
-            this.tabFlanger.Location = new System.Drawing.Point(4, 24);
+            this.tabFlanger.Location = new System.Drawing.Point(4, 29);
+            this.tabFlanger.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabFlanger.Name = "tabFlanger";
-            this.tabFlanger.Size = new System.Drawing.Size(574, 391);
+            this.tabFlanger.Size = new System.Drawing.Size(658, 526);
             this.tabFlanger.TabIndex = 3;
             this.tabFlanger.Text = "Flanger";
             // 
@@ -2267,9 +2344,11 @@
             this.GroupFlanger.Controls.Add(this.KnobFlangerMix);
             this.GroupFlanger.Controls.Add(this.CheckFlanger);
             this.GroupFlanger.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.GroupFlanger.Location = new System.Drawing.Point(3, 3);
+            this.GroupFlanger.Location = new System.Drawing.Point(3, 4);
+            this.GroupFlanger.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.GroupFlanger.Name = "GroupFlanger";
-            this.GroupFlanger.Size = new System.Drawing.Size(225, 155);
+            this.GroupFlanger.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.GroupFlanger.Size = new System.Drawing.Size(257, 207);
             this.GroupFlanger.TabIndex = 10;
             this.GroupFlanger.TabStop = false;
             // 
@@ -2277,9 +2356,10 @@
             // 
             this.lblValFlangerDepth.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValFlangerDepth.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValFlangerDepth.Location = new System.Drawing.Point(146, 114);
+            this.lblValFlangerDepth.Location = new System.Drawing.Point(167, 152);
+            this.lblValFlangerDepth.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValFlangerDepth.Name = "lblValFlangerDepth";
-            this.lblValFlangerDepth.Size = new System.Drawing.Size(64, 16);
+            this.lblValFlangerDepth.Size = new System.Drawing.Size(73, 20);
             this.lblValFlangerDepth.TabIndex = 8;
             this.lblValFlangerDepth.Text = "0.0";
             this.lblValFlangerDepth.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2287,9 +2367,9 @@
             // label33
             // 
             this.label33.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label33.Location = new System.Drawing.Point(146, 25);
+            this.label33.Location = new System.Drawing.Point(167, 33);
             this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(64, 16);
+            this.label33.Size = new System.Drawing.Size(73, 21);
             this.label33.TabIndex = 7;
             this.label33.Text = "Depth";
             this.label33.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2302,7 +2382,8 @@
             this.KnobFlangerDepth.HasTicks = true;
             this.KnobFlangerDepth.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobFlangerDepth.LargeChange = 5;
-            this.KnobFlangerDepth.Location = new System.Drawing.Point(146, 44);
+            this.KnobFlangerDepth.Location = new System.Drawing.Point(167, 59);
+            this.KnobFlangerDepth.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobFlangerDepth.Minimum = 1;
             this.KnobFlangerDepth.Name = "KnobFlangerDepth";
             this.KnobFlangerDepth.PointerColor = System.Drawing.SystemColors.ControlText;
@@ -2310,7 +2391,7 @@
             this.KnobFlangerDepth.PointerOffset = 4;
             this.KnobFlangerDepth.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobFlangerDepth.PointerWidth = 2;
-            this.KnobFlangerDepth.Size = new System.Drawing.Size(64, 64);
+            this.KnobFlangerDepth.Size = new System.Drawing.Size(73, 73);
             this.KnobFlangerDepth.TabIndex = 6;
             this.KnobFlangerDepth.Text = "Level";
             this.KnobFlangerDepth.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2320,9 +2401,10 @@
             // 
             this.lblValFlangerRate.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValFlangerRate.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValFlangerRate.Location = new System.Drawing.Point(76, 114);
+            this.lblValFlangerRate.Location = new System.Drawing.Point(87, 152);
+            this.lblValFlangerRate.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValFlangerRate.Name = "lblValFlangerRate";
-            this.lblValFlangerRate.Size = new System.Drawing.Size(64, 16);
+            this.lblValFlangerRate.Size = new System.Drawing.Size(73, 20);
             this.lblValFlangerRate.TabIndex = 5;
             this.lblValFlangerRate.Text = "0.0";
             this.lblValFlangerRate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2330,9 +2412,9 @@
             // label35
             // 
             this.label35.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label35.Location = new System.Drawing.Point(76, 25);
+            this.label35.Location = new System.Drawing.Point(87, 33);
             this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(64, 16);
+            this.label35.Size = new System.Drawing.Size(73, 21);
             this.label35.TabIndex = 4;
             this.label35.Text = "Rate";
             this.label35.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2345,7 +2427,8 @@
             this.KnobFlangerRate.HasTicks = true;
             this.KnobFlangerRate.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobFlangerRate.LargeChange = 1;
-            this.KnobFlangerRate.Location = new System.Drawing.Point(76, 44);
+            this.KnobFlangerRate.Location = new System.Drawing.Point(87, 59);
+            this.KnobFlangerRate.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobFlangerRate.Maximum = 20;
             this.KnobFlangerRate.Name = "KnobFlangerRate";
             this.KnobFlangerRate.PointerColor = System.Drawing.SystemColors.ControlText;
@@ -2353,7 +2436,7 @@
             this.KnobFlangerRate.PointerOffset = 4;
             this.KnobFlangerRate.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobFlangerRate.PointerWidth = 2;
-            this.KnobFlangerRate.Size = new System.Drawing.Size(64, 64);
+            this.KnobFlangerRate.Size = new System.Drawing.Size(73, 73);
             this.KnobFlangerRate.TabIndex = 3;
             this.KnobFlangerRate.Text = "Level";
             this.KnobFlangerRate.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2363,9 +2446,10 @@
             // 
             this.lblValFlangerMix.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValFlangerMix.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValFlangerMix.Location = new System.Drawing.Point(6, 114);
+            this.lblValFlangerMix.Location = new System.Drawing.Point(7, 152);
+            this.lblValFlangerMix.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValFlangerMix.Name = "lblValFlangerMix";
-            this.lblValFlangerMix.Size = new System.Drawing.Size(64, 16);
+            this.lblValFlangerMix.Size = new System.Drawing.Size(73, 20);
             this.lblValFlangerMix.TabIndex = 2;
             this.lblValFlangerMix.Text = "0.0";
             this.lblValFlangerMix.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2373,9 +2457,9 @@
             // label37
             // 
             this.label37.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label37.Location = new System.Drawing.Point(6, 25);
+            this.label37.Location = new System.Drawing.Point(7, 33);
             this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(64, 16);
+            this.label37.Size = new System.Drawing.Size(73, 21);
             this.label37.TabIndex = 2;
             this.label37.Text = "Mix";
             this.label37.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2388,14 +2472,15 @@
             this.KnobFlangerMix.HasTicks = true;
             this.KnobFlangerMix.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobFlangerMix.LargeChange = 5;
-            this.KnobFlangerMix.Location = new System.Drawing.Point(6, 44);
+            this.KnobFlangerMix.Location = new System.Drawing.Point(7, 59);
+            this.KnobFlangerMix.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobFlangerMix.Name = "KnobFlangerMix";
             this.KnobFlangerMix.PointerColor = System.Drawing.SystemColors.ControlText;
             this.KnobFlangerMix.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobFlangerMix.PointerOffset = 4;
             this.KnobFlangerMix.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobFlangerMix.PointerWidth = 2;
-            this.KnobFlangerMix.Size = new System.Drawing.Size(64, 64);
+            this.KnobFlangerMix.Size = new System.Drawing.Size(73, 73);
             this.KnobFlangerMix.TabIndex = 1;
             this.KnobFlangerMix.Text = "Level";
             this.KnobFlangerMix.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2406,9 +2491,10 @@
             this.CheckFlanger.AutoSize = true;
             this.CheckFlanger.BackColor = System.Drawing.SystemColors.Control;
             this.CheckFlanger.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckFlanger.Location = new System.Drawing.Point(6, 3);
+            this.CheckFlanger.Location = new System.Drawing.Point(7, 4);
+            this.CheckFlanger.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CheckFlanger.Name = "CheckFlanger";
-            this.CheckFlanger.Size = new System.Drawing.Size(65, 19);
+            this.CheckFlanger.Size = new System.Drawing.Size(80, 24);
             this.CheckFlanger.TabIndex = 0;
             this.CheckFlanger.Text = "Flanger";
             this.CheckFlanger.UseVisualStyleBackColor = false;
@@ -2418,9 +2504,10 @@
             // 
             this.tabHightpass.BackColor = System.Drawing.Color.Transparent;
             this.tabHightpass.Controls.Add(this.GroupHighpass);
-            this.tabHightpass.Location = new System.Drawing.Point(4, 24);
+            this.tabHightpass.Location = new System.Drawing.Point(4, 29);
+            this.tabHightpass.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabHightpass.Name = "tabHightpass";
-            this.tabHightpass.Size = new System.Drawing.Size(574, 391);
+            this.tabHightpass.Size = new System.Drawing.Size(658, 526);
             this.tabHightpass.TabIndex = 4;
             this.tabHightpass.Text = "Highpass";
             // 
@@ -2434,9 +2521,11 @@
             this.GroupHighpass.Controls.Add(this.KnobHighpassCutoff);
             this.GroupHighpass.Controls.Add(this.CheckHighpass);
             this.GroupHighpass.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.GroupHighpass.Location = new System.Drawing.Point(3, 3);
+            this.GroupHighpass.Location = new System.Drawing.Point(3, 4);
+            this.GroupHighpass.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.GroupHighpass.Name = "GroupHighpass";
-            this.GroupHighpass.Size = new System.Drawing.Size(163, 148);
+            this.GroupHighpass.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.GroupHighpass.Size = new System.Drawing.Size(186, 197);
             this.GroupHighpass.TabIndex = 13;
             this.GroupHighpass.TabStop = false;
             // 
@@ -2444,9 +2533,10 @@
             // 
             this.lblValHighpassResonance.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValHighpassResonance.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValHighpassResonance.Location = new System.Drawing.Point(76, 114);
+            this.lblValHighpassResonance.Location = new System.Drawing.Point(87, 152);
+            this.lblValHighpassResonance.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValHighpassResonance.Name = "lblValHighpassResonance";
-            this.lblValHighpassResonance.Size = new System.Drawing.Size(64, 16);
+            this.lblValHighpassResonance.Size = new System.Drawing.Size(73, 20);
             this.lblValHighpassResonance.TabIndex = 5;
             this.lblValHighpassResonance.Text = "0.0";
             this.lblValHighpassResonance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2454,9 +2544,9 @@
             // label21
             // 
             this.label21.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label21.Location = new System.Drawing.Point(76, 25);
+            this.label21.Location = new System.Drawing.Point(87, 33);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(64, 16);
+            this.label21.Size = new System.Drawing.Size(73, 21);
             this.label21.TabIndex = 4;
             this.label21.Text = "Resonance";
             this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2469,14 +2559,15 @@
             this.KnobHighpassResonance.HasTicks = true;
             this.KnobHighpassResonance.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobHighpassResonance.LargeChange = 5;
-            this.KnobHighpassResonance.Location = new System.Drawing.Point(76, 44);
+            this.KnobHighpassResonance.Location = new System.Drawing.Point(87, 59);
+            this.KnobHighpassResonance.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobHighpassResonance.Name = "KnobHighpassResonance";
             this.KnobHighpassResonance.PointerColor = System.Drawing.SystemColors.ControlText;
             this.KnobHighpassResonance.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobHighpassResonance.PointerOffset = 4;
             this.KnobHighpassResonance.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobHighpassResonance.PointerWidth = 2;
-            this.KnobHighpassResonance.Size = new System.Drawing.Size(64, 64);
+            this.KnobHighpassResonance.Size = new System.Drawing.Size(73, 73);
             this.KnobHighpassResonance.TabIndex = 3;
             this.KnobHighpassResonance.Text = "Level";
             this.KnobHighpassResonance.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2486,9 +2577,10 @@
             // 
             this.lblValHighpassCutoff.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValHighpassCutoff.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValHighpassCutoff.Location = new System.Drawing.Point(6, 114);
+            this.lblValHighpassCutoff.Location = new System.Drawing.Point(7, 152);
+            this.lblValHighpassCutoff.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValHighpassCutoff.Name = "lblValHighpassCutoff";
-            this.lblValHighpassCutoff.Size = new System.Drawing.Size(64, 16);
+            this.lblValHighpassCutoff.Size = new System.Drawing.Size(73, 20);
             this.lblValHighpassCutoff.TabIndex = 2;
             this.lblValHighpassCutoff.Text = "0.0";
             this.lblValHighpassCutoff.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2496,9 +2588,9 @@
             // label23
             // 
             this.label23.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label23.Location = new System.Drawing.Point(6, 25);
+            this.label23.Location = new System.Drawing.Point(7, 33);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(64, 16);
+            this.label23.Size = new System.Drawing.Size(73, 21);
             this.label23.TabIndex = 2;
             this.label23.Text = "Cutoff";
             this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2511,7 +2603,8 @@
             this.KnobHighpassCutoff.HasTicks = true;
             this.KnobHighpassCutoff.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobHighpassCutoff.LargeChange = 500;
-            this.KnobHighpassCutoff.Location = new System.Drawing.Point(6, 44);
+            this.KnobHighpassCutoff.Location = new System.Drawing.Point(7, 59);
+            this.KnobHighpassCutoff.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobHighpassCutoff.Maximum = 22000;
             this.KnobHighpassCutoff.Minimum = 1;
             this.KnobHighpassCutoff.Name = "KnobHighpassCutoff";
@@ -2520,7 +2613,7 @@
             this.KnobHighpassCutoff.PointerOffset = 4;
             this.KnobHighpassCutoff.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobHighpassCutoff.PointerWidth = 2;
-            this.KnobHighpassCutoff.Size = new System.Drawing.Size(64, 64);
+            this.KnobHighpassCutoff.Size = new System.Drawing.Size(73, 73);
             this.KnobHighpassCutoff.TabIndex = 1;
             this.KnobHighpassCutoff.Text = "Level";
             this.KnobHighpassCutoff.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2531,9 +2624,10 @@
             this.CheckHighpass.AutoSize = true;
             this.CheckHighpass.BackColor = System.Drawing.SystemColors.Control;
             this.CheckHighpass.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckHighpass.Location = new System.Drawing.Point(6, 3);
+            this.CheckHighpass.Location = new System.Drawing.Point(7, 4);
+            this.CheckHighpass.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CheckHighpass.Name = "CheckHighpass";
-            this.CheckHighpass.Size = new System.Drawing.Size(75, 19);
+            this.CheckHighpass.Size = new System.Drawing.Size(92, 24);
             this.CheckHighpass.TabIndex = 0;
             this.CheckHighpass.Text = "Highpass";
             this.CheckHighpass.UseVisualStyleBackColor = false;
@@ -2543,9 +2637,10 @@
             // 
             this.tabLowpass.BackColor = System.Drawing.Color.Transparent;
             this.tabLowpass.Controls.Add(this.GroupLowpass);
-            this.tabLowpass.Location = new System.Drawing.Point(4, 24);
+            this.tabLowpass.Location = new System.Drawing.Point(4, 29);
+            this.tabLowpass.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabLowpass.Name = "tabLowpass";
-            this.tabLowpass.Size = new System.Drawing.Size(574, 391);
+            this.tabLowpass.Size = new System.Drawing.Size(658, 526);
             this.tabLowpass.TabIndex = 5;
             this.tabLowpass.Text = "Lowpass";
             // 
@@ -2559,9 +2654,11 @@
             this.GroupLowpass.Controls.Add(this.KnobLowpassCutoff);
             this.GroupLowpass.Controls.Add(this.CheckLowpass);
             this.GroupLowpass.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.GroupLowpass.Location = new System.Drawing.Point(3, 3);
+            this.GroupLowpass.Location = new System.Drawing.Point(3, 4);
+            this.GroupLowpass.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.GroupLowpass.Name = "GroupLowpass";
-            this.GroupLowpass.Size = new System.Drawing.Size(158, 145);
+            this.GroupLowpass.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.GroupLowpass.Size = new System.Drawing.Size(181, 193);
             this.GroupLowpass.TabIndex = 14;
             this.GroupLowpass.TabStop = false;
             // 
@@ -2569,9 +2666,10 @@
             // 
             this.lblValLowpassResonance.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValLowpassResonance.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValLowpassResonance.Location = new System.Drawing.Point(76, 113);
+            this.lblValLowpassResonance.Location = new System.Drawing.Point(87, 151);
+            this.lblValLowpassResonance.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValLowpassResonance.Name = "lblValLowpassResonance";
-            this.lblValLowpassResonance.Size = new System.Drawing.Size(64, 16);
+            this.lblValLowpassResonance.Size = new System.Drawing.Size(73, 20);
             this.lblValLowpassResonance.TabIndex = 5;
             this.lblValLowpassResonance.Text = "0.0";
             this.lblValLowpassResonance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2579,9 +2677,9 @@
             // label17
             // 
             this.label17.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label17.Location = new System.Drawing.Point(76, 24);
+            this.label17.Location = new System.Drawing.Point(87, 32);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(64, 16);
+            this.label17.Size = new System.Drawing.Size(73, 21);
             this.label17.TabIndex = 4;
             this.label17.Text = "Resonance";
             this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2594,14 +2692,15 @@
             this.KnobLowpassResonance.HasTicks = true;
             this.KnobLowpassResonance.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobLowpassResonance.LargeChange = 5;
-            this.KnobLowpassResonance.Location = new System.Drawing.Point(76, 43);
+            this.KnobLowpassResonance.Location = new System.Drawing.Point(87, 57);
+            this.KnobLowpassResonance.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobLowpassResonance.Name = "KnobLowpassResonance";
             this.KnobLowpassResonance.PointerColor = System.Drawing.SystemColors.ControlText;
             this.KnobLowpassResonance.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobLowpassResonance.PointerOffset = 4;
             this.KnobLowpassResonance.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobLowpassResonance.PointerWidth = 2;
-            this.KnobLowpassResonance.Size = new System.Drawing.Size(64, 64);
+            this.KnobLowpassResonance.Size = new System.Drawing.Size(73, 73);
             this.KnobLowpassResonance.TabIndex = 3;
             this.KnobLowpassResonance.Text = "Level";
             this.KnobLowpassResonance.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2611,9 +2710,10 @@
             // 
             this.lblValLowpassCutoff.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValLowpassCutoff.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValLowpassCutoff.Location = new System.Drawing.Point(6, 113);
+            this.lblValLowpassCutoff.Location = new System.Drawing.Point(7, 151);
+            this.lblValLowpassCutoff.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValLowpassCutoff.Name = "lblValLowpassCutoff";
-            this.lblValLowpassCutoff.Size = new System.Drawing.Size(64, 16);
+            this.lblValLowpassCutoff.Size = new System.Drawing.Size(73, 20);
             this.lblValLowpassCutoff.TabIndex = 2;
             this.lblValLowpassCutoff.Text = "0.0";
             this.lblValLowpassCutoff.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2621,9 +2721,9 @@
             // label19
             // 
             this.label19.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label19.Location = new System.Drawing.Point(6, 24);
+            this.label19.Location = new System.Drawing.Point(7, 32);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(64, 16);
+            this.label19.Size = new System.Drawing.Size(73, 21);
             this.label19.TabIndex = 2;
             this.label19.Text = "Cutoff";
             this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2636,7 +2736,8 @@
             this.KnobLowpassCutoff.HasTicks = true;
             this.KnobLowpassCutoff.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobLowpassCutoff.LargeChange = 500;
-            this.KnobLowpassCutoff.Location = new System.Drawing.Point(6, 43);
+            this.KnobLowpassCutoff.Location = new System.Drawing.Point(7, 57);
+            this.KnobLowpassCutoff.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobLowpassCutoff.Maximum = 22000;
             this.KnobLowpassCutoff.Minimum = 1;
             this.KnobLowpassCutoff.Name = "KnobLowpassCutoff";
@@ -2645,7 +2746,7 @@
             this.KnobLowpassCutoff.PointerOffset = 4;
             this.KnobLowpassCutoff.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobLowpassCutoff.PointerWidth = 2;
-            this.KnobLowpassCutoff.Size = new System.Drawing.Size(64, 64);
+            this.KnobLowpassCutoff.Size = new System.Drawing.Size(73, 73);
             this.KnobLowpassCutoff.TabIndex = 1;
             this.KnobLowpassCutoff.Text = "Level";
             this.KnobLowpassCutoff.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2656,9 +2757,10 @@
             this.CheckLowpass.AutoSize = true;
             this.CheckLowpass.BackColor = System.Drawing.SystemColors.Control;
             this.CheckLowpass.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckLowpass.Location = new System.Drawing.Point(6, 3);
+            this.CheckLowpass.Location = new System.Drawing.Point(7, 4);
+            this.CheckLowpass.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CheckLowpass.Name = "CheckLowpass";
-            this.CheckLowpass.Size = new System.Drawing.Size(71, 19);
+            this.CheckLowpass.Size = new System.Drawing.Size(87, 24);
             this.CheckLowpass.TabIndex = 0;
             this.CheckLowpass.Text = "Lowpass";
             this.CheckLowpass.UseVisualStyleBackColor = false;
@@ -2668,9 +2770,10 @@
             // 
             this.tabCompressor.BackColor = System.Drawing.Color.Transparent;
             this.tabCompressor.Controls.Add(this.GroupCompressor);
-            this.tabCompressor.Location = new System.Drawing.Point(4, 24);
+            this.tabCompressor.Location = new System.Drawing.Point(4, 29);
+            this.tabCompressor.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabCompressor.Name = "tabCompressor";
-            this.tabCompressor.Size = new System.Drawing.Size(574, 391);
+            this.tabCompressor.Size = new System.Drawing.Size(658, 526);
             this.tabCompressor.TabIndex = 6;
             this.tabCompressor.Text = "Compressor";
             // 
@@ -2694,9 +2797,11 @@
             this.GroupCompressor.Controls.Add(this.KnobCompThreshold);
             this.GroupCompressor.Controls.Add(this.CheckCompressor);
             this.GroupCompressor.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.GroupCompressor.Location = new System.Drawing.Point(3, 3);
+            this.GroupCompressor.Location = new System.Drawing.Point(3, 4);
+            this.GroupCompressor.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.GroupCompressor.Name = "GroupCompressor";
-            this.GroupCompressor.Size = new System.Drawing.Size(368, 160);
+            this.GroupCompressor.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.GroupCompressor.Size = new System.Drawing.Size(421, 213);
             this.GroupCompressor.TabIndex = 13;
             this.GroupCompressor.TabStop = false;
             // 
@@ -2704,9 +2809,10 @@
             // 
             this.CheckCompLinked.AutoSize = true;
             this.CheckCompLinked.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckCompLinked.Location = new System.Drawing.Point(6, 133);
+            this.CheckCompLinked.Location = new System.Drawing.Point(7, 177);
+            this.CheckCompLinked.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CheckCompLinked.Name = "CheckCompLinked";
-            this.CheckCompLinked.Size = new System.Drawing.Size(61, 19);
+            this.CheckCompLinked.Size = new System.Drawing.Size(74, 24);
             this.CheckCompLinked.TabIndex = 16;
             this.CheckCompLinked.Text = "Linked";
             this.CheckCompLinked.UseVisualStyleBackColor = true;
@@ -2717,9 +2823,10 @@
             // 
             this.lblValCompGain.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValCompGain.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValCompGain.Location = new System.Drawing.Point(286, 111);
+            this.lblValCompGain.Location = new System.Drawing.Point(327, 148);
+            this.lblValCompGain.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValCompGain.Name = "lblValCompGain";
-            this.lblValCompGain.Size = new System.Drawing.Size(64, 16);
+            this.lblValCompGain.Size = new System.Drawing.Size(73, 20);
             this.lblValCompGain.TabIndex = 14;
             this.lblValCompGain.Text = "0.0";
             this.lblValCompGain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2727,9 +2834,9 @@
             // label39
             // 
             this.label39.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label39.Location = new System.Drawing.Point(286, 22);
+            this.label39.Location = new System.Drawing.Point(327, 29);
             this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(64, 16);
+            this.label39.Size = new System.Drawing.Size(73, 21);
             this.label39.TabIndex = 13;
             this.label39.Text = "Gain";
             this.label39.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2742,7 +2849,8 @@
             this.KnobCompGain.HasTicks = true;
             this.KnobCompGain.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobCompGain.LargeChange = 1;
-            this.KnobCompGain.Location = new System.Drawing.Point(286, 41);
+            this.KnobCompGain.Location = new System.Drawing.Point(327, 55);
+            this.KnobCompGain.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobCompGain.Maximum = 30;
             this.KnobCompGain.Minimum = -30;
             this.KnobCompGain.Name = "KnobCompGain";
@@ -2751,7 +2859,7 @@
             this.KnobCompGain.PointerOffset = 4;
             this.KnobCompGain.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobCompGain.PointerWidth = 2;
-            this.KnobCompGain.Size = new System.Drawing.Size(64, 64);
+            this.KnobCompGain.Size = new System.Drawing.Size(73, 73);
             this.KnobCompGain.TabIndex = 12;
             this.KnobCompGain.Text = "Level";
             this.KnobCompGain.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2761,9 +2869,10 @@
             // 
             this.lblValCompRelease.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValCompRelease.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValCompRelease.Location = new System.Drawing.Point(216, 111);
+            this.lblValCompRelease.Location = new System.Drawing.Point(247, 148);
+            this.lblValCompRelease.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValCompRelease.Name = "lblValCompRelease";
-            this.lblValCompRelease.Size = new System.Drawing.Size(64, 16);
+            this.lblValCompRelease.Size = new System.Drawing.Size(73, 20);
             this.lblValCompRelease.TabIndex = 11;
             this.lblValCompRelease.Text = "0.0";
             this.lblValCompRelease.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2771,9 +2880,9 @@
             // label25
             // 
             this.label25.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label25.Location = new System.Drawing.Point(216, 22);
+            this.label25.Location = new System.Drawing.Point(247, 29);
             this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(64, 16);
+            this.label25.Size = new System.Drawing.Size(73, 21);
             this.label25.TabIndex = 10;
             this.label25.Text = "Release";
             this.label25.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2786,7 +2895,8 @@
             this.KnobCompRelease.HasTicks = true;
             this.KnobCompRelease.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobCompRelease.LargeChange = 100;
-            this.KnobCompRelease.Location = new System.Drawing.Point(216, 41);
+            this.KnobCompRelease.Location = new System.Drawing.Point(247, 55);
+            this.KnobCompRelease.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobCompRelease.Maximum = 5000;
             this.KnobCompRelease.Minimum = 10;
             this.KnobCompRelease.Name = "KnobCompRelease";
@@ -2795,7 +2905,7 @@
             this.KnobCompRelease.PointerOffset = 4;
             this.KnobCompRelease.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobCompRelease.PointerWidth = 2;
-            this.KnobCompRelease.Size = new System.Drawing.Size(64, 64);
+            this.KnobCompRelease.Size = new System.Drawing.Size(73, 73);
             this.KnobCompRelease.TabIndex = 9;
             this.KnobCompRelease.Text = "Level";
             this.KnobCompRelease.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2805,9 +2915,10 @@
             // 
             this.lblValCompAttack.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValCompAttack.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValCompAttack.Location = new System.Drawing.Point(146, 111);
+            this.lblValCompAttack.Location = new System.Drawing.Point(167, 148);
+            this.lblValCompAttack.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValCompAttack.Name = "lblValCompAttack";
-            this.lblValCompAttack.Size = new System.Drawing.Size(64, 16);
+            this.lblValCompAttack.Size = new System.Drawing.Size(73, 20);
             this.lblValCompAttack.TabIndex = 8;
             this.lblValCompAttack.Text = "0.0";
             this.lblValCompAttack.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2815,9 +2926,9 @@
             // label27
             // 
             this.label27.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label27.Location = new System.Drawing.Point(146, 22);
+            this.label27.Location = new System.Drawing.Point(167, 29);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(64, 16);
+            this.label27.Size = new System.Drawing.Size(73, 21);
             this.label27.TabIndex = 7;
             this.label27.Text = "Attack";
             this.label27.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2830,7 +2941,8 @@
             this.KnobCompAttack.HasTicks = true;
             this.KnobCompAttack.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobCompAttack.LargeChange = 100;
-            this.KnobCompAttack.Location = new System.Drawing.Point(146, 41);
+            this.KnobCompAttack.Location = new System.Drawing.Point(167, 55);
+            this.KnobCompAttack.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobCompAttack.Maximum = 5000;
             this.KnobCompAttack.Minimum = 1;
             this.KnobCompAttack.Name = "KnobCompAttack";
@@ -2839,7 +2951,7 @@
             this.KnobCompAttack.PointerOffset = 4;
             this.KnobCompAttack.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobCompAttack.PointerWidth = 2;
-            this.KnobCompAttack.Size = new System.Drawing.Size(64, 64);
+            this.KnobCompAttack.Size = new System.Drawing.Size(73, 73);
             this.KnobCompAttack.TabIndex = 6;
             this.KnobCompAttack.Text = "Level";
             this.KnobCompAttack.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2849,9 +2961,10 @@
             // 
             this.lblValCompRatio.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValCompRatio.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValCompRatio.Location = new System.Drawing.Point(76, 111);
+            this.lblValCompRatio.Location = new System.Drawing.Point(87, 148);
+            this.lblValCompRatio.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValCompRatio.Name = "lblValCompRatio";
-            this.lblValCompRatio.Size = new System.Drawing.Size(64, 16);
+            this.lblValCompRatio.Size = new System.Drawing.Size(73, 20);
             this.lblValCompRatio.TabIndex = 5;
             this.lblValCompRatio.Text = "0.0";
             this.lblValCompRatio.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2859,9 +2972,9 @@
             // label29
             // 
             this.label29.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label29.Location = new System.Drawing.Point(76, 22);
+            this.label29.Location = new System.Drawing.Point(87, 29);
             this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(64, 16);
+            this.label29.Size = new System.Drawing.Size(73, 21);
             this.label29.TabIndex = 4;
             this.label29.Text = "Ratio";
             this.label29.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2874,7 +2987,8 @@
             this.KnobCompRatio.HasTicks = true;
             this.KnobCompRatio.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobCompRatio.LargeChange = 1;
-            this.KnobCompRatio.Location = new System.Drawing.Point(76, 41);
+            this.KnobCompRatio.Location = new System.Drawing.Point(87, 55);
+            this.KnobCompRatio.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobCompRatio.Maximum = 50;
             this.KnobCompRatio.Minimum = 1;
             this.KnobCompRatio.Name = "KnobCompRatio";
@@ -2883,7 +2997,7 @@
             this.KnobCompRatio.PointerOffset = 4;
             this.KnobCompRatio.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobCompRatio.PointerWidth = 2;
-            this.KnobCompRatio.Size = new System.Drawing.Size(64, 64);
+            this.KnobCompRatio.Size = new System.Drawing.Size(73, 73);
             this.KnobCompRatio.TabIndex = 3;
             this.KnobCompRatio.Text = "Level";
             this.KnobCompRatio.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2893,9 +3007,10 @@
             // 
             this.lblValCompThreshold.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblValCompThreshold.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblValCompThreshold.Location = new System.Drawing.Point(6, 111);
+            this.lblValCompThreshold.Location = new System.Drawing.Point(7, 148);
+            this.lblValCompThreshold.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lblValCompThreshold.Name = "lblValCompThreshold";
-            this.lblValCompThreshold.Size = new System.Drawing.Size(64, 16);
+            this.lblValCompThreshold.Size = new System.Drawing.Size(73, 20);
             this.lblValCompThreshold.TabIndex = 2;
             this.lblValCompThreshold.Text = "0.0";
             this.lblValCompThreshold.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2903,9 +3018,9 @@
             // label31
             // 
             this.label31.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label31.Location = new System.Drawing.Point(6, 22);
+            this.label31.Location = new System.Drawing.Point(7, 29);
             this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(64, 16);
+            this.label31.Size = new System.Drawing.Size(73, 21);
             this.label31.TabIndex = 2;
             this.label31.Text = "Threshold";
             this.label31.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2918,7 +3033,8 @@
             this.KnobCompThreshold.HasTicks = true;
             this.KnobCompThreshold.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobCompThreshold.LargeChange = 1;
-            this.KnobCompThreshold.Location = new System.Drawing.Point(6, 41);
+            this.KnobCompThreshold.Location = new System.Drawing.Point(7, 55);
+            this.KnobCompThreshold.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobCompThreshold.Maximum = 0;
             this.KnobCompThreshold.Minimum = -60;
             this.KnobCompThreshold.Name = "KnobCompThreshold";
@@ -2927,7 +3043,7 @@
             this.KnobCompThreshold.PointerOffset = 4;
             this.KnobCompThreshold.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobCompThreshold.PointerWidth = 2;
-            this.KnobCompThreshold.Size = new System.Drawing.Size(64, 64);
+            this.KnobCompThreshold.Size = new System.Drawing.Size(73, 73);
             this.KnobCompThreshold.TabIndex = 1;
             this.KnobCompThreshold.Text = "Level";
             this.KnobCompThreshold.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -2938,9 +3054,10 @@
             this.CheckCompressor.AutoSize = true;
             this.CheckCompressor.BackColor = System.Drawing.SystemColors.Control;
             this.CheckCompressor.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckCompressor.Location = new System.Drawing.Point(6, 0);
+            this.CheckCompressor.Location = new System.Drawing.Point(7, 0);
+            this.CheckCompressor.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CheckCompressor.Name = "CheckCompressor";
-            this.CheckCompressor.Size = new System.Drawing.Size(88, 19);
+            this.CheckCompressor.Size = new System.Drawing.Size(110, 24);
             this.CheckCompressor.TabIndex = 0;
             this.CheckCompressor.Text = "Compressor";
             this.CheckCompressor.UseVisualStyleBackColor = false;
@@ -2950,9 +3067,10 @@
             // 
             this.tabReverb.BackColor = System.Drawing.Color.Transparent;
             this.tabReverb.Controls.Add(this.groupBox1);
-            this.tabReverb.Location = new System.Drawing.Point(4, 24);
+            this.tabReverb.Location = new System.Drawing.Point(4, 29);
+            this.tabReverb.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabReverb.Name = "tabReverb";
-            this.tabReverb.Size = new System.Drawing.Size(574, 391);
+            this.tabReverb.Size = new System.Drawing.Size(658, 526);
             this.tabReverb.TabIndex = 7;
             this.tabReverb.Text = "Reverb";
             // 
@@ -2999,9 +3117,11 @@
             this.groupBox1.Controls.Add(this.KnobReverbDecayTime);
             this.groupBox1.Controls.Add(this.CheckReverb);
             this.groupBox1.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.groupBox1.Location = new System.Drawing.Point(3, 3);
+            this.groupBox1.Location = new System.Drawing.Point(3, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(552, 345);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBox1.Size = new System.Drawing.Size(631, 460);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             // 
@@ -3009,9 +3129,10 @@
             // 
             this.textBox13.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox13.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBox13.Location = new System.Drawing.Point(463, 312);
+            this.textBox13.Location = new System.Drawing.Point(529, 416);
+            this.textBox13.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox13.Name = "textBox13";
-            this.textBox13.Size = new System.Drawing.Size(72, 16);
+            this.textBox13.Size = new System.Drawing.Size(82, 20);
             this.textBox13.TabIndex = 38;
             this.textBox13.Text = "0.0";
             this.textBox13.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3020,9 +3141,9 @@
             // 
             this.label34.AutoSize = true;
             this.label34.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label34.Location = new System.Drawing.Point(463, 201);
+            this.label34.Location = new System.Drawing.Point(529, 268);
             this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(52, 15);
+            this.label34.Size = new System.Drawing.Size(66, 20);
             this.label34.TabIndex = 37;
             this.label34.Text = "DryLevel";
             this.label34.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -3035,7 +3156,8 @@
             this.KnobReverbDry.HasTicks = true;
             this.KnobReverbDry.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobReverbDry.LargeChange = 1;
-            this.KnobReverbDry.Location = new System.Drawing.Point(463, 234);
+            this.KnobReverbDry.Location = new System.Drawing.Point(529, 312);
+            this.KnobReverbDry.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobReverbDry.Maximum = 20;
             this.KnobReverbDry.Minimum = -80;
             this.KnobReverbDry.Name = "KnobReverbDry";
@@ -3044,7 +3166,7 @@
             this.KnobReverbDry.PointerOffset = 4;
             this.KnobReverbDry.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobReverbDry.PointerWidth = 2;
-            this.KnobReverbDry.Size = new System.Drawing.Size(72, 72);
+            this.KnobReverbDry.Size = new System.Drawing.Size(82, 82);
             this.KnobReverbDry.TabIndex = 36;
             this.KnobReverbDry.Text = "Level";
             this.KnobReverbDry.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -3053,9 +3175,10 @@
             // 
             this.textBox12.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox12.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBox12.Location = new System.Drawing.Point(385, 312);
+            this.textBox12.Location = new System.Drawing.Point(440, 416);
+            this.textBox12.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox12.Name = "textBox12";
-            this.textBox12.Size = new System.Drawing.Size(72, 16);
+            this.textBox12.Size = new System.Drawing.Size(82, 20);
             this.textBox12.TabIndex = 35;
             this.textBox12.Text = "0.0";
             this.textBox12.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3064,9 +3187,9 @@
             // 
             this.label32.AutoSize = true;
             this.label32.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label32.Location = new System.Drawing.Point(385, 201);
+            this.label32.Location = new System.Drawing.Point(440, 268);
             this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(55, 15);
+            this.label32.Size = new System.Drawing.Size(69, 20);
             this.label32.TabIndex = 34;
             this.label32.Text = "WetLevel";
             this.label32.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -3079,7 +3202,8 @@
             this.KnobReverbWet.HasTicks = true;
             this.KnobReverbWet.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobReverbWet.LargeChange = 1;
-            this.KnobReverbWet.Location = new System.Drawing.Point(385, 234);
+            this.KnobReverbWet.Location = new System.Drawing.Point(440, 312);
+            this.KnobReverbWet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobReverbWet.Maximum = 20;
             this.KnobReverbWet.Minimum = -80;
             this.KnobReverbWet.Name = "KnobReverbWet";
@@ -3088,7 +3212,7 @@
             this.KnobReverbWet.PointerOffset = 4;
             this.KnobReverbWet.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobReverbWet.PointerWidth = 2;
-            this.KnobReverbWet.Size = new System.Drawing.Size(72, 72);
+            this.KnobReverbWet.Size = new System.Drawing.Size(82, 82);
             this.KnobReverbWet.TabIndex = 33;
             this.KnobReverbWet.Text = "Level";
             this.KnobReverbWet.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -3098,9 +3222,10 @@
             // 
             this.textBox11.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox11.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBox11.Location = new System.Drawing.Point(307, 312);
+            this.textBox11.Location = new System.Drawing.Point(351, 416);
+            this.textBox11.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox11.Name = "textBox11";
-            this.textBox11.Size = new System.Drawing.Size(72, 16);
+            this.textBox11.Size = new System.Drawing.Size(82, 20);
             this.textBox11.TabIndex = 32;
             this.textBox11.Text = "0.0";
             this.textBox11.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3109,9 +3234,9 @@
             // 
             this.label30.AutoSize = true;
             this.label30.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label30.Location = new System.Drawing.Point(307, 201);
+            this.label30.Location = new System.Drawing.Point(351, 268);
             this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(74, 15);
+            this.label30.Size = new System.Drawing.Size(93, 20);
             this.label30.TabIndex = 31;
             this.label30.Text = "EarlyLateMix";
             this.label30.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -3124,14 +3249,15 @@
             this.KnobReverbEarlyLate.HasTicks = true;
             this.KnobReverbEarlyLate.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobReverbEarlyLate.LargeChange = 1;
-            this.KnobReverbEarlyLate.Location = new System.Drawing.Point(307, 234);
+            this.KnobReverbEarlyLate.Location = new System.Drawing.Point(351, 312);
+            this.KnobReverbEarlyLate.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobReverbEarlyLate.Name = "KnobReverbEarlyLate";
             this.KnobReverbEarlyLate.PointerColor = System.Drawing.SystemColors.ControlText;
             this.KnobReverbEarlyLate.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobReverbEarlyLate.PointerOffset = 4;
             this.KnobReverbEarlyLate.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobReverbEarlyLate.PointerWidth = 2;
-            this.KnobReverbEarlyLate.Size = new System.Drawing.Size(72, 72);
+            this.KnobReverbEarlyLate.Size = new System.Drawing.Size(82, 82);
             this.KnobReverbEarlyLate.TabIndex = 30;
             this.KnobReverbEarlyLate.Text = "Level";
             this.KnobReverbEarlyLate.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -3141,9 +3267,10 @@
             // 
             this.textBox10.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox10.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBox10.Location = new System.Drawing.Point(229, 312);
+            this.textBox10.Location = new System.Drawing.Point(262, 416);
+            this.textBox10.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox10.Name = "textBox10";
-            this.textBox10.Size = new System.Drawing.Size(72, 16);
+            this.textBox10.Size = new System.Drawing.Size(82, 20);
             this.textBox10.TabIndex = 29;
             this.textBox10.Text = "0.0";
             this.textBox10.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3152,9 +3279,9 @@
             // 
             this.label28.AutoSize = true;
             this.label28.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label28.Location = new System.Drawing.Point(229, 201);
+            this.label28.Location = new System.Drawing.Point(262, 268);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(51, 15);
+            this.label28.Size = new System.Drawing.Size(63, 20);
             this.label28.TabIndex = 28;
             this.label28.Text = "HighCut";
             this.label28.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -3167,7 +3294,8 @@
             this.KnobReverbHighCut.HasTicks = true;
             this.KnobReverbHighCut.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobReverbHighCut.LargeChange = 1;
-            this.KnobReverbHighCut.Location = new System.Drawing.Point(229, 234);
+            this.KnobReverbHighCut.Location = new System.Drawing.Point(262, 312);
+            this.KnobReverbHighCut.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobReverbHighCut.Maximum = 20000;
             this.KnobReverbHighCut.Minimum = 20;
             this.KnobReverbHighCut.Name = "KnobReverbHighCut";
@@ -3176,7 +3304,7 @@
             this.KnobReverbHighCut.PointerOffset = 4;
             this.KnobReverbHighCut.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobReverbHighCut.PointerWidth = 2;
-            this.KnobReverbHighCut.Size = new System.Drawing.Size(72, 72);
+            this.KnobReverbHighCut.Size = new System.Drawing.Size(82, 82);
             this.KnobReverbHighCut.TabIndex = 27;
             this.KnobReverbHighCut.Text = "Level";
             this.KnobReverbHighCut.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -3186,9 +3314,10 @@
             // 
             this.textBox9.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox9.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBox9.Location = new System.Drawing.Point(151, 312);
+            this.textBox9.Location = new System.Drawing.Point(173, 416);
+            this.textBox9.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(72, 16);
+            this.textBox9.Size = new System.Drawing.Size(82, 20);
             this.textBox9.TabIndex = 26;
             this.textBox9.Text = "0.0";
             this.textBox9.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3197,9 +3326,9 @@
             // 
             this.label26.AutoSize = true;
             this.label26.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label26.Location = new System.Drawing.Point(151, 201);
+            this.label26.Location = new System.Drawing.Point(173, 268);
             this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(57, 30);
+            this.label26.Size = new System.Drawing.Size(71, 40);
             this.label26.TabIndex = 25;
             this.label26.Text = "Low shelf\r\nGain\r\n";
             this.label26.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -3212,7 +3341,8 @@
             this.KnobReverbLowshelfGain.HasTicks = true;
             this.KnobReverbLowshelfGain.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobReverbLowshelfGain.LargeChange = 1;
-            this.KnobReverbLowshelfGain.Location = new System.Drawing.Point(151, 234);
+            this.KnobReverbLowshelfGain.Location = new System.Drawing.Point(173, 312);
+            this.KnobReverbLowshelfGain.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobReverbLowshelfGain.Maximum = 12;
             this.KnobReverbLowshelfGain.Minimum = -36;
             this.KnobReverbLowshelfGain.Name = "KnobReverbLowshelfGain";
@@ -3221,7 +3351,7 @@
             this.KnobReverbLowshelfGain.PointerOffset = 4;
             this.KnobReverbLowshelfGain.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobReverbLowshelfGain.PointerWidth = 2;
-            this.KnobReverbLowshelfGain.Size = new System.Drawing.Size(72, 72);
+            this.KnobReverbLowshelfGain.Size = new System.Drawing.Size(82, 82);
             this.KnobReverbLowshelfGain.TabIndex = 24;
             this.KnobReverbLowshelfGain.Text = "Level";
             this.KnobReverbLowshelfGain.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -3230,9 +3360,10 @@
             // 
             this.textBox8.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox8.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBox8.Location = new System.Drawing.Point(76, 290);
+            this.textBox8.Location = new System.Drawing.Point(87, 387);
+            this.textBox8.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox8.Name = "textBox8";
-            this.textBox8.Size = new System.Drawing.Size(64, 16);
+            this.textBox8.Size = new System.Drawing.Size(73, 20);
             this.textBox8.TabIndex = 23;
             this.textBox8.Text = "0.0";
             this.textBox8.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3241,9 +3372,9 @@
             // 
             this.label24.AutoSize = true;
             this.label24.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label24.Location = new System.Drawing.Point(76, 187);
+            this.label24.Location = new System.Drawing.Point(87, 249);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(61, 30);
+            this.label24.Size = new System.Drawing.Size(75, 40);
             this.label24.TabIndex = 22;
             this.label24.Text = "Low shelf\r\nFrequency";
             this.label24.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -3256,7 +3387,8 @@
             this.KnobReverbLowShelfFrequency.HasTicks = true;
             this.KnobReverbLowShelfFrequency.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobReverbLowShelfFrequency.LargeChange = 1;
-            this.KnobReverbLowShelfFrequency.Location = new System.Drawing.Point(76, 220);
+            this.KnobReverbLowShelfFrequency.Location = new System.Drawing.Point(87, 293);
+            this.KnobReverbLowShelfFrequency.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobReverbLowShelfFrequency.Maximum = 1000;
             this.KnobReverbLowShelfFrequency.Minimum = 20;
             this.KnobReverbLowShelfFrequency.Name = "KnobReverbLowShelfFrequency";
@@ -3265,7 +3397,7 @@
             this.KnobReverbLowShelfFrequency.PointerOffset = 4;
             this.KnobReverbLowShelfFrequency.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobReverbLowShelfFrequency.PointerWidth = 2;
-            this.KnobReverbLowShelfFrequency.Size = new System.Drawing.Size(72, 72);
+            this.KnobReverbLowShelfFrequency.Size = new System.Drawing.Size(82, 82);
             this.KnobReverbLowShelfFrequency.TabIndex = 21;
             this.KnobReverbLowShelfFrequency.Text = "Level";
             this.KnobReverbLowShelfFrequency.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -3275,9 +3407,10 @@
             // 
             this.textBox7.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox7.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBox7.Location = new System.Drawing.Point(6, 290);
+            this.textBox7.Location = new System.Drawing.Point(7, 387);
+            this.textBox7.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox7.Name = "textBox7";
-            this.textBox7.Size = new System.Drawing.Size(64, 16);
+            this.textBox7.Size = new System.Drawing.Size(73, 20);
             this.textBox7.TabIndex = 20;
             this.textBox7.Text = "0.0";
             this.textBox7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3286,9 +3419,9 @@
             // 
             this.label22.AutoSize = true;
             this.label22.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label22.Location = new System.Drawing.Point(6, 187);
+            this.label22.Location = new System.Drawing.Point(7, 249);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(46, 15);
+            this.label22.Size = new System.Drawing.Size(58, 20);
             this.label22.TabIndex = 19;
             this.label22.Text = "Density";
             this.label22.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -3301,7 +3434,8 @@
             this.KnobReverbDensity.HasTicks = true;
             this.KnobReverbDensity.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobReverbDensity.LargeChange = 1;
-            this.KnobReverbDensity.Location = new System.Drawing.Point(6, 220);
+            this.KnobReverbDensity.Location = new System.Drawing.Point(7, 293);
+            this.KnobReverbDensity.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobReverbDensity.Minimum = 10;
             this.KnobReverbDensity.Name = "KnobReverbDensity";
             this.KnobReverbDensity.PointerColor = System.Drawing.SystemColors.ControlText;
@@ -3309,7 +3443,7 @@
             this.KnobReverbDensity.PointerOffset = 4;
             this.KnobReverbDensity.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobReverbDensity.PointerWidth = 2;
-            this.KnobReverbDensity.Size = new System.Drawing.Size(72, 72);
+            this.KnobReverbDensity.Size = new System.Drawing.Size(82, 82);
             this.KnobReverbDensity.TabIndex = 18;
             this.KnobReverbDensity.Text = "Level";
             this.KnobReverbDensity.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -3319,9 +3453,10 @@
             // 
             this.textBox6.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox6.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBox6.Location = new System.Drawing.Point(372, 154);
+            this.textBox6.Location = new System.Drawing.Point(425, 205);
+            this.textBox6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(64, 16);
+            this.textBox6.Size = new System.Drawing.Size(73, 20);
             this.textBox6.TabIndex = 17;
             this.textBox6.Text = "0.0";
             this.textBox6.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3330,9 +3465,9 @@
             // 
             this.label20.AutoSize = true;
             this.label20.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label20.Location = new System.Drawing.Point(435, 40);
+            this.label20.Location = new System.Drawing.Point(497, 53);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(55, 15);
+            this.label20.Size = new System.Drawing.Size(68, 20);
             this.label20.TabIndex = 16;
             this.label20.Text = "Diffusion";
             this.label20.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -3345,7 +3480,8 @@
             this.KnobReverbDiffusion.HasTicks = true;
             this.KnobReverbDiffusion.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobReverbDiffusion.LargeChange = 1;
-            this.KnobReverbDiffusion.Location = new System.Drawing.Point(372, 84);
+            this.KnobReverbDiffusion.Location = new System.Drawing.Point(425, 112);
+            this.KnobReverbDiffusion.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobReverbDiffusion.Minimum = 10;
             this.KnobReverbDiffusion.Name = "KnobReverbDiffusion";
             this.KnobReverbDiffusion.PointerColor = System.Drawing.SystemColors.ControlText;
@@ -3353,7 +3489,7 @@
             this.KnobReverbDiffusion.PointerOffset = 4;
             this.KnobReverbDiffusion.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobReverbDiffusion.PointerWidth = 2;
-            this.KnobReverbDiffusion.Size = new System.Drawing.Size(72, 72);
+            this.KnobReverbDiffusion.Size = new System.Drawing.Size(82, 82);
             this.KnobReverbDiffusion.TabIndex = 15;
             this.KnobReverbDiffusion.Text = "Level";
             this.KnobReverbDiffusion.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -3363,9 +3499,10 @@
             // 
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox1.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBox1.Location = new System.Drawing.Point(302, 154);
+            this.textBox1.Location = new System.Drawing.Point(345, 205);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(64, 16);
+            this.textBox1.Size = new System.Drawing.Size(73, 20);
             this.textBox1.TabIndex = 14;
             this.textBox1.Text = "0.0";
             this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3374,9 +3511,9 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label10.Location = new System.Drawing.Point(328, 25);
+            this.label10.Location = new System.Drawing.Point(375, 33);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(90, 30);
+            this.label10.Size = new System.Drawing.Size(111, 40);
             this.label10.TabIndex = 13;
             this.label10.Text = "High Frequency\r\nDecay Ratio";
             this.label10.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -3389,7 +3526,8 @@
             this.KnobReverbHFDcRatio.HasTicks = true;
             this.KnobReverbHFDcRatio.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobReverbHFDcRatio.LargeChange = 1;
-            this.KnobReverbHFDcRatio.Location = new System.Drawing.Point(302, 84);
+            this.KnobReverbHFDcRatio.Location = new System.Drawing.Point(345, 112);
+            this.KnobReverbHFDcRatio.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobReverbHFDcRatio.Minimum = 10;
             this.KnobReverbHFDcRatio.Name = "KnobReverbHFDcRatio";
             this.KnobReverbHFDcRatio.PointerColor = System.Drawing.SystemColors.ControlText;
@@ -3397,7 +3535,7 @@
             this.KnobReverbHFDcRatio.PointerOffset = 4;
             this.KnobReverbHFDcRatio.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobReverbHFDcRatio.PointerWidth = 2;
-            this.KnobReverbHFDcRatio.Size = new System.Drawing.Size(72, 72);
+            this.KnobReverbHFDcRatio.Size = new System.Drawing.Size(82, 82);
             this.KnobReverbHFDcRatio.TabIndex = 12;
             this.KnobReverbHFDcRatio.Text = "Level";
             this.KnobReverbHFDcRatio.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -3407,9 +3545,10 @@
             // 
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox2.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBox2.Location = new System.Drawing.Point(232, 154);
+            this.textBox2.Location = new System.Drawing.Point(265, 205);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(64, 16);
+            this.textBox2.Size = new System.Drawing.Size(73, 20);
             this.textBox2.TabIndex = 11;
             this.textBox2.Text = "0.0";
             this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3418,9 +3557,9 @@
             // 
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label12.Location = new System.Drawing.Point(232, 23);
+            this.label12.Location = new System.Drawing.Point(265, 31);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(90, 30);
+            this.label12.Size = new System.Drawing.Size(111, 40);
             this.label12.TabIndex = 10;
             this.label12.Text = "High Frequency\r\nReference";
             this.label12.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -3433,7 +3572,8 @@
             this.KnobReverbHFRef.HasTicks = true;
             this.KnobReverbHFRef.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobReverbHFRef.LargeChange = 1000;
-            this.KnobReverbHFRef.Location = new System.Drawing.Point(232, 84);
+            this.KnobReverbHFRef.Location = new System.Drawing.Point(265, 112);
+            this.KnobReverbHFRef.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobReverbHFRef.Maximum = 20000;
             this.KnobReverbHFRef.Minimum = 20;
             this.KnobReverbHFRef.Name = "KnobReverbHFRef";
@@ -3442,7 +3582,7 @@
             this.KnobReverbHFRef.PointerOffset = 4;
             this.KnobReverbHFRef.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobReverbHFRef.PointerWidth = 2;
-            this.KnobReverbHFRef.Size = new System.Drawing.Size(72, 72);
+            this.KnobReverbHFRef.Size = new System.Drawing.Size(82, 82);
             this.KnobReverbHFRef.TabIndex = 9;
             this.KnobReverbHFRef.Text = "Level";
             this.KnobReverbHFRef.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -3452,9 +3592,10 @@
             // 
             this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox3.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBox3.Location = new System.Drawing.Point(162, 154);
+            this.textBox3.Location = new System.Drawing.Point(185, 205);
+            this.textBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(64, 16);
+            this.textBox3.Size = new System.Drawing.Size(73, 20);
             this.textBox3.TabIndex = 8;
             this.textBox3.Text = "0.0";
             this.textBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3463,9 +3604,9 @@
             // 
             this.label14.AutoSize = true;
             this.label14.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label14.Location = new System.Drawing.Point(162, 23);
+            this.label14.Location = new System.Drawing.Point(185, 31);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(61, 15);
+            this.label14.Size = new System.Drawing.Size(79, 20);
             this.label14.TabIndex = 7;
             this.label14.Text = "Late Delay";
             this.label14.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -3478,14 +3619,15 @@
             this.KnobReverbLateDelay.HasTicks = true;
             this.KnobReverbLateDelay.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobReverbLateDelay.LargeChange = 10;
-            this.KnobReverbLateDelay.Location = new System.Drawing.Point(162, 84);
+            this.KnobReverbLateDelay.Location = new System.Drawing.Point(185, 112);
+            this.KnobReverbLateDelay.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobReverbLateDelay.Name = "KnobReverbLateDelay";
             this.KnobReverbLateDelay.PointerColor = System.Drawing.SystemColors.ControlText;
             this.KnobReverbLateDelay.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobReverbLateDelay.PointerOffset = 4;
             this.KnobReverbLateDelay.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobReverbLateDelay.PointerWidth = 2;
-            this.KnobReverbLateDelay.Size = new System.Drawing.Size(72, 72);
+            this.KnobReverbLateDelay.Size = new System.Drawing.Size(82, 82);
             this.KnobReverbLateDelay.TabIndex = 6;
             this.KnobReverbLateDelay.Text = "Level";
             this.KnobReverbLateDelay.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -3495,9 +3637,10 @@
             // 
             this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox4.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBox4.Location = new System.Drawing.Point(92, 154);
+            this.textBox4.Location = new System.Drawing.Point(105, 205);
+            this.textBox4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(64, 16);
+            this.textBox4.Size = new System.Drawing.Size(73, 20);
             this.textBox4.TabIndex = 5;
             this.textBox4.Text = "0.0";
             this.textBox4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3506,9 +3649,9 @@
             // 
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label16.Location = new System.Drawing.Point(84, 23);
+            this.label16.Location = new System.Drawing.Point(96, 31);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(64, 15);
+            this.label16.Size = new System.Drawing.Size(83, 20);
             this.label16.TabIndex = 4;
             this.label16.Text = "Early Delay";
             this.label16.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -3521,7 +3664,8 @@
             this.KnobReverbEarlyDelay.HasTicks = true;
             this.KnobReverbEarlyDelay.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobReverbEarlyDelay.LargeChange = 10;
-            this.KnobReverbEarlyDelay.Location = new System.Drawing.Point(84, 43);
+            this.KnobReverbEarlyDelay.Location = new System.Drawing.Point(96, 57);
+            this.KnobReverbEarlyDelay.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobReverbEarlyDelay.Maximum = 300;
             this.KnobReverbEarlyDelay.Name = "KnobReverbEarlyDelay";
             this.KnobReverbEarlyDelay.PointerColor = System.Drawing.SystemColors.ControlText;
@@ -3529,7 +3673,7 @@
             this.KnobReverbEarlyDelay.PointerOffset = 4;
             this.KnobReverbEarlyDelay.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobReverbEarlyDelay.PointerWidth = 2;
-            this.KnobReverbEarlyDelay.Size = new System.Drawing.Size(72, 72);
+            this.KnobReverbEarlyDelay.Size = new System.Drawing.Size(82, 82);
             this.KnobReverbEarlyDelay.TabIndex = 3;
             this.KnobReverbEarlyDelay.Text = "Level";
             this.KnobReverbEarlyDelay.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -3539,9 +3683,10 @@
             // 
             this.textBox5.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox5.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBox5.Location = new System.Drawing.Point(22, 154);
+            this.textBox5.Location = new System.Drawing.Point(25, 205);
+            this.textBox5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(64, 16);
+            this.textBox5.Size = new System.Drawing.Size(73, 20);
             this.textBox5.TabIndex = 2;
             this.textBox5.Text = "0.0";
             this.textBox5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3550,9 +3695,9 @@
             // 
             this.label18.AutoSize = true;
             this.label18.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label18.Location = new System.Drawing.Point(6, 25);
+            this.label18.Location = new System.Drawing.Point(7, 33);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(67, 15);
+            this.label18.Size = new System.Drawing.Size(87, 20);
             this.label18.TabIndex = 2;
             this.label18.Text = "Decay Time";
             this.label18.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -3565,7 +3710,8 @@
             this.KnobReverbDecayTime.HasTicks = true;
             this.KnobReverbDecayTime.KnobColor = System.Drawing.SystemColors.Control;
             this.KnobReverbDecayTime.LargeChange = 100;
-            this.KnobReverbDecayTime.Location = new System.Drawing.Point(6, 43);
+            this.KnobReverbDecayTime.Location = new System.Drawing.Point(7, 57);
+            this.KnobReverbDecayTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.KnobReverbDecayTime.Maximum = 20000;
             this.KnobReverbDecayTime.Minimum = 100;
             this.KnobReverbDecayTime.Name = "KnobReverbDecayTime";
@@ -3574,7 +3720,7 @@
             this.KnobReverbDecayTime.PointerOffset = 4;
             this.KnobReverbDecayTime.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
             this.KnobReverbDecayTime.PointerWidth = 2;
-            this.KnobReverbDecayTime.Size = new System.Drawing.Size(72, 72);
+            this.KnobReverbDecayTime.Size = new System.Drawing.Size(82, 82);
             this.KnobReverbDecayTime.TabIndex = 1;
             this.KnobReverbDecayTime.Text = "Level";
             this.KnobReverbDecayTime.TickColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -3585,9 +3731,10 @@
             this.CheckReverb.AutoSize = true;
             this.CheckReverb.BackColor = System.Drawing.SystemColors.Control;
             this.CheckReverb.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CheckReverb.Location = new System.Drawing.Point(6, 2);
+            this.CheckReverb.Location = new System.Drawing.Point(7, 3);
+            this.CheckReverb.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CheckReverb.Name = "CheckReverb";
-            this.CheckReverb.Size = new System.Drawing.Size(62, 19);
+            this.CheckReverb.Size = new System.Drawing.Size(77, 24);
             this.CheckReverb.TabIndex = 0;
             this.CheckReverb.Text = "Reverb";
             this.CheckReverb.UseVisualStyleBackColor = false;
@@ -3595,12 +3742,13 @@
             // 
             // OptionsForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(781, 419);
+            this.ClientSize = new System.Drawing.Size(893, 559);
             this.Controls.Add(this.tabControlEffects);
             this.Controls.Add(this.TreeMenu);
             this.DoubleBuffered = true;
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "OptionsForm";
             this.Text = "Options";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OptionsForm_FormClosing);

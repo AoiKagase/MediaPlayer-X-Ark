@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark
 {
@@ -185,8 +186,9 @@ namespace MediaPlayer_X_Ark
 			uint version;
 
 			FmodCallFunction(FmodSystem.setPluginPath(".\\Plugins"));
-//			FmodCallFunction(FmodSystem.loadPlugin("codec_aac.dll", out handle));
-//			FmodSystem.getPluginInfo(handle, out plugintype, out version);
+			FmodCallFunction(FmodSystem.loadPlugin("codec_mp4.dll", out handle, 100));
+			FmodSystem.getPluginInfo(handle, out plugintype, out version);
+//			MessageBox.Show(lastError); 
 			return;
         }
 
@@ -418,7 +420,11 @@ namespace MediaPlayer_X_Ark
 		public RESULT PlaySound(int index)
         {
 			FMOD.RESULT result = RESULT.OK;
-			if (PlayList[index].Sound.hasHandle())
+
+            if (index >= PlayList.Count)
+                return result;
+
+            if (PlayList[index].Sound.hasHandle())
             {
 				result = FmodCallFunction(FmodSystem.playSound(PlayList[index].Sound, FmodChannelGroup, false, out FmodChannel));
 				GetTags(index);
@@ -429,7 +435,10 @@ namespace MediaPlayer_X_Ark
 		public uint GetLength(int index)
         {
 			uint length = 0;
-			FmodCallFunction(PlayList[index].Sound.getLength(out length, TIMEUNIT.MS));
+            if (index >= PlayList.Count)
+                return 0;
+
+            FmodCallFunction(PlayList[index].Sound.getLength(out length, TIMEUNIT.MS));
 			return length;
         }
 		/// <summary>
@@ -439,10 +448,14 @@ namespace MediaPlayer_X_Ark
         {
 			FMOD.TAG tags;
 
-			int numtags;
-			int updated;
+			int numtags = 0;
+			int updated = 0;
 
-			PlayList[index].Sound.getNumTags(out numtags, out updated);
+			if (index >= PlayList.Count)
+				return;
+
+            PlayList[index].Sound.getNumTags(out numtags, out updated);
+
 			if (updated > 0)
             {
 				for (int i = 0; i < numtags; i++)
@@ -453,16 +466,16 @@ namespace MediaPlayer_X_Ark
                     {
 						string tagname = ((string)tags.name).ToUpper();
 						if (tagname.Equals("ARTIST") || tagname.Equals("ARTIST NAME"))
-							PlayList[index].Artist = Marshal.PtrToStringUTF8(tags.data);
+							PlayList[index].Artist = Marshal.PtrToStringUTF8(tags.data, (int)tags.datalen);
 
 						if ((tagname).Equals("TITLE") || tagname.Equals("TRACK TITLE"))
-							PlayList[index].Title = Marshal.PtrToStringUTF8(tags.data);
+							PlayList[index].Title = Marshal.PtrToStringUTF8(tags.data, (int)tags.datalen);
 
 						if ((tagname).Equals("AUTHOR"))
-							PlayList[index].Artist = Marshal.PtrToStringUTF8(tags.data);
+							PlayList[index].Artist = Marshal.PtrToStringUTF8(tags.data, (int)tags.datalen);
 
 						if ((tagname).Equals("ALBUM") || tagname.Equals("ALBUM TITLE"))
-							PlayList[index].Album = Marshal.PtrToStringUTF8(tags.data);
+							PlayList[index].Album = Marshal.PtrToStringUTF8(tags.data, (int)tags.datalen);
 
 					}
 				}

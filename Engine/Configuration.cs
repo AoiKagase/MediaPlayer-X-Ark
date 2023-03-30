@@ -241,8 +241,8 @@ namespace MediaPlayer_X_Ark.Engine
                         settings.OutputType = 3;
                         break;
                 }
-                engine.SetDevice(0);
                 settings.Device = engine.GetDeviceGUID();
+                engine.SetDevice(engine.GetDeviceGUID());
                 int sampleRate;
                 FMOD.SPEAKERMODE speakermode;
                 int speakernum;
@@ -333,7 +333,7 @@ namespace MediaPlayer_X_Ark.Engine
                         break;
                 }
 
-                settings.Skin = "bbbs\\bs.xsf";
+                settings.Skin = ".\\Skins\\bbbs\\bs.xsf";
             }
         }
 

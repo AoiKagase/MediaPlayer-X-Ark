@@ -52,9 +52,12 @@ namespace MediaPlayer_X_Ark
                 Spectrum.BitmapSpectrum = new Bitmap(oldSkinSystem.ImgSpectrum.Image);
             else
             {
-                g = Graphics.FromImage(oldSkinSystem.ImgSpectrum.Image);
-                g.Clear(oldSkinSystem.ImgSpectrum.Color);
-                g.Dispose();
+                if (oldSkinSystem.ImgSpectrum.Image != null)
+                {
+                    g = Graphics.FromImage(oldSkinSystem.ImgSpectrum.Image);
+                    g.Clear(oldSkinSystem.ImgSpectrum.Color);
+                    g.Dispose();
+                }
             }
             g = Graphics.FromImage(Spectrum.BitmapSnow);
             g.Clear(oldSkinSystem.ImgSpectrum.Color);
@@ -288,6 +291,7 @@ namespace MediaPlayer_X_Ark
                 //位置を記憶する
                 mousePoint = new Point(e.X, e.Y);
                 playListForm.Activate();
+                this.Activate();
             }
         }
 
@@ -522,7 +526,8 @@ namespace MediaPlayer_X_Ark
             if (player.IsPlaying())
                 player.Pause();
             else
-                PlayLoad();
+                if (playingIndex < player.PlayList.Count)
+                    PlayLoad();
         }
 
         /// <summary>
@@ -559,7 +564,8 @@ namespace MediaPlayer_X_Ark
             {
                 playingIndex--;
             }
-            PlayLoad();
+            if (playingIndex < player.PlayList.Count)
+                PlayLoad();
         }
         private void BtnSeekBack_Click(object sender, EventArgs e)
         {
@@ -576,7 +582,8 @@ namespace MediaPlayer_X_Ark
             {
                 playingIndex++;
             }
-            PlayLoad();
+            if (playingIndex < player.PlayList.Count)
+                PlayLoad();
         }
         private void BtnRandom_Click(object sender, EventArgs e)
         {
