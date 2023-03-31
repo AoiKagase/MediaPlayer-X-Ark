@@ -350,10 +350,35 @@ namespace MediaPlayer_X_Ark
             {
                 if (player.PlayList.Count > 1)
                 {
-                    if (nowplaying && playingIndex > -1 && playingIndex < player.PlayList.Count - 1)
+                    switch(player.loop)
                     {
-                        playingIndex++;
-                        PlayLoad();
+                        case LOOP_MODE.LOOP_NONE:
+                            if (nowplaying && playingIndex > -1 && playingIndex < player.PlayList.Count - 1)
+                            {
+                                playingIndex++;
+                                PlayLoad();
+                            }
+                            break;
+                        case LOOP_MODE.LOOP_ONE_REPEAT:
+                            if (nowplaying)
+                               PlayLoad();
+                            break;
+                        case LOOP_MODE.LOOP_ALL:
+                            if (nowplaying)
+                            {
+                                if (playingIndex > -1 && playingIndex < player.PlayList.Count - 1)
+                                {
+                                    playingIndex++;
+                                    PlayLoad();
+                                }
+                                else
+                                {
+                                    if (playingIndex == player.PlayList.Count - 1)
+                                        playingIndex = 0;
+                                    PlayLoad();
+                                }
+                            }
+                            break;
                     }
                 }
             }
@@ -484,7 +509,21 @@ namespace MediaPlayer_X_Ark
         }
         private void BtnLoop_MouseUp(object sender, MouseEventArgs e)
         {
-            BtnUpEvent(ref sender);
+            switch(player.loop)
+            {
+                case LOOP_MODE.LOOP_NONE:
+                    // 背景画像を元画像へ変更
+                    ((Button)sender).BackgroundImage = ((ButtonComponents)oldSkinSystem[((Button)sender).Name]).BackImage;
+                    break;
+                case LOOP_MODE.LOOP_ONE_REPEAT:
+                    ((Button)sender).BackgroundImage = ((ButtonComponents)oldSkinSystem[((Button)sender).Name]).DownImage;
+                    break;
+                case LOOP_MODE.LOOP_ALL:
+                    ((Button)sender).BackgroundImage = ((ButtonComponents)oldSkinSystem[((Button)sender).Name]).OptionalImage;
+                    break;
+
+            }
+            ((Button)sender).Refresh();
         }
         private void BtnSetting_MouseUp(object sender, MouseEventArgs e)
         {
@@ -590,6 +629,20 @@ namespace MediaPlayer_X_Ark
         }
         private void BtnLoop_Click(object sender, EventArgs e)
         {
+            switch(player.loop)
+            {
+                case LOOP_MODE.LOOP_NONE:
+                    player.loop = LOOP_MODE.LOOP_ONE_REPEAT;
+                    break;
+                case LOOP_MODE.LOOP_ONE_REPEAT:
+                    player.loop = LOOP_MODE.LOOP_ALL;
+                    break;
+                case LOOP_MODE.LOOP_ALL:
+                    player.loop = LOOP_MODE.LOOP_NONE;
+                    break;
+            }
+            ((Button)sender).BackgroundImage = ((ButtonComponents)oldSkinSystem[((Button)sender).Name]).DownImage;
+            ((Button)sender).Refresh();
         }
         private void BtnSetting_Click(object sender, EventArgs e)
         {

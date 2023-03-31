@@ -47,6 +47,12 @@ namespace MediaPlayer_X_Ark
 		SAMPLE_192000HZ	= 192000,
 	}
 
+	public enum LOOP_MODE
+	{
+		LOOP_NONE,
+		LOOP_ONE_REPEAT,
+		LOOP_ALL,
+	}
 	public class PlayerEngine
 	{
 		[DllImport("kernel32.dll")]
@@ -76,6 +82,8 @@ namespace MediaPlayer_X_Ark
 		public FmodSpectrum spectrum;
 
 		public Engine.Effector.Effectors effector;
+
+		public LOOP_MODE loop;
 
 		public List<DEVICE_INFO> DeviceList
         {
