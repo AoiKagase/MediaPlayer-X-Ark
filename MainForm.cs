@@ -254,9 +254,9 @@ namespace MediaPlayer_X_Ark
             player.Initialize();
 
             playListForm = new PlayListForm(this);
-            playListForm.Show(this);
+//            playListForm.Show(this);
             optionsForm = new OptionsForm(ref player, ref config);
-            optionsForm.Show(this);
+//            optionsForm.Show(this);
             // 予定：設定ファイルの読み込み スキンファイルの指定も含む
             // 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
             // 新形式（JSON）の場合はNewSkinSystemへインスタンス切替
@@ -271,6 +271,15 @@ namespace MediaPlayer_X_Ark
             SldVolume.Maximum = 100;
             SldVolume.Value = config.settings.Volume;
             initialize = true;
+
+            string[] parameters = System.Environment.GetCommandLineArgs();
+            if (parameters.Length > 1)
+            {
+                if (File.Exists(parameters[1]))
+                {
+                    OpenFile(parameters[1]);
+                }
+            }
         }
 
         /// <summary>
@@ -768,6 +777,21 @@ namespace MediaPlayer_X_Ark
         private void Spectrum_Click(object sender, EventArgs e)
         {
             Spectrum.Mode = (Spectrum.Mode + 1) % 3;
+        }
+
+        private void BtnCD_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnCD_MouseDown(object sender, MouseEventArgs e)
+        {
+            BtnDownEvent(ref sender);
+        }
+
+        private void BtnCD_MouseUp(object sender, MouseEventArgs e)
+        {
+            BtnUpEvent(ref sender);
         }
     }
 }

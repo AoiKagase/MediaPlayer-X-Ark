@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -239,11 +240,12 @@ namespace MediaPlayer_X_Ark
 							// 横間隔で間引き有り
 							for (int i = 0; i < windowSize; i += step)
 							{
-								// バー高さ取得
-								lineHeight = this.Height - (int)((lin2dB(mFFT[i]) + 80f) * 1.2f);
+                                // バー高さ取得
+                                lineHeight = this.Height - (int)((this.Height / 80f) * ((lin2dB(mFFT[i]) + 80f)));
+//                                Math.Clamp((float)Math.Log10(linear) * 20.0f, -80.0f, 0.0f);
 
-								// 横位置（左）
-								line3.Left = i;
+                                // 横位置（左）
+                                line3.Left = i;
 
 								// 横位置（右）左位置+1pxを基準として横間隔/2分広げる
 								// スペクトラム領域より描画域が広い場合はバーの横幅を広げる

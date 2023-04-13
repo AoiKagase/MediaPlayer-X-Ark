@@ -25,6 +25,13 @@ namespace MediaPlayer_X_Ark
             get { return this.ScrollTime; }
             set { this.ScrollTime = value; }
         }
+
+        public bool ScrollEnable
+        {
+            get;
+            set;
+        }
+
         public ScrollLabel()
         {
             InitializeComponent();
@@ -42,9 +49,12 @@ namespace MediaPlayer_X_Ark
 
         private void ScrollTime_Tick(object sender, EventArgs e)
         {
-            if (Label.Left + Label.Width < 0)
-                Label.Left = this.Width + 10;
-            Label.Left--;
+            if (this.ScrollEnable)
+            {
+                if (Label.Left + Label.Width < 0)
+                    Label.Left = this.Width + 10;
+                Label.Left--;
+            }
         }
     }
 }

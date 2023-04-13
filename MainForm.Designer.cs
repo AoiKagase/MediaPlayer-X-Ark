@@ -31,6 +31,7 @@ namespace MediaPlayer_X_Ark
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.BtnPlay = new System.Windows.Forms.Button();
             this.BtnStop = new System.Windows.Forms.Button();
             this.Timer = new System.Windows.Forms.Timer(this.components);
@@ -54,6 +55,7 @@ namespace MediaPlayer_X_Ark
             this.LabelTime = new MediaPlayer_X_Ark.ScrollLabel();
             this.SeekiTimer = new System.Windows.Forms.Timer(this.components);
             this.Spectrum = new MediaPlayer_X_Ark.SpectrumBox();
+            this.BtnCD = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.Spectrum)).BeginInit();
             this.SuspendLayout();
             // 
@@ -330,6 +332,7 @@ namespace MediaPlayer_X_Ark
             this.LabelTitle.BackColor = System.Drawing.SystemColors.Window;
             this.LabelTitle.Location = new System.Drawing.Point(257, 161);
             this.LabelTitle.Name = "LabelTitle";
+            this.LabelTitle.ScrollEnable = true;
             this.LabelTitle.Size = new System.Drawing.Size(73, 27);
             this.LabelTitle.TabIndex = 18;
             // 
@@ -338,6 +341,7 @@ namespace MediaPlayer_X_Ark
             this.LabelTime.BackColor = System.Drawing.SystemColors.Window;
             this.LabelTime.Location = new System.Drawing.Point(174, 161);
             this.LabelTime.Name = "LabelTime";
+            this.LabelTime.ScrollEnable = false;
             this.LabelTime.Size = new System.Drawing.Size(75, 27);
             this.LabelTime.TabIndex = 19;
             // 
@@ -350,9 +354,9 @@ namespace MediaPlayer_X_Ark
             // 
             this.Spectrum.BackColor = System.Drawing.Color.Transparent;
             this.Spectrum.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.Spectrum.BitmapSnow = null;
-            this.Spectrum.BitmapSpectrum = null;
-            this.Spectrum.BitmapWave = null;
+            this.Spectrum.BitmapSnow = ((System.Drawing.Bitmap)(resources.GetObject("Spectrum.BitmapSnow")));
+            this.Spectrum.BitmapSpectrum = ((System.Drawing.Bitmap)(resources.GetObject("Spectrum.BitmapSpectrum")));
+            this.Spectrum.BitmapWave = ((System.Drawing.Bitmap)(resources.GetObject("Spectrum.BitmapWave")));
             this.Spectrum.Location = new System.Drawing.Point(138, 275);
             this.Spectrum.mFFT = null;
             this.Spectrum.Mode = 0;
@@ -362,6 +366,22 @@ namespace MediaPlayer_X_Ark
             this.Spectrum.TabStop = false;
             this.Spectrum.Click += new System.EventHandler(this.Spectrum_Click);
             // 
+            // BtnCD
+            // 
+            this.BtnCD.AutoSize = true;
+            this.BtnCD.BackColor = System.Drawing.SystemColors.HotTrack;
+            this.BtnCD.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.BtnCD.FlatAppearance.BorderSize = 0;
+            this.BtnCD.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BtnCD.Location = new System.Drawing.Point(12, 194);
+            this.BtnCD.Name = "BtnCD";
+            this.BtnCD.Size = new System.Drawing.Size(75, 27);
+            this.BtnCD.TabIndex = 21;
+            this.BtnCD.UseVisualStyleBackColor = false;
+            this.BtnCD.Click += new System.EventHandler(this.BtnCD_Click);
+            this.BtnCD.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnCD_MouseDown);
+            this.BtnCD.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnCD_MouseUp);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -370,6 +390,8 @@ namespace MediaPlayer_X_Ark
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(500, 500);
             this.ControlBox = false;
+            this.Controls.Add(this.BtnPlaylist);
+            this.Controls.Add(this.BtnCD);
             this.Controls.Add(this.Spectrum);
             this.Controls.Add(this.SldVolume);
             this.Controls.Add(this.SldPan);
@@ -384,7 +406,6 @@ namespace MediaPlayer_X_Ark
             this.Controls.Add(this.BtnRandom);
             this.Controls.Add(this.BtnLoop);
             this.Controls.Add(this.BtnSetting);
-            this.Controls.Add(this.BtnPlaylist);
             this.Controls.Add(this.BtnMinisize);
             this.Controls.Add(this.BtnClose);
             this.Controls.Add(this.BtnOpen);
@@ -429,6 +450,7 @@ namespace MediaPlayer_X_Ark
         private ScrollLabel LabelTime;
         private System.Windows.Forms.Timer SeekiTimer;
         private SpectrumBox Spectrum;
+        private System.Windows.Forms.Button BtnCD;
     }
 }
 

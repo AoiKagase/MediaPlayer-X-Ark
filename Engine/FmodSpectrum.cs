@@ -36,10 +36,11 @@ namespace MediaPlayer_X_Ark
 
 			if (FmodSystem.createDSPByType(DSP_TYPE.FFT, out mFFT) == RESULT.OK)
 			{
-				mFFT.setParameterInt((int)DSP_FFT.WINDOWTYPE, (int)DSP_FFT_WINDOW.HANNING);
+				mFFT.setParameterInt((int)DSP_FFT.WINDOWTYPE, (int)DSP_FFT_WINDOW.RECT);
 				mFFT.setParameterInt((int)DSP_FFT.WINDOWSIZE, windowSize * 2);
 
 				this.lastError = Error.String(FmodChannelGroup.addDSP(CHANNELCONTROL_DSP_INDEX.HEAD, mFFT));
+
 			}
 		}
 
@@ -87,7 +88,6 @@ namespace MediaPlayer_X_Ark
 							// Allocate the fft spectrum buffer once
 							mFFTSpectrum = new float[fftData.length];
 						}
-
 						// channel = 0? 
 						// スペクトラム値の取得
 						fftData.getSpectrum(0, ref mFFTSpectrum);

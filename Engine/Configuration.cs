@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using System.IO;
 using System.Text.Json.Serialization;
-
+using System.Windows.Forms;
 namespace MediaPlayer_X_Ark.Engine
 {
     public class ConfigurationData
@@ -217,9 +217,9 @@ namespace MediaPlayer_X_Ark.Engine
         public Configration(ref PlayerEngine engine)
         {
             this.engine = engine;
-            if (File.Exists("config.json"))
+            if (File.Exists(Application.StartupPath + "config.json"))
             {
-                string jsonString = File.ReadAllText("config.json", Encoding.UTF8);
+                string jsonString = File.ReadAllText(Application.StartupPath + "config.json", Encoding.UTF8);
                 settings = JsonSerializer.Deserialize<ConfigurationData>(jsonString);
             }
             else
@@ -333,7 +333,7 @@ namespace MediaPlayer_X_Ark.Engine
                         break;
                 }
 
-                settings.Skin = ".\\Skins\\bbbs\\bs.xsf";
+                settings.Skin = ".\\bbbs\\bs.xsf";
             }
         }
 
@@ -344,7 +344,7 @@ namespace MediaPlayer_X_Ark.Engine
             var options = new JsonSerializerOptions { WriteIndented = true };
             string jsonString = JsonSerializer.Serialize(settings, options);
 
-            File.WriteAllText("config.json", jsonString);
+            File.WriteAllText(Application.ExecutablePath + "config.json", jsonString);
         }
 
         public FMOD.SOUND_FORMAT GetSoundFormat()

@@ -88,8 +88,9 @@ namespace MediaPlayer_X_Ark.Skin
 		public ButtonComponents BtnSetting;
 		public ButtonComponents BtnPlaylist;
 		public ButtonComponents BtnMinisize;
+        public ButtonComponents BtnCD;
 
-		public SliderComponents SldVolume;
+        public SliderComponents SldVolume;
 		public SliderComponents SldPan;
 		public SliderComponents SldTrack;
 
@@ -121,12 +122,15 @@ namespace MediaPlayer_X_Ark.Skin
 			StringBuilder nValue = new StringBuilder(256);
 			uint capacity = Convert.ToUInt32(nValue.Capacity);
 
-			if (!File.Exists(defaultSkinDir + loadSkinFile))
+			if (!File.Exists(Application.StartupPath + defaultSkinDir + loadSkinFile))
 			{
 				skinFile = Application.StartupPath + defaultSkinDir + defaultSkin;
 			}
-			skinFile = (defaultSkinDir + loadSkinFile);
-			skinDir = Path.GetDirectoryName(defaultSkinDir + loadSkinFile);
+			else
+			{
+                skinFile = (Application.StartupPath + defaultSkinDir + loadSkinFile);
+            }
+            skinDir = Path.GetDirectoryName(Application.StartupPath + defaultSkinDir + loadSkinFile);
 
 			result = Win32API.GetPrivateProfileString("SkinSetting", "-Extension", "bmp", nValue, capacity, skinFile);
 			extension = nValue.ToString();
@@ -150,9 +154,10 @@ namespace MediaPlayer_X_Ark.Skin
 			LoadButtonComponents(ref BtnPlaylist, skinDir, "13", extension, "ButtonVector", "-PlayList", skinFile);
 			LoadButtonComponents(ref BtnSetting, skinDir, "14", extension, "ButtonVector", "-Setting", skinFile);
 			LoadButtonComponents(ref BtnMinisize, skinDir, "17", extension, "ButtonVector", "-MiniSize", skinFile);
+            LoadButtonComponents(ref BtnCD, skinDir, "16", extension, "ButtonVector", "-OpenCD", skinFile);
 
 
-			result = Win32API.GetPrivateProfileString("GraphicArea", "-SpectrumPicture", "", nValue, capacity, skinFile);
+            result = Win32API.GetPrivateProfileString("GraphicArea", "-SpectrumPicture", "", nValue, capacity, skinFile);
 			ImgSpectrum.ImageFile = skinDir + "\\" + nValue.ToString();
 			ImgSpectrum.Image = LoadImage(ImgSpectrum.ImageFile);
 			if (ImgSpectrum.Image == null)
