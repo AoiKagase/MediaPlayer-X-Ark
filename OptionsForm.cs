@@ -560,7 +560,7 @@ namespace MediaPlayer_X_Ark
 			cmbDevice.ValueMember = "GUID";
 			cmbDevice.SelectedValue = _config.settings.Device;
 			cmbSampleRate.SelectedIndex = _config.settings.SampleRate;
-			cmbFormat.SelectedIndex = _config.settings.Format;
+
 			cmbSampling.SelectedIndex = _config.settings.SamplingMode;
 			cmbSpeaker.SelectedIndex = _config.settings.SpeakerMode;
 
