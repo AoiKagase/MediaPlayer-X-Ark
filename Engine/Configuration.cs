@@ -42,11 +42,6 @@ namespace MediaPlayer_X_Ark.Engine
         public int SampleRate { get; set; }
 
         /// <summary>
-        /// フォーマット
-        /// </summary>
-        public int Format { get; set; }
-
-        /// <summary>
         /// サンプリングモード
         /// </summary>
         public int SamplingMode { get; set; }
@@ -247,7 +242,7 @@ namespace MediaPlayer_X_Ark.Engine
                 FMOD.SPEAKERMODE speakermode;
                 int speakernum;
                 engine.GetSoftwareFormat(out sampleRate, out speakermode, out speakernum);
-                settings.Format = 1;
+
                 switch (sampleRate)
                 {
                     case 192000:
@@ -349,26 +344,8 @@ namespace MediaPlayer_X_Ark.Engine
 
         public FMOD.SOUND_FORMAT GetSoundFormat()
         {
-            switch(settings.Format)
-            {
-                // 8bit integer PCM
-                case 0:
-                    return FMOD.SOUND_FORMAT.PCM8;
-                // 16bit integer PCM
-                case 1:
-                    return FMOD.SOUND_FORMAT.PCM16;
-                // 24bit integer PCM
-                case 2:
-                    return FMOD.SOUND_FORMAT.PCM24;
-                // 32bit integer PCM
-                case 3:
-                    return FMOD.SOUND_FORMAT.PCM32;
-                // 32bit floating point PCM
-                case 4:
-                    return FMOD.SOUND_FORMAT.PCMFLOAT;
-                default:
-                    return FMOD.SOUND_FORMAT.PCM16;
-            }
+			// FMODは内部的に常に32bit floatで処理するため固定
+			return FMOD.SOUND_FORMAT.NONE;
         }
 
         public FMOD.OUTPUTTYPE GetOutputType()

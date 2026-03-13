@@ -805,7 +805,13 @@ namespace MediaPlayer_X_Ark
 
 		private void BtnUpdate_Click(object sender, EventArgs e)
         {
-			_config.settings.Format = cmbFormat.SelectedIndex;
+			// デバイスはPlayLoad()で反映されるため、ここでの即時反映は不要
+			// OutputType/SampleRate/SpeakerModeは次回起動時に反映
+			bool requiresRestart =
+				_config.settings.OutputType != cmbOutput.SelectedIndex ||
+				_config.settings.SampleRate != cmbSampleRate.SelectedIndex ||
+				_config.settings.SpeakerMode != cmbSpeaker.SelectedIndex;
+
 			if (cmbDevice.Enabled)
 				_config.settings.Device = cmbDevice.SelectedValue.ToString();
 			_config.settings.SampleRate = cmbSampleRate.SelectedIndex;
@@ -813,13 +819,6 @@ namespace MediaPlayer_X_Ark
 			_config.settings.SamplingMode = cmbSampling.SelectedIndex;
 			_config.settings.SpeakerMode = cmbSpeaker.SelectedIndex;
 			_config.Save();
-
-			// デバイスはPlayLoad()で反映されるため、ここでの即時反映は不要
-			// OutputType/SampleRate/SpeakerModeは次回起動時に反映
-			bool requiresRestart =
-				_config.settings.OutputType != cmbOutput.SelectedIndex ||
-				_config.settings.SampleRate != cmbSampleRate.SelectedIndex ||
-				_config.settings.SpeakerMode != cmbSpeaker.SelectedIndex;
 
 			string message = requiresRestart
 				? "設定を保存しました。\n出力形式・サンプルレート・スピーカーモードは次回起動時に反映されます。"
