@@ -51,8 +51,6 @@
 			label43 = new System.Windows.Forms.Label();
 			cmbSampling = new System.Windows.Forms.ComboBox();
 			label42 = new System.Windows.Forms.Label();
-			cmbFormat = new System.Windows.Forms.ComboBox();
-			label41 = new System.Windows.Forms.Label();
 			cmbSampleRate = new System.Windows.Forms.ComboBox();
 			label40 = new System.Windows.Forms.Label();
 			cmbDevice = new System.Windows.Forms.ComboBox();
@@ -338,8 +336,6 @@
 			tabSetting.Controls.Add(label43);
 			tabSetting.Controls.Add(cmbSampling);
 			tabSetting.Controls.Add(label42);
-			tabSetting.Controls.Add(cmbFormat);
-			tabSetting.Controls.Add(label41);
 			tabSetting.Controls.Add(cmbSampleRate);
 			tabSetting.Controls.Add(label40);
 			tabSetting.Controls.Add(cmbDevice);
@@ -410,26 +406,6 @@
 			label42.TabIndex = 21;
 			label42.Text = "サンプリングモード";
 			label42.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// cmbFormat
-			// 
-			cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			cmbFormat.FormattingEnabled = true;
-			cmbFormat.Items.AddRange(new object[] { "8bit integer PCM", "16bit integer PCM", "24bit integer PCM", "32bit integer PCM", "32bit floating point PCM" });
-			cmbFormat.Location = new System.Drawing.Point(105, 101);
-			cmbFormat.Name = "cmbFormat";
-			cmbFormat.Size = new System.Drawing.Size(242, 23);
-			cmbFormat.TabIndex = 20;
-			// 
-			// label41
-			// 
-			label41.AutoSize = true;
-			label41.Location = new System.Drawing.Point(43, 104);
-			label41.Name = "label41";
-			label41.Size = new System.Drawing.Size(56, 15);
-			label41.TabIndex = 19;
-			label41.Text = "フォーマット";
-			label41.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// cmbSampleRate
 			// 
@@ -3435,8 +3411,6 @@
         private System.Windows.Forms.Label label43;
         private System.Windows.Forms.ComboBox cmbSampling;
         private System.Windows.Forms.Label label42;
-        private System.Windows.Forms.ComboBox cmbFormat;
-        private System.Windows.Forms.Label label41;
         private System.Windows.Forms.ComboBox cmbSampleRate;
         private System.Windows.Forms.Label label40;
         private System.Windows.Forms.ComboBox cmbDevice;

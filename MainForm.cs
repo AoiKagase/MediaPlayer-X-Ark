@@ -158,7 +158,7 @@ namespace MediaPlayer_X_Ark
         public void OpenFile(string fileName)
         {
             // Open File
-            if (player.CreateSound(fileName, config.GetSoundFormat(), out playingIndex) == FMOD.RESULT.OK)
+            if (player.CreateSound(fileName, out playingIndex) == FMOD.RESULT.OK)
             {
                 PlayLoad();
             }
@@ -856,7 +856,7 @@ namespace MediaPlayer_X_Ark
                     }
                 }
                 // 後はOpenのみでプレイリストへ追加
-                player.CreateSound(file, config.GetSoundFormat(), out temp);
+                player.CreateSound(file, out temp);
             }
         }
 

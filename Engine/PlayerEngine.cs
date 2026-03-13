@@ -539,7 +539,7 @@ namespace MediaPlayer_X_Ark
 		/// Removed CDDA support.
 		/// </summary>
 		/// <param name="filename"></param>
-		public RESULT CreateSound(string filename, SOUND_FORMAT format, out int index)
+		public RESULT CreateSound(string filename, out int index)
         {
 			// CD Player
 			//if (filename.Substring(0, 3).Equals("cd:"))
@@ -563,7 +563,6 @@ namespace MediaPlayer_X_Ark
 			}
 			else
 			{
-				info.format = format;
 				if ((result = FmodCallFunction(FmodSystem.createStream(filename, FMOD.MODE.DEFAULT, ref info, out sound))) == RESULT.OK)
 				{
 					Engine.PlayList plist = new Engine.PlayList(filename, sound);
