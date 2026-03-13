@@ -12,11 +12,13 @@ namespace MediaPlayer_X_Ark
         /// アプリケーションのメイン エントリ ポイントです。
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            //            Application.EnableVisualStyles();
+            //            Application.SetCompatibleTextRenderingDefault(false);
+            //            Application.Run(new MainForm());
+            StartUp winAppBase = new StartUp();
+            winAppBase.Run(args);
         }
     }
 }

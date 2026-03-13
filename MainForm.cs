@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using MediaPlayer_X_Ark.Skin;
 using System.IO;
+using System.Numerics;
 
 namespace MediaPlayer_X_Ark
 {
@@ -154,7 +155,7 @@ namespace MediaPlayer_X_Ark
         /// ファイルを開く
         /// </summary>
         /// <param name="fileName"></param>
-        private void OpenFile(string fileName)
+        public void OpenFile(string fileName)
         {
             // Open File
             if (player.CreateSound(fileName, config.GetSoundFormat(), out playingIndex) == FMOD.RESULT.OK)
@@ -247,11 +248,10 @@ namespace MediaPlayer_X_Ark
             _toolTip = new ToolTip(components);
             // FMODサウンドエンジン
             player = new PlayerEngine();
+            player.Initialize();
             config = new Engine.Configration(ref player);
-
             // サンプルレート・スピーカーモード
             player.SetSoftwareFormat(config.GetSampleRate(), config.GetSpeakerMode());
-            player.Initialize();
 
             playListForm = new PlayListForm(this);
 //            playListForm.Show(this);
@@ -272,6 +272,7 @@ namespace MediaPlayer_X_Ark
             SldVolume.Value = config.settings.Volume;
             initialize = true;
 
+            // 起動パラメータを取得し、ファイルパスが取得出来るならばOpen関数へ引き渡す
             string[] parameters = System.Environment.GetCommandLineArgs();
             if (parameters.Length > 1)
             {
@@ -608,12 +609,25 @@ namespace MediaPlayer_X_Ark
         }
         private void BtnBack_Click(object sender, EventArgs e)
         {
-            if (playingIndex > 0)
+            // ループ無し：最初の曲まで減算
+            // １曲ループ：最初の曲まで減算
+            // 全曲ループ：最初の曲まで減算、最初の曲から最後の曲へ戻る
+            switch(player.loop)
             {
-                playingIndex--;
+                case LOOP_MODE.LOOP_NONE:
+                case LOOP_MODE.LOOP_ONE_REPEAT:
+                    if (playingIndex > 0)
+                        playingIndex--;
+                    break;
+                case LOOP_MODE.LOOP_ALL:
+                    if (playingIndex > 0)
+                        playingIndex--;
+                    else
+                        playingIndex = player.PlayList.Count - 1;
+                    break;
+
             }
-            if (playingIndex < player.PlayList.Count)
-                PlayLoad();
+            PlayLoad();
         }
         private void BtnSeekBack_Click(object sender, EventArgs e)
         {
@@ -626,12 +640,24 @@ namespace MediaPlayer_X_Ark
         }
         private void BtnNext_Click(object sender, EventArgs e)
         {
-            if (playingIndex < player.PlayList.Count - 1)
+            // ループ無し：最後の曲まで加算
+            // １曲ループ：最後の曲まで加算
+            // 全曲ループ：最後の曲まで加算、最後の曲から最初の曲へ戻る
+            switch (player.loop)
             {
-                playingIndex++;
+                case LOOP_MODE.LOOP_NONE:
+                case LOOP_MODE.LOOP_ONE_REPEAT:
+                    if (playingIndex < player.PlayList.Count - 1)
+                        playingIndex++;
+                    break;
+                case LOOP_MODE.LOOP_ALL:
+                    if (playingIndex < player.PlayList.Count - 1)
+                        playingIndex++;
+                    else
+                        playingIndex = 0;
+                    break;
             }
-            if (playingIndex < player.PlayList.Count)
-                PlayLoad();
+            PlayLoad();
         }
         private void BtnRandom_Click(object sender, EventArgs e)
         {
@@ -792,6 +818,44 @@ namespace MediaPlayer_X_Ark
         private void BtnCD_MouseUp(object sender, MouseEventArgs e)
         {
             BtnUpEvent(ref sender);
+        }
+
+        private void MainForm_DragDrop(object sender, DragEventArgs e)
+        {
+            //コントロール内にドロップされたとき実行される
+            //ドロップされたすべてのファイル名を取得する
+            string[] fileName =
+                (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            int idx = 0;
+            int temp = 0;
+            foreach(string file in fileName)
+            {
+                // 最初の1曲目
+                if (idx++ == 0)
+                {
+                    // 再生中ではない場合
+                    if (!player.IsPlaying())
+                    {
+                        // 最初の１つはOpen=>Play処理を行う
+                        OpenFile(file);
+                        continue;
+                    }
+                }
+                // 後はOpenのみでプレイリストへ追加
+                player.CreateSound(file, config.GetSoundFormat(), out temp);
+            }
+        }
+
+        private void MainForm_DragEnter(object sender, DragEventArgs e)
+        {
+            //コントロール内にドラッグされたとき実行される
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                //ドラッグされたデータ形式を調べ、ファイルのときはコピーとする
+                e.Effect = DragDropEffects.Copy;
+            else
+                //ファイル以外は受け付けない
+                e.Effect = DragDropEffects.None;
         }
     }
 }

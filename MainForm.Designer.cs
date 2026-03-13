@@ -30,399 +30,401 @@ namespace MediaPlayer_X_Ark
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.BtnPlay = new System.Windows.Forms.Button();
-            this.BtnStop = new System.Windows.Forms.Button();
-            this.Timer = new System.Windows.Forms.Timer(this.components);
-            this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.BtnOpen = new System.Windows.Forms.Button();
-            this.BtnClose = new System.Windows.Forms.Button();
-            this.BtnMinisize = new System.Windows.Forms.Button();
-            this.BtnPlaylist = new System.Windows.Forms.Button();
-            this.BtnSetting = new System.Windows.Forms.Button();
-            this.BtnLoop = new System.Windows.Forms.Button();
-            this.BtnRandom = new System.Windows.Forms.Button();
-            this.BtnNext = new System.Windows.Forms.Button();
-            this.BtnSeekForward = new System.Windows.Forms.Button();
-            this.BtnPause = new System.Windows.Forms.Button();
-            this.BtnSeekBack = new System.Windows.Forms.Button();
-            this.BtnBack = new System.Windows.Forms.Button();
-            this.SldVolume = new MediaPlayer_X_Ark.CustomSlider();
-            this.SldPan = new MediaPlayer_X_Ark.CustomSlider();
-            this.SldTrack = new MediaPlayer_X_Ark.CustomSlider();
-            this.LabelTitle = new MediaPlayer_X_Ark.ScrollLabel();
-            this.LabelTime = new MediaPlayer_X_Ark.ScrollLabel();
-            this.SeekiTimer = new System.Windows.Forms.Timer(this.components);
-            this.Spectrum = new MediaPlayer_X_Ark.SpectrumBox();
-            this.BtnCD = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.Spectrum)).BeginInit();
-            this.SuspendLayout();
+            BtnPlay = new System.Windows.Forms.Button();
+            BtnStop = new System.Windows.Forms.Button();
+            Timer = new System.Windows.Forms.Timer(components);
+            OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
+            BtnOpen = new System.Windows.Forms.Button();
+            BtnClose = new System.Windows.Forms.Button();
+            BtnMinisize = new System.Windows.Forms.Button();
+            BtnPlaylist = new System.Windows.Forms.Button();
+            BtnSetting = new System.Windows.Forms.Button();
+            BtnLoop = new System.Windows.Forms.Button();
+            BtnRandom = new System.Windows.Forms.Button();
+            BtnNext = new System.Windows.Forms.Button();
+            BtnSeekForward = new System.Windows.Forms.Button();
+            BtnPause = new System.Windows.Forms.Button();
+            BtnSeekBack = new System.Windows.Forms.Button();
+            BtnBack = new System.Windows.Forms.Button();
+            SldVolume = new CustomSlider();
+            SldPan = new CustomSlider();
+            SldTrack = new CustomSlider();
+            LabelTitle = new ScrollLabel();
+            LabelTime = new ScrollLabel();
+            SeekiTimer = new System.Windows.Forms.Timer(components);
+            Spectrum = new SpectrumBox();
+            BtnCD = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)Spectrum).BeginInit();
+            SuspendLayout();
             // 
             // BtnPlay
             // 
-            this.BtnPlay.AutoSize = true;
-            this.BtnPlay.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.BtnPlay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.BtnPlay.FlatAppearance.BorderSize = 0;
-            this.BtnPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BtnPlay.Location = new System.Drawing.Point(174, 63);
-            this.BtnPlay.Name = "BtnPlay";
-            this.BtnPlay.Size = new System.Drawing.Size(75, 27);
-            this.BtnPlay.TabIndex = 0;
-            this.BtnPlay.UseVisualStyleBackColor = false;
-            this.BtnPlay.Click += new System.EventHandler(this.BtnPlay_Click);
-            this.BtnPlay.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnPlay_MouseDown);
-            this.BtnPlay.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnPlay_MouseUp);
+            BtnPlay.AutoSize = true;
+            BtnPlay.BackColor = System.Drawing.SystemColors.HotTrack;
+            BtnPlay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            BtnPlay.FlatAppearance.BorderSize = 0;
+            BtnPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            BtnPlay.Location = new System.Drawing.Point(174, 63);
+            BtnPlay.Name = "BtnPlay";
+            BtnPlay.Size = new System.Drawing.Size(75, 27);
+            BtnPlay.TabIndex = 0;
+            BtnPlay.UseVisualStyleBackColor = false;
+            BtnPlay.Click += BtnPlay_Click;
+            BtnPlay.MouseDown += BtnPlay_MouseDown;
+            BtnPlay.MouseUp += BtnPlay_MouseUp;
             // 
             // BtnStop
             // 
-            this.BtnStop.AutoSize = true;
-            this.BtnStop.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.BtnStop.FlatAppearance.BorderSize = 0;
-            this.BtnStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BtnStop.Location = new System.Drawing.Point(255, 63);
-            this.BtnStop.Name = "BtnStop";
-            this.BtnStop.Size = new System.Drawing.Size(75, 27);
-            this.BtnStop.TabIndex = 0;
-            this.BtnStop.UseVisualStyleBackColor = false;
-            this.BtnStop.Click += new System.EventHandler(this.BtnStop_Click);
-            this.BtnStop.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnStop_MouseDown);
-            this.BtnStop.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnStop_MouseUp);
+            BtnStop.AutoSize = true;
+            BtnStop.BackColor = System.Drawing.SystemColors.HotTrack;
+            BtnStop.FlatAppearance.BorderSize = 0;
+            BtnStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            BtnStop.Location = new System.Drawing.Point(255, 63);
+            BtnStop.Name = "BtnStop";
+            BtnStop.Size = new System.Drawing.Size(75, 27);
+            BtnStop.TabIndex = 0;
+            BtnStop.UseVisualStyleBackColor = false;
+            BtnStop.Click += BtnStop_Click;
+            BtnStop.MouseDown += BtnStop_MouseDown;
+            BtnStop.MouseUp += BtnStop_MouseUp;
             // 
             // Timer
             // 
-            this.Timer.Enabled = true;
-            this.Timer.Tick += new System.EventHandler(this.PlayerTimer_Tick);
+            Timer.Enabled = true;
+            Timer.Tick += PlayerTimer_Tick;
             // 
             // OpenFileDialog
             // 
-            this.OpenFileDialog.FileName = "openFileDialog1";
+            OpenFileDialog.FileName = "openFileDialog1";
             // 
             // BtnOpen
             // 
-            this.BtnOpen.AutoSize = true;
-            this.BtnOpen.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.BtnOpen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.BtnOpen.FlatAppearance.BorderSize = 0;
-            this.BtnOpen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BtnOpen.Location = new System.Drawing.Point(93, 63);
-            this.BtnOpen.Name = "BtnOpen";
-            this.BtnOpen.Size = new System.Drawing.Size(75, 27);
-            this.BtnOpen.TabIndex = 2;
-            this.BtnOpen.UseVisualStyleBackColor = false;
-            this.BtnOpen.Click += new System.EventHandler(this.BtnOpenFile_Click);
-            this.BtnOpen.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnOpen_MouseDown);
-            this.BtnOpen.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnOpen_MouseUp);
+            BtnOpen.AutoSize = true;
+            BtnOpen.BackColor = System.Drawing.SystemColors.HotTrack;
+            BtnOpen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            BtnOpen.FlatAppearance.BorderSize = 0;
+            BtnOpen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            BtnOpen.Location = new System.Drawing.Point(93, 63);
+            BtnOpen.Name = "BtnOpen";
+            BtnOpen.Size = new System.Drawing.Size(75, 27);
+            BtnOpen.TabIndex = 2;
+            BtnOpen.UseVisualStyleBackColor = false;
+            BtnOpen.Click += BtnOpenFile_Click;
+            BtnOpen.MouseDown += BtnOpen_MouseDown;
+            BtnOpen.MouseUp += BtnOpen_MouseUp;
             // 
             // BtnClose
             // 
-            this.BtnClose.AutoSize = true;
-            this.BtnClose.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.BtnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.BtnClose.FlatAppearance.BorderSize = 0;
-            this.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BtnClose.Location = new System.Drawing.Point(12, 63);
-            this.BtnClose.Name = "BtnClose";
-            this.BtnClose.Size = new System.Drawing.Size(75, 27);
-            this.BtnClose.TabIndex = 3;
-            this.BtnClose.UseVisualStyleBackColor = false;
-            this.BtnClose.Click += new System.EventHandler(this.BtnClose_Click);
-            this.BtnClose.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnClose_MouseDown);
-            this.BtnClose.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnClose_MouseUp);
+            BtnClose.AutoSize = true;
+            BtnClose.BackColor = System.Drawing.SystemColors.HotTrack;
+            BtnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            BtnClose.FlatAppearance.BorderSize = 0;
+            BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            BtnClose.Location = new System.Drawing.Point(12, 63);
+            BtnClose.Name = "BtnClose";
+            BtnClose.Size = new System.Drawing.Size(75, 27);
+            BtnClose.TabIndex = 3;
+            BtnClose.UseVisualStyleBackColor = false;
+            BtnClose.Click += BtnClose_Click;
+            BtnClose.MouseDown += BtnClose_MouseDown;
+            BtnClose.MouseUp += BtnClose_MouseUp;
             // 
             // BtnMinisize
             // 
-            this.BtnMinisize.AutoSize = true;
-            this.BtnMinisize.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.BtnMinisize.FlatAppearance.BorderSize = 0;
-            this.BtnMinisize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BtnMinisize.Location = new System.Drawing.Point(93, 161);
-            this.BtnMinisize.Name = "BtnMinisize";
-            this.BtnMinisize.Size = new System.Drawing.Size(75, 27);
-            this.BtnMinisize.TabIndex = 5;
-            this.BtnMinisize.UseVisualStyleBackColor = false;
-            this.BtnMinisize.Click += new System.EventHandler(this.BtnMinisize_Click);
-            this.BtnMinisize.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnMinisize_MouseDown);
-            this.BtnMinisize.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnMinisize_MouseUp);
+            BtnMinisize.AutoSize = true;
+            BtnMinisize.BackColor = System.Drawing.SystemColors.HotTrack;
+            BtnMinisize.FlatAppearance.BorderSize = 0;
+            BtnMinisize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            BtnMinisize.Location = new System.Drawing.Point(93, 161);
+            BtnMinisize.Name = "BtnMinisize";
+            BtnMinisize.Size = new System.Drawing.Size(75, 27);
+            BtnMinisize.TabIndex = 5;
+            BtnMinisize.UseVisualStyleBackColor = false;
+            BtnMinisize.Click += BtnMinisize_Click;
+            BtnMinisize.MouseDown += BtnMinisize_MouseDown;
+            BtnMinisize.MouseUp += BtnMinisize_MouseUp;
             // 
             // BtnPlaylist
             // 
-            this.BtnPlaylist.AutoSize = true;
-            this.BtnPlaylist.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.BtnPlaylist.FlatAppearance.BorderSize = 0;
-            this.BtnPlaylist.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BtnPlaylist.Location = new System.Drawing.Point(12, 161);
-            this.BtnPlaylist.Name = "BtnPlaylist";
-            this.BtnPlaylist.Size = new System.Drawing.Size(75, 27);
-            this.BtnPlaylist.TabIndex = 6;
-            this.BtnPlaylist.UseVisualStyleBackColor = false;
-            this.BtnPlaylist.Click += new System.EventHandler(this.BtnPlaylist_Click);
-            this.BtnPlaylist.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnPlaylist_MouseDown);
-            this.BtnPlaylist.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnPlaylist_MouseUp);
+            BtnPlaylist.AutoSize = true;
+            BtnPlaylist.BackColor = System.Drawing.SystemColors.HotTrack;
+            BtnPlaylist.FlatAppearance.BorderSize = 0;
+            BtnPlaylist.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            BtnPlaylist.Location = new System.Drawing.Point(12, 161);
+            BtnPlaylist.Name = "BtnPlaylist";
+            BtnPlaylist.Size = new System.Drawing.Size(75, 27);
+            BtnPlaylist.TabIndex = 6;
+            BtnPlaylist.UseVisualStyleBackColor = false;
+            BtnPlaylist.Click += BtnPlaylist_Click;
+            BtnPlaylist.MouseDown += BtnPlaylist_MouseDown;
+            BtnPlaylist.MouseUp += BtnPlaylist_MouseUp;
             // 
             // BtnSetting
             // 
-            this.BtnSetting.AutoSize = true;
-            this.BtnSetting.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.BtnSetting.FlatAppearance.BorderSize = 0;
-            this.BtnSetting.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BtnSetting.Location = new System.Drawing.Point(255, 128);
-            this.BtnSetting.Name = "BtnSetting";
-            this.BtnSetting.Size = new System.Drawing.Size(75, 27);
-            this.BtnSetting.TabIndex = 7;
-            this.BtnSetting.UseVisualStyleBackColor = false;
-            this.BtnSetting.Click += new System.EventHandler(this.BtnSetting_Click);
-            this.BtnSetting.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnSetting_MouseDown);
-            this.BtnSetting.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnSetting_MouseUp);
+            BtnSetting.AutoSize = true;
+            BtnSetting.BackColor = System.Drawing.SystemColors.HotTrack;
+            BtnSetting.FlatAppearance.BorderSize = 0;
+            BtnSetting.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            BtnSetting.Location = new System.Drawing.Point(255, 128);
+            BtnSetting.Name = "BtnSetting";
+            BtnSetting.Size = new System.Drawing.Size(75, 27);
+            BtnSetting.TabIndex = 7;
+            BtnSetting.UseVisualStyleBackColor = false;
+            BtnSetting.Click += BtnSetting_Click;
+            BtnSetting.MouseDown += BtnSetting_MouseDown;
+            BtnSetting.MouseUp += BtnSetting_MouseUp;
             // 
             // BtnLoop
             // 
-            this.BtnLoop.AutoSize = true;
-            this.BtnLoop.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.BtnLoop.FlatAppearance.BorderSize = 0;
-            this.BtnLoop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BtnLoop.Location = new System.Drawing.Point(174, 128);
-            this.BtnLoop.Name = "BtnLoop";
-            this.BtnLoop.Size = new System.Drawing.Size(75, 27);
-            this.BtnLoop.TabIndex = 8;
-            this.BtnLoop.UseVisualStyleBackColor = false;
-            this.BtnLoop.Click += new System.EventHandler(this.BtnLoop_Click);
-            this.BtnLoop.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnLoop_MouseDown);
-            this.BtnLoop.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnLoop_MouseUp);
+            BtnLoop.AutoSize = true;
+            BtnLoop.BackColor = System.Drawing.SystemColors.HotTrack;
+            BtnLoop.FlatAppearance.BorderSize = 0;
+            BtnLoop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            BtnLoop.Location = new System.Drawing.Point(174, 128);
+            BtnLoop.Name = "BtnLoop";
+            BtnLoop.Size = new System.Drawing.Size(75, 27);
+            BtnLoop.TabIndex = 8;
+            BtnLoop.UseVisualStyleBackColor = false;
+            BtnLoop.Click += BtnLoop_Click;
+            BtnLoop.MouseDown += BtnLoop_MouseDown;
+            BtnLoop.MouseUp += BtnLoop_MouseUp;
             // 
             // BtnRandom
             // 
-            this.BtnRandom.AutoSize = true;
-            this.BtnRandom.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.BtnRandom.FlatAppearance.BorderSize = 0;
-            this.BtnRandom.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BtnRandom.Location = new System.Drawing.Point(93, 129);
-            this.BtnRandom.Name = "BtnRandom";
-            this.BtnRandom.Size = new System.Drawing.Size(75, 27);
-            this.BtnRandom.TabIndex = 9;
-            this.BtnRandom.UseVisualStyleBackColor = false;
-            this.BtnRandom.Click += new System.EventHandler(this.BtnRandom_Click);
-            this.BtnRandom.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnRandom_MouseDown);
-            this.BtnRandom.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnRandom_MouseUp);
+            BtnRandom.AutoSize = true;
+            BtnRandom.BackColor = System.Drawing.SystemColors.HotTrack;
+            BtnRandom.FlatAppearance.BorderSize = 0;
+            BtnRandom.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            BtnRandom.Location = new System.Drawing.Point(93, 129);
+            BtnRandom.Name = "BtnRandom";
+            BtnRandom.Size = new System.Drawing.Size(75, 27);
+            BtnRandom.TabIndex = 9;
+            BtnRandom.UseVisualStyleBackColor = false;
+            BtnRandom.Click += BtnRandom_Click;
+            BtnRandom.MouseDown += BtnRandom_MouseDown;
+            BtnRandom.MouseUp += BtnRandom_MouseUp;
             // 
             // BtnNext
             // 
-            this.BtnNext.AutoSize = true;
-            this.BtnNext.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.BtnNext.FlatAppearance.BorderSize = 0;
-            this.BtnNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BtnNext.Location = new System.Drawing.Point(12, 128);
-            this.BtnNext.Name = "BtnNext";
-            this.BtnNext.Size = new System.Drawing.Size(75, 27);
-            this.BtnNext.TabIndex = 10;
-            this.BtnNext.UseVisualStyleBackColor = false;
-            this.BtnNext.Click += new System.EventHandler(this.BtnNext_Click);
-            this.BtnNext.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnNext_MouseDown);
-            this.BtnNext.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnNext_MouseUp);
+            BtnNext.AutoSize = true;
+            BtnNext.BackColor = System.Drawing.SystemColors.HotTrack;
+            BtnNext.FlatAppearance.BorderSize = 0;
+            BtnNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            BtnNext.Location = new System.Drawing.Point(12, 128);
+            BtnNext.Name = "BtnNext";
+            BtnNext.Size = new System.Drawing.Size(75, 27);
+            BtnNext.TabIndex = 10;
+            BtnNext.UseVisualStyleBackColor = false;
+            BtnNext.Click += BtnNext_Click;
+            BtnNext.MouseDown += BtnNext_MouseDown;
+            BtnNext.MouseUp += BtnNext_MouseUp;
             // 
             // BtnSeekForward
             // 
-            this.BtnSeekForward.AutoSize = true;
-            this.BtnSeekForward.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.BtnSeekForward.FlatAppearance.BorderSize = 0;
-            this.BtnSeekForward.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BtnSeekForward.Location = new System.Drawing.Point(255, 95);
-            this.BtnSeekForward.Name = "BtnSeekForward";
-            this.BtnSeekForward.Size = new System.Drawing.Size(75, 27);
-            this.BtnSeekForward.TabIndex = 11;
-            this.BtnSeekForward.UseVisualStyleBackColor = false;
-            this.BtnSeekForward.Click += new System.EventHandler(this.BtnSeekForward_Click);
-            this.BtnSeekForward.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnSeekForward_MouseDown);
-            this.BtnSeekForward.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnSeekForward_MouseUp);
+            BtnSeekForward.AutoSize = true;
+            BtnSeekForward.BackColor = System.Drawing.SystemColors.HotTrack;
+            BtnSeekForward.FlatAppearance.BorderSize = 0;
+            BtnSeekForward.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            BtnSeekForward.Location = new System.Drawing.Point(255, 95);
+            BtnSeekForward.Name = "BtnSeekForward";
+            BtnSeekForward.Size = new System.Drawing.Size(75, 27);
+            BtnSeekForward.TabIndex = 11;
+            BtnSeekForward.UseVisualStyleBackColor = false;
+            BtnSeekForward.Click += BtnSeekForward_Click;
+            BtnSeekForward.MouseDown += BtnSeekForward_MouseDown;
+            BtnSeekForward.MouseUp += BtnSeekForward_MouseUp;
             // 
             // BtnPause
             // 
-            this.BtnPause.AutoSize = true;
-            this.BtnPause.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.BtnPause.FlatAppearance.BorderSize = 0;
-            this.BtnPause.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BtnPause.Location = new System.Drawing.Point(174, 96);
-            this.BtnPause.Name = "BtnPause";
-            this.BtnPause.Size = new System.Drawing.Size(75, 27);
-            this.BtnPause.TabIndex = 12;
-            this.BtnPause.UseVisualStyleBackColor = false;
-            this.BtnPause.Click += new System.EventHandler(this.BtnPause_Click);
-            this.BtnPause.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnPause_MouseDown);
-            this.BtnPause.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnPause_MouseUp);
+            BtnPause.AutoSize = true;
+            BtnPause.BackColor = System.Drawing.SystemColors.HotTrack;
+            BtnPause.FlatAppearance.BorderSize = 0;
+            BtnPause.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            BtnPause.Location = new System.Drawing.Point(174, 96);
+            BtnPause.Name = "BtnPause";
+            BtnPause.Size = new System.Drawing.Size(75, 27);
+            BtnPause.TabIndex = 12;
+            BtnPause.UseVisualStyleBackColor = false;
+            BtnPause.Click += BtnPause_Click;
+            BtnPause.MouseDown += BtnPause_MouseDown;
+            BtnPause.MouseUp += BtnPause_MouseUp;
             // 
             // BtnSeekBack
             // 
-            this.BtnSeekBack.AutoSize = true;
-            this.BtnSeekBack.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.BtnSeekBack.FlatAppearance.BorderSize = 0;
-            this.BtnSeekBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BtnSeekBack.Location = new System.Drawing.Point(93, 96);
-            this.BtnSeekBack.Name = "BtnSeekBack";
-            this.BtnSeekBack.Size = new System.Drawing.Size(75, 27);
-            this.BtnSeekBack.TabIndex = 13;
-            this.BtnSeekBack.UseVisualStyleBackColor = false;
-            this.BtnSeekBack.Click += new System.EventHandler(this.BtnSeekBack_Click);
-            this.BtnSeekBack.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnSeekBack_MouseDown);
-            this.BtnSeekBack.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnSeekBack_MouseUp);
+            BtnSeekBack.AutoSize = true;
+            BtnSeekBack.BackColor = System.Drawing.SystemColors.HotTrack;
+            BtnSeekBack.FlatAppearance.BorderSize = 0;
+            BtnSeekBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            BtnSeekBack.Location = new System.Drawing.Point(93, 96);
+            BtnSeekBack.Name = "BtnSeekBack";
+            BtnSeekBack.Size = new System.Drawing.Size(75, 27);
+            BtnSeekBack.TabIndex = 13;
+            BtnSeekBack.UseVisualStyleBackColor = false;
+            BtnSeekBack.Click += BtnSeekBack_Click;
+            BtnSeekBack.MouseDown += BtnSeekBack_MouseDown;
+            BtnSeekBack.MouseUp += BtnSeekBack_MouseUp;
             // 
             // BtnBack
             // 
-            this.BtnBack.AutoSize = true;
-            this.BtnBack.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.BtnBack.FlatAppearance.BorderSize = 0;
-            this.BtnBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BtnBack.Location = new System.Drawing.Point(12, 95);
-            this.BtnBack.Name = "BtnBack";
-            this.BtnBack.Size = new System.Drawing.Size(75, 27);
-            this.BtnBack.TabIndex = 14;
-            this.BtnBack.UseVisualStyleBackColor = false;
-            this.BtnBack.Click += new System.EventHandler(this.BtnBack_Click);
-            this.BtnBack.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnBack_MouseDown);
-            this.BtnBack.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnBack_MouseUp);
+            BtnBack.AutoSize = true;
+            BtnBack.BackColor = System.Drawing.SystemColors.HotTrack;
+            BtnBack.FlatAppearance.BorderSize = 0;
+            BtnBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            BtnBack.Location = new System.Drawing.Point(12, 95);
+            BtnBack.Name = "BtnBack";
+            BtnBack.Size = new System.Drawing.Size(75, 27);
+            BtnBack.TabIndex = 14;
+            BtnBack.UseVisualStyleBackColor = false;
+            BtnBack.Click += BtnBack_Click;
+            BtnBack.MouseDown += BtnBack_MouseDown;
+            BtnBack.MouseUp += BtnBack_MouseUp;
             // 
             // SldVolume
             // 
-            this.SldVolume.BackColor = System.Drawing.Color.Transparent;
-            this.SldVolume.Location = new System.Drawing.Point(138, 12);
-            this.SldVolume.Maximum = 0;
-            this.SldVolume.Minimum = 0;
-            this.SldVolume.Name = "SldVolume";
-            this.SldVolume.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.SldVolume.Size = new System.Drawing.Size(100, 42);
-            this.SldVolume.SliderImage = null;
-            this.SldVolume.TabIndex = 15;
-            this.SldVolume.Value = 0;
-            this.SldVolume.SliderMoved += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldVolume_SliderMoved);
-            this.SldVolume.SliderMoving += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldVolume_SliderMoving);
+            SldVolume.BackColor = System.Drawing.Color.Transparent;
+            SldVolume.Location = new System.Drawing.Point(138, 12);
+            SldVolume.Maximum = 0;
+            SldVolume.Minimum = 0;
+            SldVolume.Name = "SldVolume";
+            SldVolume.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            SldVolume.Size = new System.Drawing.Size(100, 42);
+            SldVolume.SliderImage = null;
+            SldVolume.TabIndex = 15;
+            SldVolume.Value = 0;
+            SldVolume.SliderMoved += SldVolume_SliderMoved;
+            SldVolume.SliderMoving += SldVolume_SliderMoving;
             // 
             // SldPan
             // 
-            this.SldPan.BackColor = System.Drawing.Color.Transparent;
-            this.SldPan.Location = new System.Drawing.Point(244, 12);
-            this.SldPan.Maximum = 0;
-            this.SldPan.Minimum = 0;
-            this.SldPan.Name = "SldPan";
-            this.SldPan.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.SldPan.Size = new System.Drawing.Size(100, 42);
-            this.SldPan.SliderImage = null;
-            this.SldPan.TabIndex = 16;
-            this.SldPan.Value = 0;
-            this.SldPan.SliderMoved += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldPan_SliderMoved);
-            this.SldPan.SliderMoving += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldPan_SliderMoving);
+            SldPan.BackColor = System.Drawing.Color.Transparent;
+            SldPan.Location = new System.Drawing.Point(244, 12);
+            SldPan.Maximum = 0;
+            SldPan.Minimum = 0;
+            SldPan.Name = "SldPan";
+            SldPan.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            SldPan.Size = new System.Drawing.Size(100, 42);
+            SldPan.SliderImage = null;
+            SldPan.TabIndex = 16;
+            SldPan.Value = 0;
+            SldPan.SliderMoved += SldPan_SliderMoved;
+            SldPan.SliderMoving += SldPan_SliderMoving;
             // 
             // SldTrack
             // 
-            this.SldTrack.BackColor = System.Drawing.Color.Transparent;
-            this.SldTrack.Location = new System.Drawing.Point(350, 12);
-            this.SldTrack.Maximum = 0;
-            this.SldTrack.Minimum = 0;
-            this.SldTrack.Name = "SldTrack";
-            this.SldTrack.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.SldTrack.Size = new System.Drawing.Size(100, 42);
-            this.SldTrack.SliderImage = null;
-            this.SldTrack.TabIndex = 17;
-            this.SldTrack.Value = 0;
-            this.SldTrack.ValueChanged += new System.EventHandler<System.EventArgs>(this.SldTrack_ValueChanged);
-            this.SldTrack.SliderMoved += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldTrack_SliderMoved);
-            this.SldTrack.SliderMoving += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.SldTrack_SliderMoving);
+            SldTrack.BackColor = System.Drawing.Color.Transparent;
+            SldTrack.Location = new System.Drawing.Point(350, 12);
+            SldTrack.Maximum = 0;
+            SldTrack.Minimum = 0;
+            SldTrack.Name = "SldTrack";
+            SldTrack.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            SldTrack.Size = new System.Drawing.Size(100, 42);
+            SldTrack.SliderImage = null;
+            SldTrack.TabIndex = 17;
+            SldTrack.Value = 0;
+            SldTrack.ValueChanged += SldTrack_ValueChanged;
+            SldTrack.SliderMoved += SldTrack_SliderMoved;
+            SldTrack.SliderMoving += SldTrack_SliderMoving;
             // 
             // LabelTitle
             // 
-            this.LabelTitle.BackColor = System.Drawing.SystemColors.Window;
-            this.LabelTitle.Location = new System.Drawing.Point(257, 161);
-            this.LabelTitle.Name = "LabelTitle";
-            this.LabelTitle.ScrollEnable = true;
-            this.LabelTitle.Size = new System.Drawing.Size(73, 27);
-            this.LabelTitle.TabIndex = 18;
+            LabelTitle.BackColor = System.Drawing.SystemColors.Window;
+            LabelTitle.Location = new System.Drawing.Point(257, 161);
+            LabelTitle.Name = "LabelTitle";
+            LabelTitle.ScrollEnable = true;
+            LabelTitle.Size = new System.Drawing.Size(73, 27);
+            LabelTitle.TabIndex = 18;
             // 
             // LabelTime
             // 
-            this.LabelTime.BackColor = System.Drawing.SystemColors.Window;
-            this.LabelTime.Location = new System.Drawing.Point(174, 161);
-            this.LabelTime.Name = "LabelTime";
-            this.LabelTime.ScrollEnable = false;
-            this.LabelTime.Size = new System.Drawing.Size(75, 27);
-            this.LabelTime.TabIndex = 19;
+            LabelTime.BackColor = System.Drawing.SystemColors.Window;
+            LabelTime.Location = new System.Drawing.Point(174, 161);
+            LabelTime.Name = "LabelTime";
+            LabelTime.ScrollEnable = false;
+            LabelTime.Size = new System.Drawing.Size(75, 27);
+            LabelTime.TabIndex = 19;
             // 
             // SeekiTimer
             // 
-            this.SeekiTimer.Enabled = true;
-            this.SeekiTimer.Tick += new System.EventHandler(this.SeekiTimer_Tick);
+            SeekiTimer.Enabled = true;
+            SeekiTimer.Tick += SeekiTimer_Tick;
             // 
             // Spectrum
             // 
-            this.Spectrum.BackColor = System.Drawing.Color.Transparent;
-            this.Spectrum.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.Spectrum.BitmapSnow = ((System.Drawing.Bitmap)(resources.GetObject("Spectrum.BitmapSnow")));
-            this.Spectrum.BitmapSpectrum = ((System.Drawing.Bitmap)(resources.GetObject("Spectrum.BitmapSpectrum")));
-            this.Spectrum.BitmapWave = ((System.Drawing.Bitmap)(resources.GetObject("Spectrum.BitmapWave")));
-            this.Spectrum.Location = new System.Drawing.Point(138, 275);
-            this.Spectrum.mFFT = null;
-            this.Spectrum.Mode = 0;
-            this.Spectrum.Name = "Spectrum";
-            this.Spectrum.Size = new System.Drawing.Size(128, 54);
-            this.Spectrum.TabIndex = 20;
-            this.Spectrum.TabStop = false;
-            this.Spectrum.Click += new System.EventHandler(this.Spectrum_Click);
+            Spectrum.BackColor = System.Drawing.Color.Transparent;
+            Spectrum.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            Spectrum.BitmapSnow = (System.Drawing.Bitmap)resources.GetObject("Spectrum.BitmapSnow");
+            Spectrum.BitmapSpectrum = (System.Drawing.Bitmap)resources.GetObject("Spectrum.BitmapSpectrum");
+            Spectrum.BitmapWave = (System.Drawing.Bitmap)resources.GetObject("Spectrum.BitmapWave");
+            Spectrum.Location = new System.Drawing.Point(138, 275);
+            Spectrum.mFFT = null;
+            Spectrum.Mode = 0;
+            Spectrum.Name = "Spectrum";
+            Spectrum.Size = new System.Drawing.Size(128, 54);
+            Spectrum.TabIndex = 20;
+            Spectrum.TabStop = false;
+            Spectrum.Click += Spectrum_Click;
             // 
             // BtnCD
             // 
-            this.BtnCD.AutoSize = true;
-            this.BtnCD.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.BtnCD.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.BtnCD.FlatAppearance.BorderSize = 0;
-            this.BtnCD.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BtnCD.Location = new System.Drawing.Point(12, 194);
-            this.BtnCD.Name = "BtnCD";
-            this.BtnCD.Size = new System.Drawing.Size(75, 27);
-            this.BtnCD.TabIndex = 21;
-            this.BtnCD.UseVisualStyleBackColor = false;
-            this.BtnCD.Click += new System.EventHandler(this.BtnCD_Click);
-            this.BtnCD.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnCD_MouseDown);
-            this.BtnCD.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnCD_MouseUp);
+            BtnCD.AutoSize = true;
+            BtnCD.BackColor = System.Drawing.SystemColors.HotTrack;
+            BtnCD.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            BtnCD.FlatAppearance.BorderSize = 0;
+            BtnCD.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            BtnCD.Location = new System.Drawing.Point(12, 194);
+            BtnCD.Name = "BtnCD";
+            BtnCD.Size = new System.Drawing.Size(75, 27);
+            BtnCD.TabIndex = 21;
+            BtnCD.UseVisualStyleBackColor = false;
+            BtnCD.Click += BtnCD_Click;
+            BtnCD.MouseDown += BtnCD_MouseDown;
+            BtnCD.MouseUp += BtnCD_MouseUp;
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.BackColor = System.Drawing.SystemColors.Window;
-            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.ClientSize = new System.Drawing.Size(500, 500);
-            this.ControlBox = false;
-            this.Controls.Add(this.BtnPlaylist);
-            this.Controls.Add(this.BtnCD);
-            this.Controls.Add(this.Spectrum);
-            this.Controls.Add(this.SldVolume);
-            this.Controls.Add(this.SldPan);
-            this.Controls.Add(this.SldTrack);
-            this.Controls.Add(this.LabelTime);
-            this.Controls.Add(this.LabelTitle);
-            this.Controls.Add(this.BtnBack);
-            this.Controls.Add(this.BtnSeekBack);
-            this.Controls.Add(this.BtnPause);
-            this.Controls.Add(this.BtnSeekForward);
-            this.Controls.Add(this.BtnNext);
-            this.Controls.Add(this.BtnRandom);
-            this.Controls.Add(this.BtnLoop);
-            this.Controls.Add(this.BtnSetting);
-            this.Controls.Add(this.BtnMinisize);
-            this.Controls.Add(this.BtnClose);
-            this.Controls.Add(this.BtnOpen);
-            this.Controls.Add(this.BtnStop);
-            this.Controls.Add(this.BtnPlay);
-            this.DoubleBuffered = true;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "MainForm";
-            this.Text = "Form1";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
-            this.Load += new System.EventHandler(this.MainForm_Load);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseDown);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseMove);
-            ((System.ComponentModel.ISupportInitialize)(this.Spectrum)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AllowDrop = true;
+            AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            BackColor = System.Drawing.SystemColors.Window;
+            BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            ClientSize = new System.Drawing.Size(500, 500);
+            ControlBox = false;
+            Controls.Add(BtnPlaylist);
+            Controls.Add(BtnCD);
+            Controls.Add(Spectrum);
+            Controls.Add(SldVolume);
+            Controls.Add(SldPan);
+            Controls.Add(SldTrack);
+            Controls.Add(LabelTime);
+            Controls.Add(LabelTitle);
+            Controls.Add(BtnBack);
+            Controls.Add(BtnSeekBack);
+            Controls.Add(BtnPause);
+            Controls.Add(BtnSeekForward);
+            Controls.Add(BtnNext);
+            Controls.Add(BtnRandom);
+            Controls.Add(BtnLoop);
+            Controls.Add(BtnSetting);
+            Controls.Add(BtnMinisize);
+            Controls.Add(BtnClose);
+            Controls.Add(BtnOpen);
+            Controls.Add(BtnStop);
+            Controls.Add(BtnPlay);
+            DoubleBuffered = true;
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            Name = "MainForm";
+            Text = "Media Player X-Ark Zwei";
+            FormClosed += MainForm_FormClosed;
+            Load += MainForm_Load;
+            DragDrop += MainForm_DragDrop;
+            DragEnter += MainForm_DragEnter;
+            MouseDown += MainForm_MouseDown;
+            MouseMove += MainForm_MouseMove;
+            ((System.ComponentModel.ISupportInitialize)Spectrum).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

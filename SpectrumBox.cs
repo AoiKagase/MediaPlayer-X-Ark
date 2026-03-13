@@ -246,10 +246,10 @@ namespace MediaPlayer_X_Ark
 
                                 // 横位置（左）
                                 line3.Left = i;
-
-								// 横位置（右）左位置+1pxを基準として横間隔/2分広げる
-								// スペクトラム領域より描画域が広い場合はバーの横幅を広げる
-								if (this.Width > windowSize)
+								line3.Bottom = this.Height;
+                                // 横位置（右）左位置+1pxを基準として横間隔/2分広げる
+                                // スペクトラム領域より描画域が広い場合はバーの横幅を広げる
+                                if (this.Width > windowSize)
 									line3.Right = i + (this.Width / windowSize) + (int)(Mode / 2f);
 								else
 									line3.Right = i + 1 + (int)(Mode / 2f);

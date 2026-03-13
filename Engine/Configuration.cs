@@ -221,6 +221,23 @@ namespace MediaPlayer_X_Ark.Engine
             {
                 string jsonString = File.ReadAllText(Application.StartupPath + "config.json", Encoding.UTF8);
                 settings = JsonSerializer.Deserialize<ConfigurationData>(jsonString);
+
+                switch(settings.OutputType)
+                {
+                    case 0:
+                        engine.SetOutputType(FMOD.OUTPUTTYPE.AUTODETECT);
+                        break;
+                    case 1:
+                        engine.SetOutputType(FMOD.OUTPUTTYPE.WASAPI);
+                        break;
+                    case 2:
+                        engine.SetOutputType(FMOD.OUTPUTTYPE.ASIO);
+                        break;
+                    case 3:
+                        engine.SetOutputType(FMOD.OUTPUTTYPE.WINSONIC);
+                        break;
+                }
+                engine.SetDevice(settings.Device);
             }
             else
             {
