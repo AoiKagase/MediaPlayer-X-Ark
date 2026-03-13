@@ -217,27 +217,10 @@ namespace MediaPlayer_X_Ark.Engine
         public Configration(ref PlayerEngine engine)
         {
             this.engine = engine;
-            if (File.Exists(Application.StartupPath + "config.json"))
-            {
+			if (File.Exists(Path.Combine(Application.StartupPath, "config.json")))
+			{
                 string jsonString = File.ReadAllText(Application.StartupPath + "config.json", Encoding.UTF8);
                 settings = JsonSerializer.Deserialize<ConfigurationData>(jsonString);
-
-                switch(settings.OutputType)
-                {
-                    case 0:
-                        engine.SetOutputType(FMOD.OUTPUTTYPE.AUTODETECT);
-                        break;
-                    case 1:
-                        engine.SetOutputType(FMOD.OUTPUTTYPE.WASAPI);
-                        break;
-                    case 2:
-                        engine.SetOutputType(FMOD.OUTPUTTYPE.ASIO);
-                        break;
-                    case 3:
-                        engine.SetOutputType(FMOD.OUTPUTTYPE.WINSONIC);
-                        break;
-                }
-                engine.SetDevice(settings.Device);
             }
             else
             {
@@ -361,7 +344,7 @@ namespace MediaPlayer_X_Ark.Engine
             var options = new JsonSerializerOptions { WriteIndented = true };
             string jsonString = JsonSerializer.Serialize(settings, options);
 
-            File.WriteAllText(Application.ExecutablePath + "config.json", jsonString);
+			File.WriteAllText(Path.Combine(Application.StartupPath, "config.json"), jsonString);
         }
 
         public FMOD.SOUND_FORMAT GetSoundFormat()

@@ -1,4 +1,5 @@
 ﻿using FMOD;
+using MediaPlayer_X_Ark.Engine;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -53,8 +54,10 @@ namespace MediaPlayer_X_Ark
 		LOOP_ONE_REPEAT,
 		LOOP_ALL,
 	}
-	public class PlayerEngine
+	public class PlayerEngine : IDisposable
 	{
+		private bool _disposed = false;  // 二重解放防止フラグ
+
 		[DllImport("kernel32.dll")]
 		public static extern IntPtr LoadLibrary(string dllToLoad);
 
@@ -80,6 +83,7 @@ namespace MediaPlayer_X_Ark
 		private const int channelCount = 1;
 
 		public FmodSpectrum spectrum;
+		public FmodWave wave;
 
 		public Engine.Effector.Effectors effector;
 
@@ -110,8 +114,22 @@ namespace MediaPlayer_X_Ark
 		/// <summary>
 		/// Destructor
 		/// </summary>
+		// 既存のデストラクタはDisposeを呼ぶだけにする
 		~PlayerEngine()
-		{ 
+		{
+			Dispose(false);
+		}
+
+		// 外部から明示的に呼ぶ用
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);  // デストラクタを呼ばせない
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (_disposed) return;  // 二重解放防止
 			if (initialized)
             {
 				// Relase FMOD handles for Channel.
@@ -137,6 +155,7 @@ namespace MediaPlayer_X_Ark
 					FmodSystem.release();
 				}
 			}
+			_disposed = true;
 		}
 
 		protected FMOD.RESULT CreateSystem()
@@ -171,6 +190,8 @@ namespace MediaPlayer_X_Ark
 					if (FmodCallFunction(FmodSystem.createChannelGroup("Channel 01", out FmodChannelGroup)) == RESULT.OK)
                     {
 						spectrum = new FmodSpectrum(ref FmodSystem, 1024, ref this.FmodChannelGroup);
+						wave = new FmodWave(ref FmodSystem, ref FmodChannelGroup);
+
 						LoadPlugins();
 
 //						FmodCallFunction(FmodSystem.getChannel(0, out FmodChannel));
@@ -237,13 +258,22 @@ namespace MediaPlayer_X_Ark
 		/// [ ]	AAUDIO,				Android - AAudio. (Default on Android 8.1 and above)
 		/// [ ] AUDIOWORKLET,		HTML5 - Web Audio AudioWorkletNode output. (Default on HTML5 if available)
 		/// [ ] MAX,				Maximum number of output types supported.
+		/// OutputType設定。必ずInitialize()より前に呼ぶこと。
 		/// </param>
-		public void SetOutputType(FMOD.OUTPUTTYPE outputtype)
+		public void SetOutputTypeBeforeInit(FMOD.OUTPUTTYPE outputtype)
 		{
-			GetOutputType();
-
 			FmodOutputType = outputtype;
 			FmodCallFunction(FmodSystem.setOutput(outputtype));
+		}
+
+		/// <summary>
+		/// OutputType設定。
+		/// ※ init()後に呼んでも反映されない。設定の保存のみに使用すること。
+		/// </summary>
+		public void SetOutputType(FMOD.OUTPUTTYPE outputtype)
+		{
+			FmodOutputType = outputtype;
+			// init後は反映されないため、FmodSystem.setOutput()は呼ばない
 		}
 
 		public FMOD.OUTPUTTYPE GetOutputType()
@@ -521,7 +551,7 @@ namespace MediaPlayer_X_Ark
 			FMOD.CREATESOUNDEXINFO info = new FMOD.CREATESOUNDEXINFO();
 			info.cbsize = Marshal.SizeOf(info);
 			index = 0;
-			if (Path.GetExtension(filename).Equals("mid"))
+			if (Path.GetExtension(filename).Equals(".mid"))
 			{
 				info.suggestedsoundtype = FMOD.SOUND_TYPE.MIDI;
 				if ((result = FmodCallFunction(FmodSystem.createSound(filename, FMOD.MODE.DEFAULT, ref info, out sound))) == RESULT.OK)
@@ -584,8 +614,79 @@ namespace MediaPlayer_X_Ark
 			FmodChannel.setPan(pan);
         }
 
-		public void GetWaveData()
-        {
-        }
+		/// <summary>
+		/// 指定した出力タイプのデバイス一覧を取得する。
+		/// テンポラリなFMODシステムを使うためメインの再生には影響しない。
+		/// </summary>
+		public List<DEVICE_INFO> GetDeviceListForOutputType(FMOD.OUTPUTTYPE outputType)
+		{
+			var list = new List<DEVICE_INFO>();
+
+			FMOD.System tempSystem;
+			if (FMOD.Factory.System_Create(out tempSystem) != FMOD.RESULT.OK)
+				return list;
+
+			try
+			{
+				// 出力タイプをinit前に設定
+				if (tempSystem.setOutput(outputType) != FMOD.RESULT.OK)
+					return list;
+
+				// 最小構成でinit（1ch、サウンド再生なし）
+				if (tempSystem.init(1, FMOD.INITFLAGS.NORMAL, IntPtr.Zero) != FMOD.RESULT.OK)
+					return list;
+
+				int numDrivers = 0;
+				if (tempSystem.getNumDrivers(out numDrivers) != FMOD.RESULT.OK)
+					return list;
+
+				for (int i = 0; i < numDrivers; i++)
+				{
+					var device = new DEVICE_INFO();
+					device.namelen = 256;
+					device.deviceId = i;
+					if (tempSystem.getDriverInfo(i, out device.name, device.namelen,
+						out device.guid, out device.systemrate,
+						out device.speakermode, out device.speakerModeChannels) == FMOD.RESULT.OK)
+					{
+						list.Add(device);
+					}
+				}
+			}
+			finally
+			{
+				// 必ずクリーンアップ
+				tempSystem.close();
+				tempSystem.release();
+			}
+
+			return list;
+		}
+
+		/// <summary>
+		/// 現在のFMODシステムのデバイスリストを直接取得する（再初期化不要）。
+		/// ASIO起動中のASIOデバイス列挙に使用。
+		/// </summary>
+		public List<DEVICE_INFO> GetCurrentDeviceList()
+		{
+			var list = new List<DEVICE_INFO>();
+			int numDrivers = 0;
+			if (FmodSystem.getNumDrivers(out numDrivers) != FMOD.RESULT.OK)
+				return list;
+
+			for (int i = 0; i < numDrivers; i++)
+			{
+				var device = new DEVICE_INFO();
+				device.namelen = 256;
+				device.deviceId = i;
+				if (FmodSystem.getDriverInfo(i, out device.name, device.namelen,
+					out device.guid, out device.systemrate,
+					out device.speakermode, out device.speakerModeChannels) == FMOD.RESULT.OK)
+				{
+					list.Add(device);
+				}
+			}
+			return list;
+		}
 	}
 }

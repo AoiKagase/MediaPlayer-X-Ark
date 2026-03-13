@@ -176,19 +176,11 @@ namespace MediaPlayer_X_Ark
 
         private void PlayLoad()
         {
-            // =====================================================================
-            // 本来は先に設定を終わらせてから再生させたいが、
-            // 設定するためのFMOD-Channelインスタンスが再生後に生成されるためやむを得ず
-            // (何か方法があるかもしれない)
-            // =====================================================================
-            // 出力方式
-            player.SetOutputType(config.GetOutputType());
+			// デバイスの反映
+			player.SetDevice(config.settings.Device);
 
-            // デバイス
-            player.SetDevice(config.settings.Device);
-
-            // 再生
-            player.PlaySound(playingIndex);
+			// 再生
+			player.PlaySound(playingIndex);
 
             // 曲長に合わせてトラックバーの総量調整
             SldTrack.Maximum = (int)player.GetLength(playingIndex);
@@ -246,12 +238,22 @@ namespace MediaPlayer_X_Ark
             // ===================================
             // ツールチップ
             _toolTip = new ToolTip(components);
-            // FMODサウンドエンジン
-            player = new PlayerEngine();
-            player.Initialize();
-            config = new Engine.Configration(ref player);
-            // サンプルレート・スピーカーモード
-            player.SetSoftwareFormat(config.GetSampleRate(), config.GetSpeakerMode());
+
+			// FMODサウンドエンジン
+			player = new PlayerEngine();
+
+			// ① 設定を先に読み込む
+			config = new Engine.Configration(ref player);
+
+			// ② OutputType と SoftwareFormat は init() より前に設定
+			player.SetOutputTypeBeforeInit(config.GetOutputType());
+			player.SetSoftwareFormat(config.GetSampleRate(), config.GetSpeakerMode());
+
+			// ③ init() を実行
+			player.Initialize();
+
+			// ④ Device は init() 後でOK
+			player.SetDevice(config.settings.Device);
 
             playListForm = new PlayListForm(this);
 //            playListForm.Show(this);
@@ -331,7 +333,8 @@ namespace MediaPlayer_X_Ark
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             config.Save();
-            player = null;
+			player.Dispose();  // 明示的に解放
+			player = null;
         }
         #endregion
 
@@ -352,9 +355,12 @@ namespace MediaPlayer_X_Ark
             // スペクトラム画像の反映
             float[] mFFT = player.spectrum.UpdateSpectrum();
             Spectrum.mFFT = mFFT;
+			// Waveデータ（追加）
+			float[] mWave = player.wave.GetWaveData();
+			Spectrum.mWave = mWave;
 
-            // 曲調トラックバーの反映 (シーク中はボタン側で動作する為動かさない)
-            if (this.seekValue == 0)
+									 // 曲調トラックバーの反映 (シーク中はボタン側で動作する為動かさない)
+			if (this.seekValue == 0)
                 SldTrack.Value = (int)player.GetPosition();
             if (!player.IsPlaying())
             {
@@ -431,7 +437,10 @@ namespace MediaPlayer_X_Ark
         }
         private int seekValue;
         private int seeking;
-        private void BtnSeekBack_MouseDown(object sender, MouseEventArgs e)
+		private const int SeekStep = 1000;       // 1回あたりのシーク量（ミリ秒）
+		private const int SeekMaxValue = 10000;  // 加速の上限（ミリ秒）
+
+		private void BtnSeekBack_MouseDown(object sender, MouseEventArgs e)
         {
             BtnDownEvent(ref sender);
             seeking = 2;
@@ -785,19 +794,23 @@ namespace MediaPlayer_X_Ark
 
         private void SeekiTimer_Tick(object sender, EventArgs e)
         {
-            switch (seeking)
-            {
-                case 0:
-                    break;
-                case 1:
-                    this.seekValue += 100;
-                    this.SldTrack.Value += seekValue;
-                    break;
-                case 2:
-                    this.seekValue += 100;
-                    this.SldTrack.Value -= seekValue;
-                    break;
-            }
+			if (seeking == 0) return;
+
+			// seekValueを増加させるが上限を設ける
+			seekValue = Math.Min(seekValue + SeekStep, SeekMaxValue);
+			int newValue;
+			if (seeking == 1)  // 早送り
+			{
+				newValue = SldTrack.Value + seekValue;
+				// Maximumを超えないようにクランプ
+				SldTrack.Value = Math.Min(newValue, SldTrack.Maximum);
+			}
+			else if (seeking == 2)  // 早戻し
+			{
+				newValue = SldTrack.Value - seekValue;
+				// 0を下回らないようにクランプ
+				SldTrack.Value = Math.Max(newValue, SldTrack.Minimum);
+			}
         }
 
         private void Spectrum_Click(object sender, EventArgs e)

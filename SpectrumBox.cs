@@ -63,6 +63,7 @@ namespace MediaPlayer_X_Ark
 		/// FFT数値
 		/// </summary>
 		private float[] _mFFT;
+		private float[] _mWave;
 		/// <summary>
 		/// Snow block
 		/// </summary>
@@ -139,7 +140,11 @@ namespace MediaPlayer_X_Ark
 			get { return _mFFT; }
 			set { _mFFT = value; }
 		}
-
+		public float[] mWave
+		{
+			get { return _mWave; }
+			set { _mWave = value; }
+		}
 		public SpectrumBox()
 		{
 			InitializeComponent();
@@ -282,6 +287,31 @@ namespace MediaPlayer_X_Ark
 								Win32API.BitBlt(hdcBuffer, line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top, hdc2AnalyzerSrc, line1.Left, line1.Top, Win32API.TernaryRasterOperations.SRCCOPY);
 							}
 						}
+						// 現状 Mode==0: バー, Mode==1: スノーブロック, Mode==2: Wave とする
+						if (Mode == 2 && mWave != null)
+						{
+							// Wave描画
+							int prevX = 0;
+							int prevY = this.Height / 2;
+
+							for (int i = 0; i < mWave.Length && i < this.Width; i++)
+							{
+								int x = i;
+								// -1.0〜+1.0 を 0〜Height にマッピング
+								int y = (int)((1.0f - mWave[i]) * this.Height / 2f);
+								y = Math.Max(0, Math.Min(this.Height - 1, y));
+
+								// BitBltで直接描画する既存構造に合わせるため
+								// gBuffer（バックバッファ）に直接描画
+								using (var pen = new Pen(Color.Lime, 1))
+								using (var g = Graphics.FromHdc(hdcBuffer))
+								{
+									g.DrawLine(pen, prevX, prevY, x, y);
+								}
+								prevX = x;
+								prevY = y;
+							}
+						}                       
 						// バックバッファから転送
 						Win32API.BitBlt(hdc1Analyzer, 0, 0, this.Width, this.Height, hdcBuffer, 0, 0, Win32API.TernaryRasterOperations.SRCCOPY);
 					}

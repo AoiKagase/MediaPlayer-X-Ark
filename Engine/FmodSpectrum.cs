@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FMOD;
+using System;
 using System.Runtime.InteropServices;
-using FMOD;
-using System.Drawing;
 
 namespace MediaPlayer_X_Ark
 {

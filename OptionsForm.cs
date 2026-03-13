@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -805,13 +806,27 @@ namespace MediaPlayer_X_Ark
 		private void BtnUpdate_Click(object sender, EventArgs e)
         {
 			_config.settings.Format = cmbFormat.SelectedIndex;
-			_config.settings.Device = cmbDevice.SelectedValue.ToString();
+			if (cmbDevice.Enabled)
+				_config.settings.Device = cmbDevice.SelectedValue.ToString();
 			_config.settings.SampleRate = cmbSampleRate.SelectedIndex;
 			_config.settings.OutputType = cmbOutput.SelectedIndex;
 			_config.settings.SamplingMode = cmbSampling.SelectedIndex;
 			_config.settings.SpeakerMode = cmbSpeaker.SelectedIndex;
 			_config.Save();
-        }
+
+			// デバイスはPlayLoad()で反映されるため、ここでの即時反映は不要
+			// OutputType/SampleRate/SpeakerModeは次回起動時に反映
+			bool requiresRestart =
+				_config.settings.OutputType != cmbOutput.SelectedIndex ||
+				_config.settings.SampleRate != cmbSampleRate.SelectedIndex ||
+				_config.settings.SpeakerMode != cmbSpeaker.SelectedIndex;
+
+			string message = requiresRestart
+				? "設定を保存しました。\n出力形式・サンプルレート・スピーカーモードは次回起動時に反映されます。"
+				: "設定を保存しました。\nデバイスは次回再生時に反映されます。";
+
+			MessageBox.Show(message, "設定保存", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
 
         private void OptionsForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -833,29 +848,89 @@ namespace MediaPlayer_X_Ark
 
 		private void cmbOutput_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			switch(((ComboBox)sender).SelectedIndex)
-			{
-				case 0:
-					_engine.SetOutputType(FMOD.OUTPUTTYPE.AUTODETECT);
-					break;
-				case 1:
-					_engine.SetOutputType(FMOD.OUTPUTTYPE.WASAPI);
-					break;
-                case 2:
-                    _engine.SetOutputType(FMOD.OUTPUTTYPE.ASIO);
-                    break;
-                case 3:
-                    _engine.SetOutputType(FMOD.OUTPUTTYPE.WINSONIC);
-                    break;
-            }
-            cmbDevice.DataSource = null;
-            _engine.GetDeviceList();
-            cmbDevice.DataSource = _engine.DeviceList;
-            cmbDevice.DisplayMember = "Name";
-            cmbDevice.ValueMember = "GUID";
-            cmbDevice.SelectedValue = 0;
-        }
+			var newOutputType = IndexToOutputType(((ComboBox)sender).SelectedIndex);
+			var currentOutputType = _engine.GetOutputType();
 
+			// ASIO起動中に別の出力タイプへ変更しようとした場合
+			// → ブロックせず、注意ラベルを表示して続行
+			if (currentOutputType == FMOD.OUTPUTTYPE.ASIO &&
+				newOutputType != FMOD.OUTPUTTYPE.ASIO)
+			{
+				lblOutputNote.Visible = true;
+				lblOutputNote.Text = "※ ASIO起動中のため次回起動時に反映されます。";
+			}
+			else
+			{
+				lblOutputNote.Visible = false;
+			}
+
+			// 保存済みの出力タイプと一致する場合のみ保存済みGUIDを復元候補にする
+			string preferredGuid = (cmbOutput.SelectedIndex == _config.settings.OutputType)
+				? _config.settings.Device
+				: null;
+
+			RefreshDeviceList(newOutputType, preferredGuid);
+		}
+		private void RefreshDeviceList(FMOD.OUTPUTTYPE outputType, string preferredGuid)
+		{
+			cmbDevice.DataSource = null;
+
+			List<DEVICE_INFO> devices;
+
+			// ASIO起動中のASIOデバイス列挙は現在のFMODSystemを直接使う
+			// （テンポラリSystemを作ると競合する可能性があるため）
+			if (_engine.GetOutputType() == FMOD.OUTPUTTYPE.ASIO &&
+				outputType == FMOD.OUTPUTTYPE.ASIO)
+			{
+				devices = _engine.GetCurrentDeviceList();
+			}
+			else
+			{
+				devices = _engine.GetDeviceListForOutputType(outputType);
+			}
+
+			if (devices.Count == 0)
+			{
+				cmbDevice.Enabled = false;
+				cmbDevice.Items.Clear();
+				cmbDevice.Items.Add("（デバイスなし）");
+				cmbDevice.SelectedIndex = 0;
+				return;
+			}
+
+			cmbDevice.Enabled = true;
+			cmbDevice.DataSource = devices;
+			cmbDevice.DisplayMember = "Name";
+			cmbDevice.ValueMember = "GUID";
+
+			bool found = preferredGuid != null
+				&& devices.Any(d => d.GUID == preferredGuid);
+
+			if (found)
+				cmbDevice.SelectedValue = preferredGuid;
+			else
+				cmbDevice.SelectedIndex = 0;
+		}
+		private FMOD.OUTPUTTYPE IndexToOutputType(int index)
+		{
+			switch (index)
+			{
+				case 1: return FMOD.OUTPUTTYPE.WASAPI;
+				case 2: return FMOD.OUTPUTTYPE.ASIO;
+				case 3: return FMOD.OUTPUTTYPE.WINSONIC;
+				default: return FMOD.OUTPUTTYPE.AUTODETECT;
+			}
+		}
+		private int OutputTypeToIndex(FMOD.OUTPUTTYPE type)
+		{
+			switch (type)
+			{
+				case FMOD.OUTPUTTYPE.WASAPI: return 1;
+				case FMOD.OUTPUTTYPE.ASIO: return 2;
+				case FMOD.OUTPUTTYPE.WINSONIC: return 3;
+				default: return 0;
+			}
+		}
 		private void cmbDevice_SelectedIndexChanged(object sender, EventArgs e)
 		{
             //_engine.SetDevice((string)((ComboBox)sender).SelectedValue.ToString());
