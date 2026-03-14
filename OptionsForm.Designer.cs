@@ -28,20 +28,20 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("出力設定");
-			System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Graphic Equalizer");
-			System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Pitch / Freq / Speed");
-			System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Distortion");
-			System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Chorus");
-			System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Echo");
-			System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Flanger");
-			System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Highpass");
-			System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Lowpass");
-			System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Compressor");
-			System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Reverb");
-			System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("エフェクト", new System.Windows.Forms.TreeNode[] { treeNode2, treeNode3, treeNode4, treeNode5, treeNode6, treeNode7, treeNode8, treeNode9, treeNode10, treeNode11 });
-			System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("スキン");
-			System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("その他");
+			System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("出力設定");
+			System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Graphic Equalizer");
+			System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Pitch / Freq / Speed");
+			System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Distortion");
+			System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Chorus");
+			System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Echo");
+			System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Flanger");
+			System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Highpass");
+			System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Lowpass");
+			System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Compressor");
+			System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Reverb");
+			System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("エフェクト", new System.Windows.Forms.TreeNode[] { treeNode16, treeNode17, treeNode18, treeNode19, treeNode20, treeNode21, treeNode22, treeNode23, treeNode24, treeNode25 });
+			System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("スキン");
+			System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("その他");
 			TreeMenu = new System.Windows.Forms.TreeView();
 			tabControlEffects = new System.Windows.Forms.TabControl();
 			tabSetting = new System.Windows.Forms.TabPage();
@@ -189,47 +189,77 @@
 			KnobCompThreshold = new UI.Knob();
 			CheckCompressor = new System.Windows.Forms.CheckBox();
 			tabReverb = new System.Windows.Forms.TabPage();
-			groupBox1 = new System.Windows.Forms.GroupBox();
+			GroupReverb = new System.Windows.Forms.GroupBox();
+			CheckReverb = new System.Windows.Forms.CheckBox();
+			KnobReverbDecayTime = new UI.Knob();
+			KnobReverbEarlyDelay = new UI.Knob();
+			KnobReverbLateDelay = new UI.Knob();
+			KnobReverbHFRef = new UI.Knob();
+			KnobReverbHFDcRatio = new UI.Knob();
+			KnobReverbDiffusion = new UI.Knob();
+			KnobReverbDensity = new UI.Knob();
+			KnobReverbLowShelfFrequency = new UI.Knob();
+			KnobReverbLowshelfGain = new UI.Knob();
+			KnobReverbHighCut = new UI.Knob();
+			KnobReverbEarlyLate = new UI.Knob();
+			KnobReverbWet = new UI.Knob();
+			KnobReverbDry = new UI.Knob();
 			textBox13 = new System.Windows.Forms.TextBox();
 			label34 = new System.Windows.Forms.Label();
-			KnobReverbDry = new UI.Knob();
 			textBox12 = new System.Windows.Forms.TextBox();
 			label32 = new System.Windows.Forms.Label();
-			KnobReverbWet = new UI.Knob();
 			textBox11 = new System.Windows.Forms.TextBox();
 			label30 = new System.Windows.Forms.Label();
-			KnobReverbEarlyLate = new UI.Knob();
 			textBox10 = new System.Windows.Forms.TextBox();
 			label28 = new System.Windows.Forms.Label();
-			KnobReverbHighCut = new UI.Knob();
 			textBox9 = new System.Windows.Forms.TextBox();
 			label26 = new System.Windows.Forms.Label();
-			KnobReverbLowshelfGain = new UI.Knob();
 			textBox8 = new System.Windows.Forms.TextBox();
 			label24 = new System.Windows.Forms.Label();
-			KnobReverbLowShelfFrequency = new UI.Knob();
 			textBox7 = new System.Windows.Forms.TextBox();
 			label22 = new System.Windows.Forms.Label();
-			KnobReverbDensity = new UI.Knob();
 			textBox6 = new System.Windows.Forms.TextBox();
 			label20 = new System.Windows.Forms.Label();
-			KnobReverbDiffusion = new UI.Knob();
 			textBox1 = new System.Windows.Forms.TextBox();
 			label10 = new System.Windows.Forms.Label();
-			KnobReverbHFDcRatio = new UI.Knob();
 			textBox2 = new System.Windows.Forms.TextBox();
 			label12 = new System.Windows.Forms.Label();
-			KnobReverbHFRef = new UI.Knob();
 			textBox3 = new System.Windows.Forms.TextBox();
 			label14 = new System.Windows.Forms.Label();
-			KnobReverbLateDelay = new UI.Knob();
 			textBox4 = new System.Windows.Forms.TextBox();
 			label16 = new System.Windows.Forms.Label();
-			KnobReverbEarlyDelay = new UI.Knob();
 			textBox5 = new System.Windows.Forms.TextBox();
 			label18 = new System.Windows.Forms.Label();
-			KnobReverbDecayTime = new UI.Knob();
-			CheckReverb = new System.Windows.Forms.CheckBox();
+
+			lblReverbDecayTime = new System.Windows.Forms.Label();
+			lblReverbEarlyDelay = new System.Windows.Forms.Label();
+			lblReverbLateDelay = new System.Windows.Forms.Label();
+			lblReverbHFRef = new System.Windows.Forms.Label();
+			lblReverbHFDcRatio = new System.Windows.Forms.Label();
+			lblReverbDiffusion = new System.Windows.Forms.Label();
+			lblReverbDensity = new System.Windows.Forms.Label();
+			lblReverbLowShelfFreq = new System.Windows.Forms.Label();
+			lblReverbLowShelfGain = new System.Windows.Forms.Label();
+			lblReverbHighCut = new System.Windows.Forms.Label();
+			lblReverbEarlyLate = new System.Windows.Forms.Label();
+			lblReverbWet = new System.Windows.Forms.Label();
+			lblReverbDry = new System.Windows.Forms.Label();
+			lblReverbDivider = new System.Windows.Forms.Label();
+			// Reverb Values（旧 textBox1〜textBox13）
+			lblValReverbDecayTime = new System.Windows.Forms.TextBox();
+			lblValReverbEarlyDelay = new System.Windows.Forms.TextBox();
+			lblValReverbLateDelay = new System.Windows.Forms.TextBox();
+			lblValReverbHFRef = new System.Windows.Forms.TextBox();
+			lblValReverbHFDcRatio = new System.Windows.Forms.TextBox();
+			lblValReverbDiffusion = new System.Windows.Forms.TextBox();
+			lblValReverbDensity = new System.Windows.Forms.TextBox();
+			lblValReverbLowShelfFreq = new System.Windows.Forms.TextBox();
+			lblValReverbLowShelfGain = new System.Windows.Forms.TextBox();
+			lblValReverbHighCut = new System.Windows.Forms.TextBox();
+			lblValReverbEarlyLate = new System.Windows.Forms.TextBox();
+			lblValReverbWet = new System.Windows.Forms.TextBox();
+			lblValReverbDry = new System.Windows.Forms.TextBox();
+
 			tabControlEffects.SuspendLayout();
 			tabSetting.SuspendLayout();
 			tabGEqualizer.SuspendLayout();
@@ -266,7 +296,7 @@
 			tabCompressor.SuspendLayout();
 			GroupCompressor.SuspendLayout();
 			tabReverb.SuspendLayout();
-			groupBox1.SuspendLayout();
+			GroupReverb.SuspendLayout();
 			SuspendLayout();
 			// 
 			// TreeMenu
@@ -274,35 +304,35 @@
 			TreeMenu.Dock = System.Windows.Forms.DockStyle.Left;
 			TreeMenu.Location = new System.Drawing.Point(0, 0);
 			TreeMenu.Name = "TreeMenu";
-			treeNode1.Name = "OUTPUT";
-			treeNode1.Text = "出力設定";
-			treeNode2.Name = "GEQ";
-			treeNode2.Text = "Graphic Equalizer";
-			treeNode3.Name = "PITCH";
-			treeNode3.Text = "Pitch / Freq / Speed";
-			treeNode4.Name = "DISTORTION";
-			treeNode4.Text = "Distortion";
-			treeNode5.Name = "CHORUS";
-			treeNode5.Text = "Chorus";
-			treeNode6.Name = "ECHO";
-			treeNode6.Text = "Echo";
-			treeNode7.Name = "FLANGER";
-			treeNode7.Text = "Flanger";
-			treeNode8.Name = "HIGHPASS";
-			treeNode8.Text = "Highpass";
-			treeNode9.Name = "LOWPASS";
-			treeNode9.Text = "Lowpass";
-			treeNode10.Name = "COMPRESSOR";
-			treeNode10.Text = "Compressor";
-			treeNode11.Name = "REVERB";
-			treeNode11.Text = "Reverb";
-			treeNode12.Name = "EFFECTS";
-			treeNode12.Text = "エフェクト";
-			treeNode13.Name = "SKIN";
-			treeNode13.Text = "スキン";
-			treeNode14.Name = "OTHER";
-			treeNode14.Text = "その他";
-			TreeMenu.Nodes.AddRange(new System.Windows.Forms.TreeNode[] { treeNode1, treeNode12, treeNode13, treeNode14 });
+			treeNode15.Name = "OUTPUT";
+			treeNode15.Text = "出力設定";
+			treeNode16.Name = "GEQ";
+			treeNode16.Text = "Graphic Equalizer";
+			treeNode17.Name = "PITCH";
+			treeNode17.Text = "Pitch / Freq / Speed";
+			treeNode18.Name = "DISTORTION";
+			treeNode18.Text = "Distortion";
+			treeNode19.Name = "CHORUS";
+			treeNode19.Text = "Chorus";
+			treeNode20.Name = "ECHO";
+			treeNode20.Text = "Echo";
+			treeNode21.Name = "FLANGER";
+			treeNode21.Text = "Flanger";
+			treeNode22.Name = "HIGHPASS";
+			treeNode22.Text = "Highpass";
+			treeNode23.Name = "LOWPASS";
+			treeNode23.Text = "Lowpass";
+			treeNode24.Name = "COMPRESSOR";
+			treeNode24.Text = "Compressor";
+			treeNode25.Name = "REVERB";
+			treeNode25.Text = "Reverb";
+			treeNode26.Name = "EFFECTS";
+			treeNode26.Text = "エフェクト";
+			treeNode27.Name = "SKIN";
+			treeNode27.Text = "スキン";
+			treeNode28.Name = "OTHER";
+			treeNode28.Text = "その他";
+			TreeMenu.Nodes.AddRange(new System.Windows.Forms.TreeNode[] { treeNode15, treeNode26, treeNode27, treeNode28 });
 			TreeMenu.Size = new System.Drawing.Size(199, 419);
 			TreeMenu.TabIndex = 3;
 			TreeMenu.AfterSelect += TreeMenu_AfterSelect;
@@ -2549,652 +2579,72 @@
 			// tabReverb
 			// 
 			tabReverb.BackColor = System.Drawing.Color.Transparent;
-			tabReverb.Controls.Add(groupBox1);
+			tabReverb.Controls.Add(GroupReverb);
 			tabReverb.Location = new System.Drawing.Point(4, 24);
 			tabReverb.Name = "tabReverb";
 			tabReverb.Size = new System.Drawing.Size(574, 391);
 			tabReverb.TabIndex = 7;
 			tabReverb.Text = "Reverb";
 			// 
-			// groupBox1
-			// 
-			groupBox1.Controls.Add(textBox13);
-			groupBox1.Controls.Add(label34);
-			groupBox1.Controls.Add(KnobReverbDry);
-			groupBox1.Controls.Add(textBox12);
-			groupBox1.Controls.Add(label32);
-			groupBox1.Controls.Add(KnobReverbWet);
-			groupBox1.Controls.Add(textBox11);
-			groupBox1.Controls.Add(label30);
-			groupBox1.Controls.Add(KnobReverbEarlyLate);
-			groupBox1.Controls.Add(textBox10);
-			groupBox1.Controls.Add(label28);
-			groupBox1.Controls.Add(KnobReverbHighCut);
-			groupBox1.Controls.Add(textBox9);
-			groupBox1.Controls.Add(label26);
-			groupBox1.Controls.Add(KnobReverbLowshelfGain);
-			groupBox1.Controls.Add(textBox8);
-			groupBox1.Controls.Add(label24);
-			groupBox1.Controls.Add(KnobReverbLowShelfFrequency);
-			groupBox1.Controls.Add(textBox7);
-			groupBox1.Controls.Add(label22);
-			groupBox1.Controls.Add(KnobReverbDensity);
-			groupBox1.Controls.Add(textBox6);
-			groupBox1.Controls.Add(label20);
-			groupBox1.Controls.Add(KnobReverbDiffusion);
-			groupBox1.Controls.Add(textBox1);
-			groupBox1.Controls.Add(label10);
-			groupBox1.Controls.Add(KnobReverbHFDcRatio);
-			groupBox1.Controls.Add(textBox2);
-			groupBox1.Controls.Add(label12);
-			groupBox1.Controls.Add(KnobReverbHFRef);
-			groupBox1.Controls.Add(textBox3);
-			groupBox1.Controls.Add(label14);
-			groupBox1.Controls.Add(KnobReverbLateDelay);
-			groupBox1.Controls.Add(textBox4);
-			groupBox1.Controls.Add(label16);
-			groupBox1.Controls.Add(KnobReverbEarlyDelay);
-			groupBox1.Controls.Add(textBox5);
-			groupBox1.Controls.Add(label18);
-			groupBox1.Controls.Add(KnobReverbDecayTime);
-			groupBox1.Controls.Add(CheckReverb);
-			groupBox1.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
-			groupBox1.Location = new System.Drawing.Point(3, 3);
-			groupBox1.Name = "groupBox1";
-			groupBox1.Size = new System.Drawing.Size(552, 345);
-			groupBox1.TabIndex = 18;
-			groupBox1.TabStop = false;
-			// 
-			// textBox13
-			// 
-			textBox13.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			textBox13.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			textBox13.Location = new System.Drawing.Point(463, 312);
-			textBox13.Name = "textBox13";
-			textBox13.Size = new System.Drawing.Size(72, 16);
-			textBox13.TabIndex = 38;
-			textBox13.Text = "0.0";
-			textBox13.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			// 
-			// label34
-			// 
-			label34.AutoSize = true;
-			label34.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			label34.Location = new System.Drawing.Point(463, 201);
-			label34.Name = "label34";
-			label34.Size = new System.Drawing.Size(52, 15);
-			label34.TabIndex = 37;
-			label34.Text = "DryLevel";
-			label34.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			// 
-			// KnobReverbDry
-			// 
-			KnobReverbDry.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbDry.BorderWidth = 2;
-			KnobReverbDry.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
-			KnobReverbDry.HasTicks = true;
-			KnobReverbDry.KnobColor = System.Drawing.SystemColors.Control;
-			KnobReverbDry.LargeChange = 1;
-			KnobReverbDry.Location = new System.Drawing.Point(463, 234);
-			KnobReverbDry.Maximum = 20;
-			KnobReverbDry.Minimum = -80;
-			KnobReverbDry.Name = "KnobReverbDry";
-			KnobReverbDry.PointerColor = System.Drawing.SystemColors.ControlText;
-			KnobReverbDry.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbDry.PointerOffset = 4;
-			KnobReverbDry.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbDry.PointerWidth = 2;
-			KnobReverbDry.Size = new System.Drawing.Size(62, 62);
-			KnobReverbDry.TabIndex = 36;
-			KnobReverbDry.Text = "Level";
-			KnobReverbDry.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbDry.ValueChanged += new System.EventHandler(this.KnobReverbDry_ValueChanged);
-			// 
-			// textBox12
-			// 
-			textBox12.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			textBox12.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			textBox12.Location = new System.Drawing.Point(385, 312);
-			textBox12.Name = "textBox12";
-			textBox12.Size = new System.Drawing.Size(72, 16);
-			textBox12.TabIndex = 35;
-			textBox12.Text = "0.0";
-			textBox12.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			// 
-			// label32
-			// 
-			label32.AutoSize = true;
-			label32.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			label32.Location = new System.Drawing.Point(385, 201);
-			label32.Name = "label32";
-			label32.Size = new System.Drawing.Size(55, 15);
-			label32.TabIndex = 34;
-			label32.Text = "WetLevel";
-			label32.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			// 
-			// KnobReverbWet
-			// 
-			KnobReverbWet.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbWet.BorderWidth = 2;
-			KnobReverbWet.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
-			KnobReverbWet.HasTicks = true;
-			KnobReverbWet.KnobColor = System.Drawing.SystemColors.Control;
-			KnobReverbWet.LargeChange = 1;
-			KnobReverbWet.Location = new System.Drawing.Point(385, 234);
-			KnobReverbWet.Maximum = 20;
-			KnobReverbWet.Minimum = -80;
-			KnobReverbWet.Name = "KnobReverbWet";
-			KnobReverbWet.PointerColor = System.Drawing.SystemColors.ControlText;
-			KnobReverbWet.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbWet.PointerOffset = 4;
-			KnobReverbWet.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbWet.PointerWidth = 2;
-			KnobReverbWet.Size = new System.Drawing.Size(62, 62);
-			KnobReverbWet.TabIndex = 33;
-			KnobReverbWet.Text = "Level";
-			KnobReverbWet.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbWet.Value = -6;
-			KnobReverbWet.ValueChanged += new System.EventHandler(this.KnobReverbWet_ValueChanged);
-			// 
-			// textBox11
-			// 
-			textBox11.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			textBox11.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			textBox11.Location = new System.Drawing.Point(307, 312);
-			textBox11.Name = "textBox11";
-			textBox11.Size = new System.Drawing.Size(72, 16);
-			textBox11.TabIndex = 32;
-			textBox11.Text = "0.0";
-			textBox11.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			// 
-			// label30
-			// 
-			label30.AutoSize = true;
-			label30.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			label30.Location = new System.Drawing.Point(307, 201);
-			label30.Name = "label30";
-			label30.Size = new System.Drawing.Size(74, 15);
-			label30.TabIndex = 31;
-			label30.Text = "EarlyLateMix";
-			label30.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			// 
-			// KnobReverbEarlyLate
-			// 
-			KnobReverbEarlyLate.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbEarlyLate.BorderWidth = 2;
-			KnobReverbEarlyLate.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
-			KnobReverbEarlyLate.HasTicks = true;
-			KnobReverbEarlyLate.KnobColor = System.Drawing.SystemColors.Control;
-			KnobReverbEarlyLate.LargeChange = 1;
-			KnobReverbEarlyLate.Location = new System.Drawing.Point(307, 234);
-			KnobReverbEarlyLate.Name = "KnobReverbEarlyLate";
-			KnobReverbEarlyLate.PointerColor = System.Drawing.SystemColors.ControlText;
-			KnobReverbEarlyLate.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbEarlyLate.PointerOffset = 4;
-			KnobReverbEarlyLate.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbEarlyLate.PointerWidth = 2;
-			KnobReverbEarlyLate.Size = new System.Drawing.Size(62, 62);
-			KnobReverbEarlyLate.TabIndex = 30;
-			KnobReverbEarlyLate.Text = "Level";
-			KnobReverbEarlyLate.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbEarlyLate.Value = 50;
-			KnobReverbEarlyLate.ValueChanged += new System.EventHandler(this.KnobReverbEarlyLate_ValueChanged);
-			// 
-			// textBox10
-			// 
-			textBox10.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			textBox10.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			textBox10.Location = new System.Drawing.Point(229, 312);
-			textBox10.Name = "textBox10";
-			textBox10.Size = new System.Drawing.Size(72, 16);
-			textBox10.TabIndex = 29;
-			textBox10.Text = "0.0";
-			textBox10.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			// 
-			// label28
-			// 
-			label28.AutoSize = true;
-			label28.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			label28.Location = new System.Drawing.Point(229, 201);
-			label28.Name = "label28";
-			label28.Size = new System.Drawing.Size(51, 15);
-			label28.TabIndex = 28;
-			label28.Text = "HighCut";
-			label28.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			// 
-			// KnobReverbHighCut
-			// 
-			KnobReverbHighCut.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbHighCut.BorderWidth = 2;
-			KnobReverbHighCut.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
-			KnobReverbHighCut.HasTicks = true;
-			KnobReverbHighCut.KnobColor = System.Drawing.SystemColors.Control;
-			KnobReverbHighCut.LargeChange = 1;
-			KnobReverbHighCut.Location = new System.Drawing.Point(229, 234);
-			KnobReverbHighCut.Maximum = 20000;
-			KnobReverbHighCut.Minimum = 20;
-			KnobReverbHighCut.Name = "KnobReverbHighCut";
-			KnobReverbHighCut.PointerColor = System.Drawing.SystemColors.ControlText;
-			KnobReverbHighCut.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbHighCut.PointerOffset = 4;
-			KnobReverbHighCut.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbHighCut.PointerWidth = 2;
-			KnobReverbHighCut.Size = new System.Drawing.Size(62, 62);
-			KnobReverbHighCut.TabIndex = 27;
-			KnobReverbHighCut.Text = "Level";
-			KnobReverbHighCut.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbHighCut.Value = 20000;
-			KnobReverbHighCut.ValueChanged += new System.EventHandler(this.KnobReverbHighCut_ValueChanged);
-			// 
-			// textBox9
-			// 
-			textBox9.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			textBox9.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			textBox9.Location = new System.Drawing.Point(151, 312);
-			textBox9.Name = "textBox9";
-			textBox9.Size = new System.Drawing.Size(72, 16);
-			textBox9.TabIndex = 26;
-			textBox9.Text = "0.0";
-			textBox9.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			// 
-			// label26
-			// 
-			label26.AutoSize = true;
-			label26.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			label26.Location = new System.Drawing.Point(151, 201);
-			label26.Name = "label26";
-			label26.Size = new System.Drawing.Size(57, 30);
-			label26.TabIndex = 25;
-			label26.Text = "Low shelf\r\nGain\r\n";
-			label26.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			// 
-			// KnobReverbLowshelfGain
-			// 
-			KnobReverbLowshelfGain.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbLowshelfGain.BorderWidth = 2;
-			KnobReverbLowshelfGain.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
-			KnobReverbLowshelfGain.HasTicks = true;
-			KnobReverbLowshelfGain.KnobColor = System.Drawing.SystemColors.Control;
-			KnobReverbLowshelfGain.LargeChange = 1;
-			KnobReverbLowshelfGain.Location = new System.Drawing.Point(151, 234);
-			KnobReverbLowshelfGain.Maximum = 12;
-			KnobReverbLowshelfGain.Minimum = -36;
-			KnobReverbLowshelfGain.Name = "KnobReverbLowshelfGain";
-			KnobReverbLowshelfGain.PointerColor = System.Drawing.SystemColors.ControlText;
-			KnobReverbLowshelfGain.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbLowshelfGain.PointerOffset = 4;
-			KnobReverbLowshelfGain.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbLowshelfGain.PointerWidth = 2;
-			KnobReverbLowshelfGain.Size = new System.Drawing.Size(62, 62);
-			KnobReverbLowshelfGain.TabIndex = 24;
-			KnobReverbLowshelfGain.Text = "Level";
-			KnobReverbLowshelfGain.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbLowshelfGain.ValueChanged += new System.EventHandler(this.KnobReverbLowshelfGain_ValueChanged);
-			// 
-			// textBox8
-			// 
-			textBox8.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			textBox8.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			textBox8.Location = new System.Drawing.Point(76, 290);
-			textBox8.Name = "textBox8";
-			textBox8.Size = new System.Drawing.Size(64, 16);
-			textBox8.TabIndex = 23;
-			textBox8.Text = "0.0";
-			textBox8.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			// 
-			// label24
-			// 
-			label24.AutoSize = true;
-			label24.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			label24.Location = new System.Drawing.Point(76, 187);
-			label24.Name = "label24";
-			label24.Size = new System.Drawing.Size(61, 30);
-			label24.TabIndex = 22;
-			label24.Text = "Low shelf\r\nFrequency";
-			label24.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			// 
-			// KnobReverbLowShelfFrequency
-			// 
-			KnobReverbLowShelfFrequency.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbLowShelfFrequency.BorderWidth = 2;
-			KnobReverbLowShelfFrequency.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
-			KnobReverbLowShelfFrequency.HasTicks = true;
-			KnobReverbLowShelfFrequency.KnobColor = System.Drawing.SystemColors.Control;
-			KnobReverbLowShelfFrequency.LargeChange = 1;
-			KnobReverbLowShelfFrequency.Location = new System.Drawing.Point(76, 220);
-			KnobReverbLowShelfFrequency.Maximum = 1000;
-			KnobReverbLowShelfFrequency.Minimum = 20;
-			KnobReverbLowShelfFrequency.Name = "KnobReverbLowShelfFrequency";
-			KnobReverbLowShelfFrequency.PointerColor = System.Drawing.SystemColors.ControlText;
-			KnobReverbLowShelfFrequency.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbLowShelfFrequency.PointerOffset = 4;
-			KnobReverbLowShelfFrequency.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbLowShelfFrequency.PointerWidth = 2;
-			KnobReverbLowShelfFrequency.Size = new System.Drawing.Size(62, 62);
-			KnobReverbLowShelfFrequency.TabIndex = 21;
-			KnobReverbLowShelfFrequency.Text = "Level";
-			KnobReverbLowShelfFrequency.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbLowShelfFrequency.Value = 250;
-			KnobReverbLowShelfFrequency.ValueChanged += new System.EventHandler(this.KnobReverbLowShelfFrequency_ValueChanged);
-			// 
-			// textBox7
-			// 
-			textBox7.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			textBox7.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			textBox7.Location = new System.Drawing.Point(6, 290);
-			textBox7.Name = "textBox7";
-			textBox7.Size = new System.Drawing.Size(64, 16);
-			textBox7.TabIndex = 20;
-			textBox7.Text = "0.0";
-			textBox7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			// 
-			// label22
-			// 
-			label22.AutoSize = true;
-			label22.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			label22.Location = new System.Drawing.Point(6, 187);
-			label22.Name = "label22";
-			label22.Size = new System.Drawing.Size(46, 15);
-			label22.TabIndex = 19;
-			label22.Text = "Density";
-			label22.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			// 
-			// KnobReverbDensity
-			// 
-			KnobReverbDensity.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbDensity.BorderWidth = 2;
-			KnobReverbDensity.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
-			KnobReverbDensity.HasTicks = true;
-			KnobReverbDensity.KnobColor = System.Drawing.SystemColors.Control;
-			KnobReverbDensity.LargeChange = 1;
-			KnobReverbDensity.Location = new System.Drawing.Point(6, 220);
-			KnobReverbDensity.Minimum = 10;
-			KnobReverbDensity.Name = "KnobReverbDensity";
-			KnobReverbDensity.PointerColor = System.Drawing.SystemColors.ControlText;
-			KnobReverbDensity.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbDensity.PointerOffset = 4;
-			KnobReverbDensity.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbDensity.PointerWidth = 2;
-			KnobReverbDensity.Size = new System.Drawing.Size(62, 62);
-			KnobReverbDensity.TabIndex = 18;
-			KnobReverbDensity.Text = "Level";
-			KnobReverbDensity.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbDensity.Value = 50;
-			KnobReverbDensity.ValueChanged += new System.EventHandler(this.KnobReverbDensity_ValueChanged);
-			// 
-			// textBox6
-			// 
-			textBox6.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			textBox6.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			textBox6.Location = new System.Drawing.Point(372, 154);
-			textBox6.Name = "textBox6";
-			textBox6.Size = new System.Drawing.Size(64, 16);
-			textBox6.TabIndex = 17;
-			textBox6.Text = "0.0";
-			textBox6.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			// 
-			// label20
-			// 
-			label20.AutoSize = true;
-			label20.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			label20.Location = new System.Drawing.Point(435, 40);
-			label20.Name = "label20";
-			label20.Size = new System.Drawing.Size(54, 15);
-			label20.TabIndex = 16;
-			label20.Text = "Diffusion";
-			label20.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			// 
-			// KnobReverbDiffusion
-			// 
-			KnobReverbDiffusion.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbDiffusion.BorderWidth = 2;
-			KnobReverbDiffusion.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
-			KnobReverbDiffusion.HasTicks = true;
-			KnobReverbDiffusion.KnobColor = System.Drawing.SystemColors.Control;
-			KnobReverbDiffusion.LargeChange = 1;
-			KnobReverbDiffusion.Location = new System.Drawing.Point(372, 84);
-			KnobReverbDiffusion.Minimum = 10;
-			KnobReverbDiffusion.Name = "KnobReverbDiffusion";
-			KnobReverbDiffusion.PointerColor = System.Drawing.SystemColors.ControlText;
-			KnobReverbDiffusion.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbDiffusion.PointerOffset = 4;
-			KnobReverbDiffusion.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbDiffusion.PointerWidth = 2;
-			KnobReverbDiffusion.Size = new System.Drawing.Size(62, 62);
-			KnobReverbDiffusion.TabIndex = 15;
-			KnobReverbDiffusion.Text = "Level";
-			KnobReverbDiffusion.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbDiffusion.Value = 50;
-			KnobReverbDiffusion.ValueChanged += new System.EventHandler(this.KnobReverbDiffusion_ValueChanged);
-			// 
-			// textBox1
-			// 
-			textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			textBox1.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			textBox1.Location = new System.Drawing.Point(302, 154);
-			textBox1.Name = "textBox1";
-			textBox1.Size = new System.Drawing.Size(64, 16);
-			textBox1.TabIndex = 14;
-			textBox1.Text = "0.0";
-			textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			// 
-			// label10
-			// 
-			label10.AutoSize = true;
-			label10.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			label10.Location = new System.Drawing.Point(328, 25);
-			label10.Name = "label10";
-			label10.Size = new System.Drawing.Size(90, 30);
-			label10.TabIndex = 13;
-			label10.Text = "High Frequency\r\nDecay Ratio";
-			label10.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			// 
-			// KnobReverbHFDcRatio
-			// 
-			KnobReverbHFDcRatio.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbHFDcRatio.BorderWidth = 2;
-			KnobReverbHFDcRatio.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
-			KnobReverbHFDcRatio.HasTicks = true;
-			KnobReverbHFDcRatio.KnobColor = System.Drawing.SystemColors.Control;
-			KnobReverbHFDcRatio.LargeChange = 1;
-			KnobReverbHFDcRatio.Location = new System.Drawing.Point(302, 84);
-			KnobReverbHFDcRatio.Minimum = 10;
-			KnobReverbHFDcRatio.Name = "KnobReverbHFDcRatio";
-			KnobReverbHFDcRatio.PointerColor = System.Drawing.SystemColors.ControlText;
-			KnobReverbHFDcRatio.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbHFDcRatio.PointerOffset = 4;
-			KnobReverbHFDcRatio.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbHFDcRatio.PointerWidth = 2;
-			KnobReverbHFDcRatio.Size = new System.Drawing.Size(62, 62);
-			KnobReverbHFDcRatio.TabIndex = 12;
-			KnobReverbHFDcRatio.Text = "Level";
-			KnobReverbHFDcRatio.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbHFDcRatio.Value = 50;
-			KnobReverbHFDcRatio.ValueChanged += new System.EventHandler(this.KnobReverbHFDcRatio_ValueChanged);
-			// 
-			// textBox2
-			// 
-			textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			textBox2.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			textBox2.Location = new System.Drawing.Point(232, 154);
-			textBox2.Name = "textBox2";
-			textBox2.Size = new System.Drawing.Size(64, 16);
-			textBox2.TabIndex = 11;
-			textBox2.Text = "0.0";
-			textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			// 
-			// label12
-			// 
-			label12.AutoSize = true;
-			label12.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			label12.Location = new System.Drawing.Point(232, 23);
-			label12.Name = "label12";
-			label12.Size = new System.Drawing.Size(90, 30);
-			label12.TabIndex = 10;
-			label12.Text = "High Frequency\r\nReference";
-			label12.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			// 
-			// KnobReverbHFRef
-			// 
-			KnobReverbHFRef.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbHFRef.BorderWidth = 2;
-			KnobReverbHFRef.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
-			KnobReverbHFRef.HasTicks = true;
-			KnobReverbHFRef.KnobColor = System.Drawing.SystemColors.Control;
-			KnobReverbHFRef.LargeChange = 1000;
-			KnobReverbHFRef.Location = new System.Drawing.Point(232, 84);
-			KnobReverbHFRef.Maximum = 20000;
-			KnobReverbHFRef.Minimum = 20;
-			KnobReverbHFRef.Name = "KnobReverbHFRef";
-			KnobReverbHFRef.PointerColor = System.Drawing.SystemColors.ControlText;
-			KnobReverbHFRef.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbHFRef.PointerOffset = 4;
-			KnobReverbHFRef.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbHFRef.PointerWidth = 2;
-			KnobReverbHFRef.Size = new System.Drawing.Size(62, 62);
-			KnobReverbHFRef.TabIndex = 9;
-			KnobReverbHFRef.Text = "Level";
-			KnobReverbHFRef.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbHFRef.Value = 5000;
-			KnobReverbHFRef.ValueChanged += new System.EventHandler(this.KnobReverbHFRef_ValueChanged);
-			// 
-			// textBox3
-			// 
-			textBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			textBox3.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			textBox3.Location = new System.Drawing.Point(162, 154);
-			textBox3.Name = "textBox3";
-			textBox3.Size = new System.Drawing.Size(64, 16);
-			textBox3.TabIndex = 8;
-			textBox3.Text = "0.0";
-			textBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			// 
-			// label14
-			// 
-			label14.AutoSize = true;
-			label14.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			label14.Location = new System.Drawing.Point(162, 23);
-			label14.Name = "label14";
-			label14.Size = new System.Drawing.Size(61, 15);
-			label14.TabIndex = 7;
-			label14.Text = "Late Delay";
-			label14.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			// 
-			// KnobReverbLateDelay
-			// 
-			KnobReverbLateDelay.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbLateDelay.BorderWidth = 2;
-			KnobReverbLateDelay.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
-			KnobReverbLateDelay.HasTicks = true;
-			KnobReverbLateDelay.KnobColor = System.Drawing.SystemColors.Control;
-			KnobReverbLateDelay.LargeChange = 10;
-			KnobReverbLateDelay.Location = new System.Drawing.Point(162, 84);
-			KnobReverbLateDelay.Name = "KnobReverbLateDelay";
-			KnobReverbLateDelay.PointerColor = System.Drawing.SystemColors.ControlText;
-			KnobReverbLateDelay.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbLateDelay.PointerOffset = 4;
-			KnobReverbLateDelay.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbLateDelay.PointerWidth = 2;
-			KnobReverbLateDelay.Size = new System.Drawing.Size(62, 62);
-			KnobReverbLateDelay.TabIndex = 6;
-			KnobReverbLateDelay.Text = "Level";
-			KnobReverbLateDelay.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbLateDelay.Value = 40;
-			KnobReverbLateDelay.ValueChanged += new System.EventHandler(this.KnobReverbLateDelay_ValueChanged);
-			// 
-			// textBox4
-			// 
-			textBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			textBox4.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			textBox4.Location = new System.Drawing.Point(92, 154);
-			textBox4.Name = "textBox4";
-			textBox4.Size = new System.Drawing.Size(64, 16);
-			textBox4.TabIndex = 5;
-			textBox4.Text = "0.0";
-			textBox4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			// 
-			// label16
-			// 
-			label16.AutoSize = true;
-			label16.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			label16.Location = new System.Drawing.Point(84, 23);
-			label16.Name = "label16";
-			label16.Size = new System.Drawing.Size(64, 15);
-			label16.TabIndex = 4;
-			label16.Text = "Early Delay";
-			label16.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			// 
-			// KnobReverbEarlyDelay
-			// 
-			KnobReverbEarlyDelay.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbEarlyDelay.BorderWidth = 2;
-			KnobReverbEarlyDelay.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
-			KnobReverbEarlyDelay.HasTicks = true;
-			KnobReverbEarlyDelay.KnobColor = System.Drawing.SystemColors.Control;
-			KnobReverbEarlyDelay.LargeChange = 10;
-			KnobReverbEarlyDelay.Location = new System.Drawing.Point(84, 43);
-			KnobReverbEarlyDelay.Maximum = 300;
-			KnobReverbEarlyDelay.Name = "KnobReverbEarlyDelay";
-			KnobReverbEarlyDelay.PointerColor = System.Drawing.SystemColors.ControlText;
-			KnobReverbEarlyDelay.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbEarlyDelay.PointerOffset = 4;
-			KnobReverbEarlyDelay.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbEarlyDelay.PointerWidth = 2;
-			KnobReverbEarlyDelay.Size = new System.Drawing.Size(62, 62);
-			KnobReverbEarlyDelay.TabIndex = 3;
-			KnobReverbEarlyDelay.Text = "Level";
-			KnobReverbEarlyDelay.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbEarlyDelay.Value = 20;
-			KnobReverbEarlyDelay.ValueChanged += new System.EventHandler(this.KnobReverbEarlyDelay_ValueChanged);
-			// 
-			// textBox5
-			// 
-			textBox5.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			textBox5.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			textBox5.Location = new System.Drawing.Point(22, 154);
-			textBox5.Name = "textBox5";
-			textBox5.Size = new System.Drawing.Size(64, 16);
-			textBox5.TabIndex = 2;
-			textBox5.Text = "0.0";
-			textBox5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			// 
-			// label18
-			// 
-			label18.AutoSize = true;
-			label18.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			label18.Location = new System.Drawing.Point(6, 25);
-			label18.Name = "label18";
-			label18.Size = new System.Drawing.Size(67, 15);
-			label18.TabIndex = 2;
-			label18.Text = "Decay Time";
-			label18.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			// 
-			// KnobReverbDecayTime
-			// 
-			KnobReverbDecayTime.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbDecayTime.BorderWidth = 2;
-			KnobReverbDecayTime.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
-			KnobReverbDecayTime.HasTicks = true;
-			KnobReverbDecayTime.KnobColor = System.Drawing.SystemColors.Control;
-			KnobReverbDecayTime.LargeChange = 100;
-			KnobReverbDecayTime.Location = new System.Drawing.Point(6, 43);
-			KnobReverbDecayTime.Maximum = 20000;
-			KnobReverbDecayTime.Minimum = 100;
-			KnobReverbDecayTime.Name = "KnobReverbDecayTime";
-			KnobReverbDecayTime.PointerColor = System.Drawing.SystemColors.ControlText;
-			KnobReverbDecayTime.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbDecayTime.PointerOffset = 4;
-			KnobReverbDecayTime.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
-			KnobReverbDecayTime.PointerWidth = 2;
-			KnobReverbDecayTime.Size = new System.Drawing.Size(62, 62);
-			KnobReverbDecayTime.TabIndex = 1;
-			KnobReverbDecayTime.Text = "Level";
-			KnobReverbDecayTime.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbDecayTime.Value = 1500;
-			KnobReverbDecayTime.ValueChanged += new System.EventHandler(this.KnobReverbDecayTime_ValueChanged);
-			// 
+			// GroupReverb
+			// 
+			GroupReverb.Controls.Add(CheckReverb);
+			// Row1
+			GroupReverb.Controls.Add(lblReverbDecayTime);
+			GroupReverb.Controls.Add(lblReverbEarlyDelay);
+			GroupReverb.Controls.Add(lblReverbLateDelay);
+			GroupReverb.Controls.Add(lblReverbHFRef);
+			GroupReverb.Controls.Add(lblReverbHFDcRatio);
+			GroupReverb.Controls.Add(lblReverbDiffusion);
+			GroupReverb.Controls.Add(lblReverbDensity);
+
+			GroupReverb.Controls.Add(lblValReverbDecayTime);
+			GroupReverb.Controls.Add(lblValReverbEarlyDelay);
+			GroupReverb.Controls.Add(lblValReverbLateDelay);
+			GroupReverb.Controls.Add(lblValReverbHFRef);
+			GroupReverb.Controls.Add(lblValReverbHFDcRatio);
+			GroupReverb.Controls.Add(lblValReverbDiffusion);
+			GroupReverb.Controls.Add(lblValReverbDensity);
+
+			GroupReverb.Controls.Add(KnobReverbDecayTime);
+			GroupReverb.Controls.Add(KnobReverbEarlyDelay);
+			GroupReverb.Controls.Add(KnobReverbLateDelay);
+			GroupReverb.Controls.Add(KnobReverbHFRef);
+			GroupReverb.Controls.Add(KnobReverbHFDcRatio);
+			GroupReverb.Controls.Add(KnobReverbDiffusion);
+			GroupReverb.Controls.Add(KnobReverbDensity);
+			// 区切り線
+			GroupReverb.Controls.Add(lblReverbDivider);
+			// Row2
+			GroupReverb.Controls.Add(lblReverbLowShelfFreq);
+			GroupReverb.Controls.Add(lblReverbLowShelfGain);
+			GroupReverb.Controls.Add(lblReverbHighCut);
+			GroupReverb.Controls.Add(lblReverbEarlyLate);
+			GroupReverb.Controls.Add(lblReverbWet);
+			GroupReverb.Controls.Add(lblReverbDry);
+
+			GroupReverb.Controls.Add(lblValReverbLowShelfFreq);
+			GroupReverb.Controls.Add(lblValReverbLowShelfGain);
+			GroupReverb.Controls.Add(lblValReverbHighCut);
+			GroupReverb.Controls.Add(lblValReverbEarlyLate);
+			GroupReverb.Controls.Add(lblValReverbWet);
+			GroupReverb.Controls.Add(lblValReverbDry);
+
+			GroupReverb.Controls.Add(KnobReverbLowShelfFrequency);
+			GroupReverb.Controls.Add(KnobReverbLowshelfGain);
+			GroupReverb.Controls.Add(KnobReverbHighCut);
+			GroupReverb.Controls.Add(KnobReverbEarlyLate);
+			GroupReverb.Controls.Add(KnobReverbWet);
+			GroupReverb.Controls.Add(KnobReverbDry);
+			GroupReverb.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
+			GroupReverb.Location = new System.Drawing.Point(3, 3);
+			GroupReverb.Name = "GroupReverb";
+			GroupReverb.Size = new System.Drawing.Size(552, 285);
+			GroupReverb.TabIndex = 18;
+			GroupReverb.TabStop = false;
+			// ===========================
 			// CheckReverb
-			// 
+			// ===========================
 			CheckReverb.AutoSize = true;
 			CheckReverb.BackColor = System.Drawing.SystemColors.Control;
 			CheckReverb.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
@@ -3206,6 +2656,726 @@
 			CheckReverb.UseVisualStyleBackColor = false;
 			CheckReverb.CheckedChanged += CheckReverb_CheckedChanged;
 
+			// ===========================
+			// Row 1 - Col 0: DecayTime (x=6)
+			// ===========================
+			lblReverbDecayTime.AutoSize = false;
+			lblReverbDecayTime.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbDecayTime.Location = new System.Drawing.Point(9, 22);
+			lblReverbDecayTime.Name = "lblReverbDecayTime";
+			lblReverbDecayTime.Size = new System.Drawing.Size(72, 30);
+			lblReverbDecayTime.Text = "Decay Time";
+			lblReverbDecayTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+			KnobReverbDecayTime.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbDecayTime.BorderWidth = 2;
+			KnobReverbDecayTime.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
+			KnobReverbDecayTime.HasTicks = true;
+			KnobReverbDecayTime.KnobColor = System.Drawing.SystemColors.Control;
+			KnobReverbDecayTime.LargeChange = 500;
+			KnobReverbDecayTime.Location = new System.Drawing.Point(14, 55);
+			KnobReverbDecayTime.Maximum = 20000;
+			KnobReverbDecayTime.Minimum = 100;
+			KnobReverbDecayTime.Name = "KnobReverbDecayTime";
+			KnobReverbDecayTime.PointerColor = System.Drawing.SystemColors.ControlText;
+			KnobReverbDecayTime.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbDecayTime.PointerOffset = 4;
+			KnobReverbDecayTime.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbDecayTime.PointerWidth = 2;
+			KnobReverbDecayTime.Size = new System.Drawing.Size(62, 62);
+			KnobReverbDecayTime.TabIndex = 1;
+			KnobReverbDecayTime.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbDecayTime.Value = 1500;
+			KnobReverbDecayTime.ValueChanged += KnobReverbDecayTime_ValueChanged;
+
+			lblValReverbDecayTime.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbDecayTime.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbDecayTime.Location = new System.Drawing.Point(14, 120);
+			lblValReverbDecayTime.Name = "lblValReverbDecayTime";
+			lblValReverbDecayTime.ReadOnly = true;
+			lblValReverbDecayTime.Size = new System.Drawing.Size(62, 16);
+			lblValReverbDecayTime.Text = "1500";
+			lblValReverbDecayTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+
+			// ===========================
+			// Row 1 - Col 1: EarlyDelay (x=84)
+			// ===========================
+			lblReverbEarlyDelay.AutoSize = false;
+			lblReverbEarlyDelay.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbEarlyDelay.Location = new System.Drawing.Point(87, 22);
+			lblReverbEarlyDelay.Name = "lblReverbEarlyDelay";
+			lblReverbEarlyDelay.Size = new System.Drawing.Size(72, 30);
+			lblReverbEarlyDelay.Text = "Early Delay";
+			lblReverbEarlyDelay.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+			KnobReverbEarlyDelay.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbEarlyDelay.BorderWidth = 2;
+			KnobReverbEarlyDelay.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
+			KnobReverbEarlyDelay.HasTicks = true;
+			KnobReverbEarlyDelay.KnobColor = System.Drawing.SystemColors.Control;
+			KnobReverbEarlyDelay.LargeChange = 10;
+			KnobReverbEarlyDelay.Location = new System.Drawing.Point(92, 55);
+			KnobReverbEarlyDelay.Maximum = 300;
+			KnobReverbEarlyDelay.Minimum = 0;
+			KnobReverbEarlyDelay.Name = "KnobReverbEarlyDelay";
+			KnobReverbEarlyDelay.PointerColor = System.Drawing.SystemColors.ControlText;
+			KnobReverbEarlyDelay.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbEarlyDelay.PointerOffset = 4;
+			KnobReverbEarlyDelay.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbEarlyDelay.PointerWidth = 2;
+			KnobReverbEarlyDelay.Size = new System.Drawing.Size(62, 62);
+			KnobReverbEarlyDelay.TabIndex = 2;
+			KnobReverbEarlyDelay.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbEarlyDelay.Value = 20;
+			KnobReverbEarlyDelay.ValueChanged += KnobReverbEarlyDelay_ValueChanged;
+
+			lblValReverbEarlyDelay.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbEarlyDelay.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbEarlyDelay.Location = new System.Drawing.Point(92, 120);
+			lblValReverbEarlyDelay.Name = "lblValReverbEarlyDelay";
+			lblValReverbEarlyDelay.ReadOnly = true;
+			lblValReverbEarlyDelay.Size = new System.Drawing.Size(62, 16);
+			lblValReverbEarlyDelay.Text = "20";
+			lblValReverbEarlyDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+
+			// ===========================
+			// Row 1 - Col 2: LateDelay (x=162)
+			// ===========================
+			lblReverbLateDelay.AutoSize = false;
+			lblReverbLateDelay.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbLateDelay.Location = new System.Drawing.Point(165, 22);
+			lblReverbLateDelay.Name = "lblReverbLateDelay";
+			lblReverbLateDelay.Size = new System.Drawing.Size(72, 30);
+			lblReverbLateDelay.Text = "Late Delay";
+			lblReverbLateDelay.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+			KnobReverbLateDelay.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbLateDelay.BorderWidth = 2;
+			KnobReverbLateDelay.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
+			KnobReverbLateDelay.HasTicks = true;
+			KnobReverbLateDelay.KnobColor = System.Drawing.SystemColors.Control;
+			KnobReverbLateDelay.LargeChange = 5;
+			KnobReverbLateDelay.Location = new System.Drawing.Point(170, 55);
+			KnobReverbLateDelay.Maximum = 100;
+			KnobReverbLateDelay.Minimum = 0;
+			KnobReverbLateDelay.Name = "KnobReverbLateDelay";
+			KnobReverbLateDelay.PointerColor = System.Drawing.SystemColors.ControlText;
+			KnobReverbLateDelay.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbLateDelay.PointerOffset = 4;
+			KnobReverbLateDelay.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbLateDelay.PointerWidth = 2;
+			KnobReverbLateDelay.Size = new System.Drawing.Size(62, 62);
+			KnobReverbLateDelay.TabIndex = 3;
+			KnobReverbLateDelay.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbLateDelay.Value = 40;
+			KnobReverbLateDelay.ValueChanged += KnobReverbLateDelay_ValueChanged;
+
+			lblValReverbLateDelay.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbLateDelay.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbLateDelay.Location = new System.Drawing.Point(170, 120);
+			lblValReverbLateDelay.Name = "lblValReverbLateDelay";
+			lblValReverbLateDelay.ReadOnly = true;
+			lblValReverbLateDelay.Size = new System.Drawing.Size(62, 16);
+			lblValReverbLateDelay.Text = "40";
+			lblValReverbLateDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+
+			// ===========================
+			// Row 1 - Col 3: HFRef (x=240)
+			// ===========================
+			lblReverbHFRef.AutoSize = false;
+			lblReverbHFRef.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbHFRef.Location = new System.Drawing.Point(243, 22);
+			lblReverbHFRef.Name = "lblReverbHFRef";
+			lblReverbHFRef.Size = new System.Drawing.Size(72, 30);
+			lblReverbHFRef.Text = "HF Reference";
+			lblReverbHFRef.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+			KnobReverbHFRef.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbHFRef.BorderWidth = 2;
+			KnobReverbHFRef.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
+			KnobReverbHFRef.HasTicks = true;
+			KnobReverbHFRef.KnobColor = System.Drawing.SystemColors.Control;
+			KnobReverbHFRef.LargeChange = 1000;
+			KnobReverbHFRef.Location = new System.Drawing.Point(248, 55);
+			KnobReverbHFRef.Maximum = 20000;
+			KnobReverbHFRef.Minimum = 20;
+			KnobReverbHFRef.Name = "KnobReverbHFRef";
+			KnobReverbHFRef.PointerColor = System.Drawing.SystemColors.ControlText;
+			KnobReverbHFRef.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbHFRef.PointerOffset = 4;
+			KnobReverbHFRef.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbHFRef.PointerWidth = 2;
+			KnobReverbHFRef.Size = new System.Drawing.Size(62, 62);
+			KnobReverbHFRef.TabIndex = 4;
+			KnobReverbHFRef.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbHFRef.Value = 5000;
+			KnobReverbHFRef.ValueChanged += KnobReverbHFRef_ValueChanged;
+
+			lblValReverbHFRef.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbHFRef.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbHFRef.Location = new System.Drawing.Point(248, 120);
+			lblValReverbHFRef.Name = "lblValReverbHFRef";
+			lblValReverbHFRef.ReadOnly = true;
+			lblValReverbHFRef.Size = new System.Drawing.Size(62, 16);
+			lblValReverbHFRef.Text = "5000";
+			lblValReverbHFRef.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+
+			// ===========================
+			// Row 1 - Col 4: HFDcRatio (x=318)
+			// ===========================
+			lblReverbHFDcRatio.AutoSize = false;
+			lblReverbHFDcRatio.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbHFDcRatio.Location = new System.Drawing.Point(321, 22);
+			lblReverbHFDcRatio.Name = "lblReverbHFDcRatio";
+			lblReverbHFDcRatio.Size = new System.Drawing.Size(72, 30);
+			lblReverbHFDcRatio.Text = "HF Decay\nRatio";
+			lblReverbHFDcRatio.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+			KnobReverbHFDcRatio.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbHFDcRatio.BorderWidth = 2;
+			KnobReverbHFDcRatio.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
+			KnobReverbHFDcRatio.HasTicks = true;
+			KnobReverbHFDcRatio.KnobColor = System.Drawing.SystemColors.Control;
+			KnobReverbHFDcRatio.LargeChange = 5;
+			KnobReverbHFDcRatio.Location = new System.Drawing.Point(326, 55);
+			KnobReverbHFDcRatio.Minimum = 10;
+			KnobReverbHFDcRatio.Name = "KnobReverbHFDcRatio";
+			KnobReverbHFDcRatio.PointerColor = System.Drawing.SystemColors.ControlText;
+			KnobReverbHFDcRatio.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbHFDcRatio.PointerOffset = 4;
+			KnobReverbHFDcRatio.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbHFDcRatio.PointerWidth = 2;
+			KnobReverbHFDcRatio.Size = new System.Drawing.Size(62, 62);
+			KnobReverbHFDcRatio.TabIndex = 5;
+			KnobReverbHFDcRatio.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbHFDcRatio.Value = 50;
+			KnobReverbHFDcRatio.ValueChanged += KnobReverbHFDcRatio_ValueChanged;
+
+			lblValReverbHFDcRatio.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbHFDcRatio.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbHFDcRatio.Location = new System.Drawing.Point(326, 120);
+			lblValReverbHFDcRatio.Name = "lblValReverbHFDcRatio";
+			lblValReverbHFDcRatio.ReadOnly = true;
+			lblValReverbHFDcRatio.Size = new System.Drawing.Size(62, 16);
+			lblValReverbHFDcRatio.Text = "50";
+			lblValReverbHFDcRatio.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+
+			// ===========================
+			// Row 1 - Col 5: Diffusion (x=396)
+			// ===========================
+			lblReverbDiffusion.AutoSize = false;
+			lblReverbDiffusion.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbDiffusion.Location = new System.Drawing.Point(399, 22);
+			lblReverbDiffusion.Name = "lblReverbDiffusion";
+			lblReverbDiffusion.Size = new System.Drawing.Size(72, 30);
+			lblReverbDiffusion.Text = "Diffusion";
+			lblReverbDiffusion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+			KnobReverbDiffusion.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbDiffusion.BorderWidth = 2;
+			KnobReverbDiffusion.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
+			KnobReverbDiffusion.HasTicks = true;
+			KnobReverbDiffusion.KnobColor = System.Drawing.SystemColors.Control;
+			KnobReverbDiffusion.LargeChange = 5;
+			KnobReverbDiffusion.Location = new System.Drawing.Point(404, 55);
+			KnobReverbDiffusion.Minimum = 10;
+			KnobReverbDiffusion.Name = "KnobReverbDiffusion";
+			KnobReverbDiffusion.PointerColor = System.Drawing.SystemColors.ControlText;
+			KnobReverbDiffusion.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbDiffusion.PointerOffset = 4;
+			KnobReverbDiffusion.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbDiffusion.PointerWidth = 2;
+			KnobReverbDiffusion.Size = new System.Drawing.Size(62, 62);
+			KnobReverbDiffusion.TabIndex = 6;
+			KnobReverbDiffusion.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbDiffusion.Value = 50;
+			KnobReverbDiffusion.ValueChanged += KnobReverbDiffusion_ValueChanged;
+
+			lblValReverbDiffusion.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbDiffusion.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbDiffusion.Location = new System.Drawing.Point(404, 120);
+			lblValReverbDiffusion.Name = "lblValReverbDiffusion";
+			lblValReverbDiffusion.ReadOnly = true;
+			lblValReverbDiffusion.Size = new System.Drawing.Size(62, 16);
+			lblValReverbDiffusion.Text = "50";
+			lblValReverbDiffusion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+
+			// ===========================
+			// Row 1 - Col 6: Density (x=474)
+			// ===========================
+			lblReverbDensity.AutoSize = false;
+			lblReverbDensity.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbDensity.Location = new System.Drawing.Point(477, 22);
+			lblReverbDensity.Name = "lblReverbDensity";
+			lblReverbDensity.Size = new System.Drawing.Size(72, 30);
+			lblReverbDensity.Text = "Density";
+			lblReverbDensity.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+			KnobReverbDensity.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbDensity.BorderWidth = 2;
+			KnobReverbDensity.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
+			KnobReverbDensity.HasTicks = true;
+			KnobReverbDensity.KnobColor = System.Drawing.SystemColors.Control;
+			KnobReverbDensity.LargeChange = 5;
+			KnobReverbDensity.Location = new System.Drawing.Point(482, 55);
+			KnobReverbDensity.Minimum = 10;
+			KnobReverbDensity.Name = "KnobReverbDensity";
+			KnobReverbDensity.PointerColor = System.Drawing.SystemColors.ControlText;
+			KnobReverbDensity.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbDensity.PointerOffset = 4;
+			KnobReverbDensity.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbDensity.PointerWidth = 2;
+			KnobReverbDensity.Size = new System.Drawing.Size(62, 62);
+			KnobReverbDensity.TabIndex = 7;
+			KnobReverbDensity.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbDensity.Value = 50;
+			KnobReverbDensity.ValueChanged += KnobReverbDensity_ValueChanged;
+
+			lblValReverbDensity.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbDensity.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbDensity.Location = new System.Drawing.Point(482, 120);
+			lblValReverbDensity.Name = "lblValReverbDensity";
+			lblValReverbDensity.ReadOnly = true;
+			lblValReverbDensity.Size = new System.Drawing.Size(62, 16);
+			lblValReverbDensity.Text = "50";
+			lblValReverbDensity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+
+			// ===========================
+			// 区切り線
+			// ===========================
+			lblReverbDivider.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			lblReverbDivider.Location = new System.Drawing.Point(6, 142);
+			lblReverbDivider.Name = "lblReverbDivider";
+			lblReverbDivider.Size = new System.Drawing.Size(540, 1);
+			lblReverbDivider.TabIndex = 99;
+
+			// ===========================
+			// Row 2 - Col 0: LowShelfFreq (x=42)
+			// ===========================
+			lblReverbLowShelfFreq.AutoSize = false;
+			lblReverbLowShelfFreq.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbLowShelfFreq.Location = new System.Drawing.Point(45, 157);
+			lblReverbLowShelfFreq.Name = "lblReverbLowShelfFreq";
+			lblReverbLowShelfFreq.Size = new System.Drawing.Size(72, 30);
+			lblReverbLowShelfFreq.Text = "Low Shelf\nFreq";
+			lblReverbLowShelfFreq.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+			KnobReverbLowShelfFrequency.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbLowShelfFrequency.BorderWidth = 2;
+			KnobReverbLowShelfFrequency.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
+			KnobReverbLowShelfFrequency.HasTicks = true;
+			KnobReverbLowShelfFrequency.KnobColor = System.Drawing.SystemColors.Control;
+			KnobReverbLowShelfFrequency.LargeChange = 50;
+			KnobReverbLowShelfFrequency.Location = new System.Drawing.Point(50, 190);
+			KnobReverbLowShelfFrequency.Maximum = 1000;
+			KnobReverbLowShelfFrequency.Minimum = 20;
+			KnobReverbLowShelfFrequency.Name = "KnobReverbLowShelfFrequency";
+			KnobReverbLowShelfFrequency.PointerColor = System.Drawing.SystemColors.ControlText;
+			KnobReverbLowShelfFrequency.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbLowShelfFrequency.PointerOffset = 4;
+			KnobReverbLowShelfFrequency.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbLowShelfFrequency.PointerWidth = 2;
+			KnobReverbLowShelfFrequency.Size = new System.Drawing.Size(62, 62);
+			KnobReverbLowShelfFrequency.TabIndex = 8;
+			KnobReverbLowShelfFrequency.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbLowShelfFrequency.Value = 250;
+			KnobReverbLowShelfFrequency.ValueChanged += KnobReverbLowShelfFrequency_ValueChanged;
+
+			lblValReverbLowShelfFreq.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbLowShelfFreq.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbLowShelfFreq.Location = new System.Drawing.Point(50, 255);
+			lblValReverbLowShelfFreq.Name = "lblValReverbLowShelfFreq";
+			lblValReverbLowShelfFreq.ReadOnly = true;
+			lblValReverbLowShelfFreq.Size = new System.Drawing.Size(62, 16);
+			lblValReverbLowShelfFreq.Text = "250";
+			lblValReverbLowShelfFreq.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+
+			// ===========================
+			// Row 2 - Col 1: LowShelfGain (x=120)
+			// ===========================
+			lblReverbLowShelfGain.AutoSize = false;
+			lblReverbLowShelfGain.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbLowShelfGain.Location = new System.Drawing.Point(123, 157);
+			lblReverbLowShelfGain.Name = "lblReverbLowShelfGain";
+			lblReverbLowShelfGain.Size = new System.Drawing.Size(72, 30);
+			lblReverbLowShelfGain.Text = "Low Shelf\nGain";
+			lblReverbLowShelfGain.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+			KnobReverbLowshelfGain.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbLowshelfGain.BorderWidth = 2;
+			KnobReverbLowshelfGain.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
+			KnobReverbLowshelfGain.HasTicks = true;
+			KnobReverbLowshelfGain.KnobColor = System.Drawing.SystemColors.Control;
+			KnobReverbLowshelfGain.LargeChange = 2;
+			KnobReverbLowshelfGain.Location = new System.Drawing.Point(128, 190);
+			KnobReverbLowshelfGain.Maximum = 12;
+			KnobReverbLowshelfGain.Minimum = -36;
+			KnobReverbLowshelfGain.Name = "KnobReverbLowshelfGain";
+			KnobReverbLowshelfGain.PointerColor = System.Drawing.SystemColors.ControlText;
+			KnobReverbLowshelfGain.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbLowshelfGain.PointerOffset = 4;
+			KnobReverbLowshelfGain.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbLowshelfGain.PointerWidth = 2;
+			KnobReverbLowshelfGain.Size = new System.Drawing.Size(62, 62);
+			KnobReverbLowshelfGain.TabIndex = 9;
+			KnobReverbLowshelfGain.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbLowshelfGain.Value = 0;
+			KnobReverbLowshelfGain.ValueChanged += KnobReverbLowshelfGain_ValueChanged;
+
+			lblValReverbLowShelfGain.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbLowShelfGain.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbLowShelfGain.Location = new System.Drawing.Point(128, 255);
+			lblValReverbLowShelfGain.Name = "lblValReverbLowShelfGain";
+			lblValReverbLowShelfGain.ReadOnly = true;
+			lblValReverbLowShelfGain.Size = new System.Drawing.Size(62, 16);
+			lblValReverbLowShelfGain.Text = "0";
+			lblValReverbLowShelfGain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+
+			// ===========================
+			// Row 2 - Col 2: HighCut (x=198)
+			// ===========================
+			lblReverbHighCut.AutoSize = false;
+			lblReverbHighCut.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbHighCut.Location = new System.Drawing.Point(201, 157);
+			lblReverbHighCut.Name = "lblReverbHighCut";
+			lblReverbHighCut.Size = new System.Drawing.Size(72, 30);
+			lblReverbHighCut.Text = "High Cut";
+			lblReverbHighCut.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+			KnobReverbHighCut.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbHighCut.BorderWidth = 2;
+			KnobReverbHighCut.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
+			KnobReverbHighCut.HasTicks = true;
+			KnobReverbHighCut.KnobColor = System.Drawing.SystemColors.Control;
+			KnobReverbHighCut.LargeChange = 500;
+			KnobReverbHighCut.Location = new System.Drawing.Point(206, 190);
+			KnobReverbHighCut.Maximum = 20000;
+			KnobReverbHighCut.Minimum = 20;
+			KnobReverbHighCut.Name = "KnobReverbHighCut";
+			KnobReverbHighCut.PointerColor = System.Drawing.SystemColors.ControlText;
+			KnobReverbHighCut.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbHighCut.PointerOffset = 4;
+			KnobReverbHighCut.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbHighCut.PointerWidth = 2;
+			KnobReverbHighCut.Size = new System.Drawing.Size(62, 62);
+			KnobReverbHighCut.TabIndex = 10;
+			KnobReverbHighCut.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbHighCut.Value = 20000;
+			KnobReverbHighCut.ValueChanged += KnobReverbHighCut_ValueChanged;
+
+			lblValReverbHighCut.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbHighCut.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbHighCut.Location = new System.Drawing.Point(206, 255);
+			lblValReverbHighCut.Name = "lblValReverbHighCut";
+			lblValReverbHighCut.ReadOnly = true;
+			lblValReverbHighCut.Size = new System.Drawing.Size(62, 16);
+			lblValReverbHighCut.Text = "20000";
+			lblValReverbHighCut.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+
+			// ===========================
+			// Row 2 - Col 3: EarlyLate (x=276)
+			// ===========================
+			lblReverbEarlyLate.AutoSize = false;
+			lblReverbEarlyLate.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbEarlyLate.Location = new System.Drawing.Point(279, 157);
+			lblReverbEarlyLate.Name = "lblReverbEarlyLate";
+			lblReverbEarlyLate.Size = new System.Drawing.Size(72, 30);
+			lblReverbEarlyLate.Text = "Early/Late\nMix";
+			lblReverbEarlyLate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+			KnobReverbEarlyLate.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbEarlyLate.BorderWidth = 2;
+			KnobReverbEarlyLate.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
+			KnobReverbEarlyLate.HasTicks = true;
+			KnobReverbEarlyLate.KnobColor = System.Drawing.SystemColors.Control;
+			KnobReverbEarlyLate.LargeChange = 5;
+			KnobReverbEarlyLate.Location = new System.Drawing.Point(284, 190);
+			KnobReverbEarlyLate.Maximum = 100;
+			KnobReverbEarlyLate.Minimum = 0;
+			KnobReverbEarlyLate.Name = "KnobReverbEarlyLate";
+			KnobReverbEarlyLate.PointerColor = System.Drawing.SystemColors.ControlText;
+			KnobReverbEarlyLate.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbEarlyLate.PointerOffset = 4;
+			KnobReverbEarlyLate.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbEarlyLate.PointerWidth = 2;
+			KnobReverbEarlyLate.Size = new System.Drawing.Size(62, 62);
+			KnobReverbEarlyLate.TabIndex = 11;
+			KnobReverbEarlyLate.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbEarlyLate.Value = 50;
+			KnobReverbEarlyLate.ValueChanged += KnobReverbEarlyLate_ValueChanged;
+
+			lblValReverbEarlyLate.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbEarlyLate.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbEarlyLate.Location = new System.Drawing.Point(284, 255);
+			lblValReverbEarlyLate.Name = "lblValReverbEarlyLate";
+			lblValReverbEarlyLate.ReadOnly = true;
+			lblValReverbEarlyLate.Size = new System.Drawing.Size(62, 16);
+			lblValReverbEarlyLate.Text = "50";
+			lblValReverbEarlyLate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+
+			// ===========================
+			// Row 2 - Col 4: Wet (x=354)
+			// ===========================
+			lblReverbWet.AutoSize = false;
+			lblReverbWet.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbWet.Location = new System.Drawing.Point(357, 157);
+			lblReverbWet.Name = "lblReverbWet";
+			lblReverbWet.Size = new System.Drawing.Size(72, 30);
+			lblReverbWet.Text = "Wet Level";
+			lblReverbWet.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+			KnobReverbWet.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbWet.BorderWidth = 2;
+			KnobReverbWet.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
+			KnobReverbWet.HasTicks = true;
+			KnobReverbWet.KnobColor = System.Drawing.SystemColors.Control;
+			KnobReverbWet.LargeChange = 5;
+			KnobReverbWet.Location = new System.Drawing.Point(362, 190);
+			KnobReverbWet.Maximum = 20;
+			KnobReverbWet.Minimum = -80;
+			KnobReverbWet.Name = "KnobReverbWet";
+			KnobReverbWet.PointerColor = System.Drawing.SystemColors.ControlText;
+			KnobReverbWet.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbWet.PointerOffset = 4;
+			KnobReverbWet.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbWet.PointerWidth = 2;
+			KnobReverbWet.Size = new System.Drawing.Size(62, 62);
+			KnobReverbWet.TabIndex = 12;
+			KnobReverbWet.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbWet.Value = -6;
+			KnobReverbWet.ValueChanged += KnobReverbWet_ValueChanged;
+
+			lblValReverbWet.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbWet.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbWet.Location = new System.Drawing.Point(362, 255);
+			lblValReverbWet.Name = "lblValReverbWet";
+			lblValReverbWet.ReadOnly = true;
+			lblValReverbWet.Size = new System.Drawing.Size(62, 16);
+			lblValReverbWet.Text = "-6";
+			lblValReverbWet.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+
+			// ===========================
+			// Row 2 - Col 5: Dry (x=432)
+			// ===========================
+			lblReverbDry.AutoSize = false;
+			lblReverbDry.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbDry.Location = new System.Drawing.Point(435, 157);
+			lblReverbDry.Name = "lblReverbDry";
+			lblReverbDry.Size = new System.Drawing.Size(72, 30);
+			lblReverbDry.Text = "Dry Level";
+			lblReverbDry.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+			KnobReverbDry.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbDry.BorderWidth = 2;
+			KnobReverbDry.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
+			KnobReverbDry.HasTicks = true;
+			KnobReverbDry.KnobColor = System.Drawing.SystemColors.Control;
+			KnobReverbDry.LargeChange = 5;
+			KnobReverbDry.Location = new System.Drawing.Point(440, 190);
+			KnobReverbDry.Maximum = 20;
+			KnobReverbDry.Minimum = -80;
+			KnobReverbDry.Name = "KnobReverbDry";
+			KnobReverbDry.PointerColor = System.Drawing.SystemColors.ControlText;
+			KnobReverbDry.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbDry.PointerOffset = 4;
+			KnobReverbDry.PointerStartCap = System.Drawing.Drawing2D.LineCap.Flat;
+			KnobReverbDry.PointerWidth = 2;
+			KnobReverbDry.Size = new System.Drawing.Size(62, 62);
+			KnobReverbDry.TabIndex = 13;
+			KnobReverbDry.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbDry.Value = 0;
+			KnobReverbDry.ValueChanged += KnobReverbDry_ValueChanged;
+
+			lblValReverbDry.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbDry.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbDry.Location = new System.Drawing.Point(440, 255);
+			lblValReverbDry.Name = "lblValReverbDry";
+			lblValReverbDry.ReadOnly = true;
+			lblValReverbDry.Size = new System.Drawing.Size(62, 16);
+			lblValReverbDry.Text = "0";
+			lblValReverbDry.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// textBox13
+			// 
+			textBox13.Location = new System.Drawing.Point(0, 0);
+			textBox13.Name = "textBox13";
+			textBox13.Size = new System.Drawing.Size(100, 23);
+			textBox13.TabIndex = 0;
+			// 
+			// label34
+			// 
+			label34.Location = new System.Drawing.Point(0, 0);
+			label34.Name = "label34";
+			label34.Size = new System.Drawing.Size(100, 23);
+			label34.TabIndex = 0;
+			// 
+			// textBox12
+			// 
+			textBox12.Location = new System.Drawing.Point(0, 0);
+			textBox12.Name = "textBox12";
+			textBox12.Size = new System.Drawing.Size(100, 23);
+			textBox12.TabIndex = 0;
+			// 
+			// label32
+			// 
+			label32.Location = new System.Drawing.Point(0, 0);
+			label32.Name = "label32";
+			label32.Size = new System.Drawing.Size(100, 23);
+			label32.TabIndex = 0;
+			// 
+			// textBox11
+			// 
+			textBox11.Location = new System.Drawing.Point(0, 0);
+			textBox11.Name = "textBox11";
+			textBox11.Size = new System.Drawing.Size(100, 23);
+			textBox11.TabIndex = 0;
+			// 
+			// label30
+			// 
+			label30.Location = new System.Drawing.Point(0, 0);
+			label30.Name = "label30";
+			label30.Size = new System.Drawing.Size(100, 23);
+			label30.TabIndex = 0;
+			// 
+			// textBox10
+			// 
+			textBox10.Location = new System.Drawing.Point(0, 0);
+			textBox10.Name = "textBox10";
+			textBox10.Size = new System.Drawing.Size(100, 23);
+			textBox10.TabIndex = 0;
+			// 
+			// label28
+			// 
+			label28.Location = new System.Drawing.Point(0, 0);
+			label28.Name = "label28";
+			label28.Size = new System.Drawing.Size(100, 23);
+			label28.TabIndex = 0;
+			// 
+			// textBox9
+			// 
+			textBox9.Location = new System.Drawing.Point(0, 0);
+			textBox9.Name = "textBox9";
+			textBox9.Size = new System.Drawing.Size(100, 23);
+			textBox9.TabIndex = 0;
+			// 
+			// label26
+			// 
+			label26.Location = new System.Drawing.Point(0, 0);
+			label26.Name = "label26";
+			label26.Size = new System.Drawing.Size(100, 23);
+			label26.TabIndex = 0;
+			// 
+			// textBox8
+			// 
+			textBox8.Location = new System.Drawing.Point(0, 0);
+			textBox8.Name = "textBox8";
+			textBox8.Size = new System.Drawing.Size(100, 23);
+			textBox8.TabIndex = 0;
+			// 
+			// label24
+			// 
+			label24.Location = new System.Drawing.Point(0, 0);
+			label24.Name = "label24";
+			label24.Size = new System.Drawing.Size(100, 23);
+			label24.TabIndex = 0;
+			// 
+			// textBox7
+			// 
+			textBox7.Location = new System.Drawing.Point(0, 0);
+			textBox7.Name = "textBox7";
+			textBox7.Size = new System.Drawing.Size(100, 23);
+			textBox7.TabIndex = 0;
+			// 
+			// label22
+			// 
+			label22.Location = new System.Drawing.Point(0, 0);
+			label22.Name = "label22";
+			label22.Size = new System.Drawing.Size(100, 23);
+			label22.TabIndex = 0;
+			// 
+			// textBox6
+			// 
+			textBox6.Location = new System.Drawing.Point(0, 0);
+			textBox6.Name = "textBox6";
+			textBox6.Size = new System.Drawing.Size(100, 23);
+			textBox6.TabIndex = 0;
+			// 
+			// label20
+			// 
+			label20.Location = new System.Drawing.Point(0, 0);
+			label20.Name = "label20";
+			label20.Size = new System.Drawing.Size(100, 23);
+			label20.TabIndex = 0;
+			// 
+			// textBox1
+			// 
+			textBox1.Location = new System.Drawing.Point(0, 0);
+			textBox1.Name = "textBox1";
+			textBox1.Size = new System.Drawing.Size(100, 23);
+			textBox1.TabIndex = 0;
+			// 
+			// label10
+			// 
+			label10.Location = new System.Drawing.Point(0, 0);
+			label10.Name = "label10";
+			label10.Size = new System.Drawing.Size(100, 23);
+			label10.TabIndex = 0;
+			// 
+			// textBox2
+			// 
+			textBox2.Location = new System.Drawing.Point(0, 0);
+			textBox2.Name = "textBox2";
+			textBox2.Size = new System.Drawing.Size(100, 23);
+			textBox2.TabIndex = 0;
+			// 
+			// label12
+			// 
+			label12.Location = new System.Drawing.Point(0, 0);
+			label12.Name = "label12";
+			label12.Size = new System.Drawing.Size(100, 23);
+			label12.TabIndex = 0;
+			// 
+			// textBox3
+			// 
+			textBox3.Location = new System.Drawing.Point(0, 0);
+			textBox3.Name = "textBox3";
+			textBox3.Size = new System.Drawing.Size(100, 23);
+			textBox3.TabIndex = 0;
+			// 
+			// label14
+			// 
+			label14.Location = new System.Drawing.Point(0, 0);
+			label14.Name = "label14";
+			label14.Size = new System.Drawing.Size(100, 23);
+			label14.TabIndex = 0;
+			// 
+			// textBox4
+			// 
+			textBox4.Location = new System.Drawing.Point(0, 0);
+			textBox4.Name = "textBox4";
+			textBox4.Size = new System.Drawing.Size(100, 23);
+			textBox4.TabIndex = 0;
+			// 
+			// label16
+			// 
+			label16.Location = new System.Drawing.Point(0, 0);
+			label16.Name = "label16";
+			label16.Size = new System.Drawing.Size(100, 23);
+			label16.TabIndex = 0;
+			// 
+			// textBox5
+			// 
+			textBox5.Location = new System.Drawing.Point(0, 0);
+			textBox5.Name = "textBox5";
+			textBox5.Size = new System.Drawing.Size(100, 23);
+			textBox5.TabIndex = 0;
+			// 
+			// label18
+			// 
+			label18.Location = new System.Drawing.Point(0, 0);
+			label18.Name = "label18";
+			label18.Size = new System.Drawing.Size(100, 23);
+			label18.TabIndex = 0;
 			// 
 			// OptionsForm
 			// 
@@ -3267,27 +3437,80 @@
 			GroupCompressor.ResumeLayout(false);
 			GroupCompressor.PerformLayout();
 			tabReverb.ResumeLayout(false);
-			groupBox1.ResumeLayout(false);
-			groupBox1.PerformLayout();
+			GroupReverb.ResumeLayout(false);
+			GroupReverb.PerformLayout();
 			ResumeLayout(false);
 
 		}
 
 		#endregion
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.Label label13;
+		private System.Windows.Forms.Label label14;
+		private System.Windows.Forms.Label label15;
+		private System.Windows.Forms.Label label16;
+		private System.Windows.Forms.Label label17;
+		private System.Windows.Forms.Label label18;
+		private System.Windows.Forms.Label label19;
+		private System.Windows.Forms.Label label20;
+		private System.Windows.Forms.Label label21;
+		private System.Windows.Forms.Label label22;
+		private System.Windows.Forms.Label label23;
+		private System.Windows.Forms.Label label24;
+		private System.Windows.Forms.Label label25;
+		private System.Windows.Forms.Label label26;
+		private System.Windows.Forms.Label label27;
+		private System.Windows.Forms.Label label28;
+		private System.Windows.Forms.Label label29;
+		private System.Windows.Forms.Label label30;
+		private System.Windows.Forms.Label label31;
+		private System.Windows.Forms.Label label32;
+		private System.Windows.Forms.Label label33;
+		private System.Windows.Forms.Label label34;
+		private System.Windows.Forms.Label label35;
+		private System.Windows.Forms.Label label36;
+		private System.Windows.Forms.Label label37;
+		private System.Windows.Forms.Label label38;
+		private System.Windows.Forms.Label label39;
+		private System.Windows.Forms.Label label40;
+		private System.Windows.Forms.Label label42;
+		private System.Windows.Forms.Label label43;
+		private System.Windows.Forms.Label label44;
+		private System.Windows.Forms.Label label45;
+		private System.Windows.Forms.Label label46;
+		private System.Windows.Forms.Label label47;
+		private System.Windows.Forms.Label label48;
+		private System.Windows.Forms.Label label49;
+		private System.Windows.Forms.Label label50;
+		private System.Windows.Forms.Label label51;
+		private System.Windows.Forms.Label label52;
+		private System.Windows.Forms.Label label53;
+		private System.Windows.Forms.Label label54;
+		private System.Windows.Forms.Label label55;
+		private System.Windows.Forms.Label label56;
+
 		private System.Windows.Forms.TreeView TreeMenu;
         private System.Windows.Forms.TabControl tabControlEffects;
         private System.Windows.Forms.TabPage tabDistortion;
         private System.Windows.Forms.TabPage tabChorus;
         private System.Windows.Forms.GroupBox GroupChorus;
         private System.Windows.Forms.TextBox lblValChorusDepth;
-        private System.Windows.Forms.Label label7;
         private UI.Knob KnobChorusDepth;
         private System.Windows.Forms.TextBox lblValChorusRate;
-        private System.Windows.Forms.Label label5;
-        private UI.Knob KnobChorusRate;
+		private UI.Knob KnobChorusRate;
         private System.Windows.Forms.TextBox lblValChorusMix;
-        private System.Windows.Forms.Label label3;
-        private UI.Knob KnobChorusMix;
+		private UI.Knob KnobChorusMix;
         private System.Windows.Forms.CheckBox CheckChorus;
         private System.Windows.Forms.TabPage tabEcho;
         private System.Windows.Forms.TabPage tabFlanger;
@@ -3298,145 +3521,105 @@
         private System.Windows.Forms.TabPage tabPitch;
         private System.Windows.Forms.GroupBox GroupSpeed;
         private System.Windows.Forms.TextBox lblValSpeed;
-        private System.Windows.Forms.Label label6;
         private UI.Knob KnobSpeed;
         private System.Windows.Forms.CheckBox CheckSpeed;
         private System.Windows.Forms.GroupBox GroupFrequency;
         private System.Windows.Forms.TextBox lblValFrequency;
-        private System.Windows.Forms.Label label8;
         private UI.Knob KnobFrequency;
         private System.Windows.Forms.CheckBox CheckFrequency;
         private System.Windows.Forms.GroupBox GroupPitchShift;
         private System.Windows.Forms.TextBox lblValPitchFFT;
-        private System.Windows.Forms.Label label2;
         private UI.Knob KnobPitchFFT;
         private System.Windows.Forms.TextBox lblValPitchPitch;
-        private System.Windows.Forms.Label label4;
-        private UI.Knob KnobPitchPitch;
+		private UI.Knob KnobPitchPitch;
         private System.Windows.Forms.CheckBox CheckPitch;
         private System.Windows.Forms.GroupBox GroupEcho;
         private System.Windows.Forms.TextBox lblValEchoWet;
-        private System.Windows.Forms.Label label15;
         private UI.Knob KnobEchoWet;
         private System.Windows.Forms.TextBox lblValEchoDry;
-        private System.Windows.Forms.Label label9;
-        private UI.Knob KnobEchoDry;
+		private UI.Knob KnobEchoDry;
         private System.Windows.Forms.TextBox lblValEchoFeedback;
-        private System.Windows.Forms.Label label11;
         private UI.Knob KnobEchoFeedback;
         private System.Windows.Forms.TextBox lblValEchoDelay;
-        private System.Windows.Forms.Label label13;
-        private UI.Knob KnobEchoDelay;
+		private UI.Knob KnobEchoDelay;
         private System.Windows.Forms.CheckBox CheckEcho;
         private System.Windows.Forms.GroupBox GroupFlanger;
         private System.Windows.Forms.TextBox lblValFlangerDepth;
-        private System.Windows.Forms.Label label33;
-        private UI.Knob KnobFlangerDepth;
+		private UI.Knob KnobFlangerDepth;
         private System.Windows.Forms.TextBox lblValFlangerRate;
-        private System.Windows.Forms.Label label35;
-        private UI.Knob KnobFlangerRate;
+		private UI.Knob KnobFlangerRate;
         private System.Windows.Forms.TextBox lblValFlangerMix;
-        private System.Windows.Forms.Label label37;
-        private UI.Knob KnobFlangerMix;
+		private UI.Knob KnobFlangerMix;
         private System.Windows.Forms.CheckBox CheckFlanger;
         private System.Windows.Forms.GroupBox GroupHighpass;
         private System.Windows.Forms.TextBox lblValHighpassResonance;
-        private System.Windows.Forms.Label label21;
-        private UI.Knob KnobHighpassResonance;
+		private UI.Knob KnobHighpassResonance;
         private System.Windows.Forms.TextBox lblValHighpassCutoff;
-        private System.Windows.Forms.Label label23;
-        private UI.Knob KnobHighpassCutoff;
+		private UI.Knob KnobHighpassCutoff;
         private System.Windows.Forms.CheckBox CheckHighpass;
         private System.Windows.Forms.GroupBox GroupLowpass;
         private System.Windows.Forms.TextBox lblValLowpassResonance;
-        private System.Windows.Forms.Label label17;
-        private UI.Knob KnobLowpassResonance;
+		private UI.Knob KnobLowpassResonance;
         private System.Windows.Forms.TextBox lblValLowpassCutoff;
-        private System.Windows.Forms.Label label19;
-        private UI.Knob KnobLowpassCutoff;
+		private UI.Knob KnobLowpassCutoff;
         private System.Windows.Forms.CheckBox CheckLowpass;
         private System.Windows.Forms.GroupBox GroupCompressor;
         private System.Windows.Forms.CheckBox CheckCompLinked;
         private System.Windows.Forms.TextBox lblValCompGain;
-        private System.Windows.Forms.Label label39;
-        private UI.Knob KnobCompGain;
+		private UI.Knob KnobCompGain;
         private System.Windows.Forms.TextBox lblValCompRelease;
-        private System.Windows.Forms.Label label25;
         private UI.Knob KnobCompRelease;
         private System.Windows.Forms.TextBox lblValCompAttack;
-        private System.Windows.Forms.Label label27;
         private UI.Knob KnobCompAttack;
         private System.Windows.Forms.TextBox lblValCompRatio;
-        private System.Windows.Forms.Label label29;
         private UI.Knob KnobCompRatio;
         private System.Windows.Forms.TextBox lblValCompThreshold;
-        private System.Windows.Forms.Label label31;
         private UI.Knob KnobCompThreshold;
         private System.Windows.Forms.CheckBox CheckCompressor;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox GroupReverb;
         private System.Windows.Forms.TextBox textBox13;
-        private System.Windows.Forms.Label label34;
         private UI.Knob KnobReverbDry;
         private System.Windows.Forms.TextBox textBox12;
-        private System.Windows.Forms.Label label32;
         private UI.Knob KnobReverbWet;
         private System.Windows.Forms.TextBox textBox11;
-        private System.Windows.Forms.Label label30;
         private UI.Knob KnobReverbEarlyLate;
         private System.Windows.Forms.TextBox textBox10;
-        private System.Windows.Forms.Label label28;
         private UI.Knob KnobReverbHighCut;
         private System.Windows.Forms.TextBox textBox9;
-        private System.Windows.Forms.Label label26;
         private UI.Knob KnobReverbLowshelfGain;
         private System.Windows.Forms.TextBox textBox8;
-        private System.Windows.Forms.Label label24;
         private UI.Knob KnobReverbLowShelfFrequency;
         private System.Windows.Forms.TextBox textBox7;
-        private System.Windows.Forms.Label label22;
         private UI.Knob KnobReverbDensity;
         private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.Label label20;
         private UI.Knob KnobReverbDiffusion;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label10;
         private UI.Knob KnobReverbHFDcRatio;
         private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Label label12;
         private UI.Knob KnobReverbHFRef;
         private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.Label label14;
         private UI.Knob KnobReverbLateDelay;
         private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.Label label16;
         private UI.Knob KnobReverbEarlyDelay;
         private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.Label label18;
         private UI.Knob KnobReverbDecayTime;
         private System.Windows.Forms.CheckBox CheckReverb;
         private System.Windows.Forms.TabPage tabGEqualizer;
         private System.Windows.Forms.TextBox lblValDistortionLevel;
-        private System.Windows.Forms.Label label1;
         private UI.Knob KnobDistortionLevel;
         private System.Windows.Forms.CheckBox CheckDistortion;
         private System.Windows.Forms.TabPage tabSetting;
         private System.Windows.Forms.Button BtnUpdate;
         private System.Windows.Forms.ComboBox cmbSpeaker;
-        private System.Windows.Forms.Label label43;
         private System.Windows.Forms.ComboBox cmbSampling;
-        private System.Windows.Forms.Label label42;
         private System.Windows.Forms.ComboBox cmbSampleRate;
-        private System.Windows.Forms.Label label40;
         private System.Windows.Forms.ComboBox cmbDevice;
-        private System.Windows.Forms.Label label38;
         private System.Windows.Forms.ComboBox cmbOutput;
-        private System.Windows.Forms.Label label36;
         private System.Windows.Forms.PictureBox PictGEQGraph;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.CheckBox CheckGEQ;
         private System.Windows.Forms.ComboBox cmbEqPreset;
-        private System.Windows.Forms.Label label44;
         private ColorSlider.ColorSlider TrkGEQ32;
         private ColorSlider.ColorSlider TrkGEQ22K;
         private ColorSlider.ColorSlider TrkGEQ20K;
@@ -3449,18 +3632,36 @@
         private ColorSlider.ColorSlider TrkGEQ4K;
         private ColorSlider.ColorSlider TrkGEQ8K;
         private ColorSlider.ColorSlider TrkGEQ16K;
-        private System.Windows.Forms.Label label56;
-        private System.Windows.Forms.Label label55;
-        private System.Windows.Forms.Label label54;
-        private System.Windows.Forms.Label label53;
-        private System.Windows.Forms.Label label52;
-        private System.Windows.Forms.Label label51;
-        private System.Windows.Forms.Label label50;
-        private System.Windows.Forms.Label label49;
-        private System.Windows.Forms.Label label48;
-        private System.Windows.Forms.Label label47;
-        private System.Windows.Forms.Label label46;
-        private System.Windows.Forms.Label label45;
 		private System.Windows.Forms.Label lblOutputNote;
+		// Reverb Labels（旧 label10〜label34 の Reverb 関連）
+		private System.Windows.Forms.Label lblReverbDecayTime;
+		private System.Windows.Forms.Label lblReverbEarlyDelay;
+		private System.Windows.Forms.Label lblReverbLateDelay;
+		private System.Windows.Forms.Label lblReverbHFRef;
+		private System.Windows.Forms.Label lblReverbHFDcRatio;
+		private System.Windows.Forms.Label lblReverbDiffusion;
+		private System.Windows.Forms.Label lblReverbDensity;
+		private System.Windows.Forms.Label lblReverbLowShelfFreq;
+		private System.Windows.Forms.Label lblReverbLowShelfGain;
+		private System.Windows.Forms.Label lblReverbHighCut;
+		private System.Windows.Forms.Label lblReverbEarlyLate;
+		private System.Windows.Forms.Label lblReverbWet;
+		private System.Windows.Forms.Label lblReverbDry;
+		private System.Windows.Forms.Label lblReverbDivider;
+
+		// Reverb Values（旧 textBox1〜textBox13）
+		private System.Windows.Forms.TextBox lblValReverbDecayTime;
+		private System.Windows.Forms.TextBox lblValReverbEarlyDelay;
+		private System.Windows.Forms.TextBox lblValReverbLateDelay;
+		private System.Windows.Forms.TextBox lblValReverbHFRef;
+		private System.Windows.Forms.TextBox lblValReverbHFDcRatio;
+		private System.Windows.Forms.TextBox lblValReverbDiffusion;
+		private System.Windows.Forms.TextBox lblValReverbDensity;
+		private System.Windows.Forms.TextBox lblValReverbLowShelfFreq;
+		private System.Windows.Forms.TextBox lblValReverbLowShelfGain;
+		private System.Windows.Forms.TextBox lblValReverbHighCut;
+		private System.Windows.Forms.TextBox lblValReverbEarlyLate;
+		private System.Windows.Forms.TextBox lblValReverbWet;
+		private System.Windows.Forms.TextBox lblValReverbDry;
 	}
 }

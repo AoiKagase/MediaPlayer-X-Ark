@@ -379,79 +379,79 @@ namespace MediaPlayer_X_Ark
 		private void KnobReverbDecayTime_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.DecayTime = ((UI.Knob)sender).Value;
-			textBox5.Text = _engine.effector.SFXReverb.DecayTime.ToString("0");
+			lblValReverbDecayTime.Text = _engine.effector.SFXReverb.DecayTime.ToString("0");
 			_config.settings.Effectors.Reverb.DecayTime = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbEarlyDelay_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.EarlyDelay = ((UI.Knob)sender).Value;
-			textBox4.Text = _engine.effector.SFXReverb.EarlyDelay.ToString("0");
+			lblValReverbEarlyDelay.Text = _engine.effector.SFXReverb.EarlyDelay.ToString("0");
 			_config.settings.Effectors.Reverb.EarlyDelay = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbLateDelay_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.LateDelay = ((UI.Knob)sender).Value;
-			textBox3.Text = _engine.effector.SFXReverb.LateDelay.ToString("0");
+			lblValReverbLateDelay.Text = _engine.effector.SFXReverb.LateDelay.ToString("0");
 			_config.settings.Effectors.Reverb.LateDelay = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbHFRef_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.HFReference = ((UI.Knob)sender).Value;
-			textBox2.Text = _engine.effector.SFXReverb.HFReference.ToString("0");
+			lblValReverbHFRef.Text = _engine.effector.SFXReverb.HFReference.ToString("0");
 			_config.settings.Effectors.Reverb.HFRef = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbHFDcRatio_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.HFDecayRatio = ((UI.Knob)sender).Value;
-			textBox1.Text = _engine.effector.SFXReverb.HFDecayRatio.ToString("0");
+			lblValReverbHFDcRatio.Text = _engine.effector.SFXReverb.HFDecayRatio.ToString("0");
 			_config.settings.Effectors.Reverb.HFDecayRatio = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbDiffusion_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.Diffusion = ((UI.Knob)sender).Value;
-			textBox6.Text = _engine.effector.SFXReverb.Diffusion.ToString("0");
+			lblValReverbDiffusion.Text = _engine.effector.SFXReverb.Diffusion.ToString("0");
 			_config.settings.Effectors.Reverb.Diffusion = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbDensity_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.Density = ((UI.Knob)sender).Value;
-			textBox7.Text = _engine.effector.SFXReverb.Density.ToString("0");
+			lblValReverbDensity.Text = _engine.effector.SFXReverb.Density.ToString("0");
 			_config.settings.Effectors.Reverb.Density = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbLowShelfFrequency_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.LowShelfFrequency = ((UI.Knob)sender).Value;
-			textBox8.Text = _engine.effector.SFXReverb.LowShelfFrequency.ToString("0");
+			lblValReverbLowShelfFreq.Text = _engine.effector.SFXReverb.LowShelfFrequency.ToString("0");
 			_config.settings.Effectors.Reverb.LowShelfFrequency = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbLowshelfGain_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.LowShelfGain = ((UI.Knob)sender).Value;
-			textBox9.Text = _engine.effector.SFXReverb.LowShelfGain.ToString("0");
+			lblValReverbLowShelfGain.Text = _engine.effector.SFXReverb.LowShelfGain.ToString("0");
 			_config.settings.Effectors.Reverb.LowShelfGain = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbHighCut_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.HighCut = ((UI.Knob)sender).Value;
-			textBox10.Text = _engine.effector.SFXReverb.HighCut.ToString("0");
+			lblValReverbHighCut.Text = _engine.effector.SFXReverb.HighCut.ToString("0");
 			_config.settings.Effectors.Reverb.HighCut = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbEarlyLate_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.EarlyLateMix = ((UI.Knob)sender).Value;
-			textBox11.Text = _engine.effector.SFXReverb.EarlyLateMix.ToString("0");
+			lblValReverbEarlyLate.Text = _engine.effector.SFXReverb.EarlyLateMix.ToString("0");
 			_config.settings.Effectors.Reverb.EarlyLate = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbWet_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.WetLevel = ((UI.Knob)sender).Value;
-			textBox12.Text = _engine.effector.SFXReverb.WetLevel.ToString("0");
+			lblValReverbWet.Text = _engine.effector.SFXReverb.WetLevel.ToString("0");
 			_config.settings.Effectors.Reverb.WetLevel = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbDry_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.DryLevel = ((UI.Knob)sender).Value;
-			textBox13.Text = _engine.effector.SFXReverb.DryLevel.ToString("0");
+			lblValReverbDry.Text = _engine.effector.SFXReverb.DryLevel.ToString("0");
 			_config.settings.Effectors.Reverb.DryLevel = ((UI.Knob)sender).Value;
 		}
 		private bool GroupControl(object sender)
@@ -719,10 +719,10 @@ namespace MediaPlayer_X_Ark
 				_engine.effector.PitchShift.Pitch = KnobPitchPitch.Value / 100f;
 
 			CheckFrequency.Checked = _engine.effector.Frequency.Enabled;
-			KnobFrequency.ParameterName = "Speed";
-			KnobFrequency.Unit = "";
+			KnobFrequency.ParameterName = "Frequency";
+			KnobFrequency.Unit = "(−100=低速 / 0=標準 / 100=高速)";
 			KnobFrequency.Scale = 1f;
-			KnobFrequency.Minimum = -100;  // 0〜100 → -100〜100 に修正
+			KnobFrequency.Minimum = -100;
 			KnobFrequency.Maximum = 100;
 			KnobFrequency.LargeChange = 5;
 			KnobFrequency.Value = _config.settings.Effectors.Frequency.Frequency;
@@ -777,6 +777,18 @@ namespace MediaPlayer_X_Ark
 			KnobReverbEarlyLate.Value = _config.settings.Effectors.Reverb.EarlyLate > 0 ? _config.settings.Effectors.Reverb.EarlyLate : 50;
 			KnobReverbWet.Value = _config.settings.Effectors.Reverb.WetLevel != 0 ? _config.settings.Effectors.Reverb.WetLevel : -6;
 			KnobReverbDry.Value = _config.settings.Effectors.Reverb.DryLevel;
+
+			InitGroupBoxState(groupBox2, CheckDistortion);
+			InitGroupBoxState(GroupChorus, CheckChorus);
+			InitGroupBoxState(GroupEcho, CheckEcho);
+			InitGroupBoxState(GroupFlanger, CheckFlanger);
+			InitGroupBoxState(GroupHighpass, CheckHighpass);
+			InitGroupBoxState(GroupLowpass, CheckLowpass);
+			InitGroupBoxState(GroupCompressor, CheckCompressor);
+			InitGroupBoxState(GroupPitchShift, CheckPitch);
+			InitGroupBoxState(GroupFrequency, CheckFrequency);
+			InitGroupBoxState(GroupReverb, CheckReverb);
+
 			// Def:false
 			//			CheckCompLinked.Checked = (bool)(_engine.effector.Compressor.Linked);
 			// Def:false
@@ -785,6 +797,11 @@ namespace MediaPlayer_X_Ark
 			// SFX Reverb
 			this.Refresh();
 
+		}
+		private void InitGroupBoxState(GroupBox groupBox, CheckBox checkBox)
+		{
+			foreach (Control c in groupBox.Controls)
+				if (c != checkBox) c.Enabled = checkBox.Checked;
 		}
 		private void OptionOutput()
 		{
