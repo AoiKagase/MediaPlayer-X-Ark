@@ -214,8 +214,8 @@ namespace MediaPlayer_X_Ark.Engine
             this.engine = engine;
 			if (File.Exists(Path.Combine(Application.StartupPath, "config.json")))
 			{
-                string jsonString = File.ReadAllText(Application.StartupPath + "config.json", Encoding.UTF8);
-                settings = JsonSerializer.Deserialize<ConfigurationData>(jsonString);
+				string jsonString = File.ReadAllText(Path.Combine(Application.StartupPath, "config.json"), Encoding.UTF8);
+				settings = JsonSerializer.Deserialize<ConfigurationData>(jsonString);
             }
             else
             {
@@ -237,7 +237,6 @@ namespace MediaPlayer_X_Ark.Engine
                         break;
                 }
                 settings.Device = engine.GetDeviceGUID();
-                engine.SetDevice(engine.GetDeviceGUID());
                 int sampleRate;
                 FMOD.SPEAKERMODE speakermode;
                 int speakernum;

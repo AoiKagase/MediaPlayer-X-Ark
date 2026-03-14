@@ -17,7 +17,8 @@ namespace MediaPlayer_X_Ark
         private int playingIndex = 0;
         private PlayListForm playListForm;
         private OptionsForm optionsForm;
-        private static Engine.Configration config;
+		private CDForm cdForm;
+		private static Engine.Configration config;
         private bool nowplaying = false;
         public MainForm()
         {
@@ -258,12 +259,13 @@ namespace MediaPlayer_X_Ark
             playListForm = new PlayListForm(this);
 //            playListForm.Show(this);
             optionsForm = new OptionsForm(ref player, ref config);
-//            optionsForm.Show(this);
-            // 予定：設定ファイルの読み込み スキンファイルの指定も含む
-            // 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
-            // 新形式（JSON）の場合はNewSkinSystemへインスタンス切替
-            // スキンシステム
-            oldSkinSystem = new OldSkinSystem();
+			cdForm = new CDForm(this);
+			//            optionsForm.Show(this);
+			// 予定：設定ファイルの読み込み スキンファイルの指定も含む
+			// 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
+			// 新形式（JSON）の場合はNewSkinSystemへインスタンス切替
+			// スキンシステム
+			oldSkinSystem = new OldSkinSystem();
 
             // スキンロード
             SkinLoad(config.settings.Skin);
@@ -333,6 +335,7 @@ namespace MediaPlayer_X_Ark
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             config.Save();
+			cdForm?.Dispose();   // 追加
 			player.Dispose();  // 明示的に解放
 			player = null;
         }
@@ -567,9 +570,19 @@ namespace MediaPlayer_X_Ark
         /// <param name="e"></param>
         private void BtnOpenFile_Click(object sender, EventArgs e)
         {
-            if (OpenFileDialog.ShowDialog() == DialogResult.OK)
+            if (this.IsDisposed || OpenFileDialog == null)
+                return;
+
+            try
             {
-                OpenFile(OpenFileDialog.FileName);
+                if (OpenFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    OpenFile(OpenFileDialog.FileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("ファイルのオープンに失敗しました。\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -612,9 +625,10 @@ namespace MediaPlayer_X_Ark
             playListForm.Dispose();
             optionsForm.Close();
             optionsForm.Dispose();
-
-            // 終了
-            Close();
+			cdForm.Close();      // 追加
+			cdForm.Dispose();    // 追加
+								 // 終了
+			Close();
         }
         private void BtnBack_Click(object sender, EventArgs e)
         {
@@ -820,8 +834,8 @@ namespace MediaPlayer_X_Ark
 
         private void BtnCD_Click(object sender, EventArgs e)
         {
-
-        }
+			cdForm.Show();
+		}
 
         private void BtnCD_MouseDown(object sender, MouseEventArgs e)
         {

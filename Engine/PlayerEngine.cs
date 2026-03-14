@@ -573,6 +573,50 @@ namespace MediaPlayer_X_Ark
 			return result;
         }
 
+		/// <summary>
+		/// メモリ上のPCMデータからSoundを生成してプレイリストへ追加する。
+		/// CDDA固定：44100Hz / ステレオ / 16bit
+		/// </summary>
+		public FMOD.RESULT CreateSoundFromPCM(byte[] pcmData, string title, out int index)
+		{
+			index = 0;
+			FMOD.CREATESOUNDEXINFO info = new FMOD.CREATESOUNDEXINFO();
+			info.cbsize = Marshal.SizeOf(info);
+			info.length = (uint)pcmData.Length;
+			info.numchannels = 2;
+			info.defaultfrequency = 44100;
+			info.format = FMOD.SOUND_FORMAT.PCM16;
+
+			FMOD.Sound sound;
+			var result = FmodCallFunction(FmodSystem.createSound(
+				pcmData,
+				FMOD.MODE.OPENMEMORY | FMOD.MODE.OPENRAW | FMOD.MODE._2D | FMOD.MODE.CREATESAMPLE,
+				ref info,
+				out sound));
+
+			if (result == FMOD.RESULT.OK)
+			{
+				var plist = new Engine.PlayList(title, sound);
+				PlayList.Add(plist);
+				index = PlayList.Count - 1;
+			}
+			return result;
+		}
+
+		/// <summary>
+		/// プレイリストを全消去する。
+		/// </summary>
+		public void ClearPlayList()
+		{
+			Stop();
+			for (int i = 0; i < PlayList.Count; i++)
+			{
+				if (PlayList[i].Sound.hasHandle())
+					PlayList[i].Sound.release();
+			}
+			PlayList.Clear();
+		}
+
 		public void CreateSoundForMidi(string filename)
         {
 		}
