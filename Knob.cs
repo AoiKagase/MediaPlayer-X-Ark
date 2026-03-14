@@ -53,6 +53,47 @@ namespace UI
 		int _tickHeight = 2;
 		int _tickWidth = 1;
 		int[] _tickPositions;
+
+		string _parameterName = "";
+		string _unit = "";
+		float _scale = 1f;
+
+		/// <summary>
+		/// パラメータの表示名（例："Decay Time"）
+		/// </summary>
+		[Description("Parameter display name")]
+		[Category("Behavior")]
+		[DefaultValue("")]
+		public string ParameterName
+		{
+			get { return _parameterName; }
+			set { _parameterName = value; }
+		}
+
+		/// <summary>
+		/// 単位（例："ms", "dB", "%", ""）
+		/// </summary>
+		[Description("Unit of the parameter (e.g. ms, dB, %)")]
+		[Category("Behavior")]
+		[DefaultValue("")]
+		public string Unit
+		{
+			get { return _unit; }
+			set { _unit = value; }
+		}
+
+		/// <summary>
+		/// スケール係数。Knob内部値 / Scale = FMOD実値。
+		/// 例：Distortion(0.0～1.0)なら Scale=100、それ以外は Scale=1
+		/// </summary>
+		[Description("Scale factor. Knob internal value / Scale = actual value.")]
+		[Category("Behavior")]
+		[DefaultValue(1f)]
+		public float Scale
+		{
+			get { return _scale; }
+			set { _scale = value > 0 ? value : 1f; }
+		}
 		/// <summary>
 		/// Creates a new instance of the control
 		/// </summary>
@@ -771,7 +812,20 @@ namespace UI
 							
 							pointerPen.StartCap = _pointerStartCap;
 							pointerPen.EndCap = _pointerEndCap;
-							
+
+							// 現在値をKnob中央に描画
+							string valueText = _scale == 1f
+								? Value.ToString()
+								: (Value / _scale).ToString("0.##");
+
+							using (var font = new Font(Font.FontFamily, Math.Max(6f, size / 5f), FontStyle.Regular))
+							using (var textBrush = new SolidBrush(ForeColor))
+							{
+								var textSize = g.MeasureString(valueText, font);
+								var textX = origin.X - textSize.Width / 2f;
+								var textY = origin.Y - textSize.Height / 2f;
+								g.DrawString(valueText, font, textBrush, textX, textY);
+							}
 
 							// erase the background so it antialiases properly
 							g.FillRectangle(backBrush, (float)orr.Left - 1, (float)orr.Top - 1, (float)orr.Width + 2, (float)orr.Height + 2);
@@ -860,40 +914,17 @@ namespace UI
 				int opos = Value;
 				int pos = opos;
 				var delta = _dragHit.Y - args.Location.Y;
-				if (Keys.Control == (ModifierKeys & Keys.Control))
+
+				// Ctrl: 微調整（1単位）、通常: LargeChange単位
+				if (Keys.Control != (ModifierKeys & Keys.Control))
 					delta *= LargeChange;
+
 				pos += delta;
-				int min = Minimum;
-				int max = Maximum;
-				if (pos < min) pos = min;
-				if (pos > max) pos = max;
+				if (pos < Minimum) pos = Minimum;
+				if (pos > Maximum) pos = Maximum;
 				if (pos != opos)
 				{
-					if(Keys.Control==( ModifierKeys & Keys.Control))
-					{
-						var t = _tickPositions[0];
-						var setVal = false;
-						for(var i = 1;i<_tickPositions.Length;i++)
-						{
-							var t2 = _tickPositions[i]-1;
-							if(pos>=t && pos<=t2)
-							{
-								var l = pos - t;
-								var l2 = t2 - pos;
-								if (l <= l2)
-									Value = t;
-								else
-									Value = t2;
-								setVal = true;
-								break;
-							}
-							t = _tickPositions[i];
-						}
-						if (!setVal)
-							Value = Maximum;
-						
-					} else
-						Value = pos;
+					Value = pos;
 					_dragHit = args.Location;
 				}
 			}
@@ -906,26 +937,16 @@ namespace UI
 		protected override void OnMouseWheel(MouseEventArgs args)
 		{
 			int pos;
-			int m;
-			var delta = args.Delta;
-			if (0 < delta)
+			int step = LargeChange; // LargeChange単位で変化
+
+			if (args.Delta > 0)
 			{
-				delta = 1;
-				pos = Value;
-				pos += delta;
-				m = Maximum;
-				if (pos > m)
-					pos = m;
+				pos = Math.Min(Value + step, Maximum);
 				Value = pos;
 			}
-			else if (0 > delta)
+			else if (args.Delta < 0)
 			{
-				delta = -1;
-				pos = Value;
-				pos += delta;
-				m = Minimum;
-				if (pos < m)
-					pos = m;
+				pos = Math.Max(Value - step, Minimum);
 				Value = pos;
 			}
 			base.OnMouseWheel(args);
@@ -1081,6 +1102,29 @@ namespace UI
 				ticks[i] = t;
 			}
 			_tickPositions = ticks;
+		}
+
+		protected override void OnMouseDoubleClick(MouseEventArgs args)
+		{
+			if (MouseButtons.Left == (args.Button & MouseButtons.Left))
+			{
+				using (var form = new KnobInputForm(
+					Value,
+					Minimum,
+					Maximum,
+					_parameterName,
+					_unit,
+					_scale))
+				{
+					var screenPos = PointToScreen(new Point(Width, 0));
+					form.StartPosition = FormStartPosition.Manual;
+					form.Location = screenPos;
+
+					if (form.ShowDialog() == DialogResult.OK)
+						Value = form.InputValue;
+				}
+			}
+			base.OnMouseDoubleClick(args);
 		}
 	}
 }

@@ -2648,6 +2648,7 @@
 			KnobReverbDry.TabIndex = 36;
 			KnobReverbDry.Text = "Level";
 			KnobReverbDry.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbDry.ValueChanged += new System.EventHandler(this.KnobReverbDry_ValueChanged);
 			// 
 			// textBox12
 			// 
@@ -2693,6 +2694,7 @@
 			KnobReverbWet.Text = "Level";
 			KnobReverbWet.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbWet.Value = -6;
+			KnobReverbWet.ValueChanged += new System.EventHandler(this.KnobReverbWet_ValueChanged);
 			// 
 			// textBox11
 			// 
@@ -2736,6 +2738,7 @@
 			KnobReverbEarlyLate.Text = "Level";
 			KnobReverbEarlyLate.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbEarlyLate.Value = 50;
+			KnobReverbEarlyLate.ValueChanged += new System.EventHandler(this.KnobReverbEarlyLate_ValueChanged);
 			// 
 			// textBox10
 			// 
@@ -2781,6 +2784,7 @@
 			KnobReverbHighCut.Text = "Level";
 			KnobReverbHighCut.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbHighCut.Value = 20000;
+			KnobReverbHighCut.ValueChanged += new System.EventHandler(this.KnobReverbHighCut_ValueChanged);
 			// 
 			// textBox9
 			// 
@@ -2825,6 +2829,7 @@
 			KnobReverbLowshelfGain.TabIndex = 24;
 			KnobReverbLowshelfGain.Text = "Level";
 			KnobReverbLowshelfGain.TickColor = System.Drawing.SystemColors.ControlDarkDark;
+			KnobReverbLowshelfGain.ValueChanged += new System.EventHandler(this.KnobReverbLowshelfGain_ValueChanged);
 			// 
 			// textBox8
 			// 
@@ -2870,6 +2875,7 @@
 			KnobReverbLowShelfFrequency.Text = "Level";
 			KnobReverbLowShelfFrequency.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbLowShelfFrequency.Value = 250;
+			KnobReverbLowShelfFrequency.ValueChanged += new System.EventHandler(this.KnobReverbLowShelfFrequency_ValueChanged);
 			// 
 			// textBox7
 			// 
@@ -2914,6 +2920,7 @@
 			KnobReverbDensity.Text = "Level";
 			KnobReverbDensity.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbDensity.Value = 50;
+			KnobReverbDensity.ValueChanged += new System.EventHandler(this.KnobReverbDensity_ValueChanged);
 			// 
 			// textBox6
 			// 
@@ -2958,6 +2965,7 @@
 			KnobReverbDiffusion.Text = "Level";
 			KnobReverbDiffusion.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbDiffusion.Value = 50;
+			KnobReverbDiffusion.ValueChanged += new System.EventHandler(this.KnobReverbDiffusion_ValueChanged);
 			// 
 			// textBox1
 			// 
@@ -3002,6 +3010,7 @@
 			KnobReverbHFDcRatio.Text = "Level";
 			KnobReverbHFDcRatio.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbHFDcRatio.Value = 50;
+			KnobReverbHFDcRatio.ValueChanged += new System.EventHandler(this.KnobReverbHFDcRatio_ValueChanged);
 			// 
 			// textBox2
 			// 
@@ -3047,6 +3056,7 @@
 			KnobReverbHFRef.Text = "Level";
 			KnobReverbHFRef.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbHFRef.Value = 5000;
+			KnobReverbHFRef.ValueChanged += new System.EventHandler(this.KnobReverbHFRef_ValueChanged);
 			// 
 			// textBox3
 			// 
@@ -3090,6 +3100,7 @@
 			KnobReverbLateDelay.Text = "Level";
 			KnobReverbLateDelay.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbLateDelay.Value = 40;
+			KnobReverbLateDelay.ValueChanged += new System.EventHandler(this.KnobReverbLateDelay_ValueChanged);
 			// 
 			// textBox4
 			// 
@@ -3134,6 +3145,7 @@
 			KnobReverbEarlyDelay.Text = "Level";
 			KnobReverbEarlyDelay.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbEarlyDelay.Value = 20;
+			KnobReverbEarlyDelay.ValueChanged += new System.EventHandler(this.KnobReverbEarlyDelay_ValueChanged);
 			// 
 			// textBox5
 			// 
@@ -3179,6 +3191,7 @@
 			KnobReverbDecayTime.Text = "Level";
 			KnobReverbDecayTime.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbDecayTime.Value = 1500;
+			KnobReverbDecayTime.ValueChanged += new System.EventHandler(this.KnobReverbDecayTime_ValueChanged);
 			// 
 			// CheckReverb
 			// 
@@ -3192,6 +3205,7 @@
 			CheckReverb.Text = "Reverb";
 			CheckReverb.UseVisualStyleBackColor = false;
 			CheckReverb.CheckedChanged += CheckReverb_CheckedChanged;
+
 			// 
 			// OptionsForm
 			// 

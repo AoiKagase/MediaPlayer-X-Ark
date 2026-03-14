@@ -84,18 +84,21 @@ namespace MediaPlayer_X_Ark
 
 		private void PitchChenged(object sender, PropertyChangedEventArgs e)
 		{
+			// Speed ON時のみKnob表示を同期（変換式修正）
 			if (CheckSpeed.Checked)
 			{
-				CheckPitch.Checked = _engine.effector.PitchShift.Enabled;
-				KnobPitchPitch.Value = (int)(_engine.effector.PitchShift.Pitch * 100) - 50;
+				KnobPitchPitch.Value = (int)(_engine.effector.PitchShift.Pitch * 100);
+				lblValPitchPitch.Text = _engine.effector.PitchShift.Pitch.ToString("0.00");
 			}
 		}
 		private void FrequencyChenged(object sender, PropertyChangedEventArgs e)
 		{
 			if (CheckSpeed.Checked)
 			{
-				CheckFrequency.Checked = _engine.effector.Frequency.Enabled;
-				KnobFrequency.Value = (int)(_engine.effector.Frequency.Hz / 44100f * 100f - 100f);
+				// SetFrequency の逆算：Hz = 44100 * (value+100)/100 → value = Hz/44100*100 - 100
+				int knobVal = (int)(_engine.effector.Frequency.Hz / 44100f * 100f - 100f);
+				KnobFrequency.Value = Math.Max(KnobFrequency.Minimum, Math.Min(KnobFrequency.Maximum, knobVal));
+				lblValFrequency.Text = _engine.effector.Frequency.Hz.ToString("0");
 			}
 		}
 		//// <summary>
@@ -164,26 +167,37 @@ namespace MediaPlayer_X_Ark
 		{
 			_engine.effector.PitchShift.Switch(GroupControl(sender));
 			_config.settings.Effectors.PitchShift.Enable = _engine.effector.PitchShift.Enabled;
+
+			// ON時：Knobの現在値をDSPに再適用
+			if (_engine.effector.PitchShift.Enabled)
+				_engine.effector.PitchShift.Pitch = KnobPitchPitch.Value / 100f;
 		}
 		private void CheckFrequency_CheckedChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Frequency.Switch(GroupControl(sender));
 			_config.settings.Effectors.Frequency.Enable = _engine.effector.Frequency.Enabled;
+
+			// ON時：Knobの現在値をDSPに再適用
+			if (_engine.effector.Frequency.Enabled)
+				_engine.effector.Frequency.SetFrequency(KnobFrequency.Value);
 		}
 		private void CheckSpeed_CheckedChanged(object sender, EventArgs e)
 		{
 			_config.settings.Effectors.Speed.Enable = _engine.effector.SpeedEnabled = GroupControl(sender);
+
 			if (_engine.effector.SpeedEnabled)
 			{
 				_engine.effector.PitchShift.Switch(true);
 				_engine.effector.Frequency.Switch(true);
 				GroupFrequency.Enabled = false;
 				GroupPitchShift.Enabled = false;
+				KnobSpeed.Enabled = true;   // Speed Knob有効化
 			}
 			else
 			{
 				GroupPitchShift.Enabled = true;
 				GroupFrequency.Enabled = true;
+				KnobSpeed.Enabled = false;  // Speed Knob無効化
 			}
 		}
 		private void CheckReverb_CheckedChanged(object sender, EventArgs e)
@@ -198,170 +212,158 @@ namespace MediaPlayer_X_Ark
 			_config.settings.Effectors.GEqualizer.Enable = _engine.effector.GEqualizer.Enabled;
 		}
 		#endregion
+		// Distortion
 		private void KnobDistortionLevel_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Distortion.Level = ((UI.Knob)sender).Value / 100F;
-			lblValDistortionLevel.Text = _engine.effector.Distortion.Level.ToString("##0.00");
+			lblValDistortionLevel.Text = _engine.effector.Distortion.Level.ToString("0.00");
 		}
 
+		// Chorus
 		private void KnobChorusMix_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Chorus.Mix = ((UI.Knob)sender).Value / 10F;
-			lblValChorusMix.Text = _engine.effector.Chorus.Mix.ToString("##0.0");
+			_engine.effector.Chorus.Mix = ((UI.Knob)sender).Value;
+			lblValChorusMix.Text = _engine.effector.Chorus.Mix.ToString("0");
 			_config.settings.Effectors.Chorus.Mix = ((UI.Knob)sender).Value;
 		}
-
 		private void KnobChorusRate_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Chorus.Rate = ((UI.Knob)sender).Value / 10F;
-			lblValChorusRate.Text = _engine.effector.Chorus.Rate.ToString("##0.0");
+			lblValChorusRate.Text = _engine.effector.Chorus.Rate.ToString("0.0");
 			_config.settings.Effectors.Chorus.Rate = ((UI.Knob)sender).Value;
 		}
-
 		private void KnobChorusDepth_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Chorus.Depth = ((UI.Knob)sender).Value / 10F;
-			lblValChorusDepth.Text = _engine.effector.Chorus.Depth.ToString("##0.0");
+			_engine.effector.Chorus.Depth = ((UI.Knob)sender).Value;
+			lblValChorusDepth.Text = _engine.effector.Chorus.Depth.ToString("0");
 			_config.settings.Effectors.Chorus.Depth = ((UI.Knob)sender).Value;
 		}
 
+		// Echo
 		private void KnobEchoDelay_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Echo.Delay = ((UI.Knob)sender).Value / 10F;
-			lblValEchoDelay.Text = _engine.effector.Echo.Delay.ToString("##0.0");
+			_engine.effector.Echo.Delay = ((UI.Knob)sender).Value;
+			lblValEchoDelay.Text = _engine.effector.Echo.Delay.ToString("0");
 			_config.settings.Effectors.Echo.Delay = ((UI.Knob)sender).Value;
 		}
-
 		private void KnobEchoFeedback_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Echo.Feedback = ((UI.Knob)sender).Value / 10F;
-			lblValEchoFeedback.Text = _engine.effector.Echo.Feedback.ToString("##0.0");
+			_engine.effector.Echo.Feedback = ((UI.Knob)sender).Value;
+			lblValEchoFeedback.Text = _engine.effector.Echo.Feedback.ToString("0");
 			_config.settings.Effectors.Echo.Feedback = ((UI.Knob)sender).Value;
 		}
-
 		private void KnobEchoDry_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Echo.DryLevel = ((UI.Knob)sender).Value / 10F;
-			lblValEchoDry.Text = _engine.effector.Echo.DryLevel.ToString("##0.0");
+			_engine.effector.Echo.DryLevel = ((UI.Knob)sender).Value;
+			lblValEchoDry.Text = _engine.effector.Echo.DryLevel.ToString("0");
 			_config.settings.Effectors.Echo.Dry = ((UI.Knob)sender).Value;
 		}
-
 		private void KnobEchoWet_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Echo.WetLevel = ((UI.Knob)sender).Value / 10F;
-			lblValEchoWet.Text = _engine.effector.Echo.WetLevel.ToString("##0.0");
+			_engine.effector.Echo.WetLevel = ((UI.Knob)sender).Value;
+			lblValEchoWet.Text = _engine.effector.Echo.WetLevel.ToString("0");
 			_config.settings.Effectors.Echo.Wet = ((UI.Knob)sender).Value;
 		}
 
-		private void KnobHighpassCutoff_ValueChanged(object sender, EventArgs e)
-		{
-			_engine.effector.Highpass.CutOff = ((UI.Knob)sender).Value / 10F;
-			lblValHighpassCutoff.Text = _engine.effector.Highpass.CutOff.ToString("##0.0");
-			_config.settings.Effectors.Highpass.Cutoff = ((UI.Knob)sender).Value;
-		}
-
-		private void KnobHighpassResonance_ValueChanged(object sender, EventArgs e)
-		{
-			_engine.effector.Highpass.Resonance = ((UI.Knob)sender).Value / 10F;
-			lblValHighpassResonance.Text = _engine.effector.Highpass.Resonance.ToString("##0.0");
-			_config.settings.Effectors.Highpass.Resonance = ((UI.Knob)sender).Value;
-		}
-
-		private void KnobLowpassCutoff_ValueChanged(object sender, EventArgs e)
-		{
-			_engine.effector.Lowpass.CutOff = ((UI.Knob)sender).Value / 10F;
-			lblValLowpassCutoff.Text = _engine.effector.Lowpass.CutOff.ToString("##0.0");
-			_config.settings.Effectors.Lowpass.Cutoff = ((UI.Knob)sender).Value;
-		}
-
-		private void KnobLowpassResonance_ValueChanged(object sender, EventArgs e)
-		{
-			_engine.effector.Lowpass.Resonance = ((UI.Knob)sender).Value / 10F;
-			lblValLowpassResonance.Text = _engine.effector.Lowpass.Resonance.ToString("##0.0");
-			_config.settings.Effectors.Lowpass.Resonance = ((UI.Knob)sender).Value;
-		}
-
+		// Flanger
 		private void KnobFlangerMix_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Flanger.Mix = ((UI.Knob)sender).Value / 10F;
-			lblValFlangerMix.Text = _engine.effector.Flanger.Mix.ToString("##0.0");
+			_engine.effector.Flanger.Mix = ((UI.Knob)sender).Value;
+			lblValFlangerMix.Text = _engine.effector.Flanger.Mix.ToString("0");
 			_config.settings.Effectors.Flanger.Mix = ((UI.Knob)sender).Value;
 		}
-
 		private void KnobFlangerRate_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Flanger.Rate = ((UI.Knob)sender).Value / 10F;
-			lblValFlangerRate.Text = _engine.effector.Flanger.Rate.ToString("##0.0");
+			lblValFlangerRate.Text = _engine.effector.Flanger.Rate.ToString("0.0");
 			_config.settings.Effectors.Flanger.Rate = ((UI.Knob)sender).Value;
 		}
-
 		private void KnobFlangerDepth_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Flanger.Depth = ((UI.Knob)sender).Value / 100F;
-			lblValFlangerDepth.Text = _engine.effector.Flanger.Depth.ToString("##0.0");
+			lblValFlangerDepth.Text = _engine.effector.Flanger.Depth.ToString("0.00");
 			_config.settings.Effectors.Flanger.Depth = ((UI.Knob)sender).Value;
 		}
+		// Highpass
+		private void KnobHighpassCutoff_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.Highpass.CutOff = ((UI.Knob)sender).Value;
+			lblValHighpassCutoff.Text = _engine.effector.Highpass.CutOff.ToString("0");
+			_config.settings.Effectors.Highpass.Cutoff = ((UI.Knob)sender).Value;
+		}
+		private void KnobHighpassResonance_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.Highpass.Resonance = ((UI.Knob)sender).Value / 10F;
+			lblValHighpassResonance.Text = _engine.effector.Highpass.Resonance.ToString("0.0");
+			_config.settings.Effectors.Highpass.Resonance = ((UI.Knob)sender).Value;
+		}
 
+		// Lowpass
+		private void KnobLowpassCutoff_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.Lowpass.CutOff = ((UI.Knob)sender).Value;
+			lblValLowpassCutoff.Text = _engine.effector.Lowpass.CutOff.ToString("0");
+			_config.settings.Effectors.Lowpass.Cutoff = ((UI.Knob)sender).Value;
+		}
+		private void KnobLowpassResonance_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.Lowpass.Resonance = ((UI.Knob)sender).Value / 10F;
+			lblValLowpassResonance.Text = _engine.effector.Lowpass.Resonance.ToString("0.0");
+			_config.settings.Effectors.Lowpass.Resonance = ((UI.Knob)sender).Value;
+		}
+
+
+		// Compressor
 		private void KnobCompThreshold_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Compressor.Threshold = ((UI.Knob)sender).Value / 10F;
-			lblValCompThreshold.Text = _engine.effector.Compressor.Threshold.ToString("##0.0");
+			_engine.effector.Compressor.Threshold = ((UI.Knob)sender).Value;
+			lblValCompThreshold.Text = _engine.effector.Compressor.Threshold.ToString("0");
 			_config.settings.Effectors.Compressor.Threshold = ((UI.Knob)sender).Value;
 		}
-
 		private void KnobCompRatio_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Compressor.Ratio = ((UI.Knob)sender).Value / 10F;
-			lblValCompRatio.Text = _engine.effector.Compressor.Ratio.ToString("##0.0");
+			_engine.effector.Compressor.Ratio = ((UI.Knob)sender).Value;  // ÷1
+			lblValCompRatio.Text = _engine.effector.Compressor.Ratio.ToString("0");
 			_config.settings.Effectors.Compressor.Ratio = ((UI.Knob)sender).Value;
 		}
-
 		private void KnobCompAttack_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Compressor.Attack = ((UI.Knob)sender).Value / 10F;
-			lblValCompAttack.Text = _engine.effector.Compressor.Attack.ToString("##0.0");
+			lblValCompAttack.Text = _engine.effector.Compressor.Attack.ToString("0.0");
 			_config.settings.Effectors.Compressor.Attack = ((UI.Knob)sender).Value;
 		}
-
 		private void KnobCompRelease_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Compressor.Release = ((UI.Knob)sender).Value / 10F;
-			lblValCompRelease.Text = _engine.effector.Compressor.Release.ToString("##0.0");
+			_engine.effector.Compressor.Release = ((UI.Knob)sender).Value;
+			lblValCompRelease.Text = _engine.effector.Compressor.Release.ToString("0");
 			_config.settings.Effectors.Compressor.Release = ((UI.Knob)sender).Value;
 		}
-
 		private void KnobCompGain_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Compressor.Gain = ((UI.Knob)sender).Value / 10F;
-			lblValCompGain.Text = _engine.effector.Compressor.Gain.ToString("##0.0");
+			_engine.effector.Compressor.Gain = ((UI.Knob)sender).Value;  // ÷1
+			lblValCompGain.Text = _engine.effector.Compressor.Gain.ToString("0");
 			_config.settings.Effectors.Compressor.Gain = ((UI.Knob)sender).Value;
 		}
 
+		// PitchShift
 		private void KnobPitchPitch_ValueChanged(object sender, EventArgs e)
 		{
-			//			if (!CheckSpeed.Checked)
-			{
-				_engine.effector.PitchShift.Pitch = (((UI.Knob)sender).Value + 50) / 100F;
-			}
-			lblValPitchPitch.Text = _engine.effector.PitchShift.Pitch.ToString("##0.00");
+			_engine.effector.PitchShift.Pitch = ((UI.Knob)sender).Value / 100F;
+			lblValPitchPitch.Text = _engine.effector.PitchShift.Pitch.ToString("0.00");
 			_config.settings.Effectors.PitchShift.Pitch = ((UI.Knob)sender).Value;
 		}
-
 		private void KnobPitchFFT_ValueChanged(object sender, EventArgs e)
 		{
 			float[] fftsize = { 256, 512, 1024, 2048, 4096 };
 			_engine.effector.PitchShift.FFTSize = fftsize[((UI.Knob)sender).Value];
-			lblValPitchFFT.Text = _engine.effector.PitchShift.FFTSize.ToString("###0");
+			lblValPitchFFT.Text = _engine.effector.PitchShift.FFTSize.ToString("0");
 			_config.settings.Effectors.PitchShift.FFT = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobFrequency_ValueChanged(object sender, EventArgs e)
 		{
-			//			if (!CheckSpeed.Checked)
-			{
-				_engine.effector.Frequency.SetFrequency(((UI.Knob)sender).Value);
-			}
-			lblValFrequency.Text = _engine.effector.Frequency.Hz.ToString();
+			_engine.effector.Frequency.SetFrequency(((UI.Knob)sender).Value);
+			lblValFrequency.Text = _engine.effector.Frequency.Hz.ToString("0");
 			_config.settings.Effectors.Frequency.Frequency = ((UI.Knob)sender).Value;
 		}
 
@@ -371,7 +373,87 @@ namespace MediaPlayer_X_Ark
 			lblValSpeed.Text = _engine.effector.Speed.ToString();
 			_config.settings.Effectors.Speed.Speed = ((UI.Knob)sender).Value;
 		}
-
+		// ===========================
+		// Reverb ValueChanged handlers
+		// ===========================
+		private void KnobReverbDecayTime_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.SFXReverb.DecayTime = ((UI.Knob)sender).Value;
+			textBox5.Text = _engine.effector.SFXReverb.DecayTime.ToString("0");
+			_config.settings.Effectors.Reverb.DecayTime = ((UI.Knob)sender).Value;
+		}
+		private void KnobReverbEarlyDelay_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.SFXReverb.EarlyDelay = ((UI.Knob)sender).Value;
+			textBox4.Text = _engine.effector.SFXReverb.EarlyDelay.ToString("0");
+			_config.settings.Effectors.Reverb.EarlyDelay = ((UI.Knob)sender).Value;
+		}
+		private void KnobReverbLateDelay_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.SFXReverb.LateDelay = ((UI.Knob)sender).Value;
+			textBox3.Text = _engine.effector.SFXReverb.LateDelay.ToString("0");
+			_config.settings.Effectors.Reverb.LateDelay = ((UI.Knob)sender).Value;
+		}
+		private void KnobReverbHFRef_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.SFXReverb.HFReference = ((UI.Knob)sender).Value;
+			textBox2.Text = _engine.effector.SFXReverb.HFReference.ToString("0");
+			_config.settings.Effectors.Reverb.HFRef = ((UI.Knob)sender).Value;
+		}
+		private void KnobReverbHFDcRatio_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.SFXReverb.HFDecayRatio = ((UI.Knob)sender).Value;
+			textBox1.Text = _engine.effector.SFXReverb.HFDecayRatio.ToString("0");
+			_config.settings.Effectors.Reverb.HFDecayRatio = ((UI.Knob)sender).Value;
+		}
+		private void KnobReverbDiffusion_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.SFXReverb.Diffusion = ((UI.Knob)sender).Value;
+			textBox6.Text = _engine.effector.SFXReverb.Diffusion.ToString("0");
+			_config.settings.Effectors.Reverb.Diffusion = ((UI.Knob)sender).Value;
+		}
+		private void KnobReverbDensity_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.SFXReverb.Density = ((UI.Knob)sender).Value;
+			textBox7.Text = _engine.effector.SFXReverb.Density.ToString("0");
+			_config.settings.Effectors.Reverb.Density = ((UI.Knob)sender).Value;
+		}
+		private void KnobReverbLowShelfFrequency_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.SFXReverb.LowShelfFrequency = ((UI.Knob)sender).Value;
+			textBox8.Text = _engine.effector.SFXReverb.LowShelfFrequency.ToString("0");
+			_config.settings.Effectors.Reverb.LowShelfFrequency = ((UI.Knob)sender).Value;
+		}
+		private void KnobReverbLowshelfGain_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.SFXReverb.LowShelfGain = ((UI.Knob)sender).Value;
+			textBox9.Text = _engine.effector.SFXReverb.LowShelfGain.ToString("0");
+			_config.settings.Effectors.Reverb.LowShelfGain = ((UI.Knob)sender).Value;
+		}
+		private void KnobReverbHighCut_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.SFXReverb.HighCut = ((UI.Knob)sender).Value;
+			textBox10.Text = _engine.effector.SFXReverb.HighCut.ToString("0");
+			_config.settings.Effectors.Reverb.HighCut = ((UI.Knob)sender).Value;
+		}
+		private void KnobReverbEarlyLate_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.SFXReverb.EarlyLateMix = ((UI.Knob)sender).Value;
+			textBox11.Text = _engine.effector.SFXReverb.EarlyLateMix.ToString("0");
+			_config.settings.Effectors.Reverb.EarlyLate = ((UI.Knob)sender).Value;
+		}
+		private void KnobReverbWet_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.SFXReverb.WetLevel = ((UI.Knob)sender).Value;
+			textBox12.Text = _engine.effector.SFXReverb.WetLevel.ToString("0");
+			_config.settings.Effectors.Reverb.WetLevel = ((UI.Knob)sender).Value;
+		}
+		private void KnobReverbDry_ValueChanged(object sender, EventArgs e)
+		{
+			_engine.effector.SFXReverb.DryLevel = ((UI.Knob)sender).Value;
+			textBox13.Text = _engine.effector.SFXReverb.DryLevel.ToString("0");
+			_config.settings.Effectors.Reverb.DryLevel = ((UI.Knob)sender).Value;
+		}
 		private bool GroupControl(object sender)
 		{
 			if (sender.GetType() == typeof(CheckBox))
@@ -392,155 +474,309 @@ namespace MediaPlayer_X_Ark
 			// Equalizer
 			_engine.effector.GEqualizer.PropertyChanged += new PropertyChangedEventHandler(EqualizerChanged);
 
+			// ===========================
 			// Distortion
+			// Level: 0.0～1.0 → ×100
+			// ===========================
 			CheckDistortion.Checked = _engine.effector.Distortion.Enabled;
-			// Min:0.0	- Max:1.0		Def:0.5
-			KnobDistortionLevel.Maximum = 100;
+			KnobDistortionLevel.ParameterName = "Level";
+			KnobDistortionLevel.Unit = "";
+			KnobDistortionLevel.Scale = 100f;
 			KnobDistortionLevel.Minimum = 0;
-			KnobDistortionLevel.LargeChange = 10;
+			KnobDistortionLevel.Maximum = 100;
+			KnobDistortionLevel.LargeChange = 5;
 			KnobDistortionLevel.Value = (int)(_engine.effector.Distortion.Level * 100);
-			KnobDistortionLevel.Refresh();
 
+
+			// ===========================
 			// Chorus
+			// Mix:   0.0～100.0 → ×1
+			// Rate:  0.0～20.0  → ×10
+			// Depth: 0.0～100.0 → ×1
+			// ===========================
 			CheckChorus.Checked = _engine.effector.Chorus.Enabled;
-			// Min:0.0	- Max:100.0		Def:50.0
-			KnobChorusMix.Maximum = 1000;
+
+			KnobChorusMix.ParameterName = "Mix";
+			KnobChorusMix.Unit = "%";
+			KnobChorusMix.Scale = 1f;
 			KnobChorusMix.Minimum = 0;
-			KnobChorusMix.LargeChange = 10;
-			KnobChorusMix.Value = (int)(_engine.effector.Chorus.Mix * 10);
-			KnobChorusMix.Refresh();
-			// Min:0.0	- Max:20.00		Def:0.8
-			KnobChorusRate.Maximum = 200;
+			KnobChorusMix.Maximum = 100;
+			KnobChorusMix.LargeChange = 5;
+			KnobChorusMix.Value = (int)_engine.effector.Chorus.Mix;
+
+			KnobChorusRate.ParameterName = "Rate";
+			KnobChorusRate.Unit = "";
+			KnobChorusRate.Scale = 10f;
 			KnobChorusRate.Minimum = 0;
+			KnobChorusRate.Maximum = 200;
 			KnobChorusRate.LargeChange = 10;
 			KnobChorusRate.Value = (int)(_engine.effector.Chorus.Rate * 10);
-			KnobChorusRate.Refresh();
-			// Min:0.0	- Max:100.0		Def:3.00
-			KnobChorusDepth.Maximum = 1000;
+
+			KnobChorusDepth.ParameterName = "Depth";
+			KnobChorusDepth.Unit = "%";
+			KnobChorusDepth.Scale = 1f;
 			KnobChorusDepth.Minimum = 0;
-			KnobChorusDepth.LargeChange = 10;
-			KnobChorusDepth.Value = (int)(_engine.effector.Chorus.Depth * 10);
-			KnobChorusDepth.Refresh();
+			KnobChorusDepth.Maximum = 100;
+			KnobChorusDepth.LargeChange = 5;
+			KnobChorusDepth.Value = (int)_engine.effector.Chorus.Depth;
 
+			// ===========================
 			// Echo
+			// Delay:    1.0～5000.0ms → ×1
+			// Feedback: 0.0～100.0%   → ×1
+			// Dry/Wet: -80.0～10.0dB  → ×1
+			// ===========================
 			CheckEcho.Checked = _engine.effector.Echo.Enabled;
-			// Min:1.0	- Max:5000		Def:500.0
-			KnobEchoDelay.Maximum = 50000;
-			KnobEchoDelay.Minimum = 0;
-			KnobEchoDelay.LargeChange = 2000;
-			KnobEchoDelay.Value = (int)(_engine.effector.Echo.Delay * 10);
-			KnobEchoDelay.Refresh();
-			// Min:0.0	- Max:100.0		Def:50
-			KnobEchoFeedback.Maximum = 1000;
-			KnobEchoFeedback.Minimum = 0;
-			KnobEchoFeedback.LargeChange = 100;
-			KnobEchoFeedback.Value = (int)(_engine.effector.Echo.Feedback * 10);
-			KnobEchoFeedback.Refresh();
-			// Min:-80  - Max:10.0		Def:0
-			KnobEchoDry.Maximum = 100;
-			KnobEchoDry.Minimum = -800;
-			KnobEchoDry.LargeChange = 10;
-			KnobEchoDry.Value = (int)(_engine.effector.Echo.DryLevel * 10);
-			KnobEchoDry.Refresh();
-			// Min:-80  - Max:10.0		Def:0
-			KnobEchoWet.Maximum = 100;
-			KnobEchoWet.Minimum = -800;
-			KnobEchoWet.LargeChange = 10;
-			KnobEchoWet.Value = (int)(_engine.effector.Echo.WetLevel * 10);
-			KnobEchoWet.Refresh();
 
+			KnobEchoDelay.ParameterName = "Delay";
+			KnobEchoDelay.Unit = "ms";
+			KnobEchoDelay.Scale = 1f;
+			KnobEchoDelay.Minimum = 1;
+			KnobEchoDelay.Maximum = 5000;
+			KnobEchoDelay.LargeChange = 100;
+			KnobEchoDelay.Value = (int)_engine.effector.Echo.Delay;
+
+			KnobEchoFeedback.ParameterName = "Feedback";
+			KnobEchoFeedback.Unit = "%";
+			KnobEchoFeedback.Scale = 1f;
+			KnobEchoFeedback.Minimum = 0;
+			KnobEchoFeedback.Maximum = 100;
+			KnobEchoFeedback.LargeChange = 5;
+			KnobEchoFeedback.Value = (int)_engine.effector.Echo.Feedback;
+
+			KnobEchoDry.ParameterName = "Dry Level";
+			KnobEchoDry.Unit = "dB";
+			KnobEchoDry.Scale = 1f;
+			KnobEchoDry.Minimum = -80;
+			KnobEchoDry.Maximum = 10;
+			KnobEchoDry.LargeChange = 5;
+			KnobEchoDry.Value = (int)_engine.effector.Echo.DryLevel;
+
+			KnobEchoWet.ParameterName = "Wet Level";
+			KnobEchoWet.Unit = "dB";
+			KnobEchoWet.Scale = 1f;
+			KnobEchoWet.Minimum = -80;
+			KnobEchoWet.Maximum = 10;
+			KnobEchoWet.LargeChange = 5;
+			KnobEchoWet.Value = (int)_engine.effector.Echo.WetLevel;
+
+			// ===========================
 			// Flanger
+			// Mix:   0.0～100.0 → ×1
+			// Rate:  0.0～20.0  → ×10
+			// Depth: 0.01～1.0  → ×100
+			// ===========================
 			CheckFlanger.Checked = _engine.effector.Flanger.Enabled;
-			// Min:0	- Max:100.0		Def:50
-			KnobFlangerMix.Maximum = 1000;
+
+			KnobFlangerMix.ParameterName = "Mix";
+			KnobFlangerMix.Unit = "%";
+			KnobFlangerMix.Scale = 1f;
 			KnobFlangerMix.Minimum = 0;
-			KnobFlangerMix.LargeChange = 10;
-			KnobFlangerMix.Value = (int)(_engine.effector.Flanger.Mix * 10);
-			// Min:0	- Max:20.0		Def:0.1
-			KnobFlangerRate.Maximum = 200;
+			KnobFlangerMix.Maximum = 100;
+			KnobFlangerMix.LargeChange = 5;
+			KnobFlangerMix.Value = (int)_engine.effector.Flanger.Mix;
+
+			KnobFlangerRate.ParameterName = "Rate";
+			KnobFlangerRate.Unit = "";
+			KnobFlangerRate.Scale = 10f;
 			KnobFlangerRate.Minimum = 0;
+			KnobFlangerRate.Maximum = 200;
 			KnobFlangerRate.LargeChange = 10;
 			KnobFlangerRate.Value = (int)(_engine.effector.Flanger.Rate * 10);
-			// Min:0.01 - Max:1.0		Def:1
-			KnobFlangerDepth.Maximum = 100;
+
+			KnobFlangerDepth.ParameterName = "Depth";
+			KnobFlangerDepth.Unit = "";
+			KnobFlangerDepth.Scale = 100f;
 			KnobFlangerDepth.Minimum = 1;
-			KnobFlangerDepth.LargeChange = 10;
+			KnobFlangerDepth.Maximum = 100;
+			KnobFlangerDepth.LargeChange = 5;
 			KnobFlangerDepth.Value = (int)(_engine.effector.Flanger.Depth * 100);
 
+
+			// ===========================
 			// Highpass
+			// Cutoff:    1.0～22000.0Hz → ×1
+			// Resonance: 0.0～10.0      → ×10
+			// ===========================
 			CheckHighpass.Checked = _engine.effector.Highpass.Enabled;
-			// Min:1	- Max:22000		Def:5000
-			KnobHighpassCutoff.Maximum = 220000;
+
+			KnobHighpassCutoff.ParameterName = "Cutoff";
+			KnobHighpassCutoff.Unit = "Hz";
+			KnobHighpassCutoff.Scale = 1f;
 			KnobHighpassCutoff.Minimum = 1;
-			KnobHighpassCutoff.LargeChange = 1000;
-			KnobHighpassCutoff.Value = (int)(_engine.effector.Highpass.CutOff * 10);
-			// Min:0	- Max:10		Def:1
-			KnobHighpassResonance.Maximum = 100;
+			KnobHighpassCutoff.Maximum = 22000;
+			KnobHighpassCutoff.LargeChange = 500;
+			KnobHighpassCutoff.Value = (int)_engine.effector.Highpass.CutOff;
+
+			KnobHighpassResonance.ParameterName = "Resonance";
+			KnobHighpassResonance.Unit = "";
+			KnobHighpassResonance.Scale = 10f;
 			KnobHighpassResonance.Minimum = 0;
-			KnobHighpassResonance.LargeChange = 10;
+			KnobHighpassResonance.Maximum = 100;
+			KnobHighpassResonance.LargeChange = 5;
 			KnobHighpassResonance.Value = (int)(_engine.effector.Highpass.Resonance * 10);
 
+
+			// ===========================
 			// Lowpass
+			// Cutoff:    1.0～22000.0Hz → ×1
+			// Resonance: 0.0～10.0      → ×10
+			// ===========================
 			CheckLowpass.Checked = _engine.effector.Lowpass.Enabled;
-			// Min:1	- Max:22000		Def:5000
-			KnobLowpassCutoff.Maximum = 220000;
+
+			KnobLowpassCutoff.ParameterName = "Cutoff";
+			KnobLowpassCutoff.Unit = "Hz";
+			KnobLowpassCutoff.Scale = 1f;
 			KnobLowpassCutoff.Minimum = 1;
-			KnobLowpassCutoff.LargeChange = 1000;
-			KnobLowpassCutoff.Value = (int)(_engine.effector.Lowpass.CutOff * 10);
-			// Min:0	- Max:10		Def:1
-			KnobLowpassResonance.Maximum = 100;
+			KnobLowpassCutoff.Maximum = 22000;
+			KnobLowpassCutoff.LargeChange = 500;
+			KnobLowpassCutoff.Value = (int)_engine.effector.Lowpass.CutOff;
+
+			KnobLowpassResonance.ParameterName = "Resonance";
+			KnobLowpassResonance.Unit = "";
+			KnobLowpassResonance.Scale = 10f;
 			KnobLowpassResonance.Minimum = 0;
-			KnobLowpassResonance.LargeChange = 10;
+			KnobLowpassResonance.Maximum = 100;
+			KnobLowpassResonance.LargeChange = 5;
 			KnobLowpassResonance.Value = (int)(_engine.effector.Lowpass.Resonance * 10);
 
+			// ===========================
 			// Compressor
+			// Threshold: -60.0～0.0dB   → ×1
+			// Ratio:      1.0～50.0      → ×10
+			// Attack:     0.1～500.0ms  → ×10
+			// Release:   10.0～5000.0ms → ×1
+			// Gain:     -30.0～30.0dB   → ×10
+			// ===========================
 			CheckCompressor.Checked = _engine.effector.Compressor.Enabled;
-			// Min:-60	- Max:0			Def:0
+
+			KnobCompThreshold.ParameterName = "Threshold";
+			KnobCompThreshold.Unit = "dB";
+			KnobCompThreshold.Scale = 1f;
+			KnobCompThreshold.Minimum = -60;
 			KnobCompThreshold.Maximum = 0;
-			KnobCompThreshold.Minimum = -600;
-			KnobCompThreshold.LargeChange = 10;
-			KnobCompThreshold.Value = (int)(_engine.effector.Compressor.Threshold * 10);
-			// Min:1	- Max:50		Def:2.5
-			KnobCompRatio.Maximum = 500;
+			KnobCompThreshold.LargeChange = 5;
+			KnobCompThreshold.Value = (int)_engine.effector.Compressor.Threshold;
+
+			KnobCompRatio.ParameterName = "Ratio";
+			KnobCompRatio.Unit = "";
+			KnobCompRatio.Scale = 1f;
 			KnobCompRatio.Minimum = 1;
-			KnobCompRatio.LargeChange = 10;
+			KnobCompRatio.Maximum = 50;
+			KnobCompRatio.LargeChange = 5;
 			KnobCompRatio.Value = (int)(_engine.effector.Compressor.Ratio * 10);
-			// Min:0.1	- Max:500		Def:20
-			KnobCompAttack.Maximum = 5000;
+
+			KnobCompAttack.ParameterName = "Attack";
+			KnobCompAttack.Unit = "ms";
+			KnobCompAttack.Scale = 10f;
 			KnobCompAttack.Minimum = 1;
-			KnobCompAttack.LargeChange = 10;
+			KnobCompAttack.Maximum = 5000;
+			KnobCompAttack.LargeChange = 100;
 			KnobCompAttack.Value = (int)(_engine.effector.Compressor.Attack * 10);
-			// Min:10	- Max:5000		Def:100
-			KnobCompRelease.Maximum = 50000;
-			KnobCompRelease.Minimum = 100;
-			KnobCompRelease.LargeChange = 10;
-			KnobCompRelease.Value = (int)(_engine.effector.Compressor.Release * 10);
-			// Min:-30	- Max:30		Def:0
-			KnobCompGain.Maximum = 300;
-			KnobCompGain.Minimum = -300;
-			KnobCompGain.LargeChange = 10;
+
+			KnobCompRelease.ParameterName = "Release";
+			KnobCompRelease.Unit = "ms";
+			KnobCompRelease.Scale = 1f;
+			KnobCompRelease.Minimum = 10;
+			KnobCompRelease.Maximum = 5000;
+			KnobCompRelease.LargeChange = 100;
+			KnobCompRelease.Value = (int)_engine.effector.Compressor.Release;
+
+			KnobCompGain.ParameterName = "Gain";
+			KnobCompGain.Unit = "dB";
+			KnobCompGain.Scale = 1f;
+			KnobCompGain.Minimum = -30;
+			KnobCompGain.Maximum = 30;
+			KnobCompGain.LargeChange = 2;
 			KnobCompGain.Value = (int)(_engine.effector.Compressor.Gain * 10);
 
-			// PichShift
+			// ===========================
+			// PitchShift
+			// Pitch:   0.5～2.0  → ×100
+			// FFTSize: 256～4096 → ×1（固定値のみ）
+			// ===========================
 			CheckPitch.Checked = _engine.effector.PitchShift.Enabled;
-			// Min:0.5	- Max:2.0	Def:1
 			_engine.effector.PitchShift.PropertyChanged += new PropertyChangedEventHandler(PitchChenged);
-			KnobPitchPitch.Maximum = 150;
-			KnobPitchPitch.Minimum = 0;
-			KnobPitchPitch.LargeChange = 1;
-			KnobPitchPitch.Value = (int)(_engine.effector.PitchShift.Pitch * 100) - 50;
 
-			// Min:0.5	- Max:2.0	Def:1
-			KnobPitchFFT.Maximum = 4;
+			KnobPitchPitch.ParameterName = "Pitch";
+			KnobPitchPitch.Unit = "";
+			KnobPitchPitch.Scale = 100f;
+			KnobPitchPitch.Minimum = 50;
+			KnobPitchPitch.Maximum = 200;
+			KnobPitchPitch.LargeChange = 10;
+			KnobPitchPitch.Value = (int)(_engine.effector.PitchShift.Pitch * 100);
+
+			KnobPitchFFT.ParameterName = "FFT Size";
+			KnobPitchFFT.Unit = "";
+			KnobPitchFFT.Scale = 1f;
 			KnobPitchFFT.Minimum = 0;
+			KnobPitchFFT.Maximum = 4;
 			KnobPitchFFT.LargeChange = 1;
-			float[] fftsize = { 256, 512, 1024, 2048, 4096 };
-			KnobPitchFFT.Value = Array.IndexOf(fftsize, _engine.effector.PitchShift.FFTSize);
+			KnobPitchFFT.Value = Array.IndexOf(new float[] { 256, 512, 1024, 2048, 4096 },
+											 _engine.effector.PitchShift.FFTSize);
+			// PitchShift初期化の末尾に追加
+			if (_engine.effector.PitchShift.Enabled)
+				_engine.effector.PitchShift.Pitch = KnobPitchPitch.Value / 100f;
 
 			CheckFrequency.Checked = _engine.effector.Frequency.Enabled;
+			KnobFrequency.ParameterName = "Speed";
+			KnobFrequency.Unit = "";
+			KnobFrequency.Scale = 1f;
+			KnobFrequency.Minimum = -100;  // 0〜100 → -100〜100 に修正
+			KnobFrequency.Maximum = 100;
+			KnobFrequency.LargeChange = 5;
+			KnobFrequency.Value = _config.settings.Effectors.Frequency.Frequency;
 			_engine.effector.Frequency.PropertyChanged += new PropertyChangedEventHandler(FrequencyChenged);
-			CheckSpeed.Checked = _engine.effector.SpeedEnabled;
 
+			// Frequency初期化の末尾に追加
+			if (_engine.effector.Frequency.Enabled)
+				_engine.effector.Frequency.SetFrequency(KnobFrequency.Value);
+			CheckSpeed.Checked = _engine.effector.SpeedEnabled;
+			// Speed ON/OFFに応じてKnobの有効・無効を初期設定
+			if (_engine.effector.SpeedEnabled)
+			{
+				GroupFrequency.Enabled = false;
+				GroupPitchShift.Enabled = false;
+				KnobSpeed.Enabled = true;
+			}
+			else
+			{
+				KnobSpeed.Enabled = false;
+			}
+
+			// ===========================
+			// Reverb
+			// ===========================
+			CheckReverb.Checked = _config.settings.Effectors.Reverb.Enable;
+
+			KnobReverbDecayTime.ParameterName = "Decay Time"; KnobReverbDecayTime.Unit = "ms"; KnobReverbDecayTime.Scale = 1f; KnobReverbDecayTime.LargeChange = 500;
+			KnobReverbEarlyDelay.ParameterName = "Early Delay"; KnobReverbEarlyDelay.Unit = "ms"; KnobReverbEarlyDelay.Scale = 1f; KnobReverbEarlyDelay.LargeChange = 10;
+			KnobReverbLateDelay.ParameterName = "Late Delay"; KnobReverbLateDelay.Unit = "ms"; KnobReverbLateDelay.Scale = 1f; KnobReverbLateDelay.LargeChange = 5;
+			KnobReverbHFRef.ParameterName = "HF Reference"; KnobReverbHFRef.Unit = "Hz"; KnobReverbHFRef.Scale = 1f; KnobReverbHFRef.LargeChange = 500;
+			KnobReverbHFDcRatio.ParameterName = "HF Decay Ratio"; KnobReverbHFDcRatio.Unit = "%"; KnobReverbHFDcRatio.Scale = 1f; KnobReverbHFDcRatio.LargeChange = 5;
+			KnobReverbDiffusion.ParameterName = "Diffusion"; KnobReverbDiffusion.Unit = "%"; KnobReverbDiffusion.Scale = 1f; KnobReverbDiffusion.LargeChange = 5;
+			KnobReverbDensity.ParameterName = "Density"; KnobReverbDensity.Unit = "%"; KnobReverbDensity.Scale = 1f; KnobReverbDensity.LargeChange = 5;
+			KnobReverbLowShelfFrequency.ParameterName = "Low Shelf Freq"; KnobReverbLowShelfFrequency.Unit = "Hz"; KnobReverbLowShelfFrequency.Scale = 1f; KnobReverbLowShelfFrequency.LargeChange = 50;
+			KnobReverbLowshelfGain.ParameterName = "Low Shelf Gain"; KnobReverbLowshelfGain.Unit = "dB"; KnobReverbLowshelfGain.Scale = 1f; KnobReverbLowshelfGain.LargeChange = 2;
+			KnobReverbHighCut.ParameterName = "High Cut"; KnobReverbHighCut.Unit = "Hz"; KnobReverbHighCut.Scale = 1f; KnobReverbHighCut.LargeChange = 500;
+			KnobReverbEarlyLate.ParameterName = "Early/Late Mix"; KnobReverbEarlyLate.Unit = "%"; KnobReverbEarlyLate.Scale = 1f; KnobReverbEarlyLate.LargeChange = 5;
+			KnobReverbWet.ParameterName = "Wet Level"; KnobReverbWet.Unit = "dB"; KnobReverbWet.Scale = 1f; KnobReverbWet.LargeChange = 5;
+			KnobReverbDry.ParameterName = "Dry Level"; KnobReverbDry.Unit = "dB"; KnobReverbDry.Scale = 1f; KnobReverbDry.LargeChange = 5;
+
+			// 初期値を設定から反映
+			KnobReverbDecayTime.Value = _config.settings.Effectors.Reverb.DecayTime > 0 ? _config.settings.Effectors.Reverb.DecayTime : 1500;
+			KnobReverbEarlyDelay.Value = _config.settings.Effectors.Reverb.EarlyDelay;
+			KnobReverbLateDelay.Value = _config.settings.Effectors.Reverb.LateDelay;
+			KnobReverbHFRef.Value = _config.settings.Effectors.Reverb.HFRef > 0 ? _config.settings.Effectors.Reverb.HFRef : 5000;
+			KnobReverbHFDcRatio.Value = _config.settings.Effectors.Reverb.HFDecayRatio > 0 ? _config.settings.Effectors.Reverb.HFDecayRatio : 50;
+			KnobReverbDiffusion.Value = _config.settings.Effectors.Reverb.Diffusion > 0 ? _config.settings.Effectors.Reverb.Diffusion : 50;
+			KnobReverbDensity.Value = _config.settings.Effectors.Reverb.Density > 0 ? _config.settings.Effectors.Reverb.Density : 50;
+			KnobReverbLowShelfFrequency.Value = _config.settings.Effectors.Reverb.LowShelfFrequency > 0 ? _config.settings.Effectors.Reverb.LowShelfFrequency : 250;
+			KnobReverbLowshelfGain.Value = _config.settings.Effectors.Reverb.LowShelfGain;
+			KnobReverbHighCut.Value = _config.settings.Effectors.Reverb.HighCut > 0 ? _config.settings.Effectors.Reverb.HighCut : 20000;
+			KnobReverbEarlyLate.Value = _config.settings.Effectors.Reverb.EarlyLate > 0 ? _config.settings.Effectors.Reverb.EarlyLate : 50;
+			KnobReverbWet.Value = _config.settings.Effectors.Reverb.WetLevel != 0 ? _config.settings.Effectors.Reverb.WetLevel : -6;
+			KnobReverbDry.Value = _config.settings.Effectors.Reverb.DryLevel;
 			// Def:false
 			//			CheckCompLinked.Checked = (bool)(_engine.effector.Compressor.Linked);
 			// Def:false
