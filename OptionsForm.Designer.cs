@@ -259,6 +259,12 @@
 			lblValReverbEarlyLate = new System.Windows.Forms.TextBox();
 			lblValReverbWet = new System.Windows.Forms.TextBox();
 			lblValReverbDry = new System.Windows.Forms.TextBox();
+			tabSkin = new System.Windows.Forms.TabPage();
+			txtSkinPath = new System.Windows.Forms.TextBox();
+			BtnSkinBrowse = new System.Windows.Forms.Button();
+			BtnSkinApply = new System.Windows.Forms.Button();
+			PictSkinPreview = new System.Windows.Forms.PictureBox();
+			lblSkinPath = new System.Windows.Forms.Label();
 
 			tabControlEffects.SuspendLayout();
 			tabSetting.SuspendLayout();
@@ -350,6 +356,8 @@
 			tabControlEffects.Controls.Add(tabLowpass);
 			tabControlEffects.Controls.Add(tabCompressor);
 			tabControlEffects.Controls.Add(tabReverb);
+			tabControlEffects.Controls.Add(tabSkin);
+
 			tabControlEffects.Dock = System.Windows.Forms.DockStyle.Fill;
 			tabControlEffects.Location = new System.Drawing.Point(199, 0);
 			tabControlEffects.Name = "tabControlEffects";
@@ -3376,6 +3384,56 @@
 			label18.Name = "label18";
 			label18.Size = new System.Drawing.Size(100, 23);
 			label18.TabIndex = 0;
+			// tabSkin の設定
+			tabSkin.BackColor = System.Drawing.Color.Transparent;
+			tabSkin.Controls.Add(lblSkinPath);
+			tabSkin.Controls.Add(txtSkinPath);
+			tabSkin.Controls.Add(BtnSkinBrowse);
+			tabSkin.Controls.Add(PictSkinPreview);
+			tabSkin.Controls.Add(BtnSkinApply);
+			tabSkin.Location = new System.Drawing.Point(4, 24);
+			tabSkin.Name = "tabSkin";
+			tabSkin.Size = new System.Drawing.Size(574, 391);
+			tabSkin.TabIndex = 12;
+			tabSkin.Text = "スキン";
+			// lblSkinPath
+			lblSkinPath.AutoSize = true;
+			lblSkinPath.Location = new System.Drawing.Point(12, 14);
+			lblSkinPath.Name = "lblSkinPath";
+			lblSkinPath.Text = "スキンファイル:";
+
+			// txtSkinPath
+			txtSkinPath.Location = new System.Drawing.Point(12, 32);
+			txtSkinPath.Name = "txtSkinPath";
+			txtSkinPath.ReadOnly = true;
+			txtSkinPath.Size = new System.Drawing.Size(450, 23);
+			txtSkinPath.TabIndex = 0;
+
+			// BtnSkinBrowse
+			BtnSkinBrowse.Location = new System.Drawing.Point(470, 31);
+			BtnSkinBrowse.Name = "BtnSkinBrowse";
+			BtnSkinBrowse.Size = new System.Drawing.Size(90, 25);
+			BtnSkinBrowse.TabIndex = 1;
+			BtnSkinBrowse.Text = "参照...";
+			BtnSkinBrowse.UseVisualStyleBackColor = true;
+			BtnSkinBrowse.Click += new System.EventHandler(this.BtnSkinBrowse_Click);
+
+			// PictSkinPreview
+			PictSkinPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			PictSkinPreview.Location = new System.Drawing.Point(12, 65);
+			PictSkinPreview.Name = "PictSkinPreview";
+			PictSkinPreview.Size = new System.Drawing.Size(548, 280);
+			PictSkinPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			PictSkinPreview.TabStop = false;
+
+			// BtnSkinApply
+			BtnSkinApply.Location = new System.Drawing.Point(471, 353);
+			BtnSkinApply.Name = "BtnSkinApply";
+			BtnSkinApply.Size = new System.Drawing.Size(90, 25);
+			BtnSkinApply.TabIndex = 2;
+			BtnSkinApply.Text = "適用";
+			BtnSkinApply.UseVisualStyleBackColor = true;
+			BtnSkinApply.Click += new System.EventHandler(this.BtnSkinApply_Click);
 			// 
 			// OptionsForm
 			// 
@@ -3444,6 +3502,12 @@
 		}
 
 		#endregion
+		private System.Windows.Forms.TabPage tabSkin;
+		private System.Windows.Forms.Label lblSkinPath;
+		private System.Windows.Forms.TextBox txtSkinPath;
+		private System.Windows.Forms.Button BtnSkinBrowse;
+		private System.Windows.Forms.PictureBox PictSkinPreview;
+		private System.Windows.Forms.Button BtnSkinApply; 
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;

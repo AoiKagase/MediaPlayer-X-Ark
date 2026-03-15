@@ -1,8 +1,10 @@
-﻿using System;
+﻿using MediaPlayer_X_Ark.Skin;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -15,17 +17,20 @@ namespace MediaPlayer_X_Ark
 	{
 		private PlayerEngine _engine;
 		private Engine.Configration _config;
-		public OptionsForm(ref PlayerEngine engine, ref Engine.Configration config)
+		private MainForm _mainForm; // 追加
+		public OptionsForm(ref PlayerEngine engine, ref Engine.Configration config, MainForm mainForm)
 		{
 			InitializeComponent();
 			_engine = engine;
 			_config = config;
+			_mainForm = mainForm; // 追加
 		}
 
 		private void OptionsForm_Load(object sender, EventArgs e)
 		{
 			TreeMenu.ExpandAll();
 			OptionOutput();
+			OptionSkin(); // 追加
 			EffectControlInitialize();
 			PaintGEQGraph();
 			
@@ -881,6 +886,10 @@ namespace MediaPlayer_X_Ark
 			{
 				tabControlEffects.SelectedIndex = 10;
 			}
+			if (e.Node.Name == "SKIN")
+			{
+				tabControlEffects.SelectedIndex = 11; // スキンタブのインデックス
+			}
 		}
 
 		private void PaintGEQGraph()
@@ -1187,5 +1196,95 @@ namespace MediaPlayer_X_Ark
 		{
             //_engine.SetDevice((string)((ComboBox)sender).SelectedValue.ToString());
         }
+
+		private void OptionSkin()
+		{
+			var skinPath = _config.settings.Skin;
+			// 未設定またはファイルが存在しない場合はデフォルトスキンを使用
+			if (string.IsNullOrEmpty(skinPath) ||
+				(!File.Exists(skinPath) &&
+				 !File.Exists(Path.Combine(Application.StartupPath, "Skins", skinPath))))
+			{
+				// 新形式を優先、なければ旧形式
+				var defaultXsk = Path.Combine(Application.StartupPath, "Skins", "Default", "Default.xsk");
+				var defaultXsf = Path.Combine(Application.StartupPath, "Skins", "Default", "Default.xsf");
+
+				if (File.Exists(defaultXsk))
+					skinPath = defaultXsk;
+				else if (File.Exists(defaultXsf))
+					skinPath = defaultXsf;
+			}
+			txtSkinPath.Text = skinPath;            
+			// プレビュー画像を表示
+			LoadSkinPreview(_config.settings.Skin);
+		}
+
+		private void LoadSkinPreview(string skinPath)
+		{
+			try
+			{
+				using (var pkg = SkinPackage.Open(skinPath))
+				{
+					if (pkg.MainImagePath != null && File.Exists(pkg.MainImagePath))
+					{
+						var img = Image.FromFile(pkg.MainImagePath);
+						PictSkinPreview.Image = img;
+						PictSkinPreview.SizeMode = PictureBoxSizeMode.Zoom;
+					}
+					else
+					{
+						PictSkinPreview.Image = null;
+					}
+				}
+			}
+			catch
+			{
+				PictSkinPreview.Image = null;
+			}
+		}
+
+		private void BtnSkinBrowse_Click(object sender, EventArgs e)
+		{
+			using (var dlg = new OpenFileDialog())
+			{
+				dlg.Filter = "スキンファイル|*.xsk;*.xsf|" +
+							 "新形式スキン (*.xsk)|*.xsk|" +
+							 "旧形式スキン (*.xsf)|*.xsf|" +
+							 "全てのファイル|*.*";
+				dlg.InitialDirectory = Path.Combine(
+					Application.StartupPath, "Skins");
+
+				if (dlg.ShowDialog() != DialogResult.OK) return;
+
+				txtSkinPath.Text = dlg.FileName;
+				LoadSkinPreview(dlg.FileName);
+			}
+		}
+
+		private void BtnSkinApply_Click(object sender, EventArgs e)
+		{
+			var skinPath = txtSkinPath.Text;
+			if (string.IsNullOrEmpty(skinPath)) return;
+
+			try
+			{
+				_config.settings.Skin = skinPath;
+				_config.Save();
+				_mainForm.SkinLoad(skinPath); // MainForm.SkinLoadをpublicに変更が必要
+				MessageBox.Show(
+					"スキンを適用しました。",
+					"完了",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Information);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(
+					$"スキンの適用に失敗しました。\n{ex.Message}",
+					"エラー",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
+			}
+		}
 	}
 }

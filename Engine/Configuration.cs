@@ -326,8 +326,11 @@ namespace MediaPlayer_X_Ark.Engine
                         settings.SpeakerMode = 2;
                         break;
                 }
+				// 新形式を優先、なければ旧形式
+				var defaultXsk = Path.Combine(Application.StartupPath, "Skins", "Default", "Default.xsk");
+				var defaultXsf = ".\\bbbs\\bs.xsf"; // 既存のデフォルト
 
-                settings.Skin = ".\\bbbs\\bs.xsf";
+				settings.Skin = File.Exists(defaultXsk) ? defaultXsk : defaultXsf;
             }
         }
 

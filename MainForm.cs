@@ -12,7 +12,10 @@ namespace MediaPlayer_X_Ark
         bool initialize = false;
         public static PlayerEngine player;
 
-        OldSkinSystem oldSkinSystem;
+		private OldSkinSystem oldSkinSystem;
+		// 追加
+		private NewSkinSystem newSkinSystem;
+
 		private ToolTip _toolTip;
         private int playingIndex = 0;
         private PlayListForm playListForm;
@@ -20,7 +23,9 @@ namespace MediaPlayer_X_Ark
 		private CDForm cdForm;
 		private static Engine.Configration config;
         private bool nowplaying = false;
-        public MainForm()
+		public int PlayingIndex => playingIndex;
+
+		public MainForm()
         {
             InitializeComponent();
         }
@@ -30,133 +35,158 @@ namespace MediaPlayer_X_Ark
         /// 設定ファイルからスキンファイルパスを取得して投げる
         /// </summary>
         /// <param name="skinFile"></param>
-        private void SkinLoad(string skinFile)
+        public void SkinLoad(string skinFile)
         {
-            // 旧形式特化の処理なので今後変更予定
+			using (var pkg = SkinPackage.Open(skinFile))
+			{
+				if (pkg.Format == SkinPackage.SkinFormat.NewXsk)
+				{
+					// 新形式
+					newSkinSystem = new NewSkinSystem();
+					newSkinSystem.Open(pkg.DefinitionPath);
+					ApplySkin(newSkinSystem);
+				}
+				else
+				{
+					// 旧形式
+					oldSkinSystem = new OldSkinSystem();
+					oldSkinSystem.Open(pkg.DefinitionPath);
+					ApplySkin(oldSkinSystem);
+				}
 
-            // 開く（oldSkinSystemクラス内に設定を全てロード）
-            oldSkinSystem.Open(skinFile);
-
-            // 設定反映：メインフォーム
-            BackgroundImage = oldSkinSystem.MainForm.BackImage;
-            TransparencyKey = oldSkinSystem.MainForm.TransparentKey;
-            Width = oldSkinSystem.MainForm.Position.Width;
-            Height = oldSkinSystem.MainForm.Position.Height;
-
-            // 設定反映：スペクトラム領域
-            Spectrum.Left = oldSkinSystem.ImgSpectrum.Position.Left;
-            Spectrum.Top = oldSkinSystem.ImgSpectrum.Position.Top;
-            Spectrum.Width = oldSkinSystem.ImgSpectrum.Position.Width;
-            Spectrum.Height = oldSkinSystem.ImgSpectrum.Position.Height;
-            Graphics g;
-            // スペクトラム画像の保持
-            if (File.Exists(oldSkinSystem.ImgSpectrum.ImageFile))
-                Spectrum.BitmapSpectrum = new Bitmap(oldSkinSystem.ImgSpectrum.Image);
-            else
-            {
-                if (oldSkinSystem.ImgSpectrum.Image != null)
-                {
-                    g = Graphics.FromImage(oldSkinSystem.ImgSpectrum.Image);
-                    g.Clear(oldSkinSystem.ImgSpectrum.Color);
-                    g.Dispose();
-                }
-            }
-            g = Graphics.FromImage(Spectrum.BitmapSnow);
-            g.Clear(oldSkinSystem.ImgSpectrum.Color);
-            g.Dispose();
-            g = Graphics.FromImage(Spectrum.BitmapWave);
-            g.Clear(oldSkinSystem.ImgSpectrum.Color);
-            g.Dispose();
-
-            string cName = "";
-            foreach(Control c in Controls)
-            {
-                cName = c.Name;
-                // 設定反映：ボタン類
-                if (c.GetType() == typeof(Button))
-                {
-                    ((Button)c).BackgroundImage = ((ButtonComponents)oldSkinSystem[cName]).BackImage;
-                    ((Button)c).Top = ((ButtonComponents)oldSkinSystem[cName]).Position.Top;
-                    ((Button)c).Left = ((ButtonComponents)oldSkinSystem[cName]).Position.Left;
-                    ((Button)c).Width = ((ButtonComponents)oldSkinSystem[cName]).Position.Width;
-                    ((Button)c).Height = ((ButtonComponents)oldSkinSystem[cName]).Position.Height;
-                    ((Button)c).Enabled = ((ButtonComponents)oldSkinSystem[cName]).Enabled;
-                    ((Button)c).Visible = ((ButtonComponents)oldSkinSystem[cName]).Enabled;
-                    ((Button)c).Refresh();
-                }
-                // 設定反映：スライダー類
-                if (c.GetType() == typeof(CustomSlider))
-                {
-                    ((CustomSlider)c).SliderImage = ((SliderComponents)oldSkinSystem[cName]).SliderImage;
-                    ((CustomSlider)c).Orientation = ((SliderComponents)oldSkinSystem[cName]).Orientation;
-                    ((CustomSlider)c).Minimum = ((SliderComponents)oldSkinSystem[cName]).Minimum;
-                    ((CustomSlider)c).Maximum = ((SliderComponents)oldSkinSystem[cName]).Maximum;
-                    ((CustomSlider)c).Top = ((SliderComponents)oldSkinSystem[cName]).Position.Top;
-                    ((CustomSlider)c).Left = ((SliderComponents)oldSkinSystem[cName]).Position.Left;
-                    ((CustomSlider)c).Width = ((SliderComponents)oldSkinSystem[cName]).Position.Width;
-                    ((CustomSlider)c).Height = ((SliderComponents)oldSkinSystem[cName]).Position.Height;
-                    ((CustomSlider)c).Enabled = ((SliderComponents)oldSkinSystem[cName]).Enabled;
-                    ((CustomSlider)c).Visible = ((SliderComponents)oldSkinSystem[cName]).Enabled;
-                    ((CustomSlider)c).Value = 0;
-                    ((CustomSlider)c).Refresh();
-                }
-                // 設定反映：文字領域（スクロールタイトル等）
-                if (c.GetType() == typeof(ScrollLabel))
-                {
-                    ((ScrollLabel)c).BackColor = Color.Transparent;
-                    ((ScrollLabel)c).Value.Font = ((GraphicComponents)oldSkinSystem[cName]).Font;
-                    ((ScrollLabel)c).Value.ForeColor = ((GraphicComponents)oldSkinSystem[cName]).FontColor;
-                    ((ScrollLabel)c).Top = ((GraphicComponents)oldSkinSystem[cName]).Position.Top;
-                    ((ScrollLabel)c).Left = ((GraphicComponents)oldSkinSystem[cName]).Position.Left;
-                    ((ScrollLabel)c).Width = ((GraphicComponents)oldSkinSystem[cName]).Position.Width;
-                    ((ScrollLabel)c).Height = ((GraphicComponents)oldSkinSystem[cName]).Position.Height;
-                    ((ScrollLabel)c).Enabled = ((GraphicComponents)oldSkinSystem[cName]).Enabled;
-                    ((ScrollLabel)c).Visible = ((GraphicComponents)oldSkinSystem[cName]).Enabled;
-                    ((ScrollLabel)c).Timer.Interval = ((GraphicComponents)oldSkinSystem[cName]).Interval > 0 ? ((GraphicComponents)oldSkinSystem[cName]).Interval : 100;
-                    ((ScrollLabel)c).Timer.Enabled = ((GraphicComponents)oldSkinSystem[cName]).Interval > 0 ? true : false;
-                }
-            }
-            this.Refresh();
-            playListForm.Refresh();
-            playListForm.Left = Left - ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Left;
-            playListForm.Top = Top - ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Top;
-            playListForm.BackgroundImage = ((FormComponents)oldSkinSystem["PlayListForm"]).BackImage;
-            playListForm.Width = ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Width;
-            playListForm.Height = ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Height;
-            playListForm.TransparencyKey = ((FormComponents)oldSkinSystem["PlayListForm"]).TransparentKey;
-            foreach (Control c in playListForm.Controls)
-            {
-                cName = c.Name;
-                if (c.GetType() == typeof(DataGridView))
-                {
-                    ((DataGridView)c).BackgroundColor = ((PListGrid)oldSkinSystem[cName]).ListBackColor;
-                    ((DataGridView)c).RowsDefaultCellStyle.BackColor = ((PListGrid)oldSkinSystem[cName]).ListBackColor;
-                    ((DataGridView)c).RowsDefaultCellStyle.ForeColor = ((PListGrid)oldSkinSystem[cName]).ListForeColor;
-                    ((DataGridView)c).ForeColor = ((PListGrid)oldSkinSystem[cName]).ListForeColor;
-                    ((DataGridView)c).Left = ((PListGrid)oldSkinSystem[cName]).ListPosition.Left;
-                    ((DataGridView)c).Top = ((PListGrid)oldSkinSystem[cName]).ListPosition.Top;
-                    ((DataGridView)c).Width = ((PListGrid)oldSkinSystem[cName]).ListPosition.Width;
-                    ((DataGridView)c).Height = ((PListGrid)oldSkinSystem[cName]).ListPosition.Height;
-                }
-                if (c.GetType() == typeof(Button))
-                {
-                    ((Button)c).BackgroundImage = ((ButtonComponents)oldSkinSystem[cName]).BackImage;
-                    ((Button)c).Top = ((ButtonComponents)oldSkinSystem[cName]).Position.Top;
-                    ((Button)c).Left = ((ButtonComponents)oldSkinSystem[cName]).Position.Left;
-                    ((Button)c).Width = ((ButtonComponents)oldSkinSystem[cName]).Position.Width;
-                    ((Button)c).Height = ((ButtonComponents)oldSkinSystem[cName]).Position.Height;
-                    ((Button)c).Enabled = ((ButtonComponents)oldSkinSystem[cName]).Enabled;
-                    ((Button)c).Visible = ((ButtonComponents)oldSkinSystem[cName]).Enabled;
-                    ((Button)c).Refresh();
-                }
-            }
+				// プレビュー用メイン画像パスを保存
+				config.settings.Skin = skinFile;
+			}
         }
+		/// <summary>
+		/// スキンデータをフォームに適用する。新旧形式共通。
+		/// </summary>
+		private void ApplySkin(dynamic skin)
+		{
+			// メインフォーム
+			BackgroundImage = skin.MainForm.BackImage;
+			TransparencyKey = skin.MainForm.TransparentKey;
+			Width = skin.MainForm.Position.Width;
+			Height = skin.MainForm.Position.Height;
 
-        /// <summary>
-        /// ファイルを開く
-        /// </summary>
-        /// <param name="fileName"></param>
-        public void OpenFile(string fileName)
+			// スペクトラム
+			Spectrum.Left = skin.ImgSpectrum.Position.Left;
+			Spectrum.Top = skin.ImgSpectrum.Position.Top;
+			Spectrum.Width = skin.ImgSpectrum.Position.Width;
+			Spectrum.Height = skin.ImgSpectrum.Position.Height;
+
+			Graphics g;
+			if (File.Exists(skin.ImgSpectrum.ImageFile ?? ""))
+				Spectrum.BitmapSpectrum = new Bitmap(skin.ImgSpectrum.Image);
+			else if (skin.ImgSpectrum.Image != null)
+			{
+				g = Graphics.FromImage(skin.ImgSpectrum.Image);
+				g.Clear(skin.ImgSpectrum.Color);
+				g.Dispose();
+			}
+
+			g = Graphics.FromImage(Spectrum.BitmapSnow);
+			g.Clear(skin.ImgSpectrum.Color);
+			g.Dispose();
+			g = Graphics.FromImage(Spectrum.BitmapWave);
+			g.Clear(skin.ImgSpectrum.Color);
+			g.Dispose();
+
+			// ボタン・スライダー・ラベル
+			string cName = "";
+			foreach (Control c in Controls)
+			{
+				cName = c.Name;
+				if (c.GetType() == typeof(Button))
+				{
+					var bc = (ButtonComponents)skin[cName];
+					((Button)c).BackgroundImage = bc.BackImage;
+					((Button)c).Top = bc.Position.Top;
+					((Button)c).Left = bc.Position.Left;
+					((Button)c).Width = bc.Position.Width;
+					((Button)c).Height = bc.Position.Height;
+					((Button)c).Enabled = bc.Enabled;
+					((Button)c).Visible = bc.Enabled;
+					((Button)c).Refresh();
+				}
+				if (c.GetType() == typeof(CustomSlider))
+				{
+					var sc = (SliderComponents)skin[cName];
+					((CustomSlider)c).SliderImage = sc.SliderImage;
+					((CustomSlider)c).Orientation = sc.Orientation;
+					((CustomSlider)c).Minimum = sc.Minimum;
+					((CustomSlider)c).Maximum = sc.Maximum;
+					((CustomSlider)c).Top = sc.Position.Top;
+					((CustomSlider)c).Left = sc.Position.Left;
+					((CustomSlider)c).Width = sc.Position.Width;
+					((CustomSlider)c).Height = sc.Position.Height;
+					((CustomSlider)c).Enabled = sc.Enabled;
+					((CustomSlider)c).Visible = sc.Enabled;
+					((CustomSlider)c).Value = 0;
+					((CustomSlider)c).Refresh();
+				}
+				if (c.GetType() == typeof(ScrollLabel))
+				{
+					var gc = (GraphicComponents)skin[cName];
+					((ScrollLabel)c).BackColor = Color.Transparent;
+					((ScrollLabel)c).Value.Font = gc.Font;
+					((ScrollLabel)c).Value.ForeColor = gc.FontColor;
+					((ScrollLabel)c).Top = gc.Position.Top;
+					((ScrollLabel)c).Left = gc.Position.Left;
+					((ScrollLabel)c).Width = gc.Position.Width;
+					((ScrollLabel)c).Height = gc.Position.Height;
+					((ScrollLabel)c).Enabled = gc.Enabled;
+					((ScrollLabel)c).Visible = gc.Enabled;
+					((ScrollLabel)c).Timer.Interval = gc.Interval > 0 ? gc.Interval : 100;
+					((ScrollLabel)c).Timer.Enabled = gc.Interval > 0;
+				}
+			}
+
+			this.Refresh();
+
+			// プレイリストフォーム
+			playListForm.Refresh();
+			playListForm.Left = Left - skin.PlayListForm.Position.Left;
+			playListForm.Top = Top - skin.PlayListForm.Position.Top;
+			playListForm.BackgroundImage = skin.PlayListForm.BackImage;
+			playListForm.Width = skin.PlayListForm.Position.Width;
+			playListForm.Height = skin.PlayListForm.Position.Height;
+			playListForm.TransparencyKey = skin.PlayListForm.TransparentKey;
+
+			foreach (Control c in playListForm.Controls)
+			{
+				cName = c.Name;
+				if (c.GetType() == typeof(DataGridView))
+				{
+					var pg = (PListGrid)skin["PlayListGrid"];
+					((DataGridView)c).BackgroundColor = pg.ListBackColor;
+					((DataGridView)c).RowsDefaultCellStyle.BackColor = pg.ListBackColor;
+					((DataGridView)c).RowsDefaultCellStyle.ForeColor = pg.ListForeColor;
+					((DataGridView)c).ForeColor = pg.ListForeColor;
+					((DataGridView)c).Left = pg.ListPosition.Left;
+					((DataGridView)c).Top = pg.ListPosition.Top;
+					((DataGridView)c).Width = pg.ListPosition.Width;
+					((DataGridView)c).Height = pg.ListPosition.Height;
+				}
+				if (c.GetType() == typeof(Button))
+				{
+					var bc = (ButtonComponents)skin[cName];
+					((Button)c).BackgroundImage = bc.BackImage;
+					((Button)c).Top = bc.Position.Top;
+					((Button)c).Left = bc.Position.Left;
+					((Button)c).Width = bc.Position.Width;
+					((Button)c).Height = bc.Position.Height;
+					((Button)c).Enabled = bc.Enabled;
+					((Button)c).Visible = bc.Enabled;
+					((Button)c).Refresh();
+				}
+			}
+		}
+		/// <summary>
+		/// ファイルを開く
+		/// </summary>
+		/// <param name="fileName"></param>
+		public void OpenFile(string fileName)
         {
             // Open File
             if (player.CreateSound(fileName, out playingIndex) == FMOD.RESULT.OK)
@@ -258,7 +288,7 @@ namespace MediaPlayer_X_Ark
 
             playListForm = new PlayListForm(this);
 //            playListForm.Show(this);
-            optionsForm = new OptionsForm(ref player, ref config);
+            optionsForm = new OptionsForm(ref player, ref config, this);
 			cdForm = new CDForm(this);
 			//            optionsForm.Show(this);
 			// 予定：設定ファイルの読み込み スキンファイルの指定も含む
@@ -335,6 +365,7 @@ namespace MediaPlayer_X_Ark
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             config.Save();
+			SkinPackage.CleanupTempDirectory(); // 追加
 			cdForm?.Dispose();   // 追加
 			player.Dispose();  // 明示的に解放
 			player = null;
