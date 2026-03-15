@@ -37,7 +37,7 @@ namespace MediaPlayer_X_Ark
 		/// 画像
 		/// </summary>
 		private Color _BackColor;
-		private Bitmap _BackImage;
+		private Bitmap _BitmapBackground;
 		private Bitmap _BitmapSpectrum;
 		private Bitmap _BitmapSnow;
 		private Bitmap _BitmapWave;
@@ -64,7 +64,8 @@ namespace MediaPlayer_X_Ark
 		/// FFT数値
 		/// </summary>
 		private float[] _mFFT;
-		private float[] _mWave;
+		private float[] _mWaveL;
+		private float[] _mWaveR;
 		/// <summary>
 		/// Snow block
 		/// </summary>
@@ -90,18 +91,21 @@ namespace MediaPlayer_X_Ark
 				_BackColor = value;
 			}
 		}
-		public override Image BackgroundImage
-		{
-			get { return _BackImage; }
+		public Bitmap BitmapBackground {
+			get
+			{
+				return _BitmapBackground;
+			}
 			set
 			{
 				if (value != null)
 				{
-					_BackImage = (Bitmap)value;
-				} else
+					_BitmapBackground = value;
+				}
+				else
 				{
-					if (_BackImage != null)
-						_BackImage.Dispose();
+					if (_BitmapBackground != null)
+						_BitmapBackground.Dispose();
 				}
 			}
 		}
@@ -175,10 +179,15 @@ namespace MediaPlayer_X_Ark
 			get { return _mFFT; }
 			set { _mFFT = value; }
 		}
-		public float[] mWave
+		public float[] mWaveL
 		{
-			get { return _mWave; }
-			set { _mWave = value; }
+			get { return _mWaveL; }
+			set { _mWaveL = value; }
+		}
+		public float[] mWaveR
+		{
+			get { return _mWaveR; }
+			set { _mWaveR = value; }
 		}
 		public SpectrumBox()
 		{
@@ -232,6 +241,8 @@ namespace MediaPlayer_X_Ark
 			// HBitmapポインタ取得
 			IntPtr hBSrc = _BitmapSpectrum.GetHbitmap(Color.Transparent);
 			IntPtr hBSnow = _BitmapSnow.GetHbitmap(Color.White);
+			IntPtr hBBackground = IntPtr.Zero;
+			IntPtr hdc4BackgroundSrc = IntPtr.Zero;
 
 			// バックバッファーを保持する
 			gAnalyzer = this.CreateGraphics();
@@ -250,7 +261,11 @@ namespace MediaPlayer_X_Ark
 			hdc2AnalyzerSrc = Win32API.CreateCompatibleDC(hdc1Analyzer);
 			hdc3Snow = gSnow.GetHdc();
 			hdc3SnowSrc = Win32API.CreateCompatibleDC(hdc3Snow);
-
+			if (_BitmapBackground != null)
+			{
+				hBBackground = _BitmapBackground.GetHbitmap(Color.Transparent);
+				hdc4BackgroundSrc = Win32API.CreateCompatibleDC(hdc1Analyzer);
+			}
 			// 初期化済みであればループ開始
 			while (Initialized)
 			{
@@ -264,38 +279,66 @@ namespace MediaPlayer_X_Ark
 					// かつ＋1FPS秒（さらに次フレーム）以内
 					if ((double)System.Environment.TickCount < nextframe + wait)
 					{
-						// 描画クリア
-						Win32API.PatBlt(hdcBuffer, 0, 0, this.Width, this.Height, 0);
-
-						switch(Mode)
+						// 変更後
+						if (hBBackground != IntPtr.Zero && hdc4BackgroundSrc != IntPtr.Zero)
+						{
+							// 背景画像でクリア
+							Win32API.SelectObject(hdc4BackgroundSrc, hBBackground);
+							Win32API.BitBlt(
+								hdcBuffer, 0, 0, this.Width, this.Height,
+								hdc4BackgroundSrc, 0, 0,
+								Win32API.TernaryRasterOperations.SRCCOPY);
+						}
+						else
+						{
+							// 背景画像なし → 黒でクリア
+							Win32API.PatBlt(hdcBuffer, 0, 0, this.Width, this.Height, 0);
+						}
+						switch (Mode)
 						{
 							// WAVE MODE
 							case 4:
-								if (mWave != null)
+								using (var g = Graphics.FromHdc(hdcBuffer))
 								{
-									// Wave描画
-									int prevX = 0;
-									int prevY = this.Height / 2;
-
-									for (int i = 0; i < mWave.Length && i < this.Width; i++)
+									// L ch（ライム色）
+									if (mWaveL != null)
 									{
-										int x = i;
-										// -1.0〜+1.0 を 0〜Height にマッピング
-										int y = (int)((1.0f - mWave[i]) * this.Height / 2f);
-										y = Math.Max(0, Math.Min(this.Height - 1, y));
-
-										// BitBltで直接描画する既存構造に合わせるため
-										// gBuffer（バックバッファ）に直接描画
+										int prevX = 0;
+										int prevY = this.Height / 2;
 										using (var pen = new Pen(Color.Lime, 1))
-										using (var g = Graphics.FromHdc(hdcBuffer))
 										{
-											g.DrawLine(pen, prevX, prevY, x, y);
+											for (int i = 0; i < mWaveL.Length && i < this.Width; i++)
+											{
+												int x = i;
+												int y = (int)((1.0f - mWaveL[i]) * this.Height / 2f);
+												y = Math.Max(0, Math.Min(this.Height - 1, y));
+												g.DrawLine(pen, prevX, prevY, x, y);
+												prevX = x;
+												prevY = y;
+											}
 										}
-										prevX = x;
-										prevY = y;
+									}
+
+									// R ch（シアン色）
+									if (mWaveR != null)
+									{
+										int prevX = 0;
+										int prevY = this.Height / 2;
+										using (var pen = new Pen(Color.Cyan, 1))
+										{
+											for (int i = 0; i < mWaveR.Length && i < this.Width; i++)
+											{
+												int x = i;
+												int y = this.Height - (int)((1.0f - mWaveR[i]) * this.Height / 2f);
+												y = Math.Max(0, Math.Min(this.Height - 1, y));
+												g.DrawLine(pen, prevX, prevY, x, y);
+												prevX = x;
+												prevY = y;
+											}
+										}
 									}
 								}
-								break;
+								break; 
 							// SNOW BLOCK
 							case 3:
 							default:
@@ -382,6 +425,13 @@ namespace MediaPlayer_X_Ark
 			Win32API.DeleteDC(hdc3SnowSrc);
 			Win32API.DeleteObject(hdc2AnalyzerSrc);
 			Win32API.DeleteObject(hdc3SnowSrc);
+			if (hdc4BackgroundSrc != IntPtr.Zero)
+			{
+				Win32API.DeleteDC(hdc4BackgroundSrc);
+				Win32API.DeleteObject(hdc4BackgroundSrc);
+			}
+			if (hBBackground != IntPtr.Zero)
+				Win32API.DeleteObject(hBBackground);
 
 			gAnalyzer.ReleaseHdc(hdc1Analyzer);
 			gSnow.ReleaseHdc(hdc3Snow);

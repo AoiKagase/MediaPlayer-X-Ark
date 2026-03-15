@@ -817,10 +817,6 @@ namespace MediaPlayer_X_Ark
 			cmbDevice.DisplayMember = "Name";
 			cmbDevice.ValueMember = "GUID";
 			cmbDevice.SelectedValue = _config.settings.Device;
-			cmbSampleRate.SelectedIndex = _config.settings.SampleRate;
-
-			cmbSampling.SelectedIndex = _config.settings.SamplingMode;
-			cmbSpeaker.SelectedIndex = _config.settings.SpeakerMode;
 
 			// Equalizer
 			CheckGEQ.Checked = _config.settings.Effectors.GEqualizer.Enable;
@@ -1070,20 +1066,15 @@ namespace MediaPlayer_X_Ark
 			// デバイスはPlayLoad()で反映されるため、ここでの即時反映は不要
 			// OutputType/SampleRate/SpeakerModeは次回起動時に反映
 			bool requiresRestart =
-				_config.settings.OutputType != cmbOutput.SelectedIndex ||
-				_config.settings.SampleRate != cmbSampleRate.SelectedIndex ||
-				_config.settings.SpeakerMode != cmbSpeaker.SelectedIndex;
+				_config.settings.OutputType != cmbOutput.SelectedIndex;
 
 			if (cmbDevice.Enabled)
 				_config.settings.Device = cmbDevice.SelectedValue.ToString();
-			_config.settings.SampleRate = cmbSampleRate.SelectedIndex;
 			_config.settings.OutputType = cmbOutput.SelectedIndex;
-			_config.settings.SamplingMode = cmbSampling.SelectedIndex;
-			_config.settings.SpeakerMode = cmbSpeaker.SelectedIndex;
 			_config.Save();
 
 			string message = requiresRestart
-				? "設定を保存しました。\n出力形式・サンプルレート・スピーカーモードは次回起動時に反映されます。"
+				? "設定を保存しました。\n出力形式は次回起動時に反映されます。"
 				: "設定を保存しました。\nデバイスは次回再生時に反映されます。";
 
 			MessageBox.Show(message, "設定保存", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1221,10 +1212,16 @@ namespace MediaPlayer_X_Ark
 
 		private void LoadSkinPreview(string skinPath)
 		{
+			// メタ情報をリセット
+			lblSkinName.Text = "";
+			lblSkinAuthor.Text = "";
+			lblSkinDesc.Text = "";
+
 			try
 			{
 				using (var pkg = SkinPackage.Open(skinPath))
 				{
+					// プレビュー画像
 					if (pkg.MainImagePath != null && File.Exists(pkg.MainImagePath))
 					{
 						// ファイルロックを避けるためメモリストリーム経由でロード
@@ -1237,6 +1234,26 @@ namespace MediaPlayer_X_Ark
 					else
 					{
 						PictSkinPreview.Image = null;
+					}
+
+					// メタ情報（新形式のみ）
+					if (pkg.Format == SkinPackage.SkinFormat.NewXsk &&
+						pkg.DefinitionPath != null &&
+						File.Exists(pkg.DefinitionPath))
+					{
+						var json = File.ReadAllText(pkg.DefinitionPath,
+							System.Text.Encoding.UTF8);
+						var skin = System.Text.Json.JsonSerializer
+							.Deserialize<Skin.NewSkinSystem.SkinJson>(json);
+
+						lblSkinName.Text = skin?.Meta?.Name ?? "";
+						lblSkinAuthor.Text = skin?.Meta?.Author ?? "";
+						lblSkinDesc.Text = skin?.Meta?.Description ?? "";
+					}
+					else
+					{
+						// 旧形式はファイル名を表示
+						lblSkinName.Text = Path.GetFileNameWithoutExtension(skinPath);
 					}
 				}
 			}

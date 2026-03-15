@@ -36,20 +36,6 @@ namespace MediaPlayer_X_Ark.Engine
         /// </summary>
         public string Device { get; set; }
 
-        /// <summary>
-        /// サンプルレート
-        /// </summary>
-        public int SampleRate { get; set; }
-
-        /// <summary>
-        /// サンプリングモード
-        /// </summary>
-        public int SamplingMode { get; set; }
-
-        /// <summary>
-        /// スピーカーモード
-        /// </summary>
-        public int SpeakerMode { get; set; }
 
         /// ===================================
         /// エフェクト
@@ -237,95 +223,7 @@ namespace MediaPlayer_X_Ark.Engine
                         break;
                 }
                 settings.Device = engine.GetDeviceGUID();
-                int sampleRate;
-                FMOD.SPEAKERMODE speakermode;
-                int speakernum;
-                engine.GetSoftwareFormat(out sampleRate, out speakermode, out speakernum);
 
-                switch (sampleRate)
-                {
-                    case 192000:
-                        settings.SampleRate = 0;
-                        break;
-                    case 96000:
-                        settings.SampleRate = 1;
-                        break;
-                    case 88200:
-                        settings.SampleRate = 2;
-                        break;
-                    case 48000:
-                        settings.SampleRate = 3;
-                        break;
-                    case 44100:
-                        settings.SampleRate = 4;
-                        break;
-                    case 32000:
-                        settings.SampleRate = 5;
-                        break;
-                    case 22050:
-                        settings.SampleRate = 6;
-                        break;
-                    case 16000:
-                        settings.SampleRate = 7;
-                        break;
-                    case 11025:
-                        settings.SampleRate = 8;
-                        break;
-                    case 8000:
-                        settings.SampleRate = 9;
-                        break;
-                    case 7333:
-                        settings.SampleRate = 10;
-                        break;
-                    case 6000:
-                        settings.SampleRate = 11;
-                        break;
-                    case 5500:
-                        settings.SampleRate = 12;
-                        break;
-                    default:
-                        settings.SampleRate = 4;
-                        break;
-                }
-//                settings.SampleRate = sampleRate;
-                switch(speakermode)
-                {
-                    // デフォルト
-                    case FMOD.SPEAKERMODE.DEFAULT:
-                        settings.SpeakerMode = 0;
-                        break;
-                    // モノラル
-                    case FMOD.SPEAKERMODE.MONO:
-                        settings.SpeakerMode = 1;
-                        break;
-                    // ステレオ
-                    case FMOD.SPEAKERMODE.STEREO:
-                        settings.SpeakerMode = 2;
-                        break;
-                    // 4.0
-                    case FMOD.SPEAKERMODE.QUAD:
-                        settings.SpeakerMode = 3;
-                        break;
-                    // 5.0
-                    case FMOD.SPEAKERMODE.SURROUND:
-                        settings.SpeakerMode = 4;
-                        break;
-                    // 5.1
-                    case FMOD.SPEAKERMODE._5POINT1:
-                        settings.SpeakerMode = 5;
-                        break;
-                    // 7.1
-                    case FMOD.SPEAKERMODE._7POINT1:
-                        settings.SpeakerMode = 6;
-                        break;
-                    // 7.1.4
-                    case FMOD.SPEAKERMODE._7POINT1POINT4:
-                        settings.SpeakerMode = 7;
-                        break;
-                    default:
-                        settings.SpeakerMode = 2;
-                        break;
-                }
 				// 新形式を優先、なければ旧形式
 				var defaultXsk = Path.Combine(Application.StartupPath, "Skins", "Default", "Default.xsk");
 				var defaultXsf = ".\\bbbs\\bs.xsf"; // 既存のデフォルト
@@ -344,12 +242,6 @@ namespace MediaPlayer_X_Ark.Engine
 			File.WriteAllText(Path.Combine(Application.StartupPath, "config.json"), jsonString);
         }
 
-        public FMOD.SOUND_FORMAT GetSoundFormat()
-        {
-			// FMODは内部的に常に32bit floatで処理するため固定
-			return FMOD.SOUND_FORMAT.NONE;
-        }
-
         public FMOD.OUTPUTTYPE GetOutputType()
         {
             switch(settings.OutputType)
@@ -364,74 +256,6 @@ namespace MediaPlayer_X_Ark.Engine
                     return FMOD.OUTPUTTYPE.WINSONIC;
                 default:
                     return FMOD.OUTPUTTYPE.AUTODETECT;
-            }
-        }
-
-        public SOFTWARE_SAMPLE_RATE GetSampleRate()
-        {
-            switch (settings.SampleRate)
-            {
-                case 0:
-                    return SOFTWARE_SAMPLE_RATE.SAMPLE_192000HZ;
-                case 1:
-                    return SOFTWARE_SAMPLE_RATE.SAMPLE_96000HZ;
-                case 2:
-                    return SOFTWARE_SAMPLE_RATE.SAMPLE_88200HZ;
-                case 3:
-                    return SOFTWARE_SAMPLE_RATE.SAMPLE_48000HZ;
-                case 4:
-                    return SOFTWARE_SAMPLE_RATE.SAMPLE_44100HZ;
-                case 5:
-                    return SOFTWARE_SAMPLE_RATE.SAMPLE_32000HZ;
-                case 6:
-                    return SOFTWARE_SAMPLE_RATE.SAMPLE_22050HZ;
-                case 7:
-                    return SOFTWARE_SAMPLE_RATE.SAMPLE_16000HZ;
-                case 8:
-                    return SOFTWARE_SAMPLE_RATE.SAMPLE_11025HZ;
-                case 9:
-                    return SOFTWARE_SAMPLE_RATE.SAMPLE_8000HZ;
-                case 10:
-                    return SOFTWARE_SAMPLE_RATE.SAMPLE_7333HZ;
-                case 11:
-                    return SOFTWARE_SAMPLE_RATE.SAMPLE_6000HZ;
-                case 12:
-                    return SOFTWARE_SAMPLE_RATE.SAMPLE_5500HZ;
-                default:
-                    return SOFTWARE_SAMPLE_RATE.SAMPLE_44100HZ;
-            }
-        }
-
-        public FMOD.SPEAKERMODE GetSpeakerMode()
-        {
-            switch (settings.SpeakerMode)
-            {
-                // デフォルト
-                case 0:
-                    return FMOD.SPEAKERMODE.DEFAULT;
-                // モノラル
-                case 1:
-                    return FMOD.SPEAKERMODE.MONO;
-                // ステレオ
-                case 2:
-                    return FMOD.SPEAKERMODE.STEREO;
-                // 4.0
-                case 3:
-                    return FMOD.SPEAKERMODE.QUAD;
-                // 5.0
-                case 4:
-                    return FMOD.SPEAKERMODE.SURROUND;
-                // 5.1
-                case 5:
-                    return FMOD.SPEAKERMODE._5POINT1;
-                // 7.1
-                case 6:
-                    return FMOD.SPEAKERMODE._7POINT1;
-                // 7.1.4
-                case 7:
-                    return FMOD.SPEAKERMODE._7POINT1POINT4;
-                default:
-                    return FMOD.SPEAKERMODE.DEFAULT;
             }
         }
 

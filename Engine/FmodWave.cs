@@ -78,24 +78,45 @@ namespace MediaPlayer_X_Ark.Engine
 		}
 
 		/// <summary>
-		/// メインスレッドから呼ぶ。チャンネル0のWaveデータを返す。
+		/// 指定チャンネルのWaveデータを返す。
+		/// チャンネルが存在しない場合はnullを返す。
 		/// </summary>
-		public float[] GetWaveData()
+		public float[] GetWaveDataByChannel(int channel)
 		{
 			lock (_bufferLock)
 			{
-				if (_waveBuffer == null || _channels == 0)
-					return null;
+				if (_waveBuffer == null || _channels == 0) return null;
+				if (channel >= _channels) return null;
 
-				// インターリーブされたPCMからチャンネル0だけ抽出
 				float[] result = new float[_waveBuffer.Length / _channels];
 				for (int i = 0; i < result.Length; i++)
-					result[i] = _waveBuffer[i * _channels];
+					result[i] = _waveBuffer[i * _channels + channel];
 
 				return result;
 			}
 		}
 
+		/// <summary>
+		/// 実際のチャンネル数を返す。
+		/// </summary>
+		public int ChannelCount
+		{
+			get
+			{
+				lock (_bufferLock)
+				{
+					return _channels;
+				}
+			}
+		}
+
+		/// <summary>
+		/// 後方互換：チャンネル0のみ返す（既存コードとの互換用）
+		/// </summary>
+		public float[] GetWaveData()
+		{
+			return GetWaveDataByChannel(0);
+		}
 		~FmodWave()
 		{
 			if (_dsp.hasHandle())

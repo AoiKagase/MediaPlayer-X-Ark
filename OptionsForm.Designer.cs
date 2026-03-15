@@ -47,12 +47,6 @@
 			tabSetting = new System.Windows.Forms.TabPage();
 			lblOutputNote = new System.Windows.Forms.Label();
 			BtnUpdate = new System.Windows.Forms.Button();
-			cmbSpeaker = new System.Windows.Forms.ComboBox();
-			label43 = new System.Windows.Forms.Label();
-			cmbSampling = new System.Windows.Forms.ComboBox();
-			label42 = new System.Windows.Forms.Label();
-			cmbSampleRate = new System.Windows.Forms.ComboBox();
-			label40 = new System.Windows.Forms.Label();
 			cmbDevice = new System.Windows.Forms.ComboBox();
 			label38 = new System.Windows.Forms.Label();
 			cmbOutput = new System.Windows.Forms.ComboBox();
@@ -191,6 +185,20 @@
 			tabReverb = new System.Windows.Forms.TabPage();
 			GroupReverb = new System.Windows.Forms.GroupBox();
 			CheckReverb = new System.Windows.Forms.CheckBox();
+			lblReverbDecayTime = new System.Windows.Forms.Label();
+			lblReverbEarlyDelay = new System.Windows.Forms.Label();
+			lblReverbLateDelay = new System.Windows.Forms.Label();
+			lblReverbHFRef = new System.Windows.Forms.Label();
+			lblReverbHFDcRatio = new System.Windows.Forms.Label();
+			lblReverbDiffusion = new System.Windows.Forms.Label();
+			lblReverbDensity = new System.Windows.Forms.Label();
+			lblValReverbDecayTime = new System.Windows.Forms.TextBox();
+			lblValReverbEarlyDelay = new System.Windows.Forms.TextBox();
+			lblValReverbLateDelay = new System.Windows.Forms.TextBox();
+			lblValReverbHFRef = new System.Windows.Forms.TextBox();
+			lblValReverbHFDcRatio = new System.Windows.Forms.TextBox();
+			lblValReverbDiffusion = new System.Windows.Forms.TextBox();
+			lblValReverbDensity = new System.Windows.Forms.TextBox();
 			KnobReverbDecayTime = new UI.Knob();
 			KnobReverbEarlyDelay = new UI.Knob();
 			KnobReverbLateDelay = new UI.Knob();
@@ -198,12 +206,36 @@
 			KnobReverbHFDcRatio = new UI.Knob();
 			KnobReverbDiffusion = new UI.Knob();
 			KnobReverbDensity = new UI.Knob();
+			lblReverbDivider = new System.Windows.Forms.Label();
+			lblReverbLowShelfFreq = new System.Windows.Forms.Label();
+			lblReverbLowShelfGain = new System.Windows.Forms.Label();
+			lblReverbHighCut = new System.Windows.Forms.Label();
+			lblReverbEarlyLate = new System.Windows.Forms.Label();
+			lblReverbWet = new System.Windows.Forms.Label();
+			lblReverbDry = new System.Windows.Forms.Label();
+			lblValReverbLowShelfFreq = new System.Windows.Forms.TextBox();
+			lblValReverbLowShelfGain = new System.Windows.Forms.TextBox();
+			lblValReverbHighCut = new System.Windows.Forms.TextBox();
+			lblValReverbEarlyLate = new System.Windows.Forms.TextBox();
+			lblValReverbWet = new System.Windows.Forms.TextBox();
+			lblValReverbDry = new System.Windows.Forms.TextBox();
 			KnobReverbLowShelfFrequency = new UI.Knob();
 			KnobReverbLowshelfGain = new UI.Knob();
 			KnobReverbHighCut = new UI.Knob();
 			KnobReverbEarlyLate = new UI.Knob();
 			KnobReverbWet = new UI.Knob();
 			KnobReverbDry = new UI.Knob();
+			tabSkin = new System.Windows.Forms.TabPage();
+			lblSkinPath = new System.Windows.Forms.Label();
+			txtSkinPath = new System.Windows.Forms.TextBox();
+			lblSkinName = new System.Windows.Forms.Label();
+			lblSkinAuthorLabel = new System.Windows.Forms.Label();
+			lblSkinAuthor = new System.Windows.Forms.Label();
+			lblSkinDescLabel = new System.Windows.Forms.Label();
+			lblSkinDesc = new System.Windows.Forms.Label();
+			BtnSkinBrowse = new System.Windows.Forms.Button();
+			PictSkinPreview = new System.Windows.Forms.PictureBox();
+			BtnSkinApply = new System.Windows.Forms.Button();
 			textBox13 = new System.Windows.Forms.TextBox();
 			label34 = new System.Windows.Forms.Label();
 			textBox12 = new System.Windows.Forms.TextBox();
@@ -230,42 +262,6 @@
 			label16 = new System.Windows.Forms.Label();
 			textBox5 = new System.Windows.Forms.TextBox();
 			label18 = new System.Windows.Forms.Label();
-
-			lblReverbDecayTime = new System.Windows.Forms.Label();
-			lblReverbEarlyDelay = new System.Windows.Forms.Label();
-			lblReverbLateDelay = new System.Windows.Forms.Label();
-			lblReverbHFRef = new System.Windows.Forms.Label();
-			lblReverbHFDcRatio = new System.Windows.Forms.Label();
-			lblReverbDiffusion = new System.Windows.Forms.Label();
-			lblReverbDensity = new System.Windows.Forms.Label();
-			lblReverbLowShelfFreq = new System.Windows.Forms.Label();
-			lblReverbLowShelfGain = new System.Windows.Forms.Label();
-			lblReverbHighCut = new System.Windows.Forms.Label();
-			lblReverbEarlyLate = new System.Windows.Forms.Label();
-			lblReverbWet = new System.Windows.Forms.Label();
-			lblReverbDry = new System.Windows.Forms.Label();
-			lblReverbDivider = new System.Windows.Forms.Label();
-			// Reverb Values（旧 textBox1〜textBox13）
-			lblValReverbDecayTime = new System.Windows.Forms.TextBox();
-			lblValReverbEarlyDelay = new System.Windows.Forms.TextBox();
-			lblValReverbLateDelay = new System.Windows.Forms.TextBox();
-			lblValReverbHFRef = new System.Windows.Forms.TextBox();
-			lblValReverbHFDcRatio = new System.Windows.Forms.TextBox();
-			lblValReverbDiffusion = new System.Windows.Forms.TextBox();
-			lblValReverbDensity = new System.Windows.Forms.TextBox();
-			lblValReverbLowShelfFreq = new System.Windows.Forms.TextBox();
-			lblValReverbLowShelfGain = new System.Windows.Forms.TextBox();
-			lblValReverbHighCut = new System.Windows.Forms.TextBox();
-			lblValReverbEarlyLate = new System.Windows.Forms.TextBox();
-			lblValReverbWet = new System.Windows.Forms.TextBox();
-			lblValReverbDry = new System.Windows.Forms.TextBox();
-			tabSkin = new System.Windows.Forms.TabPage();
-			txtSkinPath = new System.Windows.Forms.TextBox();
-			BtnSkinBrowse = new System.Windows.Forms.Button();
-			BtnSkinApply = new System.Windows.Forms.Button();
-			PictSkinPreview = new System.Windows.Forms.PictureBox();
-			lblSkinPath = new System.Windows.Forms.Label();
-
 			tabControlEffects.SuspendLayout();
 			tabSetting.SuspendLayout();
 			tabGEqualizer.SuspendLayout();
@@ -303,6 +299,8 @@
 			GroupCompressor.SuspendLayout();
 			tabReverb.SuspendLayout();
 			GroupReverb.SuspendLayout();
+			tabSkin.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)PictSkinPreview).BeginInit();
 			SuspendLayout();
 			// 
 			// TreeMenu
@@ -339,7 +337,7 @@
 			treeNode28.Name = "OTHER";
 			treeNode28.Text = "その他";
 			TreeMenu.Nodes.AddRange(new System.Windows.Forms.TreeNode[] { treeNode15, treeNode26, treeNode27, treeNode28 });
-			TreeMenu.Size = new System.Drawing.Size(199, 419);
+			TreeMenu.Size = new System.Drawing.Size(199, 420);
 			TreeMenu.TabIndex = 3;
 			TreeMenu.AfterSelect += TreeMenu_AfterSelect;
 			// 
@@ -357,12 +355,11 @@
 			tabControlEffects.Controls.Add(tabCompressor);
 			tabControlEffects.Controls.Add(tabReverb);
 			tabControlEffects.Controls.Add(tabSkin);
-
 			tabControlEffects.Dock = System.Windows.Forms.DockStyle.Fill;
 			tabControlEffects.Location = new System.Drawing.Point(199, 0);
 			tabControlEffects.Name = "tabControlEffects";
 			tabControlEffects.SelectedIndex = 0;
-			tabControlEffects.Size = new System.Drawing.Size(582, 419);
+			tabControlEffects.Size = new System.Drawing.Size(582, 420);
 			tabControlEffects.TabIndex = 4;
 			// 
 			// tabSetting
@@ -370,19 +367,13 @@
 			tabSetting.BackColor = System.Drawing.Color.Transparent;
 			tabSetting.Controls.Add(lblOutputNote);
 			tabSetting.Controls.Add(BtnUpdate);
-			tabSetting.Controls.Add(cmbSpeaker);
-			tabSetting.Controls.Add(label43);
-			tabSetting.Controls.Add(cmbSampling);
-			tabSetting.Controls.Add(label42);
-			tabSetting.Controls.Add(cmbSampleRate);
-			tabSetting.Controls.Add(label40);
 			tabSetting.Controls.Add(cmbDevice);
 			tabSetting.Controls.Add(label38);
 			tabSetting.Controls.Add(cmbOutput);
 			tabSetting.Controls.Add(label36);
 			tabSetting.Location = new System.Drawing.Point(4, 24);
 			tabSetting.Name = "tabSetting";
-			tabSetting.Size = new System.Drawing.Size(574, 391);
+			tabSetting.Size = new System.Drawing.Size(574, 466);
 			tabSetting.TabIndex = 10;
 			tabSetting.Text = "出力設定";
 			// 
@@ -404,66 +395,6 @@
 			BtnUpdate.Text = "適用";
 			BtnUpdate.UseVisualStyleBackColor = true;
 			BtnUpdate.Click += BtnUpdate_Click;
-			// 
-			// cmbSpeaker
-			// 
-			cmbSpeaker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			cmbSpeaker.FormattingEnabled = true;
-			cmbSpeaker.Items.AddRange(new object[] { "デフォルト", "モノラル", "ステレオ", "4.0", "5.0", "5.1", "7.1", "7.1.4" });
-			cmbSpeaker.Location = new System.Drawing.Point(105, 159);
-			cmbSpeaker.Name = "cmbSpeaker";
-			cmbSpeaker.Size = new System.Drawing.Size(242, 23);
-			cmbSpeaker.TabIndex = 24;
-			// 
-			// label43
-			// 
-			label43.AutoSize = true;
-			label43.Location = new System.Drawing.Point(24, 162);
-			label43.Name = "label43";
-			label43.Size = new System.Drawing.Size(75, 15);
-			label43.TabIndex = 23;
-			label43.Text = "スピーカーモード";
-			label43.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// cmbSampling
-			// 
-			cmbSampling.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			cmbSampling.FormattingEnabled = true;
-			cmbSampling.Items.AddRange(new object[] { "補完無し", "リニア補完", "キュービック補完", "５ポイントスプライン補完" });
-			cmbSampling.Location = new System.Drawing.Point(105, 130);
-			cmbSampling.Name = "cmbSampling";
-			cmbSampling.Size = new System.Drawing.Size(242, 23);
-			cmbSampling.TabIndex = 22;
-			// 
-			// label42
-			// 
-			label42.AutoSize = true;
-			label42.Location = new System.Drawing.Point(13, 133);
-			label42.Name = "label42";
-			label42.Size = new System.Drawing.Size(85, 15);
-			label42.TabIndex = 21;
-			label42.Text = "サンプリングモード";
-			label42.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// cmbSampleRate
-			// 
-			cmbSampleRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			cmbSampleRate.FormattingEnabled = true;
-			cmbSampleRate.Items.AddRange(new object[] { "192000", "96000", "88200", "48000", "44100", "32000", "22050", "16000", "11025", "8000" });
-			cmbSampleRate.Location = new System.Drawing.Point(105, 72);
-			cmbSampleRate.Name = "cmbSampleRate";
-			cmbSampleRate.Size = new System.Drawing.Size(242, 23);
-			cmbSampleRate.TabIndex = 18;
-			// 
-			// label40
-			// 
-			label40.AutoSize = true;
-			label40.Location = new System.Drawing.Point(29, 75);
-			label40.Name = "label40";
-			label40.Size = new System.Drawing.Size(69, 15);
-			label40.TabIndex = 17;
-			label40.Text = "サンプルレート";
-			label40.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// cmbDevice
 			// 
@@ -512,7 +443,7 @@
 			tabGEqualizer.Controls.Add(groupBox3);
 			tabGEqualizer.Location = new System.Drawing.Point(4, 24);
 			tabGEqualizer.Name = "tabGEqualizer";
-			tabGEqualizer.Size = new System.Drawing.Size(574, 391);
+			tabGEqualizer.Size = new System.Drawing.Size(574, 392);
 			tabGEqualizer.TabIndex = 9;
 			tabGEqualizer.Text = "Graphic Equalizer";
 			// 
@@ -1153,7 +1084,7 @@
 			tabPitch.Controls.Add(GroupPitchShift);
 			tabPitch.Location = new System.Drawing.Point(4, 24);
 			tabPitch.Name = "tabPitch";
-			tabPitch.Size = new System.Drawing.Size(574, 391);
+			tabPitch.Size = new System.Drawing.Size(574, 466);
 			tabPitch.TabIndex = 8;
 			tabPitch.Text = "Pitch/Freq/Speed";
 			// 
@@ -1420,7 +1351,7 @@
 			tabDistortion.Location = new System.Drawing.Point(4, 24);
 			tabDistortion.Name = "tabDistortion";
 			tabDistortion.Padding = new System.Windows.Forms.Padding(3);
-			tabDistortion.Size = new System.Drawing.Size(574, 391);
+			tabDistortion.Size = new System.Drawing.Size(574, 466);
 			tabDistortion.TabIndex = 0;
 			tabDistortion.Text = "Distortion";
 			// 
@@ -1499,7 +1430,7 @@
 			tabChorus.Location = new System.Drawing.Point(4, 24);
 			tabChorus.Name = "tabChorus";
 			tabChorus.Padding = new System.Windows.Forms.Padding(3);
-			tabChorus.Size = new System.Drawing.Size(574, 391);
+			tabChorus.Size = new System.Drawing.Size(574, 466);
 			tabChorus.TabIndex = 1;
 			tabChorus.Text = "Chorus";
 			// 
@@ -1668,7 +1599,7 @@
 			tabEcho.Controls.Add(GroupEcho);
 			tabEcho.Location = new System.Drawing.Point(4, 24);
 			tabEcho.Name = "tabEcho";
-			tabEcho.Size = new System.Drawing.Size(574, 391);
+			tabEcho.Size = new System.Drawing.Size(574, 466);
 			tabEcho.TabIndex = 2;
 			tabEcho.Text = "Echo";
 			// 
@@ -1888,7 +1819,7 @@
 			tabFlanger.Controls.Add(GroupFlanger);
 			tabFlanger.Location = new System.Drawing.Point(4, 24);
 			tabFlanger.Name = "tabFlanger";
-			tabFlanger.Size = new System.Drawing.Size(574, 391);
+			tabFlanger.Size = new System.Drawing.Size(574, 466);
 			tabFlanger.TabIndex = 3;
 			tabFlanger.Text = "Flanger";
 			// 
@@ -2058,7 +1989,7 @@
 			tabHightpass.Controls.Add(GroupHighpass);
 			tabHightpass.Location = new System.Drawing.Point(4, 24);
 			tabHightpass.Name = "tabHightpass";
-			tabHightpass.Size = new System.Drawing.Size(574, 391);
+			tabHightpass.Size = new System.Drawing.Size(574, 466);
 			tabHightpass.TabIndex = 4;
 			tabHightpass.Text = "Highpass";
 			// 
@@ -2183,7 +2114,7 @@
 			tabLowpass.Controls.Add(GroupLowpass);
 			tabLowpass.Location = new System.Drawing.Point(4, 24);
 			tabLowpass.Name = "tabLowpass";
-			tabLowpass.Size = new System.Drawing.Size(574, 391);
+			tabLowpass.Size = new System.Drawing.Size(574, 466);
 			tabLowpass.TabIndex = 5;
 			tabLowpass.Text = "Lowpass";
 			// 
@@ -2308,7 +2239,7 @@
 			tabCompressor.Controls.Add(GroupCompressor);
 			tabCompressor.Location = new System.Drawing.Point(4, 24);
 			tabCompressor.Name = "tabCompressor";
-			tabCompressor.Size = new System.Drawing.Size(574, 391);
+			tabCompressor.Size = new System.Drawing.Size(574, 466);
 			tabCompressor.TabIndex = 6;
 			tabCompressor.Text = "Compressor";
 			// 
@@ -2590,14 +2521,13 @@
 			tabReverb.Controls.Add(GroupReverb);
 			tabReverb.Location = new System.Drawing.Point(4, 24);
 			tabReverb.Name = "tabReverb";
-			tabReverb.Size = new System.Drawing.Size(574, 391);
+			tabReverb.Size = new System.Drawing.Size(574, 466);
 			tabReverb.TabIndex = 7;
 			tabReverb.Text = "Reverb";
 			// 
 			// GroupReverb
 			// 
 			GroupReverb.Controls.Add(CheckReverb);
-			// Row1
 			GroupReverb.Controls.Add(lblReverbDecayTime);
 			GroupReverb.Controls.Add(lblReverbEarlyDelay);
 			GroupReverb.Controls.Add(lblReverbLateDelay);
@@ -2605,7 +2535,6 @@
 			GroupReverb.Controls.Add(lblReverbHFDcRatio);
 			GroupReverb.Controls.Add(lblReverbDiffusion);
 			GroupReverb.Controls.Add(lblReverbDensity);
-
 			GroupReverb.Controls.Add(lblValReverbDecayTime);
 			GroupReverb.Controls.Add(lblValReverbEarlyDelay);
 			GroupReverb.Controls.Add(lblValReverbLateDelay);
@@ -2613,7 +2542,6 @@
 			GroupReverb.Controls.Add(lblValReverbHFDcRatio);
 			GroupReverb.Controls.Add(lblValReverbDiffusion);
 			GroupReverb.Controls.Add(lblValReverbDensity);
-
 			GroupReverb.Controls.Add(KnobReverbDecayTime);
 			GroupReverb.Controls.Add(KnobReverbEarlyDelay);
 			GroupReverb.Controls.Add(KnobReverbLateDelay);
@@ -2621,23 +2549,19 @@
 			GroupReverb.Controls.Add(KnobReverbHFDcRatio);
 			GroupReverb.Controls.Add(KnobReverbDiffusion);
 			GroupReverb.Controls.Add(KnobReverbDensity);
-			// 区切り線
 			GroupReverb.Controls.Add(lblReverbDivider);
-			// Row2
 			GroupReverb.Controls.Add(lblReverbLowShelfFreq);
 			GroupReverb.Controls.Add(lblReverbLowShelfGain);
 			GroupReverb.Controls.Add(lblReverbHighCut);
 			GroupReverb.Controls.Add(lblReverbEarlyLate);
 			GroupReverb.Controls.Add(lblReverbWet);
 			GroupReverb.Controls.Add(lblReverbDry);
-
 			GroupReverb.Controls.Add(lblValReverbLowShelfFreq);
 			GroupReverb.Controls.Add(lblValReverbLowShelfGain);
 			GroupReverb.Controls.Add(lblValReverbHighCut);
 			GroupReverb.Controls.Add(lblValReverbEarlyLate);
 			GroupReverb.Controls.Add(lblValReverbWet);
 			GroupReverb.Controls.Add(lblValReverbDry);
-
 			GroupReverb.Controls.Add(KnobReverbLowShelfFrequency);
 			GroupReverb.Controls.Add(KnobReverbLowshelfGain);
 			GroupReverb.Controls.Add(KnobReverbHighCut);
@@ -2650,9 +2574,9 @@
 			GroupReverb.Size = new System.Drawing.Size(552, 285);
 			GroupReverb.TabIndex = 18;
 			GroupReverb.TabStop = false;
-			// ===========================
+			// 
 			// CheckReverb
-			// ===========================
+			// 
 			CheckReverb.AutoSize = true;
 			CheckReverb.BackColor = System.Drawing.SystemColors.Control;
 			CheckReverb.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
@@ -2663,18 +2587,163 @@
 			CheckReverb.Text = "Reverb";
 			CheckReverb.UseVisualStyleBackColor = false;
 			CheckReverb.CheckedChanged += CheckReverb_CheckedChanged;
-
-			// ===========================
-			// Row 1 - Col 0: DecayTime (x=6)
-			// ===========================
-			lblReverbDecayTime.AutoSize = false;
+			// 
+			// lblReverbDecayTime
+			// 
 			lblReverbDecayTime.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
 			lblReverbDecayTime.Location = new System.Drawing.Point(9, 22);
 			lblReverbDecayTime.Name = "lblReverbDecayTime";
 			lblReverbDecayTime.Size = new System.Drawing.Size(72, 30);
+			lblReverbDecayTime.TabIndex = 1;
 			lblReverbDecayTime.Text = "Decay Time";
 			lblReverbDecayTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
+			// 
+			// lblReverbEarlyDelay
+			// 
+			lblReverbEarlyDelay.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbEarlyDelay.Location = new System.Drawing.Point(87, 22);
+			lblReverbEarlyDelay.Name = "lblReverbEarlyDelay";
+			lblReverbEarlyDelay.Size = new System.Drawing.Size(72, 30);
+			lblReverbEarlyDelay.TabIndex = 2;
+			lblReverbEarlyDelay.Text = "Early Delay";
+			lblReverbEarlyDelay.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// lblReverbLateDelay
+			// 
+			lblReverbLateDelay.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbLateDelay.Location = new System.Drawing.Point(165, 22);
+			lblReverbLateDelay.Name = "lblReverbLateDelay";
+			lblReverbLateDelay.Size = new System.Drawing.Size(72, 30);
+			lblReverbLateDelay.TabIndex = 3;
+			lblReverbLateDelay.Text = "Late Delay";
+			lblReverbLateDelay.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// lblReverbHFRef
+			// 
+			lblReverbHFRef.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbHFRef.Location = new System.Drawing.Point(243, 22);
+			lblReverbHFRef.Name = "lblReverbHFRef";
+			lblReverbHFRef.Size = new System.Drawing.Size(72, 30);
+			lblReverbHFRef.TabIndex = 4;
+			lblReverbHFRef.Text = "HF Reference";
+			lblReverbHFRef.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// lblReverbHFDcRatio
+			// 
+			lblReverbHFDcRatio.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbHFDcRatio.Location = new System.Drawing.Point(321, 22);
+			lblReverbHFDcRatio.Name = "lblReverbHFDcRatio";
+			lblReverbHFDcRatio.Size = new System.Drawing.Size(72, 30);
+			lblReverbHFDcRatio.TabIndex = 5;
+			lblReverbHFDcRatio.Text = "HF Decay\nRatio";
+			lblReverbHFDcRatio.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// lblReverbDiffusion
+			// 
+			lblReverbDiffusion.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbDiffusion.Location = new System.Drawing.Point(399, 22);
+			lblReverbDiffusion.Name = "lblReverbDiffusion";
+			lblReverbDiffusion.Size = new System.Drawing.Size(72, 30);
+			lblReverbDiffusion.TabIndex = 6;
+			lblReverbDiffusion.Text = "Diffusion";
+			lblReverbDiffusion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// lblReverbDensity
+			// 
+			lblReverbDensity.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbDensity.Location = new System.Drawing.Point(477, 22);
+			lblReverbDensity.Name = "lblReverbDensity";
+			lblReverbDensity.Size = new System.Drawing.Size(72, 30);
+			lblReverbDensity.TabIndex = 7;
+			lblReverbDensity.Text = "Density";
+			lblReverbDensity.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// lblValReverbDecayTime
+			// 
+			lblValReverbDecayTime.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbDecayTime.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbDecayTime.Location = new System.Drawing.Point(14, 120);
+			lblValReverbDecayTime.Name = "lblValReverbDecayTime";
+			lblValReverbDecayTime.ReadOnly = true;
+			lblValReverbDecayTime.Size = new System.Drawing.Size(62, 16);
+			lblValReverbDecayTime.TabIndex = 8;
+			lblValReverbDecayTime.Text = "1500";
+			lblValReverbDecayTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// lblValReverbEarlyDelay
+			// 
+			lblValReverbEarlyDelay.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbEarlyDelay.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbEarlyDelay.Location = new System.Drawing.Point(92, 120);
+			lblValReverbEarlyDelay.Name = "lblValReverbEarlyDelay";
+			lblValReverbEarlyDelay.ReadOnly = true;
+			lblValReverbEarlyDelay.Size = new System.Drawing.Size(62, 16);
+			lblValReverbEarlyDelay.TabIndex = 9;
+			lblValReverbEarlyDelay.Text = "20";
+			lblValReverbEarlyDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// lblValReverbLateDelay
+			// 
+			lblValReverbLateDelay.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbLateDelay.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbLateDelay.Location = new System.Drawing.Point(170, 120);
+			lblValReverbLateDelay.Name = "lblValReverbLateDelay";
+			lblValReverbLateDelay.ReadOnly = true;
+			lblValReverbLateDelay.Size = new System.Drawing.Size(62, 16);
+			lblValReverbLateDelay.TabIndex = 10;
+			lblValReverbLateDelay.Text = "40";
+			lblValReverbLateDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// lblValReverbHFRef
+			// 
+			lblValReverbHFRef.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbHFRef.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbHFRef.Location = new System.Drawing.Point(248, 120);
+			lblValReverbHFRef.Name = "lblValReverbHFRef";
+			lblValReverbHFRef.ReadOnly = true;
+			lblValReverbHFRef.Size = new System.Drawing.Size(62, 16);
+			lblValReverbHFRef.TabIndex = 11;
+			lblValReverbHFRef.Text = "5000";
+			lblValReverbHFRef.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// lblValReverbHFDcRatio
+			// 
+			lblValReverbHFDcRatio.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbHFDcRatio.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbHFDcRatio.Location = new System.Drawing.Point(326, 120);
+			lblValReverbHFDcRatio.Name = "lblValReverbHFDcRatio";
+			lblValReverbHFDcRatio.ReadOnly = true;
+			lblValReverbHFDcRatio.Size = new System.Drawing.Size(62, 16);
+			lblValReverbHFDcRatio.TabIndex = 12;
+			lblValReverbHFDcRatio.Text = "50";
+			lblValReverbHFDcRatio.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// lblValReverbDiffusion
+			// 
+			lblValReverbDiffusion.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbDiffusion.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbDiffusion.Location = new System.Drawing.Point(404, 120);
+			lblValReverbDiffusion.Name = "lblValReverbDiffusion";
+			lblValReverbDiffusion.ReadOnly = true;
+			lblValReverbDiffusion.Size = new System.Drawing.Size(62, 16);
+			lblValReverbDiffusion.TabIndex = 13;
+			lblValReverbDiffusion.Text = "50";
+			lblValReverbDiffusion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// lblValReverbDensity
+			// 
+			lblValReverbDensity.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbDensity.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbDensity.Location = new System.Drawing.Point(482, 120);
+			lblValReverbDensity.Name = "lblValReverbDensity";
+			lblValReverbDensity.ReadOnly = true;
+			lblValReverbDensity.Size = new System.Drawing.Size(62, 16);
+			lblValReverbDensity.TabIndex = 14;
+			lblValReverbDensity.Text = "50";
+			lblValReverbDensity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// KnobReverbDecayTime
+			// 
 			KnobReverbDecayTime.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbDecayTime.BorderWidth = 2;
 			KnobReverbDecayTime.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
@@ -2695,27 +2764,9 @@
 			KnobReverbDecayTime.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbDecayTime.Value = 1500;
 			KnobReverbDecayTime.ValueChanged += KnobReverbDecayTime_ValueChanged;
-
-			lblValReverbDecayTime.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			lblValReverbDecayTime.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblValReverbDecayTime.Location = new System.Drawing.Point(14, 120);
-			lblValReverbDecayTime.Name = "lblValReverbDecayTime";
-			lblValReverbDecayTime.ReadOnly = true;
-			lblValReverbDecayTime.Size = new System.Drawing.Size(62, 16);
-			lblValReverbDecayTime.Text = "1500";
-			lblValReverbDecayTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-
-			// ===========================
-			// Row 1 - Col 1: EarlyDelay (x=84)
-			// ===========================
-			lblReverbEarlyDelay.AutoSize = false;
-			lblReverbEarlyDelay.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblReverbEarlyDelay.Location = new System.Drawing.Point(87, 22);
-			lblReverbEarlyDelay.Name = "lblReverbEarlyDelay";
-			lblReverbEarlyDelay.Size = new System.Drawing.Size(72, 30);
-			lblReverbEarlyDelay.Text = "Early Delay";
-			lblReverbEarlyDelay.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
+			// 
+			// KnobReverbEarlyDelay
+			// 
 			KnobReverbEarlyDelay.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbEarlyDelay.BorderWidth = 2;
 			KnobReverbEarlyDelay.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
@@ -2724,7 +2775,6 @@
 			KnobReverbEarlyDelay.LargeChange = 10;
 			KnobReverbEarlyDelay.Location = new System.Drawing.Point(92, 55);
 			KnobReverbEarlyDelay.Maximum = 300;
-			KnobReverbEarlyDelay.Minimum = 0;
 			KnobReverbEarlyDelay.Name = "KnobReverbEarlyDelay";
 			KnobReverbEarlyDelay.PointerColor = System.Drawing.SystemColors.ControlText;
 			KnobReverbEarlyDelay.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
@@ -2736,27 +2786,9 @@
 			KnobReverbEarlyDelay.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbEarlyDelay.Value = 20;
 			KnobReverbEarlyDelay.ValueChanged += KnobReverbEarlyDelay_ValueChanged;
-
-			lblValReverbEarlyDelay.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			lblValReverbEarlyDelay.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblValReverbEarlyDelay.Location = new System.Drawing.Point(92, 120);
-			lblValReverbEarlyDelay.Name = "lblValReverbEarlyDelay";
-			lblValReverbEarlyDelay.ReadOnly = true;
-			lblValReverbEarlyDelay.Size = new System.Drawing.Size(62, 16);
-			lblValReverbEarlyDelay.Text = "20";
-			lblValReverbEarlyDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-
-			// ===========================
-			// Row 1 - Col 2: LateDelay (x=162)
-			// ===========================
-			lblReverbLateDelay.AutoSize = false;
-			lblReverbLateDelay.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblReverbLateDelay.Location = new System.Drawing.Point(165, 22);
-			lblReverbLateDelay.Name = "lblReverbLateDelay";
-			lblReverbLateDelay.Size = new System.Drawing.Size(72, 30);
-			lblReverbLateDelay.Text = "Late Delay";
-			lblReverbLateDelay.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
+			// 
+			// KnobReverbLateDelay
+			// 
 			KnobReverbLateDelay.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbLateDelay.BorderWidth = 2;
 			KnobReverbLateDelay.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
@@ -2764,8 +2796,6 @@
 			KnobReverbLateDelay.KnobColor = System.Drawing.SystemColors.Control;
 			KnobReverbLateDelay.LargeChange = 5;
 			KnobReverbLateDelay.Location = new System.Drawing.Point(170, 55);
-			KnobReverbLateDelay.Maximum = 100;
-			KnobReverbLateDelay.Minimum = 0;
 			KnobReverbLateDelay.Name = "KnobReverbLateDelay";
 			KnobReverbLateDelay.PointerColor = System.Drawing.SystemColors.ControlText;
 			KnobReverbLateDelay.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
@@ -2777,27 +2807,9 @@
 			KnobReverbLateDelay.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbLateDelay.Value = 40;
 			KnobReverbLateDelay.ValueChanged += KnobReverbLateDelay_ValueChanged;
-
-			lblValReverbLateDelay.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			lblValReverbLateDelay.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblValReverbLateDelay.Location = new System.Drawing.Point(170, 120);
-			lblValReverbLateDelay.Name = "lblValReverbLateDelay";
-			lblValReverbLateDelay.ReadOnly = true;
-			lblValReverbLateDelay.Size = new System.Drawing.Size(62, 16);
-			lblValReverbLateDelay.Text = "40";
-			lblValReverbLateDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-
-			// ===========================
-			// Row 1 - Col 3: HFRef (x=240)
-			// ===========================
-			lblReverbHFRef.AutoSize = false;
-			lblReverbHFRef.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblReverbHFRef.Location = new System.Drawing.Point(243, 22);
-			lblReverbHFRef.Name = "lblReverbHFRef";
-			lblReverbHFRef.Size = new System.Drawing.Size(72, 30);
-			lblReverbHFRef.Text = "HF Reference";
-			lblReverbHFRef.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
+			// 
+			// KnobReverbHFRef
+			// 
 			KnobReverbHFRef.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbHFRef.BorderWidth = 2;
 			KnobReverbHFRef.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
@@ -2818,27 +2830,9 @@
 			KnobReverbHFRef.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbHFRef.Value = 5000;
 			KnobReverbHFRef.ValueChanged += KnobReverbHFRef_ValueChanged;
-
-			lblValReverbHFRef.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			lblValReverbHFRef.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblValReverbHFRef.Location = new System.Drawing.Point(248, 120);
-			lblValReverbHFRef.Name = "lblValReverbHFRef";
-			lblValReverbHFRef.ReadOnly = true;
-			lblValReverbHFRef.Size = new System.Drawing.Size(62, 16);
-			lblValReverbHFRef.Text = "5000";
-			lblValReverbHFRef.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-
-			// ===========================
-			// Row 1 - Col 4: HFDcRatio (x=318)
-			// ===========================
-			lblReverbHFDcRatio.AutoSize = false;
-			lblReverbHFDcRatio.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblReverbHFDcRatio.Location = new System.Drawing.Point(321, 22);
-			lblReverbHFDcRatio.Name = "lblReverbHFDcRatio";
-			lblReverbHFDcRatio.Size = new System.Drawing.Size(72, 30);
-			lblReverbHFDcRatio.Text = "HF Decay\nRatio";
-			lblReverbHFDcRatio.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
+			// 
+			// KnobReverbHFDcRatio
+			// 
 			KnobReverbHFDcRatio.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbHFDcRatio.BorderWidth = 2;
 			KnobReverbHFDcRatio.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
@@ -2858,27 +2852,9 @@
 			KnobReverbHFDcRatio.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbHFDcRatio.Value = 50;
 			KnobReverbHFDcRatio.ValueChanged += KnobReverbHFDcRatio_ValueChanged;
-
-			lblValReverbHFDcRatio.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			lblValReverbHFDcRatio.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblValReverbHFDcRatio.Location = new System.Drawing.Point(326, 120);
-			lblValReverbHFDcRatio.Name = "lblValReverbHFDcRatio";
-			lblValReverbHFDcRatio.ReadOnly = true;
-			lblValReverbHFDcRatio.Size = new System.Drawing.Size(62, 16);
-			lblValReverbHFDcRatio.Text = "50";
-			lblValReverbHFDcRatio.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-
-			// ===========================
-			// Row 1 - Col 5: Diffusion (x=396)
-			// ===========================
-			lblReverbDiffusion.AutoSize = false;
-			lblReverbDiffusion.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblReverbDiffusion.Location = new System.Drawing.Point(399, 22);
-			lblReverbDiffusion.Name = "lblReverbDiffusion";
-			lblReverbDiffusion.Size = new System.Drawing.Size(72, 30);
-			lblReverbDiffusion.Text = "Diffusion";
-			lblReverbDiffusion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
+			// 
+			// KnobReverbDiffusion
+			// 
 			KnobReverbDiffusion.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbDiffusion.BorderWidth = 2;
 			KnobReverbDiffusion.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
@@ -2898,27 +2874,9 @@
 			KnobReverbDiffusion.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbDiffusion.Value = 50;
 			KnobReverbDiffusion.ValueChanged += KnobReverbDiffusion_ValueChanged;
-
-			lblValReverbDiffusion.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			lblValReverbDiffusion.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblValReverbDiffusion.Location = new System.Drawing.Point(404, 120);
-			lblValReverbDiffusion.Name = "lblValReverbDiffusion";
-			lblValReverbDiffusion.ReadOnly = true;
-			lblValReverbDiffusion.Size = new System.Drawing.Size(62, 16);
-			lblValReverbDiffusion.Text = "50";
-			lblValReverbDiffusion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-
-			// ===========================
-			// Row 1 - Col 6: Density (x=474)
-			// ===========================
-			lblReverbDensity.AutoSize = false;
-			lblReverbDensity.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblReverbDensity.Location = new System.Drawing.Point(477, 22);
-			lblReverbDensity.Name = "lblReverbDensity";
-			lblReverbDensity.Size = new System.Drawing.Size(72, 30);
-			lblReverbDensity.Text = "Density";
-			lblReverbDensity.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
+			// 
+			// KnobReverbDensity
+			// 
 			KnobReverbDensity.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbDensity.BorderWidth = 2;
 			KnobReverbDensity.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
@@ -2938,36 +2896,149 @@
 			KnobReverbDensity.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbDensity.Value = 50;
 			KnobReverbDensity.ValueChanged += KnobReverbDensity_ValueChanged;
-
-			lblValReverbDensity.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			lblValReverbDensity.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblValReverbDensity.Location = new System.Drawing.Point(482, 120);
-			lblValReverbDensity.Name = "lblValReverbDensity";
-			lblValReverbDensity.ReadOnly = true;
-			lblValReverbDensity.Size = new System.Drawing.Size(62, 16);
-			lblValReverbDensity.Text = "50";
-			lblValReverbDensity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-
-			// ===========================
-			// 区切り線
-			// ===========================
+			// 
+			// lblReverbDivider
+			// 
 			lblReverbDivider.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			lblReverbDivider.Location = new System.Drawing.Point(6, 142);
 			lblReverbDivider.Name = "lblReverbDivider";
 			lblReverbDivider.Size = new System.Drawing.Size(540, 1);
 			lblReverbDivider.TabIndex = 99;
-
-			// ===========================
-			// Row 2 - Col 0: LowShelfFreq (x=42)
-			// ===========================
-			lblReverbLowShelfFreq.AutoSize = false;
+			// 
+			// lblReverbLowShelfFreq
+			// 
 			lblReverbLowShelfFreq.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
 			lblReverbLowShelfFreq.Location = new System.Drawing.Point(45, 157);
 			lblReverbLowShelfFreq.Name = "lblReverbLowShelfFreq";
 			lblReverbLowShelfFreq.Size = new System.Drawing.Size(72, 30);
+			lblReverbLowShelfFreq.TabIndex = 100;
 			lblReverbLowShelfFreq.Text = "Low Shelf\nFreq";
 			lblReverbLowShelfFreq.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
+			// 
+			// lblReverbLowShelfGain
+			// 
+			lblReverbLowShelfGain.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbLowShelfGain.Location = new System.Drawing.Point(123, 157);
+			lblReverbLowShelfGain.Name = "lblReverbLowShelfGain";
+			lblReverbLowShelfGain.Size = new System.Drawing.Size(72, 30);
+			lblReverbLowShelfGain.TabIndex = 101;
+			lblReverbLowShelfGain.Text = "Low Shelf\nGain";
+			lblReverbLowShelfGain.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// lblReverbHighCut
+			// 
+			lblReverbHighCut.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbHighCut.Location = new System.Drawing.Point(201, 157);
+			lblReverbHighCut.Name = "lblReverbHighCut";
+			lblReverbHighCut.Size = new System.Drawing.Size(72, 30);
+			lblReverbHighCut.TabIndex = 102;
+			lblReverbHighCut.Text = "High Cut";
+			lblReverbHighCut.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// lblReverbEarlyLate
+			// 
+			lblReverbEarlyLate.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbEarlyLate.Location = new System.Drawing.Point(279, 157);
+			lblReverbEarlyLate.Name = "lblReverbEarlyLate";
+			lblReverbEarlyLate.Size = new System.Drawing.Size(72, 30);
+			lblReverbEarlyLate.TabIndex = 103;
+			lblReverbEarlyLate.Text = "Early/Late\nMix";
+			lblReverbEarlyLate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// lblReverbWet
+			// 
+			lblReverbWet.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbWet.Location = new System.Drawing.Point(357, 157);
+			lblReverbWet.Name = "lblReverbWet";
+			lblReverbWet.Size = new System.Drawing.Size(72, 30);
+			lblReverbWet.TabIndex = 104;
+			lblReverbWet.Text = "Wet Level";
+			lblReverbWet.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// lblReverbDry
+			// 
+			lblReverbDry.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblReverbDry.Location = new System.Drawing.Point(435, 157);
+			lblReverbDry.Name = "lblReverbDry";
+			lblReverbDry.Size = new System.Drawing.Size(72, 30);
+			lblReverbDry.TabIndex = 105;
+			lblReverbDry.Text = "Dry Level";
+			lblReverbDry.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// lblValReverbLowShelfFreq
+			// 
+			lblValReverbLowShelfFreq.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbLowShelfFreq.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbLowShelfFreq.Location = new System.Drawing.Point(50, 255);
+			lblValReverbLowShelfFreq.Name = "lblValReverbLowShelfFreq";
+			lblValReverbLowShelfFreq.ReadOnly = true;
+			lblValReverbLowShelfFreq.Size = new System.Drawing.Size(62, 16);
+			lblValReverbLowShelfFreq.TabIndex = 106;
+			lblValReverbLowShelfFreq.Text = "250";
+			lblValReverbLowShelfFreq.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// lblValReverbLowShelfGain
+			// 
+			lblValReverbLowShelfGain.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbLowShelfGain.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbLowShelfGain.Location = new System.Drawing.Point(128, 255);
+			lblValReverbLowShelfGain.Name = "lblValReverbLowShelfGain";
+			lblValReverbLowShelfGain.ReadOnly = true;
+			lblValReverbLowShelfGain.Size = new System.Drawing.Size(62, 16);
+			lblValReverbLowShelfGain.TabIndex = 107;
+			lblValReverbLowShelfGain.Text = "0";
+			lblValReverbLowShelfGain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// lblValReverbHighCut
+			// 
+			lblValReverbHighCut.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbHighCut.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbHighCut.Location = new System.Drawing.Point(206, 255);
+			lblValReverbHighCut.Name = "lblValReverbHighCut";
+			lblValReverbHighCut.ReadOnly = true;
+			lblValReverbHighCut.Size = new System.Drawing.Size(62, 16);
+			lblValReverbHighCut.TabIndex = 108;
+			lblValReverbHighCut.Text = "20000";
+			lblValReverbHighCut.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// lblValReverbEarlyLate
+			// 
+			lblValReverbEarlyLate.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbEarlyLate.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbEarlyLate.Location = new System.Drawing.Point(284, 255);
+			lblValReverbEarlyLate.Name = "lblValReverbEarlyLate";
+			lblValReverbEarlyLate.ReadOnly = true;
+			lblValReverbEarlyLate.Size = new System.Drawing.Size(62, 16);
+			lblValReverbEarlyLate.TabIndex = 109;
+			lblValReverbEarlyLate.Text = "50";
+			lblValReverbEarlyLate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// lblValReverbWet
+			// 
+			lblValReverbWet.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbWet.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbWet.Location = new System.Drawing.Point(362, 255);
+			lblValReverbWet.Name = "lblValReverbWet";
+			lblValReverbWet.ReadOnly = true;
+			lblValReverbWet.Size = new System.Drawing.Size(62, 16);
+			lblValReverbWet.TabIndex = 110;
+			lblValReverbWet.Text = "-6";
+			lblValReverbWet.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// lblValReverbDry
+			// 
+			lblValReverbDry.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			lblValReverbDry.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblValReverbDry.Location = new System.Drawing.Point(440, 255);
+			lblValReverbDry.Name = "lblValReverbDry";
+			lblValReverbDry.ReadOnly = true;
+			lblValReverbDry.Size = new System.Drawing.Size(62, 16);
+			lblValReverbDry.TabIndex = 111;
+			lblValReverbDry.Text = "0";
+			lblValReverbDry.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// KnobReverbLowShelfFrequency
+			// 
 			KnobReverbLowShelfFrequency.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbLowShelfFrequency.BorderWidth = 2;
 			KnobReverbLowShelfFrequency.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
@@ -2988,27 +3059,9 @@
 			KnobReverbLowShelfFrequency.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbLowShelfFrequency.Value = 250;
 			KnobReverbLowShelfFrequency.ValueChanged += KnobReverbLowShelfFrequency_ValueChanged;
-
-			lblValReverbLowShelfFreq.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			lblValReverbLowShelfFreq.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblValReverbLowShelfFreq.Location = new System.Drawing.Point(50, 255);
-			lblValReverbLowShelfFreq.Name = "lblValReverbLowShelfFreq";
-			lblValReverbLowShelfFreq.ReadOnly = true;
-			lblValReverbLowShelfFreq.Size = new System.Drawing.Size(62, 16);
-			lblValReverbLowShelfFreq.Text = "250";
-			lblValReverbLowShelfFreq.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-
-			// ===========================
-			// Row 2 - Col 1: LowShelfGain (x=120)
-			// ===========================
-			lblReverbLowShelfGain.AutoSize = false;
-			lblReverbLowShelfGain.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblReverbLowShelfGain.Location = new System.Drawing.Point(123, 157);
-			lblReverbLowShelfGain.Name = "lblReverbLowShelfGain";
-			lblReverbLowShelfGain.Size = new System.Drawing.Size(72, 30);
-			lblReverbLowShelfGain.Text = "Low Shelf\nGain";
-			lblReverbLowShelfGain.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
+			// 
+			// KnobReverbLowshelfGain
+			// 
 			KnobReverbLowshelfGain.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbLowshelfGain.BorderWidth = 2;
 			KnobReverbLowshelfGain.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
@@ -3027,29 +3080,10 @@
 			KnobReverbLowshelfGain.Size = new System.Drawing.Size(62, 62);
 			KnobReverbLowshelfGain.TabIndex = 9;
 			KnobReverbLowshelfGain.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbLowshelfGain.Value = 0;
 			KnobReverbLowshelfGain.ValueChanged += KnobReverbLowshelfGain_ValueChanged;
-
-			lblValReverbLowShelfGain.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			lblValReverbLowShelfGain.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblValReverbLowShelfGain.Location = new System.Drawing.Point(128, 255);
-			lblValReverbLowShelfGain.Name = "lblValReverbLowShelfGain";
-			lblValReverbLowShelfGain.ReadOnly = true;
-			lblValReverbLowShelfGain.Size = new System.Drawing.Size(62, 16);
-			lblValReverbLowShelfGain.Text = "0";
-			lblValReverbLowShelfGain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-
-			// ===========================
-			// Row 2 - Col 2: HighCut (x=198)
-			// ===========================
-			lblReverbHighCut.AutoSize = false;
-			lblReverbHighCut.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblReverbHighCut.Location = new System.Drawing.Point(201, 157);
-			lblReverbHighCut.Name = "lblReverbHighCut";
-			lblReverbHighCut.Size = new System.Drawing.Size(72, 30);
-			lblReverbHighCut.Text = "High Cut";
-			lblReverbHighCut.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
+			// 
+			// KnobReverbHighCut
+			// 
 			KnobReverbHighCut.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbHighCut.BorderWidth = 2;
 			KnobReverbHighCut.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
@@ -3070,27 +3104,9 @@
 			KnobReverbHighCut.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbHighCut.Value = 20000;
 			KnobReverbHighCut.ValueChanged += KnobReverbHighCut_ValueChanged;
-
-			lblValReverbHighCut.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			lblValReverbHighCut.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblValReverbHighCut.Location = new System.Drawing.Point(206, 255);
-			lblValReverbHighCut.Name = "lblValReverbHighCut";
-			lblValReverbHighCut.ReadOnly = true;
-			lblValReverbHighCut.Size = new System.Drawing.Size(62, 16);
-			lblValReverbHighCut.Text = "20000";
-			lblValReverbHighCut.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-
-			// ===========================
-			// Row 2 - Col 3: EarlyLate (x=276)
-			// ===========================
-			lblReverbEarlyLate.AutoSize = false;
-			lblReverbEarlyLate.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblReverbEarlyLate.Location = new System.Drawing.Point(279, 157);
-			lblReverbEarlyLate.Name = "lblReverbEarlyLate";
-			lblReverbEarlyLate.Size = new System.Drawing.Size(72, 30);
-			lblReverbEarlyLate.Text = "Early/Late\nMix";
-			lblReverbEarlyLate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
+			// 
+			// KnobReverbEarlyLate
+			// 
 			KnobReverbEarlyLate.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbEarlyLate.BorderWidth = 2;
 			KnobReverbEarlyLate.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
@@ -3098,8 +3114,6 @@
 			KnobReverbEarlyLate.KnobColor = System.Drawing.SystemColors.Control;
 			KnobReverbEarlyLate.LargeChange = 5;
 			KnobReverbEarlyLate.Location = new System.Drawing.Point(284, 190);
-			KnobReverbEarlyLate.Maximum = 100;
-			KnobReverbEarlyLate.Minimum = 0;
 			KnobReverbEarlyLate.Name = "KnobReverbEarlyLate";
 			KnobReverbEarlyLate.PointerColor = System.Drawing.SystemColors.ControlText;
 			KnobReverbEarlyLate.PointerEndCap = System.Drawing.Drawing2D.LineCap.Flat;
@@ -3111,27 +3125,9 @@
 			KnobReverbEarlyLate.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbEarlyLate.Value = 50;
 			KnobReverbEarlyLate.ValueChanged += KnobReverbEarlyLate_ValueChanged;
-
-			lblValReverbEarlyLate.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			lblValReverbEarlyLate.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblValReverbEarlyLate.Location = new System.Drawing.Point(284, 255);
-			lblValReverbEarlyLate.Name = "lblValReverbEarlyLate";
-			lblValReverbEarlyLate.ReadOnly = true;
-			lblValReverbEarlyLate.Size = new System.Drawing.Size(62, 16);
-			lblValReverbEarlyLate.Text = "50";
-			lblValReverbEarlyLate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-
-			// ===========================
-			// Row 2 - Col 4: Wet (x=354)
-			// ===========================
-			lblReverbWet.AutoSize = false;
-			lblReverbWet.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblReverbWet.Location = new System.Drawing.Point(357, 157);
-			lblReverbWet.Name = "lblReverbWet";
-			lblReverbWet.Size = new System.Drawing.Size(72, 30);
-			lblReverbWet.Text = "Wet Level";
-			lblReverbWet.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
+			// 
+			// KnobReverbWet
+			// 
 			KnobReverbWet.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbWet.BorderWidth = 2;
 			KnobReverbWet.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
@@ -3152,27 +3148,9 @@
 			KnobReverbWet.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbWet.Value = -6;
 			KnobReverbWet.ValueChanged += KnobReverbWet_ValueChanged;
-
-			lblValReverbWet.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			lblValReverbWet.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblValReverbWet.Location = new System.Drawing.Point(362, 255);
-			lblValReverbWet.Name = "lblValReverbWet";
-			lblValReverbWet.ReadOnly = true;
-			lblValReverbWet.Size = new System.Drawing.Size(62, 16);
-			lblValReverbWet.Text = "-6";
-			lblValReverbWet.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-
-			// ===========================
-			// Row 2 - Col 5: Dry (x=432)
-			// ===========================
-			lblReverbDry.AutoSize = false;
-			lblReverbDry.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblReverbDry.Location = new System.Drawing.Point(435, 157);
-			lblReverbDry.Name = "lblReverbDry";
-			lblReverbDry.Size = new System.Drawing.Size(72, 30);
-			lblReverbDry.Text = "Dry Level";
-			lblReverbDry.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
+			// 
+			// KnobReverbDry
+			// 
 			KnobReverbDry.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
 			KnobReverbDry.BorderWidth = 2;
 			KnobReverbDry.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
@@ -3191,17 +3169,117 @@
 			KnobReverbDry.Size = new System.Drawing.Size(62, 62);
 			KnobReverbDry.TabIndex = 13;
 			KnobReverbDry.TickColor = System.Drawing.SystemColors.ControlDarkDark;
-			KnobReverbDry.Value = 0;
 			KnobReverbDry.ValueChanged += KnobReverbDry_ValueChanged;
-
-			lblValReverbDry.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			lblValReverbDry.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-			lblValReverbDry.Location = new System.Drawing.Point(440, 255);
-			lblValReverbDry.Name = "lblValReverbDry";
-			lblValReverbDry.ReadOnly = true;
-			lblValReverbDry.Size = new System.Drawing.Size(62, 16);
-			lblValReverbDry.Text = "0";
-			lblValReverbDry.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// tabSkin
+			// 
+			tabSkin.BackColor = System.Drawing.Color.Transparent;
+			tabSkin.Controls.Add(lblSkinPath);
+			tabSkin.Controls.Add(txtSkinPath);
+			tabSkin.Controls.Add(lblSkinName);
+			tabSkin.Controls.Add(lblSkinAuthorLabel);
+			tabSkin.Controls.Add(lblSkinAuthor);
+			tabSkin.Controls.Add(lblSkinDescLabel);
+			tabSkin.Controls.Add(lblSkinDesc);
+			tabSkin.Controls.Add(BtnSkinBrowse);
+			tabSkin.Controls.Add(PictSkinPreview);
+			tabSkin.Controls.Add(BtnSkinApply);
+			tabSkin.Location = new System.Drawing.Point(4, 24);
+			tabSkin.Name = "tabSkin";
+			tabSkin.Size = new System.Drawing.Size(574, 392);
+			tabSkin.TabIndex = 12;
+			tabSkin.Text = "スキン";
+			// 
+			// lblSkinPath
+			// 
+			lblSkinPath.AutoSize = true;
+			lblSkinPath.Location = new System.Drawing.Point(12, 14);
+			lblSkinPath.Name = "lblSkinPath";
+			lblSkinPath.Size = new System.Drawing.Size(71, 15);
+			lblSkinPath.TabIndex = 0;
+			lblSkinPath.Text = "スキンファイル:";
+			// 
+			// txtSkinPath
+			// 
+			txtSkinPath.Location = new System.Drawing.Point(12, 32);
+			txtSkinPath.Name = "txtSkinPath";
+			txtSkinPath.ReadOnly = true;
+			txtSkinPath.Size = new System.Drawing.Size(450, 23);
+			txtSkinPath.TabIndex = 0;
+			// 
+			// lblSkinName
+			// 
+			lblSkinName.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Bold);
+			lblSkinName.Location = new System.Drawing.Point(12, 266);
+			lblSkinName.Name = "lblSkinName";
+			lblSkinName.Size = new System.Drawing.Size(440, 25);
+			lblSkinName.TabIndex = 1;
+			// 
+			// lblSkinAuthorLabel
+			// 
+			lblSkinAuthorLabel.AutoSize = true;
+			lblSkinAuthorLabel.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblSkinAuthorLabel.Location = new System.Drawing.Point(12, 307);
+			lblSkinAuthorLabel.Name = "lblSkinAuthorLabel";
+			lblSkinAuthorLabel.Size = new System.Drawing.Size(47, 15);
+			lblSkinAuthorLabel.TabIndex = 2;
+			lblSkinAuthorLabel.Text = "Author:";
+			// 
+			// lblSkinAuthor
+			// 
+			lblSkinAuthor.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblSkinAuthor.Location = new System.Drawing.Point(70, 307);
+			lblSkinAuthor.Name = "lblSkinAuthor";
+			lblSkinAuthor.Size = new System.Drawing.Size(380, 18);
+			lblSkinAuthor.TabIndex = 3;
+			// 
+			// lblSkinDescLabel
+			// 
+			lblSkinDescLabel.AutoSize = true;
+			lblSkinDescLabel.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblSkinDescLabel.Location = new System.Drawing.Point(12, 328);
+			lblSkinDescLabel.Name = "lblSkinDescLabel";
+			lblSkinDescLabel.Size = new System.Drawing.Size(70, 15);
+			lblSkinDescLabel.TabIndex = 4;
+			lblSkinDescLabel.Text = "Description:";
+			// 
+			// lblSkinDesc
+			// 
+			lblSkinDesc.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
+			lblSkinDesc.Location = new System.Drawing.Point(90, 328);
+			lblSkinDesc.Name = "lblSkinDesc";
+			lblSkinDesc.Size = new System.Drawing.Size(460, 18);
+			lblSkinDesc.TabIndex = 5;
+			// 
+			// BtnSkinBrowse
+			// 
+			BtnSkinBrowse.Location = new System.Drawing.Point(470, 31);
+			BtnSkinBrowse.Name = "BtnSkinBrowse";
+			BtnSkinBrowse.Size = new System.Drawing.Size(90, 25);
+			BtnSkinBrowse.TabIndex = 1;
+			BtnSkinBrowse.Text = "参照...";
+			BtnSkinBrowse.UseVisualStyleBackColor = true;
+			BtnSkinBrowse.Click += BtnSkinBrowse_Click;
+			// 
+			// PictSkinPreview
+			// 
+			PictSkinPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			PictSkinPreview.Location = new System.Drawing.Point(12, 65);
+			PictSkinPreview.Name = "PictSkinPreview";
+			PictSkinPreview.Size = new System.Drawing.Size(548, 198);
+			PictSkinPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			PictSkinPreview.TabIndex = 2;
+			PictSkinPreview.TabStop = false;
+			// 
+			// BtnSkinApply
+			// 
+			BtnSkinApply.Location = new System.Drawing.Point(471, 358);
+			BtnSkinApply.Name = "BtnSkinApply";
+			BtnSkinApply.Size = new System.Drawing.Size(90, 25);
+			BtnSkinApply.TabIndex = 2;
+			BtnSkinApply.Text = "適用";
+			BtnSkinApply.UseVisualStyleBackColor = true;
+			BtnSkinApply.Click += BtnSkinApply_Click;
 			// 
 			// textBox13
 			// 
@@ -3384,62 +3462,12 @@
 			label18.Name = "label18";
 			label18.Size = new System.Drawing.Size(100, 23);
 			label18.TabIndex = 0;
-			// tabSkin の設定
-			tabSkin.BackColor = System.Drawing.Color.Transparent;
-			tabSkin.Controls.Add(lblSkinPath);
-			tabSkin.Controls.Add(txtSkinPath);
-			tabSkin.Controls.Add(BtnSkinBrowse);
-			tabSkin.Controls.Add(PictSkinPreview);
-			tabSkin.Controls.Add(BtnSkinApply);
-			tabSkin.Location = new System.Drawing.Point(4, 24);
-			tabSkin.Name = "tabSkin";
-			tabSkin.Size = new System.Drawing.Size(574, 391);
-			tabSkin.TabIndex = 12;
-			tabSkin.Text = "スキン";
-			// lblSkinPath
-			lblSkinPath.AutoSize = true;
-			lblSkinPath.Location = new System.Drawing.Point(12, 14);
-			lblSkinPath.Name = "lblSkinPath";
-			lblSkinPath.Text = "スキンファイル:";
-
-			// txtSkinPath
-			txtSkinPath.Location = new System.Drawing.Point(12, 32);
-			txtSkinPath.Name = "txtSkinPath";
-			txtSkinPath.ReadOnly = true;
-			txtSkinPath.Size = new System.Drawing.Size(450, 23);
-			txtSkinPath.TabIndex = 0;
-
-			// BtnSkinBrowse
-			BtnSkinBrowse.Location = new System.Drawing.Point(470, 31);
-			BtnSkinBrowse.Name = "BtnSkinBrowse";
-			BtnSkinBrowse.Size = new System.Drawing.Size(90, 25);
-			BtnSkinBrowse.TabIndex = 1;
-			BtnSkinBrowse.Text = "参照...";
-			BtnSkinBrowse.UseVisualStyleBackColor = true;
-			BtnSkinBrowse.Click += new System.EventHandler(this.BtnSkinBrowse_Click);
-
-			// PictSkinPreview
-			PictSkinPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			PictSkinPreview.Location = new System.Drawing.Point(12, 65);
-			PictSkinPreview.Name = "PictSkinPreview";
-			PictSkinPreview.Size = new System.Drawing.Size(548, 280);
-			PictSkinPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-			PictSkinPreview.TabStop = false;
-
-			// BtnSkinApply
-			BtnSkinApply.Location = new System.Drawing.Point(471, 353);
-			BtnSkinApply.Name = "BtnSkinApply";
-			BtnSkinApply.Size = new System.Drawing.Size(90, 25);
-			BtnSkinApply.TabIndex = 2;
-			BtnSkinApply.Text = "適用";
-			BtnSkinApply.UseVisualStyleBackColor = true;
-			BtnSkinApply.Click += new System.EventHandler(this.BtnSkinApply_Click);
 			// 
 			// OptionsForm
 			// 
 			AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			ClientSize = new System.Drawing.Size(781, 419);
+			ClientSize = new System.Drawing.Size(781, 420);
 			Controls.Add(tabControlEffects);
 			Controls.Add(TreeMenu);
 			DoubleBuffered = true;
@@ -3497,6 +3525,9 @@
 			tabReverb.ResumeLayout(false);
 			GroupReverb.ResumeLayout(false);
 			GroupReverb.PerformLayout();
+			tabSkin.ResumeLayout(false);
+			tabSkin.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)PictSkinPreview).EndInit();
 			ResumeLayout(false);
 
 		}
@@ -3547,9 +3578,6 @@
 		private System.Windows.Forms.Label label37;
 		private System.Windows.Forms.Label label38;
 		private System.Windows.Forms.Label label39;
-		private System.Windows.Forms.Label label40;
-		private System.Windows.Forms.Label label42;
-		private System.Windows.Forms.Label label43;
 		private System.Windows.Forms.Label label44;
 		private System.Windows.Forms.Label label45;
 		private System.Windows.Forms.Label label46;
@@ -3674,9 +3702,6 @@
         private System.Windows.Forms.CheckBox CheckDistortion;
         private System.Windows.Forms.TabPage tabSetting;
         private System.Windows.Forms.Button BtnUpdate;
-        private System.Windows.Forms.ComboBox cmbSpeaker;
-        private System.Windows.Forms.ComboBox cmbSampling;
-        private System.Windows.Forms.ComboBox cmbSampleRate;
         private System.Windows.Forms.ComboBox cmbDevice;
         private System.Windows.Forms.ComboBox cmbOutput;
         private System.Windows.Forms.PictureBox PictGEQGraph;
@@ -3727,5 +3752,11 @@
 		private System.Windows.Forms.TextBox lblValReverbEarlyLate;
 		private System.Windows.Forms.TextBox lblValReverbWet;
 		private System.Windows.Forms.TextBox lblValReverbDry;
+
+		private System.Windows.Forms.Label lblSkinName;
+		private System.Windows.Forms.Label lblSkinAuthorLabel;
+		private System.Windows.Forms.Label lblSkinAuthor;
+		private System.Windows.Forms.Label lblSkinDescLabel;
+		private System.Windows.Forms.Label lblSkinDesc;
 	}
 }

@@ -170,6 +170,10 @@ namespace MediaPlayer_X_Ark.Skin
 
 			ImgSpectrum = new SpectrumComponents();
 			result = Win32API.GetPrivateProfileString("GraphicArea", "-SpectrumPicture", "", nValue, capacity, skinFile);
+			if (ImgSpectrum.Image != null)
+			{
+				ImgSpectrum.Image.Dispose();
+			}
 			if (nValue.Length > 0)
 			{
 				ImgSpectrum.ImageFile = skinDir + "\\" + nValue.ToString();
@@ -199,7 +203,7 @@ namespace MediaPlayer_X_Ark.Skin
 					ImgSpectrum.Image = new Bitmap(ImgSpectrum.Position.Width, ImgSpectrum.Position.Height);
 					using (var g = Graphics.FromImage(ImgSpectrum.Image))
 					{
-						g.Clear(Color.Transparent);
+						g.Clear(ImgSpectrum.Color);
 					}
 				}
 			}

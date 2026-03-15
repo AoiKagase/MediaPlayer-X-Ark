@@ -85,6 +85,7 @@ namespace MediaPlayer_X_Ark
 			// サイズ変更後にビットマップを新サイズで再作成
 			Spectrum.BitmapSnow = new Bitmap(skin.ImgSpectrum.Position.Width, skin.ImgSpectrum.Position.Height);
 			Spectrum.BitmapWave = new Bitmap(skin.ImgSpectrum.Position.Width, skin.ImgSpectrum.Position.Height);
+			Spectrum.BitmapBackground = new Bitmap(skin.ImgSpectrum.Position.Width, skin.ImgSpectrum.Position.Height);
 
 			if (skin.ImgSpectrum.Image != null)
 			{
@@ -93,10 +94,35 @@ namespace MediaPlayer_X_Ark
 			else
 			{
 				Spectrum.BitmapSpectrum = new Bitmap(skin.ImgSpectrum.Position.Width, skin.ImgSpectrum.Position.Height);
+				using (var g = Graphics.FromImage(Spectrum.BitmapSpectrum))
+					g.Clear(skin.ImgSpectrum.Color);
 				using (var g = Graphics.FromImage(Spectrum.BitmapSnow))
 					g.Clear(skin.ImgSpectrum.Color);
 				using (var g = Graphics.FromImage(Spectrum.BitmapWave))
 					g.Clear(skin.ImgSpectrum.Color);
+			}
+			// スペクトラム背景画像の設定
+			// メインフォームの背景画像からスペクトラム領域を切り出す
+			if (skin.MainForm.BackImage != null)
+			{
+				var rect = new Rectangle(
+					skin.ImgSpectrum.Position.Left,
+					skin.ImgSpectrum.Position.Top,
+					skin.ImgSpectrum.Position.Width,
+					skin.ImgSpectrum.Position.Height);
+
+				var bmp = new Bitmap(rect.Width, rect.Height);
+				using (var g = Graphics.FromImage(bmp))
+					g.DrawImage(skin.MainForm.BackImage,
+						new Rectangle(0, 0, rect.Width, rect.Height),
+						rect,
+						GraphicsUnit.Pixel);
+
+				Spectrum.BitmapBackground = bmp;
+			}
+			else
+			{
+				Spectrum.BitmapBackground = null;
 			}
 
 			// コントロール名 → スキンプロパティのマッピング
@@ -392,7 +418,6 @@ namespace MediaPlayer_X_Ark
 
 			// ② OutputType と SoftwareFormat は init() より前に設定
 			player.SetOutputTypeBeforeInit(config.GetOutputType());
-			player.SetSoftwareFormat(config.GetSampleRate(), config.GetSpeakerMode());
 
 			// ③ init() を実行
 			player.Initialize();
@@ -502,8 +527,8 @@ namespace MediaPlayer_X_Ark
 			float[] mFFT = player.spectrum.UpdateSpectrum();
 			Spectrum.mFFT = mFFT;
 			// Waveデータ（追加）
-			float[] mWave = player.wave.GetWaveData();
-			Spectrum.mWave = mWave;
+			Spectrum.mWaveL = player.wave.GetWaveDataByChannel(0);
+			Spectrum.mWaveR = player.wave.GetWaveDataByChannel(1);
 
 			// 曲調トラックバーの反映 (シーク中はボタン側で動作する為動かさない)
 			if (this.seekValue == 0)

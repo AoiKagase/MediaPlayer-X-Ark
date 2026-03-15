@@ -31,23 +31,6 @@ namespace MediaPlayer_X_Ark
         }
     }
 
-	public enum SOFTWARE_SAMPLE_RATE
-	{
-		SAMPLE_5500HZ	= 5500,
-		SAMPLE_6000HZ	= 6000,
-		SAMPLE_7333HZ	= 7333,
-		SAMPLE_8000HZ	= 8000,
-		SAMPLE_11025HZ	= 11025,
-		SAMPLE_16000HZ	= 16000,
-		SAMPLE_22050HZ	= 22050,
-		SAMPLE_32000HZ	= 32000,
-		SAMPLE_44100HZ	= 44100,
-		SAMPLE_48000HZ	= 48000,
-		SAMPLE_88200HZ	= 88200,
-		SAMPLE_96000HZ	= 96000,
-		SAMPLE_192000HZ	= 192000,
-	}
-
 	public enum LOOP_MODE
 	{
 		LOOP_NONE,
@@ -370,58 +353,6 @@ namespace MediaPlayer_X_Ark
 				}
 			}
 		}
-
-		/// <summary>
-		/// Set Software format. (Sample rate)
-		/// </summary>
-		/// <param name="samplerate"></param>
-		/// <param name="speakermode"></param>
-		public FMOD.RESULT SetSoftwareFormat(SOFTWARE_SAMPLE_RATE samplerate, FMOD.SPEAKERMODE speakermode)
-        {
-			return FmodCallFunction(FmodSystem.setSoftwareFormat((int) samplerate, speakermode, GetNumberRawSpeakers(speakermode)));
-        }
-		public FMOD.RESULT GetSoftwareFormat(out int samplerate, out FMOD.SPEAKERMODE speakermode, out int speakernum)
-		{
-			return FmodCallFunction(FmodSystem.getSoftwareFormat(out samplerate, out speakermode, out speakernum));
-		}
-		/// <summary>
-		/// Raw Speaker Count
-		/// </summary>
-		/// <param name="speakermode"></param>
-		/// <returns></returns>
-		private int GetNumberRawSpeakers(FMOD.SPEAKERMODE speakermode)
-        {
-			int numRawSpeakers = 2;
-			switch (speakermode)
-			{
-				case FMOD.SPEAKERMODE.DEFAULT:
-					numRawSpeakers = 2;
-					break;
-				case FMOD.SPEAKERMODE.MONO:
-					numRawSpeakers = 2;
-					break;
-				case FMOD.SPEAKERMODE.STEREO:
-					numRawSpeakers = 2;
-					break;
-				case FMOD.SPEAKERMODE.QUAD:
-					numRawSpeakers = 4;
-					break;
-				case FMOD.SPEAKERMODE.SURROUND:
-					numRawSpeakers = 5;
-					break;
-				case FMOD.SPEAKERMODE._5POINT1:
-					numRawSpeakers = 6;
-					break;
-				case FMOD.SPEAKERMODE._7POINT1:
-					numRawSpeakers = 8;
-					break;
-				case FMOD.SPEAKERMODE._7POINT1POINT4:
-					numRawSpeakers = 12;
-					break;
-			}
-			return numRawSpeakers;
-		}
-
 		public uint GetPosition()
         {
 			uint position = 0;
