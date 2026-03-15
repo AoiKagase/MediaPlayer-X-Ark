@@ -108,12 +108,12 @@ namespace MediaPlayer_X_Ark
             if (this.Orientation == Orientation.Horizontal)
             {
                 this.Slider.Top = 0;
-                this.Slider.Left = (int)(((float)(this.Width - this.Slider.Width) / (Maximum - Minimum)) * (this._value - Minimum));
+                this.Slider.Left = Math.Max((int)(((float)(this.Width - this.Slider.Width) / (Maximum - Minimum)) * (this._value - Minimum)), 0);
             }
             else
             {
                 this.Slider.Left = 0;
-                this.Slider.Top = (this.Height - this.Slider.Height) - (int)(((float)(this.Height - this.Slider.Height) / (Maximum - Minimum)) * (this._value - Minimum));
+                this.Slider.Top = Math.Max((this.Height - this.Slider.Height) - (int)(((float)(this.Height - this.Slider.Height) / (Maximum - Minimum)) * (this._value - Minimum)), 0);
             }
         }
 

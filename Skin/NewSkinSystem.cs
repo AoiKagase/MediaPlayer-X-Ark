@@ -11,7 +11,7 @@ namespace MediaPlayer_X_Ark.Skin
 	/// <summary>
 	/// 新形式スキンシステム（JSON定義 + スプライトシート）
 	/// </summary>
-	public class NewSkinSystem
+	public class NewSkinSystem : ISkinSystem
 	{
 		// ===========================
 		// JSON デシリアライズ用クラス
@@ -84,6 +84,8 @@ namespace MediaPlayer_X_Ark.Skin
 			[JsonPropertyName("normal")] public SpriteRect Normal { get; set; }
 			[JsonPropertyName("down")] public SpriteRect Down { get; set; }
 			[JsonPropertyName("optional")] public SpriteRect Optional { get; set; }
+			[JsonPropertyName("downImage")] public string DownImage { get; set; }     // 追加
+			[JsonPropertyName("optionalImage")] public string OptionalImage { get; set; } // 追加
 			[JsonPropertyName("x")] public int X { get; set; }
 			[JsonPropertyName("y")] public int Y { get; set; }
 			[JsonPropertyName("enabled")] public bool Enabled { get; set; }
@@ -125,6 +127,7 @@ namespace MediaPlayer_X_Ark.Skin
 			[JsonPropertyName("italic")] public bool Italic { get; set; }
 			[JsonPropertyName("color")] public string Color { get; set; }
 			[JsonPropertyName("interval")] public int Interval { get; set; }
+			[JsonPropertyName("scrollEnable")] public bool ScrollEnable { get; set; }
 		}
 
 		public class PlayListDef
@@ -202,7 +205,10 @@ namespace MediaPlayer_X_Ark.Skin
 		public void Open(string jsonPath)
 		{
 			_skinDir = Path.GetDirectoryName(jsonPath);
-			_imageCache.Clear();
+			// 古いキャッシュを破棄
+			foreach (var bmp in _imageCache.Values)
+				bmp?.Dispose();
+			_imageCache.Clear(); 
 
 			var json = File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
 			var skin = JsonSerializer.Deserialize<SkinJson>(json);
@@ -212,9 +218,17 @@ namespace MediaPlayer_X_Ark.Skin
 			{
 				foreach (var kv in skin.Images)
 				{
-					var imgPath = Path.Combine(_skinDir, kv.Value);
+					// / と \ 両方対応
+					var relativePath = kv.Value.Replace('/', Path.DirectorySeparatorChar);
+					var imgPath = Path.Combine(_skinDir, relativePath); 
 					if (File.Exists(imgPath))
-						_imageCache[kv.Key] = new Bitmap(imgPath);
+					{
+						// ファイルロックを避けるためメモリストリーム経由でロード
+						using (var stream = new FileStream(imgPath, FileMode.Open, FileAccess.Read))
+						{
+							_imageCache[kv.Key] = new Bitmap(stream);
+						}
+					}
 				}
 			}
 
@@ -232,26 +246,26 @@ namespace MediaPlayer_X_Ark.Skin
 			};
 
 			// Buttons
-			BtnOpen = LoadButton(skin.Buttons, "Open");
-			BtnClose = LoadButton(skin.Buttons, "Close");
-			BtnPlay = LoadButton(skin.Buttons, "Play");
-			BtnStop = LoadButton(skin.Buttons, "Stop");
-			BtnBack = LoadButton(skin.Buttons, "Back");
-			BtnSeekBack = LoadButton(skin.Buttons, "SeekBack");
-			BtnPause = LoadButton(skin.Buttons, "Pause");
-			BtnSeekForward = LoadButton(skin.Buttons, "SeekForward");
-			BtnNext = LoadButton(skin.Buttons, "Next");
-			BtnRandom = LoadButton(skin.Buttons, "Random");
-			BtnLoop = LoadButton(skin.Buttons, "Loop");
-			BtnSetting = LoadButton(skin.Buttons, "Setting");
-			BtnPlaylist = LoadButton(skin.Buttons, "Playlist");
-			BtnMinisize = LoadButton(skin.Buttons, "Minisize");
-			BtnCD = LoadButton(skin.Buttons, "CD");
+			BtnOpen = LoadButton(skin.Buttons, "BtnOpen");
+			BtnClose = LoadButton(skin.Buttons, "BtnClose");
+			BtnPlay = LoadButton(skin.Buttons, "BtnPlay");
+			BtnStop = LoadButton(skin.Buttons, "BtnStop");
+			BtnBack = LoadButton(skin.Buttons, "BtnBack");
+			BtnSeekBack = LoadButton(skin.Buttons, "BtnSeekBack");
+			BtnPause = LoadButton(skin.Buttons, "BtnPause");
+			BtnSeekForward = LoadButton(skin.Buttons, "BtnSeekForward");
+			BtnNext = LoadButton(skin.Buttons, "BtnNext");
+			BtnRandom = LoadButton(skin.Buttons, "BtnRandom");
+			BtnLoop = LoadButton(skin.Buttons, "BtnLoop");
+			BtnSetting = LoadButton(skin.Buttons, "BtnSetting");
+			BtnPlaylist = LoadButton(skin.Buttons, "BtnPlaylist");
+			BtnMinisize = LoadButton(skin.Buttons, "BtnMinisize");
+			BtnCD = LoadButton(skin.Buttons, "BtnCD");
 
 			// Sliders
-			SldVolume = LoadSlider(skin.Sliders, "Volume");
-			SldPan = LoadSlider(skin.Sliders, "Pan");
-			SldTrack = LoadSlider(skin.Sliders, "Track");
+			SldVolume = LoadSlider(skin.Sliders, "SldVolume");
+			SldPan = LoadSlider(skin.Sliders, "SldPan");
+			SldTrack = LoadSlider(skin.Sliders, "SldTrack");
 
 			// Spectrum
 			var sp = skin.Spectrum;
@@ -270,8 +284,8 @@ namespace MediaPlayer_X_Ark.Skin
 			};
 
 			// Text
-			LabelTitle = LoadText(skin.Text, "Title");
-			LabelTime = LoadText(skin.Text, "Time");
+			LabelTitle = LoadText(skin.Text, "LabelTitle");
+			LabelTime = LoadText(skin.Text, "LabelTime");
 
 			// PlayList
 			var pl = skin.PlayList;
@@ -301,13 +315,13 @@ namespace MediaPlayer_X_Ark.Skin
 				},
 			};
 
-			PBtnOpen = LoadButton(pl.Buttons, "Open");
-			PBtnSave = LoadButton(pl.Buttons, "Save");
-			PBtnRemove = LoadButton(pl.Buttons, "Remove");
-			PBtnUp = LoadButton(pl.Buttons, "Up");
-			PBtnDown = LoadButton(pl.Buttons, "Down");
-			PBtnClose = LoadButton(pl.Buttons, "Close");
-			PBtnClear = LoadButton(pl.Buttons, "Clear");
+			PBtnOpen = LoadButton(pl.Buttons, "PBtnOpen");
+			PBtnSave = LoadButton(pl.Buttons, "PBtnSave");
+			PBtnRemove = LoadButton(pl.Buttons, "PBtnRemove");
+			PBtnUp = LoadButton(pl.Buttons, "PBtnUp");
+			PBtnDown = LoadButton(pl.Buttons, "PBtnDown");
+			PBtnClose = LoadButton(pl.Buttons, "PBtnClose");
+			PBtnClear = LoadButton(pl.Buttons, "PBtnClear");
 		}
 
 		// ===========================
@@ -337,14 +351,26 @@ namespace MediaPlayer_X_Ark.Skin
 			Dictionary<string, ButtonDef> buttons, string key)
 		{
 			var result = new ButtonComponents { Enabled = false };
+
 			if (buttons == null || !buttons.TryGetValue(key, out var def))
 				return result;
 
 			result.BackImage = CropImage(def.Image, def.Normal);
-			result.DownImage = CropImage(def.Image, def.Down);
+
+			// downImage キーが指定されていれば別画像から、なければ同画像からクロップ
+			result.DownImage = def.DownImage != null
+				? CropImage(def.DownImage, new SpriteRect())
+				: CropImage(def.Image, def.Down);
+
 			result.Enabled = def.Enabled && result.BackImage != null;
 
-			if (def.Optional != null)
+			// optional
+			if (def.OptionalImage != null)
+			{
+				result.OptionalImage = CropImage(def.OptionalImage, new SpriteRect());
+				result.Toggle = result.OptionalImage != null;
+			}
+			else if (def.Optional != null)
 			{
 				result.OptionalImage = CropImage(def.Image, def.Optional);
 				result.Toggle = result.OptionalImage != null;
@@ -357,6 +383,7 @@ namespace MediaPlayer_X_Ark.Skin
 				Width = result.BackImage?.Width ?? 0,
 				Height = result.BackImage?.Height ?? 0,
 			};
+
 			return result;
 		}
 
@@ -412,6 +439,7 @@ namespace MediaPlayer_X_Ark.Skin
 				Height = def.Height,
 			};
 			result.Interval = def.Interval;
+			result.ScrollEnable = def.ScrollEnable;
 			result.Enabled = true;
 			return result;
 		}

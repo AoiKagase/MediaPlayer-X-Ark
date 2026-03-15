@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark.Skin
 {
@@ -23,7 +24,8 @@ namespace MediaPlayer_X_Ark.Skin
 
 		/// <summary>メイン画像パス（プレビュー用）</summary>
 		public string MainImagePath { get; private set; }
-
+		/// <summary>元の（解決前の）スキンパス</summary>
+		public string OriginalPath { get; private set; }
 		public enum SkinFormat
 		{
 			/// <summary>新形式：.xsk（ZIP + JSON）</summary>
@@ -33,15 +35,24 @@ namespace MediaPlayer_X_Ark.Skin
 		}
 
 		private static readonly string TempBase =
-			Path.Combine(Path.GetTempPath(), "MediaPlayerX_Skin");
+			Path.Combine(Application.StartupPath, "Skins", "Temp");
 
 		/// <summary>
 		/// スキンを開く。形式を自動判別する。
 		/// </summary>
 		public static SkinPackage Open(string skinPath)
 		{
+			if (!File.Exists(skinPath))
+			{
+				// デフォルトスキンにフォールバック
+				skinPath = Path.Combine(
+					Application.StartupPath,
+					"Skins", "bbbs.xsk");
+			}
+
 			var pkg = new SkinPackage();
 			var ext = Path.GetExtension(skinPath).ToLower();
+			pkg.OriginalPath = skinPath; // 解決前のパスを保存
 
 			if (ext == ".xsk")
 			{
@@ -50,12 +61,9 @@ namespace MediaPlayer_X_Ark.Skin
 					TempBase,
 					Path.GetFileNameWithoutExtension(skinPath));
 
-				// 未展開の場合のみ展開
-				if (!Directory.Exists(pkg.SkinDirectory))
-				{
-					Directory.CreateDirectory(pkg.SkinDirectory);
-					ZipFile.ExtractToDirectory(skinPath, pkg.SkinDirectory);
-				}
+				Directory.CreateDirectory(pkg.SkinDirectory);
+				ZipFile.ExtractToDirectory(skinPath, pkg.SkinDirectory, true);
+
 
 				// JSONファイルを探す
 				var jsonFiles = Directory.GetFiles(
@@ -66,8 +74,6 @@ namespace MediaPlayer_X_Ark.Skin
 
 				pkg.DefinitionPath = jsonFiles[0];
 				pkg.SkinDirectory = Path.GetDirectoryName(jsonFiles[0]);
-
-				// メイン画像を探す（プレビュー用）
 				pkg.MainImagePath = FindMainImage(pkg.SkinDirectory);
 			}
 			else

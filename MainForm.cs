@@ -1,67 +1,71 @@
-﻿using System;
+﻿using MediaPlayer_X_Ark.Skin;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
-using MediaPlayer_X_Ark.Skin;
 using System.IO;
 using System.Numerics;
+using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark
 {
-    public partial class MainForm : Form
-    {
-        bool initialize = false;
-        public static PlayerEngine player;
-
-		private OldSkinSystem oldSkinSystem;
-		// 追加
-		private NewSkinSystem newSkinSystem;
+	public partial class MainForm : Form
+	{
+		bool initialize = false;
+		public static PlayerEngine player;
 
 		private ToolTip _toolTip;
-        private int playingIndex = 0;
-        private PlayListForm playListForm;
-        private OptionsForm optionsForm;
+		private int playingIndex = 0;
+		private PlayListForm playListForm;
+		private OptionsForm optionsForm;
 		private CDForm cdForm;
 		private static Engine.Configration config;
-        private bool nowplaying = false;
+		private bool nowplaying = false;
 		public int PlayingIndex => playingIndex;
 
-		public MainForm()
-        {
-            InitializeComponent();
-        }
+		private ISkinSystem _currentSkin;
 
-        /// <summary>
-        /// スキンロード
-        /// 設定ファイルからスキンファイルパスを取得して投げる
-        /// </summary>
-        /// <param name="skinFile"></param>
-        public void SkinLoad(string skinFile)
-        {
+		public MainForm()
+		{
+			InitializeComponent();
+		}
+
+		/// <summary>
+		/// スキンロード
+		/// 設定ファイルからスキンファイルパスを取得して投げる
+		/// </summary>
+		/// <param name="skinFile"></param>
+		public void SkinLoad(string skinFile)
+		{
 			using (var pkg = SkinPackage.Open(skinFile))
 			{
 				if (pkg.Format == SkinPackage.SkinFormat.NewXsk)
 				{
 					// 新形式
-					newSkinSystem = new NewSkinSystem();
-					newSkinSystem.Open(pkg.DefinitionPath);
-					ApplySkin(newSkinSystem);
+					var skin = new NewSkinSystem();
+					skin.Open(pkg.DefinitionPath);
+					_currentSkin = skin;
 				}
 				else
 				{
-					// 旧形式
-					oldSkinSystem = new OldSkinSystem();
-					oldSkinSystem.Open(pkg.DefinitionPath);
-					ApplySkin(oldSkinSystem);
+					// 旧形式はOldSkinSystem自身がパス解決するため
+					// 元のパス（相対パス）をそのまま渡す
+					var skin = new OldSkinSystem();
+					skin.Open(pkg.OriginalPath);
+					_currentSkin = skin;
 				}
-
+				ApplySkin(_currentSkin);
 				// プレビュー用メイン画像パスを保存
 				config.settings.Skin = skinFile;
+
+				// ボリューム最大値を強制100（旧形式スキンはこの数値を変動出来ていた為、処理簡略化を考慮する）
+				SldVolume.Maximum = 150;
+				SldVolume.Value = config.settings.Volume;
 			}
-        }
+		}
 		/// <summary>
 		/// スキンデータをフォームに適用する。新旧形式共通。
 		/// </summary>
-		private void ApplySkin(dynamic skin)
+		private void ApplySkin(ISkinSystem skin)
 		{
 			// メインフォーム
 			BackgroundImage = skin.MainForm.BackImage;
@@ -70,115 +74,183 @@ namespace MediaPlayer_X_Ark
 			Height = skin.MainForm.Position.Height;
 
 			// スペクトラム
+			// AutoScaleModeの影響を排除するためSuspendLayout/ResumeLayoutで囲む
+			SuspendLayout();
 			Spectrum.Left = skin.ImgSpectrum.Position.Left;
 			Spectrum.Top = skin.ImgSpectrum.Position.Top;
 			Spectrum.Width = skin.ImgSpectrum.Position.Width;
 			Spectrum.Height = skin.ImgSpectrum.Position.Height;
+			ResumeLayout(false);
 
-			Graphics g;
-			if (File.Exists(skin.ImgSpectrum.ImageFile ?? ""))
-				Spectrum.BitmapSpectrum = new Bitmap(skin.ImgSpectrum.Image);
-			else if (skin.ImgSpectrum.Image != null)
+			// サイズ変更後にビットマップを新サイズで再作成
+			Spectrum.BitmapSnow = new Bitmap(skin.ImgSpectrum.Position.Width, skin.ImgSpectrum.Position.Height);
+			Spectrum.BitmapWave = new Bitmap(skin.ImgSpectrum.Position.Width, skin.ImgSpectrum.Position.Height);
+
+			if (skin.ImgSpectrum.Image != null)
 			{
-				g = Graphics.FromImage(skin.ImgSpectrum.Image);
-				g.Clear(skin.ImgSpectrum.Color);
-				g.Dispose();
+				Spectrum.BitmapSpectrum = new Bitmap(skin.ImgSpectrum.Image);
+			}
+			else
+			{
+				Spectrum.BitmapSpectrum = new Bitmap(skin.ImgSpectrum.Position.Width, skin.ImgSpectrum.Position.Height);
+				using (var g = Graphics.FromImage(Spectrum.BitmapSnow))
+					g.Clear(skin.ImgSpectrum.Color);
+				using (var g = Graphics.FromImage(Spectrum.BitmapWave))
+					g.Clear(skin.ImgSpectrum.Color);
 			}
 
-			g = Graphics.FromImage(Spectrum.BitmapSnow);
-			g.Clear(skin.ImgSpectrum.Color);
-			g.Dispose();
-			g = Graphics.FromImage(Spectrum.BitmapWave);
-			g.Clear(skin.ImgSpectrum.Color);
-			g.Dispose();
+			// コントロール名 → スキンプロパティのマッピング
+			var buttonMap = new Dictionary<string, ButtonComponents>
+			{
+				{ "BtnOpen",        skin.BtnOpen        },
+				{ "BtnClose",       skin.BtnClose       },
+				{ "BtnPlay",        skin.BtnPlay        },
+				{ "BtnStop",        skin.BtnStop        },
+				{ "BtnBack",        skin.BtnBack        },
+				{ "BtnSeekBack",    skin.BtnSeekBack    },
+				{ "BtnPause",       skin.BtnPause       },
+				{ "BtnSeekForward", skin.BtnSeekForward },
+				{ "BtnNext",        skin.BtnNext        },
+				{ "BtnRandom",      skin.BtnRandom      },
+				{ "BtnLoop",        skin.BtnLoop        },
+				{ "BtnSetting",     skin.BtnSetting     },
+				{ "BtnPlaylist",    skin.BtnPlaylist    },
+				{ "BtnMinisize",    skin.BtnMinisize    },
+				{ "BtnCD",          skin.BtnCD          },
+					};
 
-			// ボタン・スライダー・ラベル
-			string cName = "";
+			var sliderMap = new Dictionary<string, SliderComponents>
+			{
+				{ "SldVolume", skin.SldVolume },
+				{ "SldPan",    skin.SldPan   },
+				{ "SldTrack",  skin.SldTrack },
+			};
+
+			var labelMap = new Dictionary<string, GraphicComponents>
+			{
+				{ "LabelTitle", skin.LabelTitle },
+				{ "LabelTime",  skin.LabelTime  },
+			};
+
 			foreach (Control c in Controls)
 			{
-				cName = c.Name;
-				if (c.GetType() == typeof(Button))
+				string cName = c.Name;
+
+				if (c is Button btn && buttonMap.TryGetValue(cName, out var bc))
 				{
-					var bc = (ButtonComponents)skin[cName];
-					((Button)c).BackgroundImage = bc.BackImage;
-					((Button)c).Top = bc.Position.Top;
-					((Button)c).Left = bc.Position.Left;
-					((Button)c).Width = bc.Position.Width;
-					((Button)c).Height = bc.Position.Height;
-					((Button)c).Enabled = bc.Enabled;
-					((Button)c).Visible = bc.Enabled;
-					((Button)c).Refresh();
+					if (bc.BackImage == null || !bc.Enabled)
+					{
+						// 定義なし or 無効のボタンは非表示
+						btn.Visible = false;
+						btn.Enabled = false;
+						continue;
+					}
+					btn.AutoSize = false;
+					btn.BackgroundImage = bc.BackImage;
+					btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+					btn.Top = bc.Position.Top;
+					btn.Left = bc.Position.Left;
+					btn.Width = bc.Position.Width;
+					btn.Height = bc.Position.Height;
+					btn.Enabled = bc.Enabled;
+					btn.Visible = bc.Enabled;
+					btn.Refresh();
 				}
-				if (c.GetType() == typeof(CustomSlider))
+				else if (c is CustomSlider slider && sliderMap.TryGetValue(cName, out var sc))
 				{
-					var sc = (SliderComponents)skin[cName];
-					((CustomSlider)c).SliderImage = sc.SliderImage;
-					((CustomSlider)c).Orientation = sc.Orientation;
-					((CustomSlider)c).Minimum = sc.Minimum;
-					((CustomSlider)c).Maximum = sc.Maximum;
-					((CustomSlider)c).Top = sc.Position.Top;
-					((CustomSlider)c).Left = sc.Position.Left;
-					((CustomSlider)c).Width = sc.Position.Width;
-					((CustomSlider)c).Height = sc.Position.Height;
-					((CustomSlider)c).Enabled = sc.Enabled;
-					((CustomSlider)c).Visible = sc.Enabled;
-					((CustomSlider)c).Value = 0;
-					((CustomSlider)c).Refresh();
+					if (sc.SliderImage == null) continue;
+					slider.SliderImage = sc.SliderImage;
+					slider.Orientation = sc.Orientation;
+					slider.Minimum = sc.Minimum;
+					slider.Maximum = sc.Maximum;
+					slider.Top = sc.Position.Top;
+					slider.Left = sc.Position.Left;
+					slider.Width = sc.Position.Width;
+					slider.Height = sc.Position.Height;
+					slider.Enabled = sc.Enabled;
+					slider.Visible = sc.Enabled;
+					slider.Value = 0;
+					slider.Refresh();
 				}
-				if (c.GetType() == typeof(ScrollLabel))
+				else if (c is ScrollLabel lbl && labelMap.TryGetValue(cName, out var gc))
 				{
-					var gc = (GraphicComponents)skin[cName];
-					((ScrollLabel)c).BackColor = Color.Transparent;
-					((ScrollLabel)c).Value.Font = gc.Font;
-					((ScrollLabel)c).Value.ForeColor = gc.FontColor;
-					((ScrollLabel)c).Top = gc.Position.Top;
-					((ScrollLabel)c).Left = gc.Position.Left;
-					((ScrollLabel)c).Width = gc.Position.Width;
-					((ScrollLabel)c).Height = gc.Position.Height;
-					((ScrollLabel)c).Enabled = gc.Enabled;
-					((ScrollLabel)c).Visible = gc.Enabled;
-					((ScrollLabel)c).Timer.Interval = gc.Interval > 0 ? gc.Interval : 100;
-					((ScrollLabel)c).Timer.Enabled = gc.Interval > 0;
+					lbl.BackColor = Color.Transparent;
+					lbl.Value.Font = gc.Font;
+					lbl.Value.ForeColor = gc.FontColor;
+					lbl.Top = gc.Position.Top;
+					lbl.Left = gc.Position.Left;
+					lbl.Width = gc.Position.Width;
+					lbl.Height = gc.Position.Height;
+					lbl.Enabled = gc.Enabled;
+					lbl.Visible = gc.Enabled;
+
+					// 内部Labelのサイズをリセット
+					lbl.Value.Left = 0;
+					lbl.Value.Width = gc.Position.Width;
+					lbl.Value.Height = gc.Position.Height;
+
+					// スクロール設定
+					lbl.ScrollEnable = gc.ScrollEnable;
+					lbl.Timer.Interval = gc.Interval > 0 ? gc.Interval : 100;
+					lbl.Timer.Enabled = gc.Interval > 0;
 				}
 			}
 
 			this.Refresh();
 
 			// プレイリストフォーム
-			playListForm.Refresh();
 			playListForm.Left = Left - skin.PlayListForm.Position.Left;
 			playListForm.Top = Top - skin.PlayListForm.Position.Top;
 			playListForm.BackgroundImage = skin.PlayListForm.BackImage;
 			playListForm.Width = skin.PlayListForm.Position.Width;
 			playListForm.Height = skin.PlayListForm.Position.Height;
 			playListForm.TransparencyKey = skin.PlayListForm.TransparentKey;
+			playListForm.Refresh();
+
+			var plButtonMap = new Dictionary<string, ButtonComponents>
+			{
+				{ "PBtnOpen",   skin.PBtnOpen   },
+				{ "PBtnSave",   skin.PBtnSave   },
+				{ "PBtnRemove", skin.PBtnRemove },
+				{ "PBtnUp",     skin.PBtnUp     },
+				{ "PBtnDown",   skin.PBtnDown   },
+				{ "PBtnClose",  skin.PBtnClose  },
+				{ "PBtnClear",  skin.PBtnClear  },
+			};
 
 			foreach (Control c in playListForm.Controls)
 			{
-				cName = c.Name;
-				if (c.GetType() == typeof(DataGridView))
+				string cName = c.Name;
+
+				if (c is DataGridView grid)
 				{
-					var pg = (PListGrid)skin["PlayListGrid"];
-					((DataGridView)c).BackgroundColor = pg.ListBackColor;
-					((DataGridView)c).RowsDefaultCellStyle.BackColor = pg.ListBackColor;
-					((DataGridView)c).RowsDefaultCellStyle.ForeColor = pg.ListForeColor;
-					((DataGridView)c).ForeColor = pg.ListForeColor;
-					((DataGridView)c).Left = pg.ListPosition.Left;
-					((DataGridView)c).Top = pg.ListPosition.Top;
-					((DataGridView)c).Width = pg.ListPosition.Width;
-					((DataGridView)c).Height = pg.ListPosition.Height;
+					grid.BackgroundColor = skin.PlayListGrid.ListBackColor;
+					grid.RowsDefaultCellStyle.BackColor = skin.PlayListGrid.ListBackColor;
+					grid.RowsDefaultCellStyle.ForeColor = skin.PlayListGrid.ListForeColor;
+					grid.ForeColor = skin.PlayListGrid.ListForeColor;
+					grid.Left = skin.PlayListGrid.ListPosition.Left;
+					grid.Top = skin.PlayListGrid.ListPosition.Top;
+					grid.Width = skin.PlayListGrid.ListPosition.Width;
+					grid.Height = skin.PlayListGrid.ListPosition.Height;
 				}
-				if (c.GetType() == typeof(Button))
+				else if (c is Button btn && plButtonMap.TryGetValue(cName, out var bc))
 				{
-					var bc = (ButtonComponents)skin[cName];
-					((Button)c).BackgroundImage = bc.BackImage;
-					((Button)c).Top = bc.Position.Top;
-					((Button)c).Left = bc.Position.Left;
-					((Button)c).Width = bc.Position.Width;
-					((Button)c).Height = bc.Position.Height;
-					((Button)c).Enabled = bc.Enabled;
-					((Button)c).Visible = bc.Enabled;
-					((Button)c).Refresh();
+					if (bc.BackImage == null || !bc.Enabled)
+					{
+						btn.Visible = false;
+						btn.Enabled = false;
+						continue;
+					}
+					btn.AutoSize = false;
+					btn.BackgroundImage = bc.BackImage;
+					btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+					btn.Top = bc.Position.Top;
+					btn.Left = bc.Position.Left;
+					btn.Width = bc.Position.Width;
+					btn.Height = bc.Position.Height;
+					btn.Enabled = bc.Enabled;
+					btn.Visible = bc.Enabled;
+					btn.Refresh();
 				}
 			}
 		}
@@ -187,88 +259,130 @@ namespace MediaPlayer_X_Ark
 		/// </summary>
 		/// <param name="fileName"></param>
 		public void OpenFile(string fileName)
-        {
-            // Open File
-            if (player.CreateSound(fileName, out playingIndex) == FMOD.RESULT.OK)
-            {
-                PlayLoad();
-            }
-        }
+		{
+			// Open File
+			if (player.CreateSound(fileName, out playingIndex) == FMOD.RESULT.OK)
+			{
+				PlayLoad();
+			}
+		}
 
-        /// <summary>
-        /// Indexを指定して再生する。(主にプレイリストから直接再生)
-        /// </summary>
-        /// <param name="index"></param>
-        public void PlayLoad(int index)
-        {
-            playingIndex = index;
-            PlayLoad();
-        }
+		/// <summary>
+		/// Indexを指定して再生する。(主にプレイリストから直接再生)
+		/// </summary>
+		/// <param name="index"></param>
+		public void PlayLoad(int index)
+		{
+			playingIndex = index;
+			PlayLoad();
+		}
 
-        private void PlayLoad()
-        {
+		private void PlayLoad()
+		{
 			// デバイスの反映
 			player.SetDevice(config.settings.Device);
 
 			// 再生
 			player.PlaySound(playingIndex);
 
-            // 曲長に合わせてトラックバーの総量調整
-            SldTrack.Maximum = (int)player.GetLength(playingIndex);
+			// 曲長に合わせてトラックバーの総量調整
+			SldTrack.Maximum = (int)player.GetLength(playingIndex);
 
-            // ボリュームを設定値へ
-            float volume = ((float)SldVolume.Value) / 100f;
-            player.SetVolume(volume);
+			// ボリュームを設定値へ
+			float volume = ((float)SldVolume.Value) / 100f;
+			player.SetVolume(volume);
 
-            // PANを設定値へ
-            float pan = ((float)SldPan.Value) / 10f;
-            player.SetPan(pan);
+			// PANを設定値へ
+			float pan = ((float)SldPan.Value) / 10f;
+			player.SetPan(pan);
 
-            // タグ取得
-            player.GetTags(playingIndex);
-            LabelTitle.Value.Text = (!string.IsNullOrEmpty(player.PlayList[playingIndex].Title)) ? player.PlayList[playingIndex].Title : Path.GetFileName(player.PlayList[playingIndex].FileName);
-            LabelTitle.Value.Text += (!string.IsNullOrEmpty(player.PlayList[playingIndex].Artist)) ? (" - " + player.PlayList[playingIndex].Artist) : "";
-            LabelTitle.Value.Text += (!string.IsNullOrEmpty(player.PlayList[playingIndex].Album)) ? (" - " + player.PlayList[playingIndex].Album) : "";
+			// タグ取得
+			player.GetTags(playingIndex);
+			LabelTitle.Value.Text = (!string.IsNullOrEmpty(player.PlayList[playingIndex].Title)) ? player.PlayList[playingIndex].Title : Path.GetFileName(player.PlayList[playingIndex].FileName);
+			LabelTitle.Value.Text += (!string.IsNullOrEmpty(player.PlayList[playingIndex].Artist)) ? (" - " + player.PlayList[playingIndex].Artist) : "";
+			LabelTitle.Value.Text += (!string.IsNullOrEmpty(player.PlayList[playingIndex].Album)) ? (" - " + player.PlayList[playingIndex].Album) : "";
 
-            nowplaying = true;
-        }
-        /// <summary>
-        /// ボタンクリック時のイベント（MouseDown時）
-        /// </summary>
-        /// <param name="button"></param>
-        public void BtnDownEvent(ref object button)
-        {
-            // 背景画像を押下時の画像へ変更
-            ((Button)button).BackgroundImage = ((ButtonComponents)oldSkinSystem[((Button)button).Name]).DownImage;
-            ((Button)button).Refresh();
-        }
-        /// <summary>
-        /// ボタンクリック時のイベント（MouseUp時）
-        /// </summary>
-        /// <param name="button"></param>
-        public void BtnUpEvent(ref object button)
-        {
-            // 背景画像を元画像へ変更
-            ((Button)button).BackgroundImage = ((ButtonComponents)oldSkinSystem[((Button)button).Name]).BackImage;
-            ((Button)button).Refresh();
-        }
-
-        /// =============================================================
-        /// 各コントロールイベント
-        /// =============================================================
-        #region MainForm Event
-        /// <summary>
-        /// フォームロード処理
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            // ===================================
-            // インスタンスの生成
-            // ===================================
-            // ツールチップ
-            _toolTip = new ToolTip(components);
+			nowplaying = true;
+		}
+		/// <summary>
+		/// ボタンクリック時のイベント（MouseDown時）
+		/// </summary>
+		/// <param name="button"></param>
+		public void BtnDownEvent(ref object button)
+		{
+			var btn = (Button)button;
+			if (_currentSkin == null) return;
+			try
+			{
+				// コントロール名からスキンデータを取得
+				var map = GetButtonMap();
+				if (map.TryGetValue(btn.Name, out var bc))
+					btn.BackgroundImage = bc.DownImage;
+			}
+			catch { }
+			btn.Refresh();
+		}
+		/// <summary>
+		/// ボタンクリック時のイベント（MouseUp時）
+		/// </summary>
+		/// <param name="button"></param>
+		public void BtnUpEvent(ref object button)
+		{
+			var btn = (Button)button;
+			if (_currentSkin == null) return;
+			try
+			{
+				var map = GetButtonMap();
+				if (map.TryGetValue(btn.Name, out var bc))
+					btn.BackgroundImage = bc.BackImage;
+			}
+			catch { }
+			btn.Refresh();
+		}
+		private Dictionary<string, ButtonComponents> GetButtonMap()
+		{
+			return new Dictionary<string, ButtonComponents>
+			{
+				{ "BtnOpen",        _currentSkin.BtnOpen        },
+				{ "BtnClose",       _currentSkin.BtnClose       },
+				{ "BtnPlay",        _currentSkin.BtnPlay        },
+				{ "BtnStop",        _currentSkin.BtnStop        },
+				{ "BtnBack",        _currentSkin.BtnBack        },
+				{ "BtnSeekBack",    _currentSkin.BtnSeekBack    },
+				{ "BtnPause",       _currentSkin.BtnPause       },
+				{ "BtnSeekForward", _currentSkin.BtnSeekForward },
+				{ "BtnNext",        _currentSkin.BtnNext        },
+				{ "BtnRandom",      _currentSkin.BtnRandom      },
+				{ "BtnLoop",        _currentSkin.BtnLoop        },
+				{ "BtnSetting",     _currentSkin.BtnSetting     },
+				{ "BtnPlaylist",    _currentSkin.BtnPlaylist    },
+				{ "BtnMinisize",    _currentSkin.BtnMinisize    },
+				{ "BtnCD",          _currentSkin.BtnCD          },
+				{ "PBtnOpen",       _currentSkin.PBtnOpen       },
+				{ "PBtnSave",       _currentSkin.PBtnSave       },
+				{ "PBtnRemove",     _currentSkin.PBtnRemove     },
+				{ "PBtnUp",         _currentSkin.PBtnUp         },
+				{ "PBtnDown",       _currentSkin.PBtnDown       },
+				{ "PBtnClose",      _currentSkin.PBtnClose      },
+				{ "PBtnClear",      _currentSkin.PBtnClear      },
+			};
+		}
+		/// =============================================================
+		/// 各コントロールイベント
+		/// =============================================================
+		#region MainForm Event
+		/// <summary>
+		/// フォームロード処理
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void MainForm_Load(object sender, EventArgs e)
+		{
+			// ===================================
+			// インスタンスの生成
+			// ===================================
+			// ツールチップ
+			_toolTip = new ToolTip(components);
 
 			// FMODサウンドエンジン
 			player = new PlayerEngine();
@@ -286,559 +400,552 @@ namespace MediaPlayer_X_Ark
 			// ④ Device は init() 後でOK
 			player.SetDevice(config.settings.Device);
 
-            playListForm = new PlayListForm(this);
-//            playListForm.Show(this);
-            optionsForm = new OptionsForm(ref player, ref config, this);
+			playListForm = new PlayListForm(this);
+			//            playListForm.Show(this);
+			optionsForm = new OptionsForm(ref player, ref config, this);
 			cdForm = new CDForm(this);
-			//            optionsForm.Show(this);
+
 			// 予定：設定ファイルの読み込み スキンファイルの指定も含む
 			// 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
 			// 新形式（JSON）の場合はNewSkinSystemへインスタンス切替
-			// スキンシステム
-			oldSkinSystem = new OldSkinSystem();
+			// スキンロード
+			SkinLoad(config.settings.Skin);
+			Spectrum.Initialize();
 
-            // スキンロード
-            SkinLoad(config.settings.Skin);
-            Spectrum.Initialize(Color.Black);
 
-            // ボリューム最大値を強制100（旧形式スキンはこの数値を変動出来ていた為、処理簡略化を考慮する）
-            SldVolume.Maximum = 100;
-            SldVolume.Value = config.settings.Volume;
-            initialize = true;
+			initialize = true;
 
-            // 起動パラメータを取得し、ファイルパスが取得出来るならばOpen関数へ引き渡す
-            string[] parameters = System.Environment.GetCommandLineArgs();
-            if (parameters.Length > 1)
-            {
-                if (File.Exists(parameters[1]))
-                {
-                    OpenFile(parameters[1]);
-                }
-            }
-        }
+			// 起動パラメータを取得し、ファイルパスが取得出来るならばOpen関数へ引き渡す
+			string[] parameters = System.Environment.GetCommandLineArgs();
+			if (parameters.Length > 1)
+			{
+				if (File.Exists(parameters[1]))
+				{
+					OpenFile(parameters[1]);
+				}
+			}
+		}
 
-        /// <summary>
-        /// 本体ドラッグによるウィンドウ移動
-        /// </summary>
-        private Point mousePoint;
+		/// <summary>
+		/// 本体ドラッグによるウィンドウ移動
+		/// </summary>
+		private Point mousePoint;
 
-        /// <summary>
-        /// フォーム内のマウス押下処理
-        /// 位置の記憶
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MainForm_MouseDown(object sender, MouseEventArgs e)
-        {
-            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
-            {
-                //位置を記憶する
-                mousePoint = new Point(e.X, e.Y);
-                playListForm.Activate();
-                this.Activate();
-            }
-        }
+		/// <summary>
+		/// フォーム内のマウス押下処理
+		/// 位置の記憶
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void MainForm_MouseDown(object sender, MouseEventArgs e)
+		{
+			if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+			{
+				//位置を記憶する
+				mousePoint = new Point(e.X, e.Y);
+				playListForm.Activate();
+				this.Activate();
+			}
+		}
 
-        /// <summary>
-        /// フォーム内のマウス移動処理
-        /// フォームの位置をマウス移動量に応じて移動する
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MainForm_MouseMove(object sender, MouseEventArgs e)
-        {
-            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
-            {
-                Left += e.X - mousePoint.X;
-                Top += e.Y - mousePoint.Y;
+		/// <summary>
+		/// フォーム内のマウス移動処理
+		/// フォームの位置をマウス移動量に応じて移動する
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void MainForm_MouseMove(object sender, MouseEventArgs e)
+		{
+			if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+			{
+				Left += e.X - mousePoint.X;
+				Top += e.Y - mousePoint.Y;
 
-                playListForm.Left = Left - ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Left;
-                playListForm.Top = Top - ((FormComponents)oldSkinSystem["PlayListForm"]).Position.Top;
-            }
-        }
+				playListForm.Left = Left - _currentSkin.PlayListForm.Position.Left;
+				playListForm.Top = Top - _currentSkin.PlayListForm.Position.Top;
+			}
+		}
 
-        /// <summary>
-        /// フォームクローズ処理
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            config.Save();
-			SkinPackage.CleanupTempDirectory(); // 追加
+		/// <summary>
+		/// フォームクローズ処理
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			config.Save();
 			cdForm?.Dispose();   // 追加
 			player.Dispose();  // 明示的に解放
 			player = null;
-        }
-        #endregion
+			SkinPackage.CleanupTempDirectory(); // 追加
+		}
+		#endregion
 
-        #region Timer Event
-        /// <summary>
-        /// タイマー処理
-        /// リアルタイム処理が必要なものは全てここで処理する
-        /// (スレッド化したい)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PlayerTimer_Tick(object sender, EventArgs e)
-        {
-            // 初期化済みの場合のみ処理する
-            if (!initialize)
-                return;
+		#region Timer Event
+		/// <summary>
+		/// タイマー処理
+		/// リアルタイム処理が必要なものは全てここで処理する
+		/// (スレッド化したい)
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void PlayerTimer_Tick(object sender, EventArgs e)
+		{
+			// 初期化済みの場合のみ処理する
+			if (!initialize)
+				return;
 
-            // スペクトラム画像の反映
-            float[] mFFT = player.spectrum.UpdateSpectrum();
-            Spectrum.mFFT = mFFT;
+			// スペクトラム画像の反映
+			float[] mFFT = player.spectrum.UpdateSpectrum();
+			Spectrum.mFFT = mFFT;
 			// Waveデータ（追加）
 			float[] mWave = player.wave.GetWaveData();
 			Spectrum.mWave = mWave;
 
-									 // 曲調トラックバーの反映 (シーク中はボタン側で動作する為動かさない)
+			// 曲調トラックバーの反映 (シーク中はボタン側で動作する為動かさない)
 			if (this.seekValue == 0)
-                SldTrack.Value = (int)player.GetPosition();
-            if (!player.IsPlaying())
-            {
-                if (player.PlayList.Count > 1)
-                {
-                    switch(player.loop)
-                    {
-                        case LOOP_MODE.LOOP_NONE:
-                            if (nowplaying && playingIndex > -1 && playingIndex < player.PlayList.Count - 1)
-                            {
-                                playingIndex++;
-                                PlayLoad();
-                            }
-                            break;
-                        case LOOP_MODE.LOOP_ONE_REPEAT:
-                            if (nowplaying)
-                               PlayLoad();
-                            break;
-                        case LOOP_MODE.LOOP_ALL:
-                            if (nowplaying)
-                            {
-                                if (playingIndex > -1 && playingIndex < player.PlayList.Count - 1)
-                                {
-                                    playingIndex++;
-                                    PlayLoad();
-                                }
-                                else
-                                {
-                                    if (playingIndex == player.PlayList.Count - 1)
-                                        playingIndex = 0;
-                                    PlayLoad();
-                                }
-                            }
-                            break;
-                    }
-                }
-            }
+				SldTrack.Value = (int)player.GetPosition();
+			if (!player.IsPlaying())
+			{
+				if (player.PlayList.Count > 1)
+				{
+					switch (player.loop)
+					{
+						case LOOP_MODE.LOOP_NONE:
+							if (nowplaying && playingIndex > -1 && playingIndex < player.PlayList.Count - 1)
+							{
+								playingIndex++;
+								PlayLoad();
+							}
+							break;
+						case LOOP_MODE.LOOP_ONE_REPEAT:
+							if (nowplaying)
+								PlayLoad();
+							break;
+						case LOOP_MODE.LOOP_ALL:
+							if (nowplaying)
+							{
+								if (playingIndex > -1 && playingIndex < player.PlayList.Count - 1)
+								{
+									playingIndex++;
+									PlayLoad();
+								}
+								else
+								{
+									if (playingIndex == player.PlayList.Count - 1)
+										playingIndex = 0;
+									PlayLoad();
+								}
+							}
+							break;
+					}
+				}
+			}
 
-            TimeSpan time1 = TimeSpan.FromMilliseconds(SldTrack.Value);
-            TimeSpan time2 = TimeSpan.FromMilliseconds(SldTrack.Maximum);
-            LabelTime.Value.Text = time1.ToString(@"mm\:ss") + "/" + time2.ToString(@"mm\:ss");
+			TimeSpan time1 = TimeSpan.FromMilliseconds(SldTrack.Value);
+			TimeSpan time2 = TimeSpan.FromMilliseconds(SldTrack.Maximum);
+			LabelTime.Value.Text = time1.ToString(@"mm\:ss") + "/" + time2.ToString(@"mm\:ss");
 
-            if (player.lastError != "" && player.lastErrCode != FMOD.RESULT.OK)
-            {
-                LabelTitle.Value.Text = player.lastErrFunction + " - " + player.lastError;
-            }
-        }
-        #endregion
+			if (player.lastError != "" && player.lastErrCode != FMOD.RESULT.OK)
+			{
+				LabelTitle.Value.Text = player.lastErrFunction + " - " + player.lastError;
+			}
+		}
+		#endregion
 
-        #region Button MouseDown Event
-        /// <summary>
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnOpen_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-        private void BtnClose_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-        private void BtnStop_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-        private void BtnBack_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-        private void BtnPlay_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-        private int seekValue;
-        private int seeking;
+		#region Button MouseDown Event
+		/// <summary>
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void BtnOpen_MouseDown(object sender, MouseEventArgs e)
+		{
+			BtnDownEvent(ref sender);
+		}
+		private void BtnClose_MouseDown(object sender, MouseEventArgs e)
+		{
+			BtnDownEvent(ref sender);
+		}
+		private void BtnStop_MouseDown(object sender, MouseEventArgs e)
+		{
+			BtnDownEvent(ref sender);
+		}
+		private void BtnBack_MouseDown(object sender, MouseEventArgs e)
+		{
+			BtnDownEvent(ref sender);
+		}
+		private void BtnPlay_MouseDown(object sender, MouseEventArgs e)
+		{
+			BtnDownEvent(ref sender);
+		}
+		private int seekValue;
+		private int seeking;
 		private const int SeekStep = 1000;       // 1回あたりのシーク量（ミリ秒）
 		private const int SeekMaxValue = 10000;  // 加速の上限（ミリ秒）
 
 		private void BtnSeekBack_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-            seeking = 2;
-        }
-        private void BtnPause_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-        private void BtnSeekForward_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-            seeking = 1;
-        }
-        private void BtnNext_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-        private void BtnRandom_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-        private void BtnLoop_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-        private void BtnSetting_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-        private void BtnPlaylist_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-        private void BtnMinisize_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
-        #endregion
+		{
+			BtnDownEvent(ref sender);
+			seeking = 2;
+		}
+		private void BtnPause_MouseDown(object sender, MouseEventArgs e)
+		{
+			BtnDownEvent(ref sender);
+		}
+		private void BtnSeekForward_MouseDown(object sender, MouseEventArgs e)
+		{
+			BtnDownEvent(ref sender);
+			seeking = 1;
+		}
+		private void BtnNext_MouseDown(object sender, MouseEventArgs e)
+		{
+			BtnDownEvent(ref sender);
+		}
+		private void BtnRandom_MouseDown(object sender, MouseEventArgs e)
+		{
+			BtnDownEvent(ref sender);
+		}
+		private void BtnLoop_MouseDown(object sender, MouseEventArgs e)
+		{
+			BtnDownEvent(ref sender);
+		}
+		private void BtnSetting_MouseDown(object sender, MouseEventArgs e)
+		{
+			BtnDownEvent(ref sender);
+		}
+		private void BtnPlaylist_MouseDown(object sender, MouseEventArgs e)
+		{
+			BtnDownEvent(ref sender);
+		}
+		private void BtnMinisize_MouseDown(object sender, MouseEventArgs e)
+		{
+			BtnDownEvent(ref sender);
+		}
+		#endregion
 
-        #region Button MouseUp Event
-        private void BtnBack_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-        private void BtnClose_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-        private void BtnOpen_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-        private void BtnPlay_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
+		#region Button MouseUp Event
+		private void BtnBack_MouseUp(object sender, MouseEventArgs e)
+		{
+			BtnUpEvent(ref sender);
+		}
+		private void BtnClose_MouseUp(object sender, MouseEventArgs e)
+		{
+			BtnUpEvent(ref sender);
+		}
+		private void BtnOpen_MouseUp(object sender, MouseEventArgs e)
+		{
+			BtnUpEvent(ref sender);
+		}
+		private void BtnPlay_MouseUp(object sender, MouseEventArgs e)
+		{
+			BtnUpEvent(ref sender);
+		}
 
-        private void BtnStop_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-        private void BtnSeekBack_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-            this.seekValue = 0;
-            this.seeking = 0;
-        }
-        private void BtnPause_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-        private void BtnSeekForward_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-            this.seekValue = 0;
-            this.seeking = 0;
-        }
-        private void BtnNext_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-        private void BtnRandom_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-        private void BtnLoop_MouseUp(object sender, MouseEventArgs e)
-        {
-            switch(player.loop)
-            {
-                case LOOP_MODE.LOOP_NONE:
-                    // 背景画像を元画像へ変更
-                    ((Button)sender).BackgroundImage = ((ButtonComponents)oldSkinSystem[((Button)sender).Name]).BackImage;
-                    break;
-                case LOOP_MODE.LOOP_ONE_REPEAT:
-                    ((Button)sender).BackgroundImage = ((ButtonComponents)oldSkinSystem[((Button)sender).Name]).DownImage;
-                    break;
-                case LOOP_MODE.LOOP_ALL:
-                    ((Button)sender).BackgroundImage = ((ButtonComponents)oldSkinSystem[((Button)sender).Name]).OptionalImage;
-                    break;
+		private void BtnStop_MouseUp(object sender, MouseEventArgs e)
+		{
+			BtnUpEvent(ref sender);
+		}
+		private void BtnSeekBack_MouseUp(object sender, MouseEventArgs e)
+		{
+			BtnUpEvent(ref sender);
+			this.seekValue = 0;
+			this.seeking = 0;
+		}
+		private void BtnPause_MouseUp(object sender, MouseEventArgs e)
+		{
+			BtnUpEvent(ref sender);
+		}
+		private void BtnSeekForward_MouseUp(object sender, MouseEventArgs e)
+		{
+			BtnUpEvent(ref sender);
+			this.seekValue = 0;
+			this.seeking = 0;
+		}
+		private void BtnNext_MouseUp(object sender, MouseEventArgs e)
+		{
+			BtnUpEvent(ref sender);
+		}
+		private void BtnRandom_MouseUp(object sender, MouseEventArgs e)
+		{
+			BtnUpEvent(ref sender);
+		}
+		private void BtnLoop_MouseUp(object sender, MouseEventArgs e)
+		{
+			switch (player.loop)
+			{
+				case LOOP_MODE.LOOP_NONE:
+					((Button)sender).BackgroundImage = _currentSkin.BtnLoop.BackImage;
+					break;
+				case LOOP_MODE.LOOP_ONE_REPEAT:
+					((Button)sender).BackgroundImage = _currentSkin.BtnLoop.DownImage;
+					break;
+				case LOOP_MODE.LOOP_ALL:
+					((Button)sender).BackgroundImage = _currentSkin.BtnLoop.OptionalImage;
+					break;
+			}
+			((Button)sender).Refresh();
+		}
+		private void BtnSetting_MouseUp(object sender, MouseEventArgs e)
+		{
+			BtnUpEvent(ref sender);
+		}
+		private void BtnPlaylist_MouseUp(object sender, MouseEventArgs e)
+		{
+			BtnUpEvent(ref sender);
+		}
+		private void BtnMinisize_MouseUp(object sender, MouseEventArgs e)
+		{
+			BtnUpEvent(ref sender);
+		}
+		#endregion
 
-            }
-            ((Button)sender).Refresh();
-        }
-        private void BtnSetting_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-        private void BtnPlaylist_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-        private void BtnMinisize_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
-        #endregion
+		#region Button Click Event
+		/// <summary>
+		/// ファイルを開くボタンをクリック
+		/// ファイルオープンダイアログにてファイル選択後、自動で再生する
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void BtnOpenFile_Click(object sender, EventArgs e)
+		{
+			if (this.IsDisposed || OpenFileDialog == null)
+				return;
 
-        #region Button Click Event
-        /// <summary>
-        /// ファイルを開くボタンをクリック
-        /// ファイルオープンダイアログにてファイル選択後、自動で再生する
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnOpenFile_Click(object sender, EventArgs e)
-        {
-            if (this.IsDisposed || OpenFileDialog == null)
-                return;
+			try
+			{
+				if (OpenFileDialog.ShowDialog() == DialogResult.OK)
+				{
+					OpenFile(OpenFileDialog.FileName);
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("ファイルのオープンに失敗しました。\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
 
-            try
-            {
-                if (OpenFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    OpenFile(OpenFileDialog.FileName);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("ファイルのオープンに失敗しました。\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+		/// <summary>
+		/// 再生/一時停止ボタンのクリック
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void BtnPlay_Click(object sender, EventArgs e)
+		{
+			// プレイ中の場合はポーズする
+			if (player.IsPlaying())
+				player.Pause();
+			else
+				if (playingIndex < player.PlayList.Count)
+					PlayLoad();
+		}
 
-        /// <summary>
-        /// 再生/一時停止ボタンのクリック
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnPlay_Click(object sender, EventArgs e)
-        {
-            // プレイ中の場合はポーズする
-            if (player.IsPlaying())
-                player.Pause();
-            else
-                if (playingIndex < player.PlayList.Count)
-                    PlayLoad();
-        }
-
-        /// <summary>
-        /// 停止ボタンのクリック
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnStop_Click(object sender, EventArgs e)
-        {
-            // 問答無用の停止
-            player.Stop();
-            nowplaying = false;
-        }
+		/// <summary>
+		/// 停止ボタンのクリック
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void BtnStop_Click(object sender, EventArgs e)
+		{
+			// 問答無用の停止
+			player.Stop();
+			nowplaying = false;
+		}
 
 
-        /// <summary>
-        /// 閉じるボタンのクリック
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnClose_Click(object sender, EventArgs e)
-        {
-            playListForm.Close();
-            playListForm.Dispose();
-            optionsForm.Close();
-            optionsForm.Dispose();
+		/// <summary>
+		/// 閉じるボタンのクリック
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void BtnClose_Click(object sender, EventArgs e)
+		{
+			playListForm.Close();
+			playListForm.Dispose();
+			optionsForm.Close();
+			optionsForm.Dispose();
 			cdForm.Close();      // 追加
 			cdForm.Dispose();    // 追加
 								 // 終了
 			Close();
-        }
-        private void BtnBack_Click(object sender, EventArgs e)
-        {
-            // ループ無し：最初の曲まで減算
-            // １曲ループ：最初の曲まで減算
-            // 全曲ループ：最初の曲まで減算、最初の曲から最後の曲へ戻る
-            switch(player.loop)
-            {
-                case LOOP_MODE.LOOP_NONE:
-                case LOOP_MODE.LOOP_ONE_REPEAT:
-                    if (playingIndex > 0)
-                        playingIndex--;
-                    break;
-                case LOOP_MODE.LOOP_ALL:
-                    if (playingIndex > 0)
-                        playingIndex--;
-                    else
-                        playingIndex = player.PlayList.Count - 1;
-                    break;
+		}
+		private void BtnBack_Click(object sender, EventArgs e)
+		{
+			// ループ無し：最初の曲まで減算
+			// １曲ループ：最初の曲まで減算
+			// 全曲ループ：最初の曲まで減算、最初の曲から最後の曲へ戻る
+			switch (player.loop)
+			{
+				case LOOP_MODE.LOOP_NONE:
+				case LOOP_MODE.LOOP_ONE_REPEAT:
+					if (playingIndex > 0)
+						playingIndex--;
+					break;
+				case LOOP_MODE.LOOP_ALL:
+					if (playingIndex > 0)
+						playingIndex--;
+					else
+						playingIndex = player.PlayList.Count - 1;
+					break;
 
-            }
-            PlayLoad();
-        }
-        private void BtnSeekBack_Click(object sender, EventArgs e)
-        {
-        }
-        private void BtnPause_Click(object sender, EventArgs e)
-        {
-        }
-        private void BtnSeekForward_Click(object sender, EventArgs e)
-        {
-        }
-        private void BtnNext_Click(object sender, EventArgs e)
-        {
-            // ループ無し：最後の曲まで加算
-            // １曲ループ：最後の曲まで加算
-            // 全曲ループ：最後の曲まで加算、最後の曲から最初の曲へ戻る
-            switch (player.loop)
-            {
-                case LOOP_MODE.LOOP_NONE:
-                case LOOP_MODE.LOOP_ONE_REPEAT:
-                    if (playingIndex < player.PlayList.Count - 1)
-                        playingIndex++;
-                    break;
-                case LOOP_MODE.LOOP_ALL:
-                    if (playingIndex < player.PlayList.Count - 1)
-                        playingIndex++;
-                    else
-                        playingIndex = 0;
-                    break;
-            }
-            PlayLoad();
-        }
-        private void BtnRandom_Click(object sender, EventArgs e)
-        {
-        }
-        private void BtnLoop_Click(object sender, EventArgs e)
-        {
-            switch(player.loop)
-            {
-                case LOOP_MODE.LOOP_NONE:
-                    player.loop = LOOP_MODE.LOOP_ONE_REPEAT;
-                    break;
-                case LOOP_MODE.LOOP_ONE_REPEAT:
-                    player.loop = LOOP_MODE.LOOP_ALL;
-                    break;
-                case LOOP_MODE.LOOP_ALL:
-                    player.loop = LOOP_MODE.LOOP_NONE;
-                    break;
-            }
-            ((Button)sender).BackgroundImage = ((ButtonComponents)oldSkinSystem[((Button)sender).Name]).DownImage;
-            ((Button)sender).Refresh();
-        }
-        private void BtnSetting_Click(object sender, EventArgs e)
-        {
-            optionsForm.Show();
-        }
-        private void BtnPlaylist_Click(object sender, EventArgs e)
-        {
-            playListForm.Show();
-        }
-        private void BtnMinisize_Click(object sender, EventArgs e)
-        {
-        }
-        #endregion
+			}
+			PlayLoad();
+		}
+		private void BtnSeekBack_Click(object sender, EventArgs e)
+		{
+		}
+		private void BtnPause_Click(object sender, EventArgs e)
+		{
+		}
+		private void BtnSeekForward_Click(object sender, EventArgs e)
+		{
+		}
+		private void BtnNext_Click(object sender, EventArgs e)
+		{
+			// ループ無し：最後の曲まで加算
+			// １曲ループ：最後の曲まで加算
+			// 全曲ループ：最後の曲まで加算、最後の曲から最初の曲へ戻る
+			switch (player.loop)
+			{
+				case LOOP_MODE.LOOP_NONE:
+				case LOOP_MODE.LOOP_ONE_REPEAT:
+					if (playingIndex < player.PlayList.Count - 1)
+						playingIndex++;
+					break;
+				case LOOP_MODE.LOOP_ALL:
+					if (playingIndex < player.PlayList.Count - 1)
+						playingIndex++;
+					else
+						playingIndex = 0;
+					break;
+			}
+			PlayLoad();
+		}
+		private void BtnRandom_Click(object sender, EventArgs e)
+		{
+		}
+		private void BtnLoop_Click(object sender, EventArgs e)
+		{
+			switch (player.loop)
+			{
+				case LOOP_MODE.LOOP_NONE:
+					player.loop = LOOP_MODE.LOOP_ONE_REPEAT;
+					break;
+				case LOOP_MODE.LOOP_ONE_REPEAT:
+					player.loop = LOOP_MODE.LOOP_ALL;
+					break;
+				case LOOP_MODE.LOOP_ALL:
+					player.loop = LOOP_MODE.LOOP_NONE;
+					break;
+			}
+			((Button)sender).BackgroundImage = _currentSkin.BtnLoop.DownImage;
+			((Button)sender).Refresh();
+		}
+		private void BtnSetting_Click(object sender, EventArgs e)
+		{
+			optionsForm.Show();
+		}
+		private void BtnPlaylist_Click(object sender, EventArgs e)
+		{
+			playListForm.Show();
+		}
+		private void BtnMinisize_Click(object sender, EventArgs e)
+		{
+		}
+		#endregion
 
-        #region Slider Event
-        /// <summary>
-        /// トラックスライダー
-        /// 移動時
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SldTrack_SliderMoving(object sender, MouseEventArgs e)
-        {
-            TimeSpan time = TimeSpan.FromMilliseconds(SldTrack.Value);
-            _toolTip.Show(time.ToString(@"hh\:mm\:ss"), this, ((CustomSlider)(sender)).Left, ((CustomSlider)(sender)).Top);
-        }
+		#region Slider Event
+		/// <summary>
+		/// トラックスライダー
+		/// 移動時
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void SldTrack_SliderMoving(object sender, MouseEventArgs e)
+		{
+			TimeSpan time = TimeSpan.FromMilliseconds(SldTrack.Value);
+			_toolTip.Show(time.ToString(@"hh\:mm\:ss"), this, ((CustomSlider)(sender)).Left, ((CustomSlider)(sender)).Top);
+		}
 
-        /// <summary>
-        /// トラックスライダー
-        /// 移動確定
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SldTrack_SliderMoved(object sender, MouseEventArgs e)
-        {
-            uint time = (uint)SldTrack.Value;
-            _toolTip.Hide(this);
-            player.SetPosition(time);
-        }
+		/// <summary>
+		/// トラックスライダー
+		/// 移動確定
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void SldTrack_SliderMoved(object sender, MouseEventArgs e)
+		{
+			uint time = (uint)SldTrack.Value;
+			_toolTip.Hide(this);
+			player.SetPosition(time);
+		}
 
-        /// <summary>
-        /// パンスライダー
-        /// 移動時
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SldPan_SliderMoving(object sender, MouseEventArgs e)
-        {
-            _toolTip.Show(SldPan.Value.ToString(), this, ((CustomSlider)(sender)).Left, ((CustomSlider)(sender)).Top);
-            float pan = ((float)SldPan.Value) / 10f;
-            player.SetPan(pan);
-        }
+		/// <summary>
+		/// パンスライダー
+		/// 移動時
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void SldPan_SliderMoving(object sender, MouseEventArgs e)
+		{
+			_toolTip.Show(SldPan.Value.ToString(), this, ((CustomSlider)(sender)).Left, ((CustomSlider)(sender)).Top);
+			float pan = ((float)SldPan.Value) / 10f;
+			player.SetPan(pan);
+		}
 
-        /// <summary>
-        /// パンスライダー
-        /// 移動確定
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SldPan_SliderMoved(object sender, MouseEventArgs e)
-        {
-            float pan = ((float)SldPan.Value) / 10f;
-            player.SetPan(pan);
-            config.settings.Pan = SldPan.Value;
-            _toolTip.Hide(this);
-        }
+		/// <summary>
+		/// パンスライダー
+		/// 移動確定
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void SldPan_SliderMoved(object sender, MouseEventArgs e)
+		{
+			float pan = ((float)SldPan.Value) / 10f;
+			player.SetPan(pan);
+			config.settings.Pan = SldPan.Value;
+			_toolTip.Hide(this);
+		}
 
-        /// <summary>
-        /// ボリュームスライダー
-        /// 移動時
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SldVolume_SliderMoving(object sender, MouseEventArgs e)
-        {
-            float volume = ((float)SldVolume.Value) / 100f;
-            player.SetVolume(volume);
-            _toolTip.Show(SldVolume.Value.ToString("0"), this, ((CustomSlider)(sender)).Left, ((CustomSlider)(sender)).Top);
-        }
-        /// <summary>
-        /// ボリュームスライダー
-        /// 移動確定
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SldVolume_SliderMoved(object sender, MouseEventArgs e)
-        {
-            float volume = ((float)SldVolume.Value) / 100f;
-            player.SetVolume(volume);
-            config.settings.Volume = SldVolume.Value;
-            _toolTip.Hide(this);
-        }
+		/// <summary>
+		/// ボリュームスライダー
+		/// 移動時
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void SldVolume_SliderMoving(object sender, MouseEventArgs e)
+		{
+			float volume = ((float)SldVolume.Value) / 100f;
+			player.SetVolume(volume);
+			_toolTip.Show(SldVolume.Value.ToString("0"), this, ((CustomSlider)(sender)).Left, ((CustomSlider)(sender)).Top);
+		}
+		/// <summary>
+		/// ボリュームスライダー
+		/// 移動確定
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void SldVolume_SliderMoved(object sender, MouseEventArgs e)
+		{
+			float volume = ((float)SldVolume.Value) / 100f;
+			player.SetVolume(volume);
+			config.settings.Volume = SldVolume.Value;
+			_toolTip.Hide(this);
+		}
 
-        private void SldTrack_ValueChanged(object sender, EventArgs e)
-        {
-            if (this.seekValue > 0)
-            {
-                TimeSpan stime = TimeSpan.FromMilliseconds(SldTrack.Value);
-                _toolTip.Show(stime.ToString(@"hh\:mm\:ss"), this, ((CustomSlider)(sender)).Left, ((CustomSlider)(sender)).Top, 1);
-                uint time = (uint)SldTrack.Value;
-                player.SetPosition(time);
-            }
-        }
-        #endregion
+		private void SldTrack_ValueChanged(object sender, EventArgs e)
+		{
+			if (this.seekValue > 0)
+			{
+				TimeSpan stime = TimeSpan.FromMilliseconds(SldTrack.Value);
+				_toolTip.Show(stime.ToString(@"hh\:mm\:ss"), this, ((CustomSlider)(sender)).Left, ((CustomSlider)(sender)).Top, 1);
+				uint time = (uint)SldTrack.Value;
+				player.SetPosition(time);
+			}
+		}
+		#endregion
 
-        private void SeekiTimer_Tick(object sender, EventArgs e)
-        {
+		private void SeekiTimer_Tick(object sender, EventArgs e)
+		{
 			if (seeking == 0) return;
 
 			// seekValueを増加させるが上限を設ける
@@ -856,64 +963,64 @@ namespace MediaPlayer_X_Ark
 				// 0を下回らないようにクランプ
 				SldTrack.Value = Math.Max(newValue, SldTrack.Minimum);
 			}
-        }
+		}
 
-        private void Spectrum_Click(object sender, EventArgs e)
-        {
-            Spectrum.Mode = (Spectrum.Mode + 1) % 3;
-        }
+		private void Spectrum_Click(object sender, EventArgs e)
+		{
+			Spectrum.Mode = (Spectrum.Mode + 1) % 5;
+		}
 
-        private void BtnCD_Click(object sender, EventArgs e)
-        {
+		private void BtnCD_Click(object sender, EventArgs e)
+		{
 			cdForm.Show();
 		}
 
-        private void BtnCD_MouseDown(object sender, MouseEventArgs e)
-        {
-            BtnDownEvent(ref sender);
-        }
+		private void BtnCD_MouseDown(object sender, MouseEventArgs e)
+		{
+			BtnDownEvent(ref sender);
+		}
 
-        private void BtnCD_MouseUp(object sender, MouseEventArgs e)
-        {
-            BtnUpEvent(ref sender);
-        }
+		private void BtnCD_MouseUp(object sender, MouseEventArgs e)
+		{
+			BtnUpEvent(ref sender);
+		}
 
-        private void MainForm_DragDrop(object sender, DragEventArgs e)
-        {
-            //コントロール内にドロップされたとき実行される
-            //ドロップされたすべてのファイル名を取得する
-            string[] fileName =
-                (string[])e.Data.GetData(DataFormats.FileDrop, false);
+		private void MainForm_DragDrop(object sender, DragEventArgs e)
+		{
+			//コントロール内にドロップされたとき実行される
+			//ドロップされたすべてのファイル名を取得する
+			string[] fileName =
+				(string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            int idx = 0;
-            int temp = 0;
-            foreach(string file in fileName)
-            {
-                // 最初の1曲目
-                if (idx++ == 0)
-                {
-                    // 再生中ではない場合
-                    if (!player.IsPlaying())
-                    {
-                        // 最初の１つはOpen=>Play処理を行う
-                        OpenFile(file);
-                        continue;
-                    }
-                }
-                // 後はOpenのみでプレイリストへ追加
-                player.CreateSound(file, out temp);
-            }
-        }
+			int idx = 0;
+			int temp = 0;
+			foreach (string file in fileName)
+			{
+				// 最初の1曲目
+				if (idx++ == 0)
+				{
+					// 再生中ではない場合
+					if (!player.IsPlaying())
+					{
+						// 最初の１つはOpen=>Play処理を行う
+						OpenFile(file);
+						continue;
+					}
+				}
+				// 後はOpenのみでプレイリストへ追加
+				player.CreateSound(file, out temp);
+			}
+		}
 
-        private void MainForm_DragEnter(object sender, DragEventArgs e)
-        {
-            //コントロール内にドラッグされたとき実行される
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                //ドラッグされたデータ形式を調べ、ファイルのときはコピーとする
-                e.Effect = DragDropEffects.Copy;
-            else
-                //ファイル以外は受け付けない
-                e.Effect = DragDropEffects.None;
-        }
-    }
+		private void MainForm_DragEnter(object sender, DragEventArgs e)
+		{
+			//コントロール内にドラッグされたとき実行される
+			if (e.Data.GetDataPresent(DataFormats.FileDrop))
+				//ドラッグされたデータ形式を調べ、ファイルのときはコピーとする
+				e.Effect = DragDropEffects.Copy;
+			else
+				//ファイル以外は受け付けない
+				e.Effect = DragDropEffects.None;
+		}
+	}
 }

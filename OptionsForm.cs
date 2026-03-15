@@ -1227,9 +1227,12 @@ namespace MediaPlayer_X_Ark
 				{
 					if (pkg.MainImagePath != null && File.Exists(pkg.MainImagePath))
 					{
-						var img = Image.FromFile(pkg.MainImagePath);
-						PictSkinPreview.Image = img;
-						PictSkinPreview.SizeMode = PictureBoxSizeMode.Zoom;
+						// ファイルロックを避けるためメモリストリーム経由でロード
+						using (var stream = new FileStream(pkg.MainImagePath, FileMode.Open, FileAccess.Read))
+						{
+							PictSkinPreview.Image = new Bitmap(stream);
+							PictSkinPreview.SizeMode = PictureBoxSizeMode.Zoom;
+						}
 					}
 					else
 					{

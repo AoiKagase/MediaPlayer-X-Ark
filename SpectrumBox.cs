@@ -37,6 +37,7 @@ namespace MediaPlayer_X_Ark
 		/// 画像
 		/// </summary>
 		private Color _BackColor;
+		private Bitmap _BackImage;
 		private Bitmap _BitmapSpectrum;
 		private Bitmap _BitmapSnow;
 		private Bitmap _BitmapWave;
@@ -81,7 +82,29 @@ namespace MediaPlayer_X_Ark
 		/// スペクトラム間隔
 		/// </summary>
 		public int Mode { get; set; }
-
+		public override Color BackColor
+		{
+			get { return _BackColor; }
+			set
+			{
+				_BackColor = value;
+			}
+		}
+		public override Image BackgroundImage
+		{
+			get { return _BackImage; }
+			set
+			{
+				if (value != null)
+				{
+					_BackImage = (Bitmap)value;
+				} else
+				{
+					if (_BackImage != null)
+						_BackImage.Dispose();
+				}
+			}
+		}
 		/// <summary>
 		/// Spectrum Analyzer Image.
 		/// </summary>
@@ -96,6 +119,10 @@ namespace MediaPlayer_X_Ark
 				if (value != null)
                 {
 					_BitmapSpectrum = value;
+				} else
+				{
+					if(_BitmapSpectrum != null)
+						_BitmapSpectrum.Dispose();
 				}
 			}
 		}
@@ -111,6 +138,10 @@ namespace MediaPlayer_X_Ark
 				if (value != null)
                 {
 					_BitmapSnow = value;
+				} else
+				{
+					if (_BitmapSnow != null)
+						_BitmapSnow.Dispose();
 				}
 			}
 		}
@@ -129,6 +160,10 @@ namespace MediaPlayer_X_Ark
 				if (value != null)
                 {
 					_BitmapWave = value;
+				} else
+				{
+					if (_BitmapWave != null)
+						_BitmapWave.Dispose();
 				}
 			}
         }
@@ -169,10 +204,10 @@ namespace MediaPlayer_X_Ark
 		/// Initialize
 		/// </summary>
 		/// <param name="backColor">背景色</param>
-		public void Initialize(System.Drawing.Color backColor)
+		public void Initialize()
 		{
 			// 背景色設定
-			_BackColor = backColor;
+//			_BackColor = backColor;
 			// Snow blockエリア確保
 			analyzerSnow = new float[windowSize];
 
@@ -195,7 +230,7 @@ namespace MediaPlayer_X_Ark
 			RECT line3 = new RECT(0, 0, 0, 0);  // Snow
 
 			// HBitmapポインタ取得
-			IntPtr hBSrc = _BitmapSpectrum.GetHbitmap(_BackColor);
+			IntPtr hBSrc = _BitmapSpectrum.GetHbitmap(Color.Transparent);
 			IntPtr hBSnow = _BitmapSnow.GetHbitmap(Color.White);
 
 			// バックバッファーを保持する
@@ -232,86 +267,98 @@ namespace MediaPlayer_X_Ark
 						// 描画クリア
 						Win32API.PatBlt(hdcBuffer, 0, 0, this.Width, this.Height, 0);
 
-						// FFT取得済み
-						if (mFFT != null)
+						switch(Mode)
 						{
-							// バーの高さ初期化
-							int lineHeight = 0;
-
-							// 横間隔の取得
-							int step = (Mode > 0) ? Mode * 2 : 1;
-
-							// 画像処理用の座標計算開始
-							// 横間隔で間引き有り
-							for (int i = 0; i < windowSize; i += step)
-							{
-                                // バー高さ取得
-                                lineHeight = this.Height - (int)((this.Height / 80f) * ((lin2dB(mFFT[i]) + 80f)));
-//                                Math.Clamp((float)Math.Log10(linear) * 20.0f, -80.0f, 0.0f);
-
-                                // 横位置（左）
-                                line3.Left = i;
-								line3.Bottom = this.Height;
-                                // 横位置（右）左位置+1pxを基準として横間隔/2分広げる
-                                // スペクトラム領域より描画域が広い場合はバーの横幅を広げる
-                                if (this.Width > windowSize)
-									line3.Right = i + (this.Width / windowSize) + (int)(Mode / 2f);
-								else
-									line3.Right = i + 1 + (int)(Mode / 2f);
-
-								// SnowBlockの位置計算
-								// 1フレーム前のSnowBlock高さより現フレームのバー高さの方が高い場合は押し上げる
-								if (analyzerSnow[i] > lineHeight)
-									line3.Bottom = (int)(analyzerSnow[i] = lineHeight);
-								// 落下
-								else if (analyzerSnow[i] < this.Height)
-									line3.Bottom = (int)(analyzerSnow[i] += 0.2f);
-
-								// SnowBlockの上位置 下位値の-1px
-								line3.Top = line3.Bottom - 1;
-
-								// バー位置
-								line1.Bottom = this.Height;	// 下部固定
-								line1.Top = lineHeight;		// 上部計算
-								line1.Left = line3.Left;	// Snow Block左に合わせる(前処理で計算済み)
-								line1.Right = line3.Right;  // Snow Block右に合わせる(前処理で計算済み)
-
-								// 描画元画像の読み取り位置
-								src1.Top = lineHeight;
-								src1.Bottom = this.Height;
-
-								// バックバッファへ描画
-								// SnowBlock
-								Win32API.BitBlt(hdcBuffer, line3.Left, line3.Top, line3.Right - line3.Left, 1, hdc3SnowSrc, 0, 0, Win32API.TernaryRasterOperations.SRCCOPY);
-								// Spectrum Bar
-								Win32API.BitBlt(hdcBuffer, line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top, hdc2AnalyzerSrc, line1.Left, line1.Top, Win32API.TernaryRasterOperations.SRCCOPY);
-							}
-						}
-						// 現状 Mode==0: バー, Mode==1: スノーブロック, Mode==2: Wave とする
-						if (Mode == 2 && mWave != null)
-						{
-							// Wave描画
-							int prevX = 0;
-							int prevY = this.Height / 2;
-
-							for (int i = 0; i < mWave.Length && i < this.Width; i++)
-							{
-								int x = i;
-								// -1.0〜+1.0 を 0〜Height にマッピング
-								int y = (int)((1.0f - mWave[i]) * this.Height / 2f);
-								y = Math.Max(0, Math.Min(this.Height - 1, y));
-
-								// BitBltで直接描画する既存構造に合わせるため
-								// gBuffer（バックバッファ）に直接描画
-								using (var pen = new Pen(Color.Lime, 1))
-								using (var g = Graphics.FromHdc(hdcBuffer))
+							// WAVE MODE
+							case 4:
+								if (mWave != null)
 								{
-									g.DrawLine(pen, prevX, prevY, x, y);
+									// Wave描画
+									int prevX = 0;
+									int prevY = this.Height / 2;
+
+									for (int i = 0; i < mWave.Length && i < this.Width; i++)
+									{
+										int x = i;
+										// -1.0〜+1.0 を 0〜Height にマッピング
+										int y = (int)((1.0f - mWave[i]) * this.Height / 2f);
+										y = Math.Max(0, Math.Min(this.Height - 1, y));
+
+										// BitBltで直接描画する既存構造に合わせるため
+										// gBuffer（バックバッファ）に直接描画
+										using (var pen = new Pen(Color.Lime, 1))
+										using (var g = Graphics.FromHdc(hdcBuffer))
+										{
+											g.DrawLine(pen, prevX, prevY, x, y);
+										}
+										prevX = x;
+										prevY = y;
+									}
 								}
-								prevX = x;
-								prevY = y;
-							}
-						}                       
+								break;
+							// SNOW BLOCK
+							case 3:
+							default:
+								// FFT取得済み
+								if (mFFT != null)
+								{
+									// バーの高さ初期化
+									int lineHeight = 0;
+
+									// 横間隔の取得
+									int step = (Mode > 0) ? Mode * 2 : 1;
+
+									// 画像処理用の座標計算開始
+									// 横間隔で間引き有り
+									for (int i = 0; i < windowSize; i += step)
+									{
+										// バー高さ取得
+										lineHeight = this.Height - (int)((this.Height / 80f) * ((lin2dB(mFFT[i]) + 80f)));
+										//                                Math.Clamp((float)Math.Log10(linear) * 20.0f, -80.0f, 0.0f);
+
+										// 横位置（左）
+										line3.Left = i;
+										line3.Bottom = this.Height;
+										// 横位置（右）左位置+1pxを基準として横間隔/2分広げる
+										// スペクトラム領域より描画域が広い場合はバーの横幅を広げる
+										if (this.Width > windowSize)
+											line3.Right = i + (this.Width / windowSize) + (int)(Mode / 2f);
+										else
+											line3.Right = i + 1 + (int)(Mode / 2f);
+
+										// SnowBlockの位置計算
+										// 1フレーム前のSnowBlock高さより現フレームのバー高さの方が高い場合は押し上げる
+										if (analyzerSnow[i] > lineHeight)
+											line3.Bottom = (int)(analyzerSnow[i] = lineHeight);
+										// 落下
+										else if (analyzerSnow[i] < this.Height)
+											line3.Bottom = (int)(analyzerSnow[i] += 0.2f);
+
+										// SnowBlockの上位置 下位値の-1px
+										line3.Top = line3.Bottom - 1;
+
+										// バー位置
+										line1.Bottom = this.Height; // 下部固定
+										line1.Top = lineHeight;     // 上部計算
+										line1.Left = line3.Left;    // Snow Block左に合わせる(前処理で計算済み)
+										line1.Right = line3.Right;  // Snow Block右に合わせる(前処理で計算済み)
+
+										// 描画元画像の読み取り位置
+										src1.Top = lineHeight;
+										src1.Bottom = this.Height;
+
+										// バックバッファへ描画
+										// SnowBlock
+										Win32API.BitBlt(hdcBuffer, line3.Left, line3.Top, line3.Right - line3.Left, 1, hdc3SnowSrc, 0, 0, Win32API.TernaryRasterOperations.SRCCOPY);
+										if (Mode != 3)
+										{
+											// Spectrum Bar
+											Win32API.BitBlt(hdcBuffer, line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top, hdc2AnalyzerSrc, line1.Left, line1.Top, Win32API.TernaryRasterOperations.SRCCOPY);
+										}
+									}
+								}
+								break;
+						}
 						// バックバッファから転送
 						Win32API.BitBlt(hdc1Analyzer, 0, 0, this.Width, this.Height, hdcBuffer, 0, 0, Win32API.TernaryRasterOperations.SRCCOPY);
 					}
