@@ -486,7 +486,7 @@ namespace MediaPlayer_X_Ark
 			CheckDistortion.Checked = _engine.effector.Distortion.Enabled;
 			KnobDistortionLevel.ParameterName = "Level";
 			KnobDistortionLevel.Unit = "";
-			KnobDistortionLevel.Scale = 100f;
+			KnobDistortionLevel.Scales = 100f;
 			KnobDistortionLevel.Minimum = 0;
 			KnobDistortionLevel.Maximum = 100;
 			KnobDistortionLevel.LargeChange = 5;
@@ -503,7 +503,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobChorusMix.ParameterName = "Mix";
 			KnobChorusMix.Unit = "%";
-			KnobChorusMix.Scale = 1f;
+			KnobChorusMix.Scales = 1f;
 			KnobChorusMix.Minimum = 0;
 			KnobChorusMix.Maximum = 100;
 			KnobChorusMix.LargeChange = 5;
@@ -511,7 +511,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobChorusRate.ParameterName = "Rate";
 			KnobChorusRate.Unit = "";
-			KnobChorusRate.Scale = 10f;
+			KnobChorusRate.Scales = 10f;
 			KnobChorusRate.Minimum = 0;
 			KnobChorusRate.Maximum = 200;
 			KnobChorusRate.LargeChange = 10;
@@ -519,7 +519,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobChorusDepth.ParameterName = "Depth";
 			KnobChorusDepth.Unit = "%";
-			KnobChorusDepth.Scale = 1f;
+			KnobChorusDepth.Scales = 1f;
 			KnobChorusDepth.Minimum = 0;
 			KnobChorusDepth.Maximum = 100;
 			KnobChorusDepth.LargeChange = 5;
@@ -535,7 +535,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobEchoDelay.ParameterName = "Delay";
 			KnobEchoDelay.Unit = "ms";
-			KnobEchoDelay.Scale = 1f;
+			KnobEchoDelay.Scales = 1f;
 			KnobEchoDelay.Minimum = 1;
 			KnobEchoDelay.Maximum = 5000;
 			KnobEchoDelay.LargeChange = 100;
@@ -543,7 +543,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobEchoFeedback.ParameterName = "Feedback";
 			KnobEchoFeedback.Unit = "%";
-			KnobEchoFeedback.Scale = 1f;
+			KnobEchoFeedback.Scales = 1f;
 			KnobEchoFeedback.Minimum = 0;
 			KnobEchoFeedback.Maximum = 100;
 			KnobEchoFeedback.LargeChange = 5;
@@ -551,7 +551,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobEchoDry.ParameterName = "Dry Level";
 			KnobEchoDry.Unit = "dB";
-			KnobEchoDry.Scale = 1f;
+			KnobEchoDry.Scales = 1f;
 			KnobEchoDry.Minimum = -80;
 			KnobEchoDry.Maximum = 10;
 			KnobEchoDry.LargeChange = 5;
@@ -559,7 +559,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobEchoWet.ParameterName = "Wet Level";
 			KnobEchoWet.Unit = "dB";
-			KnobEchoWet.Scale = 1f;
+			KnobEchoWet.Scales = 1f;
 			KnobEchoWet.Minimum = -80;
 			KnobEchoWet.Maximum = 10;
 			KnobEchoWet.LargeChange = 5;
@@ -575,7 +575,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobFlangerMix.ParameterName = "Mix";
 			KnobFlangerMix.Unit = "%";
-			KnobFlangerMix.Scale = 1f;
+			KnobFlangerMix.Scales = 1f;
 			KnobFlangerMix.Minimum = 0;
 			KnobFlangerMix.Maximum = 100;
 			KnobFlangerMix.LargeChange = 5;
@@ -583,7 +583,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobFlangerRate.ParameterName = "Rate";
 			KnobFlangerRate.Unit = "";
-			KnobFlangerRate.Scale = 10f;
+			KnobFlangerRate.Scales = 10f;
 			KnobFlangerRate.Minimum = 0;
 			KnobFlangerRate.Maximum = 200;
 			KnobFlangerRate.LargeChange = 10;
@@ -591,7 +591,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobFlangerDepth.ParameterName = "Depth";
 			KnobFlangerDepth.Unit = "";
-			KnobFlangerDepth.Scale = 100f;
+			KnobFlangerDepth.Scales = 100f;
 			KnobFlangerDepth.Minimum = 1;
 			KnobFlangerDepth.Maximum = 100;
 			KnobFlangerDepth.LargeChange = 5;
@@ -607,7 +607,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobHighpassCutoff.ParameterName = "Cutoff";
 			KnobHighpassCutoff.Unit = "Hz";
-			KnobHighpassCutoff.Scale = 1f;
+			KnobHighpassCutoff.Scales = 1f;
 			KnobHighpassCutoff.Minimum = 1;
 			KnobHighpassCutoff.Maximum = 22000;
 			KnobHighpassCutoff.LargeChange = 500;
@@ -615,7 +615,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobHighpassResonance.ParameterName = "Resonance";
 			KnobHighpassResonance.Unit = "";
-			KnobHighpassResonance.Scale = 10f;
+			KnobHighpassResonance.Scales = 10f;
 			KnobHighpassResonance.Minimum = 0;
 			KnobHighpassResonance.Maximum = 100;
 			KnobHighpassResonance.LargeChange = 5;
@@ -631,7 +631,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobLowpassCutoff.ParameterName = "Cutoff";
 			KnobLowpassCutoff.Unit = "Hz";
-			KnobLowpassCutoff.Scale = 1f;
+			KnobLowpassCutoff.Scales = 1f;
 			KnobLowpassCutoff.Minimum = 1;
 			KnobLowpassCutoff.Maximum = 22000;
 			KnobLowpassCutoff.LargeChange = 500;
@@ -639,7 +639,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobLowpassResonance.ParameterName = "Resonance";
 			KnobLowpassResonance.Unit = "";
-			KnobLowpassResonance.Scale = 10f;
+			KnobLowpassResonance.Scales = 10f;
 			KnobLowpassResonance.Minimum = 0;
 			KnobLowpassResonance.Maximum = 100;
 			KnobLowpassResonance.LargeChange = 5;
@@ -657,7 +657,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobCompThreshold.ParameterName = "Threshold";
 			KnobCompThreshold.Unit = "dB";
-			KnobCompThreshold.Scale = 1f;
+			KnobCompThreshold.Scales = 1f;
 			KnobCompThreshold.Minimum = -60;
 			KnobCompThreshold.Maximum = 0;
 			KnobCompThreshold.LargeChange = 5;
@@ -665,7 +665,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobCompRatio.ParameterName = "Ratio";
 			KnobCompRatio.Unit = "";
-			KnobCompRatio.Scale = 1f;
+			KnobCompRatio.Scales = 1f;
 			KnobCompRatio.Minimum = 1;
 			KnobCompRatio.Maximum = 50;
 			KnobCompRatio.LargeChange = 5;
@@ -673,7 +673,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobCompAttack.ParameterName = "Attack";
 			KnobCompAttack.Unit = "ms";
-			KnobCompAttack.Scale = 10f;
+			KnobCompAttack.Scales = 10f;
 			KnobCompAttack.Minimum = 1;
 			KnobCompAttack.Maximum = 5000;
 			KnobCompAttack.LargeChange = 100;
@@ -681,7 +681,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobCompRelease.ParameterName = "Release";
 			KnobCompRelease.Unit = "ms";
-			KnobCompRelease.Scale = 1f;
+			KnobCompRelease.Scales = 1f;
 			KnobCompRelease.Minimum = 10;
 			KnobCompRelease.Maximum = 5000;
 			KnobCompRelease.LargeChange = 100;
@@ -689,7 +689,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobCompGain.ParameterName = "Gain";
 			KnobCompGain.Unit = "dB";
-			KnobCompGain.Scale = 1f;
+			KnobCompGain.Scales = 1f;
 			KnobCompGain.Minimum = -30;
 			KnobCompGain.Maximum = 30;
 			KnobCompGain.LargeChange = 2;
@@ -705,7 +705,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobPitchPitch.ParameterName = "Pitch";
 			KnobPitchPitch.Unit = "";
-			KnobPitchPitch.Scale = 100f;
+			KnobPitchPitch.Scales = 100f;
 			KnobPitchPitch.Minimum = 50;
 			KnobPitchPitch.Maximum = 200;
 			KnobPitchPitch.LargeChange = 10;
@@ -713,7 +713,7 @@ namespace MediaPlayer_X_Ark
 
 			KnobPitchFFT.ParameterName = "FFT Size";
 			KnobPitchFFT.Unit = "";
-			KnobPitchFFT.Scale = 1f;
+			KnobPitchFFT.Scales = 1f;
 			KnobPitchFFT.Minimum = 0;
 			KnobPitchFFT.Maximum = 4;
 			KnobPitchFFT.LargeChange = 1;
@@ -726,7 +726,7 @@ namespace MediaPlayer_X_Ark
 			CheckFrequency.Checked = _engine.effector.Frequency.Enabled;
 			KnobFrequency.ParameterName = "Frequency";
 			KnobFrequency.Unit = "(−100=低速 / 0=標準 / 100=高速)";
-			KnobFrequency.Scale = 1f;
+			KnobFrequency.Scales = 1f;
 			KnobFrequency.Minimum = -100;
 			KnobFrequency.Maximum = 100;
 			KnobFrequency.LargeChange = 5;
@@ -754,19 +754,19 @@ namespace MediaPlayer_X_Ark
 			// ===========================
 			CheckReverb.Checked = _config.settings.Effectors.Reverb.Enable;
 
-			KnobReverbDecayTime.ParameterName = "Decay Time"; KnobReverbDecayTime.Unit = "ms"; KnobReverbDecayTime.Scale = 1f; KnobReverbDecayTime.LargeChange = 500;
-			KnobReverbEarlyDelay.ParameterName = "Early Delay"; KnobReverbEarlyDelay.Unit = "ms"; KnobReverbEarlyDelay.Scale = 1f; KnobReverbEarlyDelay.LargeChange = 10;
-			KnobReverbLateDelay.ParameterName = "Late Delay"; KnobReverbLateDelay.Unit = "ms"; KnobReverbLateDelay.Scale = 1f; KnobReverbLateDelay.LargeChange = 5;
-			KnobReverbHFRef.ParameterName = "HF Reference"; KnobReverbHFRef.Unit = "Hz"; KnobReverbHFRef.Scale = 1f; KnobReverbHFRef.LargeChange = 500;
-			KnobReverbHFDcRatio.ParameterName = "HF Decay Ratio"; KnobReverbHFDcRatio.Unit = "%"; KnobReverbHFDcRatio.Scale = 1f; KnobReverbHFDcRatio.LargeChange = 5;
-			KnobReverbDiffusion.ParameterName = "Diffusion"; KnobReverbDiffusion.Unit = "%"; KnobReverbDiffusion.Scale = 1f; KnobReverbDiffusion.LargeChange = 5;
-			KnobReverbDensity.ParameterName = "Density"; KnobReverbDensity.Unit = "%"; KnobReverbDensity.Scale = 1f; KnobReverbDensity.LargeChange = 5;
-			KnobReverbLowShelfFrequency.ParameterName = "Low Shelf Freq"; KnobReverbLowShelfFrequency.Unit = "Hz"; KnobReverbLowShelfFrequency.Scale = 1f; KnobReverbLowShelfFrequency.LargeChange = 50;
-			KnobReverbLowshelfGain.ParameterName = "Low Shelf Gain"; KnobReverbLowshelfGain.Unit = "dB"; KnobReverbLowshelfGain.Scale = 1f; KnobReverbLowshelfGain.LargeChange = 2;
-			KnobReverbHighCut.ParameterName = "High Cut"; KnobReverbHighCut.Unit = "Hz"; KnobReverbHighCut.Scale = 1f; KnobReverbHighCut.LargeChange = 500;
-			KnobReverbEarlyLate.ParameterName = "Early/Late Mix"; KnobReverbEarlyLate.Unit = "%"; KnobReverbEarlyLate.Scale = 1f; KnobReverbEarlyLate.LargeChange = 5;
-			KnobReverbWet.ParameterName = "Wet Level"; KnobReverbWet.Unit = "dB"; KnobReverbWet.Scale = 1f; KnobReverbWet.LargeChange = 5;
-			KnobReverbDry.ParameterName = "Dry Level"; KnobReverbDry.Unit = "dB"; KnobReverbDry.Scale = 1f; KnobReverbDry.LargeChange = 5;
+			KnobReverbDecayTime.ParameterName = "Decay Time"; KnobReverbDecayTime.Unit = "ms"; KnobReverbDecayTime.Scales = 1f; KnobReverbDecayTime.LargeChange = 500;
+			KnobReverbEarlyDelay.ParameterName = "Early Delay"; KnobReverbEarlyDelay.Unit = "ms"; KnobReverbEarlyDelay.Scales = 1f; KnobReverbEarlyDelay.LargeChange = 10;
+			KnobReverbLateDelay.ParameterName = "Late Delay"; KnobReverbLateDelay.Unit = "ms"; KnobReverbLateDelay.Scales = 1f; KnobReverbLateDelay.LargeChange = 5;
+			KnobReverbHFRef.ParameterName = "HF Reference"; KnobReverbHFRef.Unit = "Hz"; KnobReverbHFRef.Scales = 1f; KnobReverbHFRef.LargeChange = 500;
+			KnobReverbHFDcRatio.ParameterName = "HF Decay Ratio"; KnobReverbHFDcRatio.Unit = "%"; KnobReverbHFDcRatio.Scales = 1f; KnobReverbHFDcRatio.LargeChange = 5;
+			KnobReverbDiffusion.ParameterName = "Diffusion"; KnobReverbDiffusion.Unit = "%"; KnobReverbDiffusion.Scales = 1f; KnobReverbDiffusion.LargeChange = 5;
+			KnobReverbDensity.ParameterName = "Density"; KnobReverbDensity.Unit = "%"; KnobReverbDensity.Scales = 1f; KnobReverbDensity.LargeChange = 5;
+			KnobReverbLowShelfFrequency.ParameterName = "Low Shelf Freq"; KnobReverbLowShelfFrequency.Unit = "Hz"; KnobReverbLowShelfFrequency.Scales = 1f; KnobReverbLowShelfFrequency.LargeChange = 50;
+			KnobReverbLowshelfGain.ParameterName = "Low Shelf Gain"; KnobReverbLowshelfGain.Unit = "dB"; KnobReverbLowshelfGain.Scales = 1f; KnobReverbLowshelfGain.LargeChange = 2;
+			KnobReverbHighCut.ParameterName = "High Cut"; KnobReverbHighCut.Unit = "Hz"; KnobReverbHighCut.Scales = 1f; KnobReverbHighCut.LargeChange = 500;
+			KnobReverbEarlyLate.ParameterName = "Early/Late Mix"; KnobReverbEarlyLate.Unit = "%"; KnobReverbEarlyLate.Scales = 1f; KnobReverbEarlyLate.LargeChange = 5;
+			KnobReverbWet.ParameterName = "Wet Level"; KnobReverbWet.Unit = "dB"; KnobReverbWet.Scales = 1f; KnobReverbWet.LargeChange = 5;
+			KnobReverbDry.ParameterName = "Dry Level"; KnobReverbDry.Unit = "dB"; KnobReverbDry.Scales = 1f; KnobReverbDry.LargeChange = 5;
 
 			// 初期値を設定から反映
 			KnobReverbDecayTime.Value = _config.settings.Effectors.Reverb.DecayTime > 0 ? _config.settings.Effectors.Reverb.DecayTime : 1500;

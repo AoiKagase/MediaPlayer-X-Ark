@@ -31,7 +31,7 @@ namespace MediaPlayer_X_Ark
 
 			if (FmodSystem.createDSPByType(DSP_TYPE.FFT, out mFFT) == RESULT.OK)
 			{
-				mFFT.setParameterInt((int)DSP_FFT.WINDOWTYPE, (int)DSP_FFT_WINDOW.BLACKMAN);
+				mFFT.setParameterInt((int)DSP_FFT.WINDOW, (int)DSP_FFT_WINDOW_TYPE.BLACKMAN);
 				mFFT.setParameterInt((int)DSP_FFT.WINDOWSIZE, windowSize * 2);
 
 				this.lastError = Error.String(FmodChannelGroup.addDSP(CHANNELCONTROL_DSP_INDEX.HEAD, mFFT));

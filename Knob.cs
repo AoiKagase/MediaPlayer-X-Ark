@@ -89,7 +89,7 @@ namespace UI
 		[Description("Scale factor. Knob internal value / Scale = actual value.")]
 		[Category("Behavior")]
 		[DefaultValue(1f)]
-		public float Scale
+		public float Scales
 		{
 			get { return _scale; }
 			set { _scale = value > 0 ? value : 1f; }

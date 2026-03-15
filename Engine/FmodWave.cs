@@ -16,7 +16,7 @@ namespace MediaPlayer_X_Ark.Engine
 		private FMOD.ChannelGroup _fmodChannelGroup;
 
 		// コールバックをGCに回収されないようフィールドで保持
-		private FMOD.DSP_READCALLBACK _readCallback;
+		private FMOD.DSP_READ_CALLBACK _readCallback;
 
 		public FmodWave(ref FMOD.System system, ref FMOD.ChannelGroup channelGroup)
 		{

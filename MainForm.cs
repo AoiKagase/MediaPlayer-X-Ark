@@ -495,6 +495,9 @@ namespace MediaPlayer_X_Ark
 			if (!initialize)
 				return;
 
+			if (player == null || player.spectrum == null)
+				return;
+
 			// スペクトラム画像の反映
 			float[] mFFT = player.spectrum.UpdateSpectrum();
 			Spectrum.mFFT = mFFT;
