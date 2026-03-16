@@ -13,6 +13,7 @@ namespace MediaPlayer_X_Ark
 	public partial class PlayListForm : Form
 	{
 		MainForm mainForm;
+		
 		public PlayListForm(MainForm main)
 		{
 			mainForm = main;
@@ -358,5 +359,122 @@ namespace MediaPlayer_X_Ark
 			return System.IO.Path.GetFullPath(
 				System.IO.Path.Combine(baseDir, filePath));
 		}
-	}
+
+        /// <summary>
+        /// 本体ドラッグによるウィンドウ移動
+        /// </summary>
+        private Point mousePoint;
+        /// <summary>
+        /// フォーム内のマウス押下処理
+        /// 位置の記憶
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PlayList_MouseDown(object sender, MouseEventArgs e)
+        {
+            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+            {
+                //位置を記憶する
+                mousePoint = new Point(e.X, e.Y);
+                mainForm.Activate();
+            }
+        }
+
+        /// <summary>
+        /// フォーム内のマウス移動処理
+        /// フォームの位置をマウス移動量に応じて移動する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PlayList_MouseMove(object sender, MouseEventArgs e)
+        {
+            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+            {
+                Left += e.X - mousePoint.X;
+                Top += e.Y - mousePoint.Y;
+
+                mainForm.Left = Left + mainForm.CurrentSkin.PlayListForm.Position.Left;
+                mainForm.Top = Top + mainForm.CurrentSkin.PlayListForm.Position.Top;
+            }
+        }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                const int WS_EX_TRANSPARENT = 0x00000020;
+                var cp = base.CreateParams;
+                // 透過ピクセル上のみ透過させるため
+                // WndProc の HTTRANSPARENT と組み合わせて使用
+                return cp;
+            }
+        }
+        protected override void WndProc(ref Message m)
+        {
+            const int WM_NCHITTEST = 0x0084;
+            const int WM_MOUSEMOVE = 0x0200;
+            const int WM_LBUTTONDOWN = 0x0201;
+            const int WM_LBUTTONUP = 0x0202;
+            const int WM_RBUTTONDOWN = 0x0204;
+            const int WM_RBUTTONUP = 0x0205;
+            const int HTTRANSPARENT = -1;
+
+            if (m.Msg == WM_NCHITTEST)
+            {
+                base.WndProc(ref m);
+                if (m.Result == (IntPtr)1)
+                {
+                    var screenPt = new Point(
+                        (short)(m.LParam.ToInt32() & 0xFFFF),
+                        (short)((m.LParam.ToInt32() >> 16) & 0xFFFF));
+                    if (IsTransparentPixel(PointToClient(screenPt)))
+                        m.Result = (IntPtr)HTTRANSPARENT;
+                }
+                return;
+            }
+
+            if (m.Msg == WM_MOUSEMOVE ||
+                m.Msg == WM_LBUTTONDOWN ||
+                m.Msg == WM_LBUTTONUP ||
+                m.Msg == WM_RBUTTONDOWN ||
+                m.Msg == WM_RBUTTONUP)
+            {
+                var clientPt = new Point(
+                    (short)(m.LParam.ToInt32() & 0xFFFF),
+                    (short)((m.LParam.ToInt32() >> 16) & 0xFFFF));
+
+                if (IsTransparentPixel(clientPt))
+                {
+                    var mainForm = this.Owner;
+                    if (mainForm != null && mainForm.IsHandleCreated)
+                    {
+                        var screenPt = PointToScreen(clientPt);
+                        var mainPt = mainForm.PointToClient(screenPt);
+                        int newLParam = (mainPt.Y << 16) | (mainPt.X & 0xFFFF);
+                        Win32API.PostMessage(
+                            mainForm.Handle,
+                            (uint)m.Msg,
+                            m.WParam,
+                            (IntPtr)newLParam);
+                    }
+                    return;
+                }
+            }
+
+            base.WndProc(ref m);
+        }
+
+        private bool IsTransparentPixel(Point pt)
+        {
+            var img = this.BackgroundImage as Bitmap;
+            if (img == null) return false;
+            if (pt.X < 0 || pt.Y < 0 || pt.X >= img.Width || pt.Y >= img.Height)
+                return false;
+
+            var pixel = img.GetPixel(pt.X, pt.Y);
+            return pixel.R == mainForm.CurrentSkin.PlayListForm.TransparentKey.R &&
+                   pixel.G == mainForm.CurrentSkin.PlayListForm.TransparentKey.G &&
+                   pixel.B == mainForm.CurrentSkin.PlayListForm.TransparentKey.B;
+        }
+    }
 }

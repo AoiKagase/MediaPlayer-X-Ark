@@ -23,6 +23,7 @@ namespace MediaPlayer_X_Ark
 		public int PlayingIndex => playingIndex;
 
 		private ISkinSystem _currentSkin;
+		public ISkinSystem CurrentSkin => _currentSkin;
 
 		public MainForm()
 		{
@@ -426,8 +427,9 @@ namespace MediaPlayer_X_Ark
 			player.SetDevice(config.settings.Device);
 
 			playListForm = new PlayListForm(this);
-			//            playListForm.Show(this);
-			optionsForm = new OptionsForm(ref player, ref config, this);
+            playListForm.Owner = this;
+            //            playListForm.Show(this);
+            optionsForm = new OptionsForm(ref player, ref config, this);
 			cdForm = new CDForm(this);
 
 			// 予定：設定ファイルの読み込み スキンファイルの指定も含む
@@ -437,8 +439,9 @@ namespace MediaPlayer_X_Ark
 			SkinLoad(config.settings.Skin);
 			Spectrum.Initialize();
 
+			InitContextMenu();
 
-			initialize = true;
+            initialize = true;
 
 			// 起動パラメータを取得し、ファイルパスが取得出来るならばOpen関数へ引き渡す
 			string[] parameters = System.Environment.GetCommandLineArgs();
@@ -1064,5 +1067,97 @@ namespace MediaPlayer_X_Ark
 				//ファイル以外は受け付けない
 				e.Effect = DragDropEffects.None;
 		}
-	}
+
+        private void InitContextMenu()
+        {
+            menuOpen.Click += (s, e) => BtnOpenFile_Click(s, e);
+            menuUrlOpen.Click += (s, e) => BtnUrlOpen_Click(s, e);
+            menuPlay.Click += (s, e) => BtnPlay_Click(s, e);
+            menuPause.Click += (s, e) => BtnPause_Click(s, e);
+            menuStop.Click += (s, e) => BtnStop_Click(s, e);
+            menuBack.Click += (s, e) => BtnBack_Click(s, e);
+            menuForward.Click += (s, e) => BtnSeekForward_Click(s, e);
+            menuPlayList.Click += (s, e) => BtnPlaylist_Click(s, e);
+            menuOption.Click += (s, e) => BtnSetting_Click(s, e);
+            menuMinimize.Click += (s, e) => this.WindowState = FormWindowState.Minimized;
+            menuExit.Click += (s, e) => Application.Exit();
+
+            // PlayMode
+            menuPlayModeNormal.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_NONE);
+            menuPlayModeRandom.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_RANDOM);
+            menuPlayModeRepeat.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_ONE_REPEAT);
+            menuPlayModeLoop.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_ALL);
+
+            // Effects / Equalizer / Extensions / SkinSelect は
+            // OptionsForm の該当タブを開く形にする
+            menuEffects.Click += (s, e) => OpenOptionsTab("PITCH");
+            menuEqualizer.Click += (s, e) => OpenOptionsTab("GEQ");
+            menuExtensions.Click += (s, e) => OpenOptionsTab("EXTENSIONS");
+            menuSkinSelect.Click += (s, e) => OpenOptionsTab("SKIN");
+            menuAbout.Click += (s, e) => OpenOptionsTab("ABOUT");
+
+            // 開く前にチェック状態を更新
+            contextMenu.Opening += ContextMenu_Opening;
+        }
+        private void ContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // PlayMode チェック状態を更新
+            menuPlayModeRandom.Enabled = false; // 未実装
+            menuPlayModeNormal.Checked = (player.loop & LOOP_MODE.LOOP_NONE) != 0;
+            menuPlayModeRandom.Checked = (player.loop & LOOP_MODE.LOOP_RANDOM) != 0;
+            menuPlayModeRepeat.Checked = (player.loop & LOOP_MODE.LOOP_ONE_REPEAT) != 0;
+            menuPlayModeLoop.Checked = (player.loop & LOOP_MODE.LOOP_ALL) != 0;
+        }
+
+        private void SetPlayMode(LOOP_MODE mode)
+        {
+            if (mode == LOOP_MODE.LOOP_RANDOM)
+            {
+                // ランダムはトグル
+                player.loop ^= LOOP_MODE.LOOP_RANDOM;
+            }
+            else
+            {
+                // ランダムフラグを保持しつつ他のモードを切り替え
+                bool isRandom = (player.loop & LOOP_MODE.LOOP_RANDOM) != 0;
+                player.loop = mode;
+                if (isRandom) player.loop |= LOOP_MODE.LOOP_RANDOM;
+            }
+            player.loop |= mode;
+        }
+
+        private void OpenOptionsTab(string tabName)
+        {
+            optionsForm.Show();
+            optionsForm.SelectTab(tabName);
+        }
+
+        private void BtnUrlOpen_Click(object sender, EventArgs e)
+        {
+            string url = Microsoft.VisualBasic.Interaction.InputBox(
+                "再生するURLを入力してください",
+                "URL Open",
+                "https://");
+
+            if (string.IsNullOrWhiteSpace(url)) return;
+            if (!url.StartsWith("http://") && !url.StartsWith("https://"))
+            {
+                MessageBox.Show("URLはhttp://またはhttps://で始まる必要があります。",
+                    "URL Open", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int index;
+            var result = player.CreateSound(url, out index);
+            if (result == FMOD.RESULT.OK)
+            {
+                player.PlaySound(index);
+            }
+            else
+            {
+                MessageBox.Show($"URLを開けませんでした。\n{player.lastError}",
+                    "URL Open", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+    }
 }

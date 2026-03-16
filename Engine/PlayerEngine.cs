@@ -31,13 +31,16 @@ namespace MediaPlayer_X_Ark
         }
     }
 
-	public enum LOOP_MODE
-	{
-		LOOP_NONE,
-		LOOP_ONE_REPEAT,
-		LOOP_ALL,
-	}
-	public class PlayerEngine : IDisposable
+    [Flags]
+    public enum LOOP_MODE
+    {
+        LOOP_NONE		= 0x01, // 0001
+        LOOP_RANDOM		= 0x02, // 0010
+        LOOP_ONE_REPEAT = 0x04, // 0100
+        LOOP_ALL		= 0x08, // 1000
+    }
+
+    public class PlayerEngine : IDisposable
 	{
 		private bool _disposed = false;  // 二重解放防止フラグ
 
@@ -184,6 +187,8 @@ namespace MediaPlayer_X_Ark
 						effector = new Engine.Effector.Effectors(FmodSystem);
 
 						GetDeviceList();
+
+						loop = LOOP_MODE.LOOP_NONE;
 
 						initialized = true;
 					}

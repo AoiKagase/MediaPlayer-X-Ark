@@ -63,7 +63,10 @@ namespace MediaPlayer_X_Ark
 		public static extern uint GetPrivateProfileString(string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpresulturnedString, uint nSize, string lpFileName);
 		[DllImport("KERNEL32.DLL")]
 		public static extern uint GetPrivateProfileInt(string lpAppName, string lpKeyName, int nDefault, string lpFileName);
-	}
+
+        [DllImport("user32.dll")]
+        public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+    }
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct RECT

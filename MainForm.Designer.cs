@@ -56,6 +56,97 @@ namespace MediaPlayer_X_Ark
             SeekiTimer = new System.Windows.Forms.Timer(components);
             Spectrum = new SpectrumBox();
             BtnCD = new System.Windows.Forms.Button();
+
+            this.contextMenu = new System.Windows.Forms.ContextMenuStrip();
+            this.menuOpen = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuUrlOpen = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuPlay = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuPause = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStop = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuBack = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuForward = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuPlayMode = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuPlayModeNormal = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuPlayModeRandom = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuPlayModeRepeat = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuPlayModeLoop = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuPlayList = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuOption = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuEffects = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuEqualizer = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuExtensions = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuSkinSelect = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuAutoUpdateCheck = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuMinimize = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuExit = new System.Windows.Forms.ToolStripMenuItem();
+
+            // メニュー項目設定
+            this.menuOpen.Text = "Open(&O)";
+            this.menuUrlOpen.Text = "URL Open(&R)";
+            this.menuPlay.Text = "Play(&P)";
+            this.menuPause.Text = "Pause(&H)";
+            this.menuStop.Text = "Stop(&S)";
+            this.menuBack.Text = "Back(&B)";
+            this.menuForward.Text = "Forward(&F)";
+            this.menuPlayMode.Text = "PlayMode";
+            this.menuPlayModeNormal.Text = "Normal";
+            this.menuPlayModeRandom.Text = "Random";
+            this.menuPlayModeRepeat.Text = "Repeat";
+            this.menuPlayModeLoop.Text = "Loop";
+            this.menuPlayList.Text = "PlayList(&L)";
+            this.menuOption.Text = "Option(&T)";
+            this.menuEffects.Text = "Effects(&E)";
+            this.menuEqualizer.Text = "Equalizer(&Q)";
+            this.menuExtensions.Text = "Extensions(&D)";
+            this.menuSkinSelect.Text = "Skin Select(&A)";
+            this.menuAutoUpdateCheck.Text = "Auto Update Check(&U)";
+            this.menuAbout.Text = "About(&C)";
+            this.menuHelp.Text = "Help(&V)";
+            this.menuMinimize.Text = "Minimize(&X)";
+            this.menuExit.Text = "Exit(&Z)";
+            // PlayMode サブメニュー
+            this.menuPlayMode.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[]
+            {
+    this.menuPlayModeNormal,
+    this.menuPlayModeRandom,
+    this.menuPlayModeRepeat,
+    this.menuPlayModeLoop,
+            });
+
+            // ContextMenuStrip 構成
+            this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[]
+            {
+                this.menuOpen,
+                this.menuUrlOpen,
+                new System.Windows.Forms.ToolStripSeparator(),
+                this.menuPlay,
+                this.menuPause,
+                this.menuStop,
+                this.menuBack,
+                this.menuForward,
+                new System.Windows.Forms.ToolStripSeparator(),
+                this.menuPlayMode,
+                new System.Windows.Forms.ToolStripSeparator(),
+                this.menuPlayList,
+                this.menuOption,
+                new System.Windows.Forms.ToolStripSeparator(),
+                this.menuEffects,
+                this.menuEqualizer,
+                this.menuExtensions,
+                this.menuSkinSelect,
+                new System.Windows.Forms.ToolStripSeparator(),
+                this.menuAutoUpdateCheck,
+                new System.Windows.Forms.ToolStripSeparator(),
+                this.menuAbout,
+                this.menuHelp,
+                this.menuMinimize,
+                this.menuExit,
+            });
+
+            // フォームに設定
+            this.ContextMenuStrip = this.contextMenu;
             ((System.ComponentModel.ISupportInitialize)Spectrum).BeginInit();
             SuspendLayout();
             // 
@@ -428,7 +519,30 @@ namespace MediaPlayer_X_Ark
         }
 
         #endregion
-
+        private System.Windows.Forms.ContextMenuStrip contextMenu;
+        private System.Windows.Forms.ToolStripMenuItem menuOpen;
+        private System.Windows.Forms.ToolStripMenuItem menuUrlOpen;
+        private System.Windows.Forms.ToolStripMenuItem menuPlay;
+        private System.Windows.Forms.ToolStripMenuItem menuPause;
+        private System.Windows.Forms.ToolStripMenuItem menuStop;
+        private System.Windows.Forms.ToolStripMenuItem menuBack;
+        private System.Windows.Forms.ToolStripMenuItem menuForward;
+        private System.Windows.Forms.ToolStripMenuItem menuPlayMode;
+        private System.Windows.Forms.ToolStripMenuItem menuPlayModeNormal;
+        private System.Windows.Forms.ToolStripMenuItem menuPlayModeRandom;
+        private System.Windows.Forms.ToolStripMenuItem menuPlayModeRepeat;
+        private System.Windows.Forms.ToolStripMenuItem menuPlayModeLoop;
+        private System.Windows.Forms.ToolStripMenuItem menuPlayList;
+        private System.Windows.Forms.ToolStripMenuItem menuOption;
+        private System.Windows.Forms.ToolStripMenuItem menuEffects;
+        private System.Windows.Forms.ToolStripMenuItem menuEqualizer;
+        private System.Windows.Forms.ToolStripMenuItem menuExtensions;
+        private System.Windows.Forms.ToolStripMenuItem menuSkinSelect;
+        private System.Windows.Forms.ToolStripMenuItem menuAutoUpdateCheck;
+        private System.Windows.Forms.ToolStripMenuItem menuAbout;
+        private System.Windows.Forms.ToolStripMenuItem menuHelp;
+        private System.Windows.Forms.ToolStripMenuItem menuMinimize;
+        private System.Windows.Forms.ToolStripMenuItem menuExit;
         private System.Windows.Forms.Button BtnPlay;
         private System.Windows.Forms.Button BtnStop;
         private System.Windows.Forms.Timer Timer;

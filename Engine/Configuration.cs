@@ -41,7 +41,7 @@ namespace MediaPlayer_X_Ark.Engine
         /// エフェクト
         /// ===================================
         public CfgEffectors Effectors { get; set; } = new CfgEffectors();
-        
+        public Dictionary<string, string> EffectPresets { get; set; } = new Dictionary<string, string>();
         /// <summary>
         /// スキン
         /// </summary>
