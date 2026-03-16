@@ -11,6 +11,7 @@ namespace MediaPlayer_X_Ark
 	/// </summary>
     public partial class SpectrumBox : PictureBox
 	{
+		private readonly object _bitmapLock = new object();
 		/// <summary>
 		/// Graphics Buffer
 		/// </summary>
@@ -94,18 +95,21 @@ namespace MediaPlayer_X_Ark
 		public Bitmap BitmapBackground {
 			get
 			{
-				return _BitmapBackground;
+				lock (_bitmapLock) { return _BitmapBackground; }
 			}
 			set
 			{
-				if (value != null)
+				lock (_bitmapLock)
 				{
-					_BitmapBackground = value;
-				}
-				else
-				{
-					if (_BitmapBackground != null)
-						_BitmapBackground.Dispose();
+					if (value != null)
+					{
+						_BitmapBackground = value;
+					}
+					else
+					{
+						if (_BitmapBackground != null)
+							_BitmapBackground.Dispose();
+					}
 				}
 			}
 		}
@@ -116,17 +120,24 @@ namespace MediaPlayer_X_Ark
         {
 			get
 			{
-				return _BitmapSpectrum;
+				lock (_bitmapLock)
+				{
+					return _BitmapSpectrum;
+				}
 			}
 			set
 			{
-				if (value != null)
-                {
-					_BitmapSpectrum = value;
-				} else
+				lock (_bitmapLock)
 				{
-					if(_BitmapSpectrum != null)
-						_BitmapSpectrum.Dispose();
+					if (value != null)
+					{
+						_BitmapSpectrum = value;
+					}
+					else
+					{
+						if (_BitmapSpectrum != null)
+							_BitmapSpectrum.Dispose();
+					}
 				}
 			}
 		}
@@ -136,16 +147,23 @@ namespace MediaPlayer_X_Ark
 		/// </summary>
 		public Bitmap BitmapSnow
 		{
-			get { return _BitmapSnow; }
+			get
+			{
+				lock (_bitmapLock) { return _BitmapSnow; }
+			}
 			set
 			{
-				if (value != null)
-                {
-					_BitmapSnow = value;
-				} else
+				lock (_bitmapLock)
 				{
-					if (_BitmapSnow != null)
-						_BitmapSnow.Dispose();
+					if (value != null)
+					{
+						_BitmapSnow = value;
+					}
+					else
+					{
+						if (_BitmapSnow != null)
+							_BitmapSnow.Dispose();
+					}
 				}
 			}
 		}
@@ -157,17 +175,24 @@ namespace MediaPlayer_X_Ark
         {
 			get
 			{
-				return _BitmapWave;
+				lock (_bitmapLock)
+				{
+					return _BitmapWave;
+				}
 			}
 			set
 			{
-				if (value != null)
-                {
-					_BitmapWave = value;
-				} else
+				lock (_bitmapLock)
 				{
-					if (_BitmapWave != null)
-						_BitmapWave.Dispose();
+					if (value != null)
+					{
+						_BitmapWave = value;
+					}
+					else
+					{
+						if (_BitmapWave != null)
+							_BitmapWave.Dispose();
+					}
 				}
 			}
         }
@@ -239,9 +264,6 @@ namespace MediaPlayer_X_Ark
 			RECT line3 = new RECT(0, 0, 0, 0);  // Snow
 
 			// HBitmapポインタ取得
-			IntPtr hBSrc = _BitmapSpectrum.GetHbitmap(Color.Transparent);
-			IntPtr hBSnow = _BitmapSnow.GetHbitmap(Color.White);
-			IntPtr hBBackground = IntPtr.Zero;
 			IntPtr hdc4BackgroundSrc = IntPtr.Zero;
 
 			// バックバッファーを保持する
@@ -263,12 +285,22 @@ namespace MediaPlayer_X_Ark
 			hdc3SnowSrc = Win32API.CreateCompatibleDC(hdc3Snow);
 			if (_BitmapBackground != null)
 			{
-				hBBackground = _BitmapBackground.GetHbitmap(Color.Transparent);
 				hdc4BackgroundSrc = Win32API.CreateCompatibleDC(hdc1Analyzer);
 			}
 			// 初期化済みであればループ開始
 			while (Initialized)
 			{
+				IntPtr hBSrc = IntPtr.Zero;
+				IntPtr hBSnow = IntPtr.Zero;
+				IntPtr hBBackground = IntPtr.Zero;
+				// ビットマップ取得をロックで保護
+
+				lock (_bitmapLock)
+				{
+					if (_BitmapSpectrum != null) hBSrc = _BitmapSpectrum.GetHbitmap(Color.Transparent);
+					if (_BitmapSnow != null) hBSnow = _BitmapSnow.GetHbitmap(Color.White);
+					if (_BitmapBackground != null) hBBackground = _BitmapBackground.GetHbitmap(Color.Transparent);
+				}
 				// HBitmapオブジェクト確保
 				Prog1 = Win32API.SelectObject(hdc2AnalyzerSrc, hBSrc);
 				Prog2 = Win32API.SelectObject(hdc3SnowSrc, hBSnow);
@@ -410,8 +442,9 @@ namespace MediaPlayer_X_Ark
 				}
 
 				// HBitmapオブジェクトリリース
-				Win32API.DeleteObject(hBSrc);
-				Win32API.DeleteObject(hBSnow);
+				if (hBSrc != IntPtr.Zero) Win32API.DeleteObject(hBSrc);
+				if (hBSnow != IntPtr.Zero) Win32API.DeleteObject(hBSnow);
+				if (hBBackground != IntPtr.Zero) Win32API.DeleteObject(hBBackground); 
 				Win32API.DeleteObject(Prog2);
 				Win32API.DeleteObject(Prog1);
 
@@ -430,8 +463,6 @@ namespace MediaPlayer_X_Ark
 				Win32API.DeleteDC(hdc4BackgroundSrc);
 				Win32API.DeleteObject(hdc4BackgroundSrc);
 			}
-			if (hBBackground != IntPtr.Zero)
-				Win32API.DeleteObject(hBBackground);
 
 			gAnalyzer.ReleaseHdc(hdc1Analyzer);
 			gSnow.ReleaseHdc(hdc3Snow);

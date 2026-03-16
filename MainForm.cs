@@ -874,7 +874,21 @@ namespace MediaPlayer_X_Ark
 		}
 		private void BtnPlaylist_Click(object sender, EventArgs e)
 		{
+			if (playListForm.Visible)
+			{
+				playListForm.Hide();
+				return;
+			}
+
 			playListForm.Show();
+
+			// マグネットモードONのスキンの場合はドッキング位置に表示
+			if (_currentSkin != null && _currentSkin.PlayListForm.MagnetMode)
+			{
+				playListForm.Left = Left - _currentSkin.PlayListForm.Position.Left;
+				playListForm.Top = Top - _currentSkin.PlayListForm.Position.Top;
+			}
+
 		}
 		private void BtnMinisize_Click(object sender, EventArgs e)
 		{
