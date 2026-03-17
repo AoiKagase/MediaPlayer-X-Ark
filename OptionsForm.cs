@@ -65,7 +65,7 @@ namespace MediaPlayer_X_Ark
             using (var form = new PresetNameInputForm())
             {
                 if (form.ShowDialog() != DialogResult.OK) return;
-                var preset = createPreset(form.PresetName);
+                var preset = createPreset(form.PresetNameValue);
                 preset.Save();
                 LoadEffectPresets<T>(cmb, effectName);
                 cmb.SelectedItem = preset.Name;
