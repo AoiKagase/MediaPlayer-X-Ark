@@ -414,8 +414,8 @@ namespace MediaPlayer_X_Ark
 			// FMODサウンドエンジン
 			player = new PlayerEngine();
 
-			// ① 設定を先に読み込む
-			config = new Engine.Configration(ref player);
+            // ① 設定を先に読み込む
+			config = new Engine.Configration(player);
 
 			// ② OutputType と SoftwareFormat は init() より前に設定
 			player.SetOutputTypeBeforeInit(config.GetOutputType());
@@ -429,7 +429,7 @@ namespace MediaPlayer_X_Ark
 			playListForm = new PlayListForm(this);
             playListForm.Owner = this;
             //            playListForm.Show(this);
-            optionsForm = new OptionsForm(ref player, ref config, this);
+            optionsForm = new OptionsForm(player, Engine.PlayerEngineStaticHolder.ConfigService ?? config.AsService(), this);
 			cdForm = new CDForm(this);
 
 			// 予定：設定ファイルの読み込み スキンファイルの指定も含む

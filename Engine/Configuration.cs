@@ -216,7 +216,11 @@ namespace MediaPlayer_X_Ark.Engine
         public ConfigurationData settings;
         protected PlayerEngine engine;
 
-        public Configration(ref PlayerEngine engine)
+        // Backwards-compatible shim to expose existing functionality via IConfigService
+        public IConfigService AsService() => new ConfigServiceAdapter(this);
+
+        // Constructor no longer requires a `ref` parameter. Pass the engine instance by value.
+        public Configration(PlayerEngine engine)
         {
             this.engine = engine;
 			if (File.Exists(Path.Combine(Application.StartupPath, "config.json")))
@@ -253,6 +257,16 @@ namespace MediaPlayer_X_Ark.Engine
             }
         }
 
+    // Adapter to expose Configration via IConfigService without breaking existing code
+    internal class ConfigServiceAdapter : IConfigService
+    {
+        private readonly Configration _cfg;
+        public ConfigServiceAdapter(Configration cfg) { _cfg = cfg; }
+        public ConfigurationData settings => _cfg.settings;
+        public void Save() => _cfg.Save();
+        public FMOD.OUTPUTTYPE GetOutputType() => _cfg.GetOutputType();
+    }
+
         public void Save()
         {
             GetEqualizerValue();
@@ -282,6 +296,10 @@ namespace MediaPlayer_X_Ark.Engine
 
         public void GetEqualizerValue()
         {
+            // engine or effector may be null during early startup; guard against that
+            if (engine == null || engine.effector == null || engine.effector.GEqualizer == null)
+                return;
+
             settings.Effectors.GEqualizer.GEQ_32 = (int)(engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_32) * 10f);
             settings.Effectors.GEqualizer.GEQ_60 = (int)(engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_60) * 10f);
             settings.Effectors.GEqualizer.GEQ_125 = (int)(engine.effector.GEqualizer.GetGain(Effector.GEqualizer.EQ_HZ.HZ_125) * 10f);
