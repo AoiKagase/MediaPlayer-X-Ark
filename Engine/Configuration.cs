@@ -223,10 +223,10 @@ namespace MediaPlayer_X_Ark.Engine
         public Configration(PlayerEngine engine)
         {
             this.engine = engine;
-			if (File.Exists(Path.Combine(Application.StartupPath, "config.json")))
-			{
-				string jsonString = File.ReadAllText(Path.Combine(Application.StartupPath, "config.json"), Encoding.UTF8);
-				settings = JsonSerializer.Deserialize<ConfigurationData>(jsonString);
+            if (File.Exists(Path.Combine(Application.StartupPath, "config.json")))
+            {
+                string jsonString = File.ReadAllText(Path.Combine(Application.StartupPath, "config.json"), Encoding.UTF8);
+                settings = JsonSerializer.Deserialize<ConfigurationData>(jsonString);
             }
             else
             {
@@ -249,23 +249,23 @@ namespace MediaPlayer_X_Ark.Engine
                 }
                 settings.Device = engine.GetDeviceGUID();
 
-				// 新形式を優先、なければ旧形式
-				var defaultXsk = Path.Combine(Application.StartupPath, "Skins", "Default", "Default.xsk");
-				var defaultXsf = ".\\bbbs\\bs.xsf"; // 既存のデフォルト
+                // 新形式を優先、なければ旧形式
+                var defaultXsk = Path.Combine(Application.StartupPath, "Skins", "Default", "Default.xsk");
+                var defaultXsf = ".\\bbbs\\bs.xsf"; // 既存のデフォルト
 
-				settings.Skin = File.Exists(defaultXsk) ? defaultXsk : defaultXsf;
+                settings.Skin = File.Exists(defaultXsk) ? defaultXsk : defaultXsf;
             }
         }
 
-    // Adapter to expose Configration via IConfigService without breaking existing code
-    internal class ConfigServiceAdapter : IConfigService
-    {
-        private readonly Configration _cfg;
-        public ConfigServiceAdapter(Configration cfg) { _cfg = cfg; }
-        public ConfigurationData settings => _cfg.settings;
-        public void Save() => _cfg.Save();
-        public FMOD.OUTPUTTYPE GetOutputType() => _cfg.GetOutputType();
-    }
+        // Adapter to expose Configration via IConfigService without breaking existing code
+        internal class ConfigServiceAdapter : IConfigService
+        {
+            private readonly Configration _cfg;
+            public ConfigServiceAdapter(Configration cfg) { _cfg = cfg; }
+            public ConfigurationData settings => _cfg.settings;
+            public void Save() => _cfg.Save();
+            public FMOD.OUTPUTTYPE GetOutputType() => _cfg.GetOutputType();
+        }
 
         public void Save()
         {
@@ -274,12 +274,12 @@ namespace MediaPlayer_X_Ark.Engine
             var options = new JsonSerializerOptions { WriteIndented = true };
             string jsonString = JsonSerializer.Serialize(settings, options);
 
-			File.WriteAllText(Path.Combine(Application.StartupPath, "config.json"), jsonString);
+            File.WriteAllText(Path.Combine(Application.StartupPath, "config.json"), jsonString);
         }
 
         public FMOD.OUTPUTTYPE GetOutputType()
         {
-            switch(settings.OutputType)
+            switch (settings.OutputType)
             {
                 case 0:
                     return FMOD.OUTPUTTYPE.AUTODETECT;
