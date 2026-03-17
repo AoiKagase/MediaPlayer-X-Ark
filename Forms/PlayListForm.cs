@@ -12,7 +12,9 @@ namespace MediaPlayer_X_Ark
 {
 	public partial class PlayListForm : Form
 	{
-		MainForm mainForm;
+      MainForm mainForm;
+		// When true, do not forward mouse messages to owner (used while modal dialogs are open)
+		private bool _suppressForwarding = false;
 		
 		public PlayListForm(MainForm main)
 		{
@@ -137,7 +139,7 @@ namespace MediaPlayer_X_Ark
 		/// </summary>
 		private void PBtnOpen_Click(object sender, EventArgs e)
 		{
-			using (var dlg = new OpenFileDialog())
+          using (var dlg = new OpenFileDialog())
 			{
 				dlg.Filter = "プレイリストファイル|*.m3u;*.m3u8;*.pls;*.wpl|" +
 							 "M3U|*.m3u;*.m3u8|" +
@@ -145,7 +147,16 @@ namespace MediaPlayer_X_Ark
 							 "WPL|*.wpl|" +
 							 "全てのファイル|*.*";
 				dlg.DefaultExt = "m3u";
-				if (dlg.ShowDialog() != DialogResult.OK) return;
+                // disable forwarding while modal dialog is shown to avoid re-entrancy / environment-specific issues
+				try
+				{
+					_suppressForwarding = true;
+					if (dlg.ShowDialog(this) != DialogResult.OK) return;
+				}
+				finally
+				{
+					_suppressForwarding = false;
+				}
 
 				try
 				{
@@ -448,6 +459,8 @@ namespace MediaPlayer_X_Ark
 				m.Msg == WM_RBUTTONDOWN ||
 				m.Msg == WM_RBUTTONUP)
 			{
+                // do not forward messages while a modal dialog is active (some environments crash when forwarded)
+				if (_suppressForwarding) { base.WndProc(ref m); return; }
 				try
 				{
 					long lp = m.LParam.ToInt64();
