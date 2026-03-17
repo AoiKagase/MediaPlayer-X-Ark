@@ -18,41 +18,42 @@ namespace MediaPlayer_X_Ark
 {
 	public partial class OptionsForm : Form
 	{
-		private PlayerEngine _engine;
-		private Engine.Configration _config;
+        private PlayerEngine _engine;
+		private Engine.IConfigService _configService;
 		private MainForm _mainForm; // 追加
         private static readonly string[] _geqBuiltinPresets =
         {
 			"Normal", "Rock", "Pop", "Bass Boost",
 			"Trable Boost", "Total Boost", "Total Reduce", "Custom"
 		};
-        Control[] _eqTrackBars =
-{
-            };
-        public OptionsForm(ref PlayerEngine engine, ref Engine.Configration config, MainForm mainForm)
+        ColorSlider.ColorSlider[] _eqTrackBars =
+		{
+		};
+		public OptionsForm(PlayerEngine engine, Engine.IConfigService configService, MainForm mainForm)
 		{
 			InitializeComponent();
 			_engine = engine;
-			_config = config;
-			_mainForm = mainForm; // 追加
+			// prefer explicitly provided service, fall back to static holder, then to a fresh adapter
+			_configService = configService ?? Engine.PlayerEngineStaticHolder.ConfigService ?? new Engine.Configration(engine).AsService();
+			_mainForm = mainForm;
 
-            LoadGEQPresets();
-            LoadChorusPresets();
-            LoadDistortionPresets();
-            LoadEchoPresets();
-            LoadFlangerPresets();
-            LoadHighpassPresets();
-            LoadLowpassPresets();
-            LoadCompressorPresets();
-            LoadReverbPresets();
-            LoadPitchPresets();
+			LoadGEQPresets();
+			LoadChorusPresets();
+			LoadDistortionPresets();
+			LoadEchoPresets();
+			LoadFlangerPresets();
+			LoadHighpassPresets();
+			LoadLowpassPresets();
+			LoadCompressorPresets();
+			LoadReverbPresets();
+			LoadPitchPresets();
 
-			_eqTrackBars = new Control[]{
-                TrkGEQ32, TrkGEQ60, TrkGEQ125, TrkGEQ250, TrkGEQ500,
-                TrkGEQ1K, TrkGEQ2K, TrkGEQ4K, TrkGEQ8K, TrkGEQ16K,
-                TrkGEQ20K, TrkGEQ22K
+           _eqTrackBars = new ColorSlider.ColorSlider[]{
+				TrkGEQ32, TrkGEQ60, TrkGEQ125, TrkGEQ250, TrkGEQ500,
+				TrkGEQ1K, TrkGEQ2K, TrkGEQ4K, TrkGEQ8K, TrkGEQ16K,
+				TrkGEQ20K, TrkGEQ22K
 			};
-        }
+		}
 
         private void LoadEffectPresets<T>(ComboBox cmb, string effectName)
     where T : EffectPreset
@@ -62,8 +63,8 @@ namespace MediaPlayer_X_Ark
             foreach (var name in EffectPreset.GetPresetNames(effectName))
                 cmb.Items.Add(name);
 
-            if (_config.settings.EffectPresets.TryGetValue(effectName, out var current))
-                cmb.SelectedItem = current;
+            if (_configService.settings.EffectPresets.TryGetValue(effectName, out var current))
+				cmb.SelectedItem = current;
         }
 
         private void SaveEffectPreset<T>(
@@ -79,7 +80,7 @@ namespace MediaPlayer_X_Ark
                 preset.Save();
                 LoadEffectPresets<T>(cmb, effectName);
                 cmb.SelectedItem = preset.Name;
-                _config.settings.EffectPresets[effectName] = preset.Name;
+                _configService.settings.EffectPresets[effectName] = preset.Name;
             }
         }
 
@@ -96,7 +97,7 @@ namespace MediaPlayer_X_Ark
                 != DialogResult.Yes) return;
 
             new T { Name = name }.Delete();
-            _config.settings.EffectPresets.Remove(effectName);
+			_configService.settings.EffectPresets.Remove(effectName);
             LoadEffectPresets<T>(cmb, effectName);
         }
 
@@ -117,8 +118,8 @@ namespace MediaPlayer_X_Ark
                     cmbEqPreset.Items.Add(name);
 
             // config から現在のプリセットを復元
-            if (_config.settings.EffectPresets.TryGetValue("GEQ", out var current))
-                cmbEqPreset.SelectedItem = current;
+			if (_configService.settings.EffectPresets.TryGetValue("GEQ", out var current))
+				cmbEqPreset.SelectedItem = current;
         }
 
         private void BtnGEQPresetSave_Click(object sender, EventArgs e)
@@ -151,7 +152,7 @@ namespace MediaPlayer_X_Ark
 				preset.Save();
 				LoadGEQPresets();
 				cmbEqPreset.SelectedItem = preset.Name;
-				_config.settings.EffectPresets["GEQ"] = preset.Name;
+                _configService.settings.EffectPresets["GEQ"] = preset.Name;
 			}
 		}
 
@@ -173,7 +174,7 @@ namespace MediaPlayer_X_Ark
                 != DialogResult.Yes) return;
 
             new GEqualizerPreset { Name = name }.Delete();
-            _config.settings.EffectPresets.Remove("GEQ");
+			_configService.settings.EffectPresets.Remove("GEQ");
             LoadGEQPresets();
         }
 
@@ -204,10 +205,10 @@ namespace MediaPlayer_X_Ark
             internalChanged = true;
 
             for (int i = 0; i < _eqTrackBars.Length; i++)
-            {
-                ((TrackBar)_eqTrackBars[i]).Value =
-                    (int)(_engine.effector.GEqualizer.Gain[i] * 10);
-            }
+			{
+				((ColorSlider.ColorSlider)_eqTrackBars[i]).Value =
+					(int)(_engine.effector.GEqualizer.Gain[i] * 10);
+			}
 
 			internalChanged = false;
 		}
@@ -243,8 +244,8 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void CheckDistortion_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Distortion.Switch(GroupControl(sender));
-			_config.settings.Effectors.Distortion.Enable = _engine.effector.Distortion.Enabled;
+            _engine.effector.Distortion.Switch(GroupControl(sender));
+			_configService.settings.Effectors.Distortion.Enable = _engine.effector.Distortion.Enabled;
 		}
 		/// <summary>
 		/// Chorus
@@ -253,8 +254,8 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void CheckChorus_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Chorus.Switch(GroupControl(sender));
-			_config.settings.Effectors.Chorus.Enable = _engine.effector.Chorus.Enabled;
+            _engine.effector.Chorus.Switch(GroupControl(sender));
+			_configService.settings.Effectors.Chorus.Enable = _engine.effector.Chorus.Enabled;
 		}
 		/// <summary>
 		/// Echo
@@ -263,8 +264,8 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void CheckEcho_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Echo.Switch(GroupControl(sender));
-			_config.settings.Effectors.Echo.Enable = _engine.effector.Echo.Enabled;
+            _engine.effector.Echo.Switch(GroupControl(sender));
+			_configService.settings.Effectors.Echo.Enable = _engine.effector.Echo.Enabled;
 		}
 		/// <summary>
 		/// Highpass
@@ -273,30 +274,30 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void CheckHighpass_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Highpass.Switch(GroupControl(sender));
-			_config.settings.Effectors.Highpass.Enable = _engine.effector.Highpass.Enabled;
+            _engine.effector.Highpass.Switch(GroupControl(sender));
+			_configService.settings.Effectors.Highpass.Enable = _engine.effector.Highpass.Enabled;
 		}
 
 		private void CheckLowpass_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Lowpass.Switch(GroupControl(sender));
-			_config.settings.Effectors.Lowpass.Enable = _engine.effector.Lowpass.Enabled;
+            _engine.effector.Lowpass.Switch(GroupControl(sender));
+			_configService.settings.Effectors.Lowpass.Enable = _engine.effector.Lowpass.Enabled;
 		}
 
 		private void CheckFlanger_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Flanger.Switch(GroupControl(sender));
-			_config.settings.Effectors.Flanger.Enable = _engine.effector.Flanger.Enabled;
+            _engine.effector.Flanger.Switch(GroupControl(sender));
+			_configService.settings.Effectors.Flanger.Enable = _engine.effector.Flanger.Enabled;
 		}
 		private void CheckCompressor_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Compressor.Switch(GroupControl(sender));
-			_config.settings.Effectors.Compressor.Enable = _engine.effector.Compressor.Enabled;
+            _engine.effector.Compressor.Switch(GroupControl(sender));
+			_configService.settings.Effectors.Compressor.Enable = _engine.effector.Compressor.Enabled;
 		}
 		private void CheckPitch_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.PitchShift.Switch(GroupControl(sender));
-			_config.settings.Effectors.PitchShift.Enable = _engine.effector.PitchShift.Enabled;
+            _engine.effector.PitchShift.Switch(GroupControl(sender));
+			_configService.settings.Effectors.PitchShift.Enable = _engine.effector.PitchShift.Enabled;
 
 			// ON時：Knobの現在値をDSPに再適用
 			if (_engine.effector.PitchShift.Enabled)
@@ -304,8 +305,8 @@ namespace MediaPlayer_X_Ark
 		}
 		private void CheckFrequency_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Frequency.Switch(GroupControl(sender));
-			_config.settings.Effectors.Frequency.Enable = _engine.effector.Frequency.Enabled;
+            _engine.effector.Frequency.Switch(GroupControl(sender));
+			_configService.settings.Effectors.Frequency.Enable = _engine.effector.Frequency.Enabled;
 
 			// ON時：Knobの現在値をDSPに再適用
 			if (_engine.effector.Frequency.Enabled)
@@ -313,7 +314,7 @@ namespace MediaPlayer_X_Ark
 		}
 		private void CheckSpeed_CheckedChanged(object sender, EventArgs e)
 		{
-			_config.settings.Effectors.Speed.Enable = _engine.effector.SpeedEnabled = GroupControl(sender);
+            _configService.settings.Effectors.Speed.Enable = _engine.effector.SpeedEnabled = GroupControl(sender);
 
 			if (_engine.effector.SpeedEnabled)
 			{
@@ -332,14 +333,14 @@ namespace MediaPlayer_X_Ark
 		}
 		private void CheckReverb_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.SFXReverb.Switch(GroupControl(sender));
-			_config.settings.Effectors.Reverb.Enable = _engine.effector.SFXReverb.Enabled;
+            _engine.effector.SFXReverb.Switch(GroupControl(sender));
+			_configService.settings.Effectors.Reverb.Enable = _engine.effector.SFXReverb.Enabled;
 		}
 
 		private void CheckGEQ_CheckedChanged(object sender, EventArgs e)
 		{
-			_engine.effector.GEqualizer.Switch(GroupControl(sender));
-			_config.settings.Effectors.GEqualizer.Enable = _engine.effector.GEqualizer.Enabled;
+            _engine.effector.GEqualizer.Switch(GroupControl(sender));
+			_configService.settings.Effectors.GEqualizer.Enable = _engine.effector.GEqualizer.Enabled;
 		}
 		#endregion
 		// Distortion
@@ -352,80 +353,80 @@ namespace MediaPlayer_X_Ark
 		// Chorus
 		private void KnobChorusMix_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Chorus.Mix = ((UI.Knob)sender).Value;
+            _engine.effector.Chorus.Mix = ((UI.Knob)sender).Value;
 			lblValChorusMix.Text = _engine.effector.Chorus.Mix.ToString("0");
-			_config.settings.Effectors.Chorus.Mix = ((UI.Knob)sender).Value;
+			_configService.settings.Effectors.Chorus.Mix = ((UI.Knob)sender).Value;
 		}
 		private void KnobChorusRate_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Chorus.Rate = ((UI.Knob)sender).Value / 10F;
+            _engine.effector.Chorus.Rate = ((UI.Knob)sender).Value / 10F;
 			lblValChorusRate.Text = _engine.effector.Chorus.Rate.ToString("0.0");
-			_config.settings.Effectors.Chorus.Rate = ((UI.Knob)sender).Value;
+			_configService.settings.Effectors.Chorus.Rate = ((UI.Knob)sender).Value;
 		}
 		private void KnobChorusDepth_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Chorus.Depth = ((UI.Knob)sender).Value;
+            _engine.effector.Chorus.Depth = ((UI.Knob)sender).Value;
 			lblValChorusDepth.Text = _engine.effector.Chorus.Depth.ToString("0");
-			_config.settings.Effectors.Chorus.Depth = ((UI.Knob)sender).Value;
+			_configService.settings.Effectors.Chorus.Depth = ((UI.Knob)sender).Value;
 		}
 
 		// Echo
 		private void KnobEchoDelay_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Echo.Delay = ((UI.Knob)sender).Value;
+            _engine.effector.Echo.Delay = ((UI.Knob)sender).Value;
 			lblValEchoDelay.Text = _engine.effector.Echo.Delay.ToString("0");
-			_config.settings.Effectors.Echo.Delay = ((UI.Knob)sender).Value;
+			_configService.settings.Effectors.Echo.Delay = ((UI.Knob)sender).Value;
 		}
 		private void KnobEchoFeedback_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Echo.Feedback = ((UI.Knob)sender).Value;
+            _engine.effector.Echo.Feedback = ((UI.Knob)sender).Value;
 			lblValEchoFeedback.Text = _engine.effector.Echo.Feedback.ToString("0");
-			_config.settings.Effectors.Echo.Feedback = ((UI.Knob)sender).Value;
+			_configService.settings.Effectors.Echo.Feedback = ((UI.Knob)sender).Value;
 		}
 		private void KnobEchoDry_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Echo.DryLevel = ((UI.Knob)sender).Value;
+            _engine.effector.Echo.DryLevel = ((UI.Knob)sender).Value;
 			lblValEchoDry.Text = _engine.effector.Echo.DryLevel.ToString("0");
-			_config.settings.Effectors.Echo.Dry = ((UI.Knob)sender).Value;
+			_configService.settings.Effectors.Echo.Dry = ((UI.Knob)sender).Value;
 		}
 		private void KnobEchoWet_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Echo.WetLevel = ((UI.Knob)sender).Value;
+            _engine.effector.Echo.WetLevel = ((UI.Knob)sender).Value;
 			lblValEchoWet.Text = _engine.effector.Echo.WetLevel.ToString("0");
-			_config.settings.Effectors.Echo.Wet = ((UI.Knob)sender).Value;
+			_configService.settings.Effectors.Echo.Wet = ((UI.Knob)sender).Value;
 		}
 
 		// Flanger
 		private void KnobFlangerMix_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Flanger.Mix = ((UI.Knob)sender).Value;
+            _engine.effector.Flanger.Mix = ((UI.Knob)sender).Value;
 			lblValFlangerMix.Text = _engine.effector.Flanger.Mix.ToString("0");
-			_config.settings.Effectors.Flanger.Mix = ((UI.Knob)sender).Value;
+			_configService.settings.Effectors.Flanger.Mix = ((UI.Knob)sender).Value;
 		}
 		private void KnobFlangerRate_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Flanger.Rate = ((UI.Knob)sender).Value / 10F;
+            _engine.effector.Flanger.Rate = ((UI.Knob)sender).Value / 10F;
 			lblValFlangerRate.Text = _engine.effector.Flanger.Rate.ToString("0.0");
-			_config.settings.Effectors.Flanger.Rate = ((UI.Knob)sender).Value;
+			_configService.settings.Effectors.Flanger.Rate = ((UI.Knob)sender).Value;
 		}
 		private void KnobFlangerDepth_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Flanger.Depth = ((UI.Knob)sender).Value / 100F;
+            _engine.effector.Flanger.Depth = ((UI.Knob)sender).Value / 100F;
 			lblValFlangerDepth.Text = _engine.effector.Flanger.Depth.ToString("0.00");
-			_config.settings.Effectors.Flanger.Depth = ((UI.Knob)sender).Value;
+			_configService.settings.Effectors.Flanger.Depth = ((UI.Knob)sender).Value;
 		}
 		// Highpass
 		private void KnobHighpassCutoff_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Highpass.CutOff = ((UI.Knob)sender).Value;
+            _engine.effector.Highpass.CutOff = ((UI.Knob)sender).Value;
 			lblValHighpassCutoff.Text = _engine.effector.Highpass.CutOff.ToString("0");
-			_config.settings.Effectors.Highpass.Cutoff = ((UI.Knob)sender).Value;
+			_configService.settings.Effectors.Highpass.Cutoff = ((UI.Knob)sender).Value;
 		}
 		private void KnobHighpassResonance_ValueChanged(object sender, EventArgs e)
 		{
-			_engine.effector.Highpass.Resonance = ((UI.Knob)sender).Value / 10F;
+            _engine.effector.Highpass.Resonance = ((UI.Knob)sender).Value / 10F;
 			lblValHighpassResonance.Text = _engine.effector.Highpass.Resonance.ToString("0.0");
-			_config.settings.Effectors.Highpass.Resonance = ((UI.Knob)sender).Value;
+			_configService.settings.Effectors.Highpass.Resonance = ((UI.Knob)sender).Value;
 		}
 
 		// Lowpass
@@ -433,13 +434,13 @@ namespace MediaPlayer_X_Ark
 		{
 			_engine.effector.Lowpass.CutOff = ((UI.Knob)sender).Value;
 			lblValLowpassCutoff.Text = _engine.effector.Lowpass.CutOff.ToString("0");
-			_config.settings.Effectors.Lowpass.Cutoff = ((UI.Knob)sender).Value;
+        _configService.settings.Effectors.Lowpass.Cutoff = ((UI.Knob)sender).Value;
 		}
 		private void KnobLowpassResonance_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Lowpass.Resonance = ((UI.Knob)sender).Value / 10F;
 			lblValLowpassResonance.Text = _engine.effector.Lowpass.Resonance.ToString("0.0");
-			_config.settings.Effectors.Lowpass.Resonance = ((UI.Knob)sender).Value;
+     _configService.settings.Effectors.Lowpass.Resonance = ((UI.Knob)sender).Value;
 		}
 
 
@@ -448,31 +449,31 @@ namespace MediaPlayer_X_Ark
 		{
 			_engine.effector.Compressor.Threshold = ((UI.Knob)sender).Value;
 			lblValCompThreshold.Text = _engine.effector.Compressor.Threshold.ToString("0");
-			_config.settings.Effectors.Compressor.Threshold = ((UI.Knob)sender).Value;
+          _configService.settings.Effectors.Compressor.Threshold = ((UI.Knob)sender).Value;
 		}
 		private void KnobCompRatio_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Compressor.Ratio = ((UI.Knob)sender).Value;  // ÷1
 			lblValCompRatio.Text = _engine.effector.Compressor.Ratio.ToString("0");
-			_config.settings.Effectors.Compressor.Ratio = ((UI.Knob)sender).Value;
+          _configService.settings.Effectors.Compressor.Ratio = ((UI.Knob)sender).Value;
 		}
 		private void KnobCompAttack_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Compressor.Attack = ((UI.Knob)sender).Value / 10F;
 			lblValCompAttack.Text = _engine.effector.Compressor.Attack.ToString("0.0");
-			_config.settings.Effectors.Compressor.Attack = ((UI.Knob)sender).Value;
+         _configService.settings.Effectors.Compressor.Attack = ((UI.Knob)sender).Value;
 		}
 		private void KnobCompRelease_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Compressor.Release = ((UI.Knob)sender).Value;
 			lblValCompRelease.Text = _engine.effector.Compressor.Release.ToString("0");
-			_config.settings.Effectors.Compressor.Release = ((UI.Knob)sender).Value;
+            _configService.settings.Effectors.Compressor.Release = ((UI.Knob)sender).Value;
 		}
 		private void KnobCompGain_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Compressor.Gain = ((UI.Knob)sender).Value;  // ÷1
 			lblValCompGain.Text = _engine.effector.Compressor.Gain.ToString("0");
-			_config.settings.Effectors.Compressor.Gain = ((UI.Knob)sender).Value;
+           _configService.settings.Effectors.Compressor.Gain = ((UI.Knob)sender).Value;
 		}
 
 		// PitchShift
@@ -480,28 +481,28 @@ namespace MediaPlayer_X_Ark
 		{
 			_engine.effector.PitchShift.Pitch = ((UI.Knob)sender).Value / 100F;
 			lblValPitchPitch.Text = _engine.effector.PitchShift.Pitch.ToString("0.00");
-			_config.settings.Effectors.PitchShift.Pitch = ((UI.Knob)sender).Value;
+          _configService.settings.Effectors.PitchShift.Pitch = ((UI.Knob)sender).Value;
 		}
 		private void KnobPitchFFT_ValueChanged(object sender, EventArgs e)
 		{
 			float[] fftsize = { 256, 512, 1024, 2048, 4096 };
 			_engine.effector.PitchShift.FFTSize = fftsize[((UI.Knob)sender).Value];
 			lblValPitchFFT.Text = _engine.effector.PitchShift.FFTSize.ToString("0");
-			_config.settings.Effectors.PitchShift.FFT = ((UI.Knob)sender).Value;
+            _configService.settings.Effectors.PitchShift.FFT = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobFrequency_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Frequency.SetFrequency(((UI.Knob)sender).Value);
 			lblValFrequency.Text = _engine.effector.Frequency.Hz.ToString("0");
-			_config.settings.Effectors.Frequency.Frequency = ((UI.Knob)sender).Value;
+           _configService.settings.Effectors.Frequency.Frequency = ((UI.Knob)sender).Value;
 		}
 
 		private void KnobSpeed_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.Speed = ((UI.Knob)sender).Value;
 			lblValSpeed.Text = _engine.effector.Speed.ToString();
-			_config.settings.Effectors.Speed.Speed = ((UI.Knob)sender).Value;
+           _configService.settings.Effectors.Speed.Speed = ((UI.Knob)sender).Value;
 		}
 		// ===========================
 		// Reverb ValueChanged handlers
@@ -510,90 +511,90 @@ namespace MediaPlayer_X_Ark
 		{
 			_engine.effector.SFXReverb.DecayTime = ((UI.Knob)sender).Value;
 			lblValReverbDecayTime.Text = _engine.effector.SFXReverb.DecayTime.ToString("0");
-			_config.settings.Effectors.Reverb.DecayTime = ((UI.Knob)sender).Value;
+          _configService.settings.Effectors.Reverb.DecayTime = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbEarlyDelay_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.EarlyDelay = ((UI.Knob)sender).Value;
 			lblValReverbEarlyDelay.Text = _engine.effector.SFXReverb.EarlyDelay.ToString("0");
-			_config.settings.Effectors.Reverb.EarlyDelay = ((UI.Knob)sender).Value;
+         _configService.settings.Effectors.Reverb.EarlyDelay = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbLateDelay_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.LateDelay = ((UI.Knob)sender).Value;
 			lblValReverbLateDelay.Text = _engine.effector.SFXReverb.LateDelay.ToString("0");
-			_config.settings.Effectors.Reverb.LateDelay = ((UI.Knob)sender).Value;
+          _configService.settings.Effectors.Reverb.LateDelay = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbHFRef_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.HFReference = ((UI.Knob)sender).Value;
 			lblValReverbHFRef.Text = _engine.effector.SFXReverb.HFReference.ToString("0");
-			_config.settings.Effectors.Reverb.HFRef = ((UI.Knob)sender).Value;
+          _configService.settings.Effectors.Reverb.HFRef = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbHFDcRatio_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.HFDecayRatio = ((UI.Knob)sender).Value;
 			lblValReverbHFDcRatio.Text = _engine.effector.SFXReverb.HFDecayRatio.ToString("0");
-			_config.settings.Effectors.Reverb.HFDecayRatio = ((UI.Knob)sender).Value;
+           _configService.settings.Effectors.Reverb.HFDecayRatio = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbDiffusion_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.Diffusion = ((UI.Knob)sender).Value;
 			lblValReverbDiffusion.Text = _engine.effector.SFXReverb.Diffusion.ToString("0");
-			_config.settings.Effectors.Reverb.Diffusion = ((UI.Knob)sender).Value;
+          _configService.settings.Effectors.Reverb.Diffusion = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbDensity_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.Density = ((UI.Knob)sender).Value;
 			lblValReverbDensity.Text = _engine.effector.SFXReverb.Density.ToString("0");
-			_config.settings.Effectors.Reverb.Density = ((UI.Knob)sender).Value;
+            _configService.settings.Effectors.Reverb.Density = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbLowShelfFrequency_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.LowShelfFrequency = ((UI.Knob)sender).Value;
 			lblValReverbLowShelfFreq.Text = _engine.effector.SFXReverb.LowShelfFrequency.ToString("0");
-			_config.settings.Effectors.Reverb.LowShelfFrequency = ((UI.Knob)sender).Value;
+          _configService.settings.Effectors.Reverb.LowShelfFrequency = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbLowshelfGain_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.LowShelfGain = ((UI.Knob)sender).Value;
 			lblValReverbLowShelfGain.Text = _engine.effector.SFXReverb.LowShelfGain.ToString("0");
-			_config.settings.Effectors.Reverb.LowShelfGain = ((UI.Knob)sender).Value;
+           _configService.settings.Effectors.Reverb.LowShelfGain = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbHighCut_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.HighCut = ((UI.Knob)sender).Value;
 			lblValReverbHighCut.Text = _engine.effector.SFXReverb.HighCut.ToString("0");
-			_config.settings.Effectors.Reverb.HighCut = ((UI.Knob)sender).Value;
+            _configService.settings.Effectors.Reverb.HighCut = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbEarlyLate_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.EarlyLateMix = ((UI.Knob)sender).Value;
 			lblValReverbEarlyLate.Text = _engine.effector.SFXReverb.EarlyLateMix.ToString("0");
-			_config.settings.Effectors.Reverb.EarlyLate = ((UI.Knob)sender).Value;
+          _configService.settings.Effectors.Reverb.EarlyLate = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbWet_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.WetLevel = ((UI.Knob)sender).Value;
 			lblValReverbWet.Text = _engine.effector.SFXReverb.WetLevel.ToString("0");
-			_config.settings.Effectors.Reverb.WetLevel = ((UI.Knob)sender).Value;
+           _configService.settings.Effectors.Reverb.WetLevel = ((UI.Knob)sender).Value;
 		}
 		private void KnobReverbDry_ValueChanged(object sender, EventArgs e)
 		{
 			_engine.effector.SFXReverb.DryLevel = ((UI.Knob)sender).Value;
 			lblValReverbDry.Text = _engine.effector.SFXReverb.DryLevel.ToString("0");
-			_config.settings.Effectors.Reverb.DryLevel = ((UI.Knob)sender).Value;
+           _configService.settings.Effectors.Reverb.DryLevel = ((UI.Knob)sender).Value;
 		}
 		private bool GroupControl(object sender)
 		{
 			if (sender.GetType() == typeof(CheckBox))
 			{
-				foreach (Control control in ((CheckBox)sender).Parent.Controls)
+             foreach (Control control in ((CheckBox)sender).Parent.Controls)
 				{
-					if (control != sender)
-					{
-						control.Enabled = ((CheckBox)sender).Checked;
-					}
+					if (control == sender) continue;
+					// Keep ColorSlider controls enabled so user can adjust GEQ even when effect is off
+					if (control is ColorSlider.ColorSlider) continue;
+					control.Enabled = ((CheckBox)sender).Checked;
 				}
 			}
 			return ((CheckBox)sender).Checked;
@@ -855,7 +856,7 @@ namespace MediaPlayer_X_Ark
 			KnobFrequency.Minimum = -100;
 			KnobFrequency.Maximum = 100;
 			KnobFrequency.LargeChange = 5;
-			KnobFrequency.Value = _config.settings.Effectors.Frequency.Frequency;
+           KnobFrequency.Value = _configService.settings.Effectors.Frequency.Frequency;
 			_engine.effector.Frequency.PropertyChanged += new PropertyChangedEventHandler(FrequencyChanged);
 
 			// Frequency初期化の末尾に追加
@@ -877,7 +878,7 @@ namespace MediaPlayer_X_Ark
 			// ===========================
 			// Reverb
 			// ===========================
-			CheckReverb.Checked = _config.settings.Effectors.Reverb.Enable;
+         CheckReverb.Checked = _configService.settings.Effectors.Reverb.Enable;
 
 			KnobReverbDecayTime.ParameterName = "Decay Time"; KnobReverbDecayTime.Unit = "ms"; KnobReverbDecayTime.Scales = 1f; KnobReverbDecayTime.LargeChange = 500;
 			KnobReverbEarlyDelay.ParameterName = "Early Delay"; KnobReverbEarlyDelay.Unit = "ms"; KnobReverbEarlyDelay.Scales = 1f; KnobReverbEarlyDelay.LargeChange = 10;
@@ -894,19 +895,19 @@ namespace MediaPlayer_X_Ark
 			KnobReverbDry.ParameterName = "Dry Level"; KnobReverbDry.Unit = "dB"; KnobReverbDry.Scales = 1f; KnobReverbDry.LargeChange = 5;
 
 			// 初期値を設定から反映
-			KnobReverbDecayTime.Value = _config.settings.Effectors.Reverb.DecayTime > 0 ? _config.settings.Effectors.Reverb.DecayTime : 1500;
-			KnobReverbEarlyDelay.Value = _config.settings.Effectors.Reverb.EarlyDelay;
-			KnobReverbLateDelay.Value = _config.settings.Effectors.Reverb.LateDelay;
-			KnobReverbHFRef.Value = _config.settings.Effectors.Reverb.HFRef > 0 ? _config.settings.Effectors.Reverb.HFRef : 5000;
-			KnobReverbHFDcRatio.Value = _config.settings.Effectors.Reverb.HFDecayRatio > 0 ? _config.settings.Effectors.Reverb.HFDecayRatio : 50;
-			KnobReverbDiffusion.Value = _config.settings.Effectors.Reverb.Diffusion > 0 ? _config.settings.Effectors.Reverb.Diffusion : 50;
-			KnobReverbDensity.Value = _config.settings.Effectors.Reverb.Density > 0 ? _config.settings.Effectors.Reverb.Density : 50;
-			KnobReverbLowShelfFrequency.Value = _config.settings.Effectors.Reverb.LowShelfFrequency > 0 ? _config.settings.Effectors.Reverb.LowShelfFrequency : 250;
-			KnobReverbLowshelfGain.Value = _config.settings.Effectors.Reverb.LowShelfGain;
-			KnobReverbHighCut.Value = _config.settings.Effectors.Reverb.HighCut > 0 ? _config.settings.Effectors.Reverb.HighCut : 20000;
-			KnobReverbEarlyLate.Value = _config.settings.Effectors.Reverb.EarlyLate > 0 ? _config.settings.Effectors.Reverb.EarlyLate : 50;
-			KnobReverbWet.Value = _config.settings.Effectors.Reverb.WetLevel != 0 ? _config.settings.Effectors.Reverb.WetLevel : -6;
-			KnobReverbDry.Value = _config.settings.Effectors.Reverb.DryLevel;
+           KnobReverbDecayTime.Value = _configService.settings.Effectors.Reverb.DecayTime > 0 ? _configService.settings.Effectors.Reverb.DecayTime : 1500;
+			KnobReverbEarlyDelay.Value = _configService.settings.Effectors.Reverb.EarlyDelay;
+			KnobReverbLateDelay.Value = _configService.settings.Effectors.Reverb.LateDelay;
+			KnobReverbHFRef.Value = _configService.settings.Effectors.Reverb.HFRef > 0 ? _configService.settings.Effectors.Reverb.HFRef : 5000;
+			KnobReverbHFDcRatio.Value = _configService.settings.Effectors.Reverb.HFDecayRatio > 0 ? _configService.settings.Effectors.Reverb.HFDecayRatio : 50;
+			KnobReverbDiffusion.Value = _configService.settings.Effectors.Reverb.Diffusion > 0 ? _configService.settings.Effectors.Reverb.Diffusion : 50;
+			KnobReverbDensity.Value = _configService.settings.Effectors.Reverb.Density > 0 ? _configService.settings.Effectors.Reverb.Density : 50;
+			KnobReverbLowShelfFrequency.Value = _configService.settings.Effectors.Reverb.LowShelfFrequency > 0 ? _configService.settings.Effectors.Reverb.LowShelfFrequency : 250;
+			KnobReverbLowshelfGain.Value = _configService.settings.Effectors.Reverb.LowShelfGain;
+			KnobReverbHighCut.Value = _configService.settings.Effectors.Reverb.HighCut > 0 ? _configService.settings.Effectors.Reverb.HighCut : 20000;
+			KnobReverbEarlyLate.Value = _configService.settings.Effectors.Reverb.EarlyLate > 0 ? _configService.settings.Effectors.Reverb.EarlyLate : 50;
+			KnobReverbWet.Value = _configService.settings.Effectors.Reverb.WetLevel != 0 ? _configService.settings.Effectors.Reverb.WetLevel : -6;
+			KnobReverbDry.Value = _configService.settings.Effectors.Reverb.DryLevel;
 
 			InitGroupBoxState(GroupDistortion, CheckDistortion);
 			InitGroupBoxState(GroupChorus, CheckChorus);
@@ -935,29 +936,29 @@ namespace MediaPlayer_X_Ark
 		}
 		private void OptionOutput()
 		{
-			cmbOutput.SelectedIndex = _config.settings.OutputType;
+          cmbOutput.SelectedIndex = _configService.settings.OutputType;
             //			cmbOutput.Items.Add("WAVEファイル出力");
             _engine.GetDeviceList();
             cmbDevice.DataSource = _engine.DeviceList;
 			cmbDevice.DisplayMember = "Name";
 			cmbDevice.ValueMember = "GUID";
-			cmbDevice.SelectedValue = _config.settings.Device;
+          cmbDevice.SelectedValue = _configService.settings.Device;
 
 			// Equalizer
-			CheckGEQ.Checked = _config.settings.Effectors.GEqualizer.Enable;
-			cmbEqPreset.SelectedIndex = _config.settings.Effectors.GEqualizer.Preset;
-			TrkGEQ32.Value = _config.settings.Effectors.GEqualizer.GEQ_32;
-			TrkGEQ60.Value = _config.settings.Effectors.GEqualizer.GEQ_60;
-			TrkGEQ125.Value = _config.settings.Effectors.GEqualizer.GEQ_125;
-			TrkGEQ250.Value = _config.settings.Effectors.GEqualizer.GEQ_250;
-			TrkGEQ500.Value = _config.settings.Effectors.GEqualizer.GEQ_500;
-			TrkGEQ1K.Value = _config.settings.Effectors.GEqualizer.GEQ_1K;
-			TrkGEQ2K.Value = _config.settings.Effectors.GEqualizer.GEQ_2K;
-			TrkGEQ4K.Value = _config.settings.Effectors.GEqualizer.GEQ_4K;
-			TrkGEQ8K.Value = _config.settings.Effectors.GEqualizer.GEQ_8K;
-			TrkGEQ16K.Value = _config.settings.Effectors.GEqualizer.GEQ_16K;
-			TrkGEQ20K.Value = _config.settings.Effectors.GEqualizer.GEQ_20K;
-			TrkGEQ22K.Value = _config.settings.Effectors.GEqualizer.GEQ_22K;
+            CheckGEQ.Checked = _configService.settings.Effectors.GEqualizer.Enable;
+			cmbEqPreset.SelectedIndex = _configService.settings.Effectors.GEqualizer.Preset;
+			TrkGEQ32.Value = _configService.settings.Effectors.GEqualizer.GEQ_32;
+			TrkGEQ60.Value = _configService.settings.Effectors.GEqualizer.GEQ_60;
+			TrkGEQ125.Value = _configService.settings.Effectors.GEqualizer.GEQ_125;
+			TrkGEQ250.Value = _configService.settings.Effectors.GEqualizer.GEQ_250;
+			TrkGEQ500.Value = _configService.settings.Effectors.GEqualizer.GEQ_500;
+			TrkGEQ1K.Value = _configService.settings.Effectors.GEqualizer.GEQ_1K;
+			TrkGEQ2K.Value = _configService.settings.Effectors.GEqualizer.GEQ_2K;
+			TrkGEQ4K.Value = _configService.settings.Effectors.GEqualizer.GEQ_4K;
+			TrkGEQ8K.Value = _configService.settings.Effectors.GEqualizer.GEQ_8K;
+			TrkGEQ16K.Value = _configService.settings.Effectors.GEqualizer.GEQ_16K;
+			TrkGEQ20K.Value = _configService.settings.Effectors.GEqualizer.GEQ_20K;
+			TrkGEQ22K.Value = _configService.settings.Effectors.GEqualizer.GEQ_22K;
 
 
 		}
@@ -1060,7 +1061,7 @@ namespace MediaPlayer_X_Ark
 
 		private int GetIndexToTrackValue(int index)
 		{
-            return index < _eqTrackBars.Length ? Convert.ToInt32(((TrackBar)_eqTrackBars[index]).Value) : 0;
+            return index < _eqTrackBars.Length ? Convert.ToInt32(((ColorSlider.ColorSlider)_eqTrackBars[index]).Value) : 0;
 		}
 
         private void EqTrackBar_ValueChanged(object sender, EventArgs e)
@@ -1068,27 +1069,26 @@ namespace MediaPlayer_X_Ark
             PaintGEQGraph();
             if (internalChanged) return;
 
-            int index = Array.IndexOf(_eqTrackBars, sender);
-            if (index < 0) return;
+           int index = Array.IndexOf(_eqTrackBars, (ColorSlider.ColorSlider)sender);
+			if (index < 0) return;
 
-            int value = ((TrackBar)sender).Value;
+			int value = Convert.ToInt32(((ColorSlider.ColorSlider)sender).Value);
             var eqHz = (Engine.Effector.GEqualizer.EQ_HZ)index;
-            _engine.effector.GEqualizer.SetGain(eqHz, value / 5f);
-
-      // update configuration via indexed accessor to avoid switch duplication in the form
-		_config.settings.Effectors.GEqualizer.SetByIndex(index, value);
+            _engine.effector.GEqualizer.SetGain(eqHz, value / 10f);
+			// update configuration via indexed accessor to avoid switch duplication in the form
+			_configService.settings.Effectors.GEqualizer.SetByIndex(index, value);
         }
 		private void BtnUpdate_Click(object sender, EventArgs e)
         {
 			// デバイスはPlayLoad()で反映されるため、ここでの即時反映は不要
 			// OutputType/SampleRate/SpeakerModeは次回起動時に反映
-			bool requiresRestart =
-				_config.settings.OutputType != cmbOutput.SelectedIndex;
+            bool requiresRestart =
+				_configService.settings.OutputType != cmbOutput.SelectedIndex;
 
 			if (cmbDevice.Enabled)
-				_config.settings.Device = cmbDevice.SelectedValue.ToString();
-			_config.settings.OutputType = cmbOutput.SelectedIndex;
-			_config.Save();
+				_configService.settings.Device = cmbDevice.SelectedValue.ToString();
+			_configService.settings.OutputType = cmbOutput.SelectedIndex;
+			_configService.Save();
 
 			string message = requiresRestart
 				? "設定を保存しました。\n出力形式は次回起動時に反映されます。"
@@ -1107,7 +1107,7 @@ namespace MediaPlayer_X_Ark
         {
 			if (_engine.effector != null)
 			_engine.effector.GEqualizer.SetPreset(((ComboBox)sender).SelectedIndex);
-			_config.settings.Effectors.GEqualizer.Preset = ((ComboBox)sender).SelectedIndex;
+            _configService.settings.Effectors.GEqualizer.Preset = ((ComboBox)sender).SelectedIndex;
 		}
 
         private void CheckCompLinked_CheckedChanged(object sender, EventArgs e)
@@ -1134,8 +1134,8 @@ namespace MediaPlayer_X_Ark
 			}
 
 			// 保存済みの出力タイプと一致する場合のみ保存済みGUIDを復元候補にする
-			string preferredGuid = (cmbOutput.SelectedIndex == _config.settings.OutputType)
-				? _config.settings.Device
+            string preferredGuid = (cmbOutput.SelectedIndex == _configService.settings.OutputType)
+				? _configService.settings.Device
 				: null;
 
 			RefreshDeviceList(newOutputType, preferredGuid);
@@ -1207,7 +1207,7 @@ namespace MediaPlayer_X_Ark
 
 		private void OptionSkin()
 		{
-			var skinPath = _config.settings.Skin;
+            var skinPath = _configService.settings.Skin;
 			// 未設定またはファイルが存在しない場合はデフォルトスキンを使用
 			if (string.IsNullOrEmpty(skinPath) ||
 				(!File.Exists(skinPath) &&
@@ -1222,9 +1222,9 @@ namespace MediaPlayer_X_Ark
 				else if (File.Exists(defaultXsf))
 					skinPath = defaultXsf;
 			}
-			txtSkinPath.Text = skinPath;            
+                txtSkinPath.Text = skinPath;            
 			// プレビュー画像を表示
-			LoadSkinPreview(_config.settings.Skin);
+			LoadSkinPreview(_configService.settings.Skin);
 		}
 
 		private void LoadSkinPreview(string skinPath)
@@ -1305,8 +1305,8 @@ namespace MediaPlayer_X_Ark
 
 			try
 			{
-				_config.settings.Skin = skinPath;
-				_config.Save();
+            _configService.settings.Skin = skinPath;
+            _configService.Save();
 				_mainForm.SkinLoad(skinPath); // MainForm.SkinLoadをpublicに変更が必要
 				MessageBox.Show(
 					"スキンを適用しました。",
@@ -1345,7 +1345,7 @@ namespace MediaPlayer_X_Ark
             KnobChorusMix.Value = (int)preset.Mix;
             KnobChorusRate.Value = (int)(preset.Rate * 10f);
             KnobChorusDepth.Value = (int)(preset.Depth * 100f);
-            _config.settings.EffectPresets["Chorus"] = name;
+            _configService.settings.EffectPresets["Chorus"] = name;
         }
 
         private void LoadDistortionPresets() => LoadEffectPresets<DistortionPreset>(cmbDistortionPreset, "Distortion");
@@ -1365,7 +1365,7 @@ namespace MediaPlayer_X_Ark
             var preset = EffectPreset.Load<DistortionPreset>("Distortion", name);
             if (preset == null) return;
             KnobDistortionLevel.Value = (int)(preset.Level * 100f);
-            _config.settings.EffectPresets["Distortion"] = name;
+            _configService.settings.EffectPresets["Distortion"] = name;
         }
         private void LoadEchoPresets()
             => LoadEffectPresets<EchoPreset>(cmbEchoPreset, "Echo");
@@ -1393,7 +1393,7 @@ namespace MediaPlayer_X_Ark
             KnobEchoFeedback.Value = (int)preset.Feedback;
             KnobEchoDry.Value = (int)preset.Dry;
             KnobEchoWet.Value = (int)preset.Wet;
-            _config.settings.EffectPresets["Echo"] = name;
+            _configService.settings.EffectPresets["Echo"] = name;
         }
 
         private void LoadFlangerPresets()
@@ -1420,7 +1420,7 @@ namespace MediaPlayer_X_Ark
             KnobFlangerMix.Value = (int)preset.Mix;
             KnobFlangerRate.Value = (int)(preset.Rate * 10f);
             KnobFlangerDepth.Value = (int)(preset.Depth * 100f);
-            _config.settings.EffectPresets["Flanger"] = name;
+            _configService.settings.EffectPresets["Flanger"] = name;
         }
 
         private void LoadHighpassPresets()
@@ -1445,7 +1445,7 @@ namespace MediaPlayer_X_Ark
             if (preset == null) return;
             KnobHighpassCutoff.Value = (int)preset.Cutoff;
             KnobHighpassResonance.Value = (int)preset.Resonance;
-            _config.settings.EffectPresets["Highpass"] = name;
+            _configService.settings.EffectPresets["Highpass"] = name;
         }
 
         private void LoadLowpassPresets()
@@ -1470,7 +1470,7 @@ namespace MediaPlayer_X_Ark
             if (preset == null) return;
             KnobLowpassCutoff.Value = (int)preset.Cutoff;
             KnobLowpassResonance.Value = (int)preset.Resonance;
-            _config.settings.EffectPresets["Lowpass"] = name;
+            _configService.settings.EffectPresets["Lowpass"] = name;
         }
 
         private void LoadCompressorPresets()
@@ -1503,7 +1503,7 @@ namespace MediaPlayer_X_Ark
             KnobCompRelease.Value = (int)preset.Release;
             KnobCompGain.Value = (int)preset.Gain;
             CheckCompLinked.Checked = preset.Linked;
-            _config.settings.EffectPresets["Compressor"] = name;
+            _configService.settings.EffectPresets["Compressor"] = name;
         }
 
         private void LoadReverbPresets()
@@ -1550,7 +1550,7 @@ namespace MediaPlayer_X_Ark
             KnobReverbEarlyLate.Value = (int)preset.EarlyLateMix;
             KnobReverbWet.Value = (int)preset.WetLevel;
             KnobReverbDry.Value = (int)preset.DryLevel;
-            _config.settings.EffectPresets["Reverb"] = name;
+            _configService.settings.EffectPresets["Reverb"] = name;
         }
 
         private void LoadPitchPresets()
@@ -1579,7 +1579,7 @@ namespace MediaPlayer_X_Ark
             KnobPitchFFT.Value = (int)preset.FFTSize;
             KnobFrequency.Value = (int)preset.Frequency;
             KnobSpeed.Value = (int)preset.Speed;
-            _config.settings.EffectPresets["Pitch"] = name;
+            _configService.settings.EffectPresets["Pitch"] = name;
         }
     }
 }
