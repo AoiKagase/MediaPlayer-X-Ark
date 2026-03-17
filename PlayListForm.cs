@@ -420,46 +420,64 @@ namespace MediaPlayer_X_Ark
             const int HTTRANSPARENT = -1;
 
             if (m.Msg == WM_NCHITTEST)
-            {
-                base.WndProc(ref m);
-                if (m.Result == (IntPtr)1)
-                {
-                    var screenPt = new Point(
-                        (short)(m.LParam.ToInt32() & 0xFFFF),
-                        (short)((m.LParam.ToInt32() >> 16) & 0xFFFF));
-                    if (IsTransparentPixel(PointToClient(screenPt)))
-                        m.Result = (IntPtr)HTTRANSPARENT;
-                }
-                return;
-            }
+			{
+				try
+				{
+					base.WndProc(ref m);
+					if (m.Result == (IntPtr)1)
+					{
+						// use ToInt64 to be safe on both 32/64-bit
+						long lp = m.LParam.ToInt64();
+						var screenPt = new Point(
+							(short)(lp & 0xFFFF),
+							(short)((lp >> 16) & 0xFFFF));
+						if (IsTransparentPixel(PointToClient(screenPt)))
+							m.Result = (IntPtr)HTTRANSPARENT;
+					}
+				}
+				catch (Exception)
+				{
+					// swallow to avoid crashing due to unexpected message formats on some environments
+				}
+				return;
+			}
 
             if (m.Msg == WM_MOUSEMOVE ||
-                m.Msg == WM_LBUTTONDOWN ||
-                m.Msg == WM_LBUTTONUP ||
-                m.Msg == WM_RBUTTONDOWN ||
-                m.Msg == WM_RBUTTONUP)
-            {
-                var clientPt = new Point(
-                    (short)(m.LParam.ToInt32() & 0xFFFF),
-                    (short)((m.LParam.ToInt32() >> 16) & 0xFFFF));
+				m.Msg == WM_LBUTTONDOWN ||
+				m.Msg == WM_LBUTTONUP ||
+				m.Msg == WM_RBUTTONDOWN ||
+				m.Msg == WM_RBUTTONUP)
+			{
+				try
+				{
+					long lp = m.LParam.ToInt64();
+					var clientPt = new Point(
+						(short)(lp & 0xFFFF),
+						(short)((lp >> 16) & 0xFFFF));
 
-                if (IsTransparentPixel(clientPt))
-                {
-                    var mainForm = this.Owner;
-                    if (mainForm != null && mainForm.IsHandleCreated)
-                    {
-                        var screenPt = PointToScreen(clientPt);
-                        var mainPt = mainForm.PointToClient(screenPt);
-                        int newLParam = (mainPt.Y << 16) | (mainPt.X & 0xFFFF);
-                        Win32API.PostMessage(
-                            mainForm.Handle,
-                            (uint)m.Msg,
-                            m.WParam,
-                            (IntPtr)newLParam);
-                    }
-                    return;
-                }
-            }
+					if (IsTransparentPixel(clientPt))
+					{
+						var owner = this.Owner as Form;
+						if (owner != null && owner.IsHandleCreated)
+						{
+							var screenPt = PointToScreen(clientPt);
+							var mainPt = owner.PointToClient(screenPt);
+							long newLp = (((long)(mainPt.Y & 0xFFFF)) << 16) | (long)(mainPt.X & 0xFFFF);
+							var newLParam = new IntPtr(newLp);
+							Win32API.PostMessage(
+								owner.Handle,
+								(uint)m.Msg,
+								m.WParam,
+								newLParam);
+						}
+						return;
+					}
+				}
+				catch (Exception)
+				{
+					// swallow to prevent environment-specific crashes; if reproducible, collect stacktrace
+				}
+			}
 
             base.WndProc(ref m);
         }

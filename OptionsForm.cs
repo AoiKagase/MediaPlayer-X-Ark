@@ -1,4 +1,5 @@
-﻿using MediaPlayer_X_Ark.Engine.Effector;
+﻿using ColorSlider;
+using MediaPlayer_X_Ark.Engine.Effector;
 using MediaPlayer_X_Ark.Engine.Effector.Presets;
 using MediaPlayer_X_Ark.Skin;
 using System;
@@ -25,6 +26,9 @@ namespace MediaPlayer_X_Ark
 			"Normal", "Rock", "Pop", "Bass Boost",
 			"Trable Boost", "Total Boost", "Total Reduce", "Custom"
 		};
+        Control[] _eqTrackBars =
+{
+            };
         public OptionsForm(ref PlayerEngine engine, ref Engine.Configration config, MainForm mainForm)
 		{
 			InitializeComponent();
@@ -42,6 +46,12 @@ namespace MediaPlayer_X_Ark
             LoadCompressorPresets();
             LoadReverbPresets();
             LoadPitchPresets();
+
+			_eqTrackBars = new Control[]{
+                TrkGEQ32, TrkGEQ60, TrkGEQ125, TrkGEQ250, TrkGEQ500,
+                TrkGEQ1K, TrkGEQ2K, TrkGEQ4K, TrkGEQ8K, TrkGEQ16K,
+                TrkGEQ20K, TrkGEQ22K
+			};
         }
 
         private void LoadEffectPresets<T>(ComboBox cmb, string effectName)
@@ -113,37 +123,37 @@ namespace MediaPlayer_X_Ark
 
         private void BtnGEQPresetSave_Click(object sender, EventArgs e)
         {
-            //using (var form = new PresetNameInputForm())
-            //{
-            //    if (form.ShowDialog() != DialogResult.OK) return;
-            //    if (_geqBuiltinPresets.Contains(form.PresetName))
-            //    {
-            //        MessageBox.Show("組み込みプリセット名は使用できません。",
-            //            "保存エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //        return;
-            //    }
-            //    var preset = new GEqualizerPreset
-            //    {
-            //        Name = form.PresetName,
-            //        Hz32 = (float)TrkGEQ32.Value,
-            //        Hz60 = (float)TrkGEQ60.Value,
-            //        Hz125 = (float)TrkGEQ125.Value,
-            //        Hz250 = (float)TrkGEQ250.Value,
-            //        Hz500 = (float)TrkGEQ500.Value,
-            //        Hz1K = (float)TrkGEQ1K.Value,
-            //        Hz2K = (float)TrkGEQ2K.Value,
-            //        Hz4K = (float)TrkGEQ4K.Value,
-            //        Hz8K = (float)TrkGEQ8K.Value,
-            //        Hz16K = (float)TrkGEQ16K.Value,
-            //        Hz20K = (float)TrkGEQ20K.Value,
-            //        Hz22K = (float)TrkGEQ22K.Value,
-            //    };
-            //    preset.Save();
-            //    LoadGEQPresets();
-            //    cmbEqPreset.SelectedItem = preset.Name;
-            //    _config.settings.EffectPresets["GEQ"] = preset.Name;
-            //}
-        }
+			using (var form = new PresetNameInputForm())
+			{
+				if (form.ShowDialog() != DialogResult.OK) return;
+				if (_geqBuiltinPresets.Contains(form.PresetNameValue))
+				{
+					MessageBox.Show("組み込みプリセット名は使用できません。",
+						"保存エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					return;
+				}
+				var preset = new GEqualizerPreset
+				{
+					Name = form.PresetNameValue,
+					Hz32 = (float)TrkGEQ32.Value,
+					Hz60 = (float)TrkGEQ60.Value,
+					Hz125 = (float)TrkGEQ125.Value,
+					Hz250 = (float)TrkGEQ250.Value,
+					Hz500 = (float)TrkGEQ500.Value,
+					Hz1K = (float)TrkGEQ1K.Value,
+					Hz2K = (float)TrkGEQ2K.Value,
+					Hz4K = (float)TrkGEQ4K.Value,
+					Hz8K = (float)TrkGEQ8K.Value,
+					Hz16K = (float)TrkGEQ16K.Value,
+					Hz20K = (float)TrkGEQ20K.Value,
+					Hz22K = (float)TrkGEQ22K.Value,
+				};
+				preset.Save();
+				LoadGEQPresets();
+				cmbEqPreset.SelectedItem = preset.Name;
+				_config.settings.EffectPresets["GEQ"] = preset.Name;
+			}
+		}
 
         private void BtnGEQPresetDelete_Click(object sender, EventArgs e)
         {
@@ -185,58 +195,24 @@ namespace MediaPlayer_X_Ark
             lblAboutCompany.Text = info.CompanyName ?? "";
         }
 		private bool internalChanged = false;
-		private void EqualizerChanged(object sender, PropertyChangedEventArgs e)
+
+        private void EqualizerChanged(object sender, PropertyChangedEventArgs e)
         {
-			if (e.PropertyName == "Gain")
+			if (e.PropertyName != "Gain")
+				return;
+
+            internalChanged = true;
+
+            for (int i = 0; i < _eqTrackBars.Length; i++)
             {
-				internalChanged = true;
-				for(int i = 0; i < (int)Engine.Effector.GEqualizer.EQ_HZ.HZ_MAX; i++)
-                {
-					switch(i)
-                    {
-						case 0:
-							TrkGEQ32.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
-							break;
-						case 1:
-							TrkGEQ60.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
-							break;
-						case 2:
-							TrkGEQ125.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
-							break;
-						case 3:
-							TrkGEQ250.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
-							break;
-						case 4:
-							TrkGEQ500.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
-							break;
-						case 5:
-							TrkGEQ1K.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
-							break;
-						case 6:
-							TrkGEQ2K.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
-							break;
-						case 7:
-							TrkGEQ4K.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
-							break;
-						case 8:
-							TrkGEQ8K.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
-							break;
-						case 9:
-							TrkGEQ16K.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
-							break;
-						case 10:
-							TrkGEQ20K.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
-							break;
-						case 11:
-							TrkGEQ22K.Value = ((int)_engine.effector.GEqualizer.Gain[i] * 10);
-							break;
-					}
-				}
-				internalChanged = false;
-			}
+                ((TrackBar)_eqTrackBars[i]).Value =
+                    (int)(_engine.effector.GEqualizer.Gain[i] * 10);
+            }
+
+			internalChanged = false;
 		}
 
-		private void PitchChenged(object sender, PropertyChangedEventArgs e)
+		private void PitchChanged(object sender, PropertyChangedEventArgs e)
 		{
 			// Speed ON時のみKnob表示を同期（変換式修正）
 			if (CheckSpeed.Checked)
@@ -245,7 +221,7 @@ namespace MediaPlayer_X_Ark
 				lblValPitchPitch.Text = _engine.effector.PitchShift.Pitch.ToString("0.00");
 			}
 		}
-		private void FrequencyChenged(object sender, PropertyChangedEventArgs e)
+		private void FrequencyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			if (CheckSpeed.Checked)
 			{
@@ -850,7 +826,7 @@ namespace MediaPlayer_X_Ark
 			// FFTSize: 256～4096 → ×1（固定値のみ）
 			// ===========================
 			CheckPitch.Checked = _engine.effector.PitchShift.Enabled;
-			_engine.effector.PitchShift.PropertyChanged += new PropertyChangedEventHandler(PitchChenged);
+			_engine.effector.PitchShift.PropertyChanged += new PropertyChangedEventHandler(PitchChanged);
 
 			KnobPitchPitch.ParameterName = "Pitch";
 			KnobPitchPitch.Unit = "";
@@ -880,7 +856,7 @@ namespace MediaPlayer_X_Ark
 			KnobFrequency.Maximum = 100;
 			KnobFrequency.LargeChange = 5;
 			KnobFrequency.Value = _config.settings.Effectors.Frequency.Frequency;
-			_engine.effector.Frequency.PropertyChanged += new PropertyChangedEventHandler(FrequencyChenged);
+			_engine.effector.Frequency.PropertyChanged += new PropertyChangedEventHandler(FrequencyChanged);
 
 			// Frequency初期化の末尾に追加
 			if (_engine.effector.Frequency.Enabled)
@@ -1084,145 +1060,24 @@ namespace MediaPlayer_X_Ark
 
 		private int GetIndexToTrackValue(int index)
 		{
-			int value = 0;
-			switch (index)
-			{
-				case 0:
-					value = Convert.ToInt32(TrkGEQ32.Value);
-					break;
-				case 1:
-					value = Convert.ToInt32(TrkGEQ60.Value);
-					break;
-				case 2:
-					value = Convert.ToInt32(TrkGEQ125.Value);
-					break;
-				case 3: 
-					value = Convert.ToInt32(TrkGEQ250.Value); 
-					break;
-				case 4: 
-					value = Convert.ToInt32(TrkGEQ500.Value); 
-					break;
-				case 5: 
-					value = Convert.ToInt32(TrkGEQ1K.Value); 
-					break;
-				case 6: 
-					value = Convert.ToInt32(TrkGEQ2K.Value); 
-					break;
-				case 7: 
-					value = Convert.ToInt32(TrkGEQ4K.Value); 
-					break;
-				case 8: 
-					value = Convert.ToInt32(TrkGEQ8K.Value); 
-					break;
-				case 9: 
-					value = Convert.ToInt32(TrkGEQ16K.Value); 
-					break;
-				case 10: 
-					value = Convert.ToInt32(TrkGEQ20K.Value); 
-					break;
-				case 11: 
-					value = Convert.ToInt32(TrkGEQ22K.Value); 
-					break;
-			}
-			return value;
+            return index < _eqTrackBars.Length ? Convert.ToInt32(((TrackBar)_eqTrackBars[index]).Value) : 0;
 		}
 
-        private void TrkGEQ32_ValueChanged(object sender, EventArgs e)
+        private void EqTrackBar_ValueChanged(object sender, EventArgs e)
         {
-			PaintGEQGraph();
-			if (!internalChanged)
-				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_32, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
-			_config.settings.Effectors.GEqualizer.GEQ_32 = ((ColorSlider.ColorSlider)sender).Value;
-		}
+            PaintGEQGraph();
+            if (internalChanged) return;
 
-		private void TrkGEQ60_ValueChanged(object sender, EventArgs e)
-        {
-			PaintGEQGraph();
-			if (!internalChanged)
-				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_60, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
-			_config.settings.Effectors.GEqualizer.GEQ_60 = ((ColorSlider.ColorSlider)sender).Value;
-		}
+            int index = Array.IndexOf(_eqTrackBars, sender);
+            if (index < 0) return;
 
-		private void TrkGEQ125_ValueChanged(object sender, EventArgs e)
-        {
-			PaintGEQGraph();
-			if (!internalChanged)
-				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_125, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
-			_config.settings.Effectors.GEqualizer.GEQ_125 = ((ColorSlider.ColorSlider)sender).Value;
-		}
+            int value = ((TrackBar)sender).Value;
+            var eqHz = (Engine.Effector.GEqualizer.EQ_HZ)index;
+            _engine.effector.GEqualizer.SetGain(eqHz, value / 5f);
 
-		private void TrkGEQ250_ValueChanged(object sender, EventArgs e)
-        {
-			PaintGEQGraph();
-			if (!internalChanged)
-				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_250, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
-			_config.settings.Effectors.GEqualizer.GEQ_250 = ((ColorSlider.ColorSlider)sender).Value;
-		}
-
-		private void TrkGEQ500_ValueChanged(object sender, EventArgs e)
-        {
-			PaintGEQGraph();
-			if (!internalChanged)
-				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_500, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
-			_config.settings.Effectors.GEqualizer.GEQ_500 = ((ColorSlider.ColorSlider)sender).Value;
-		}
-
-		private void TrkGEQ1K_ValueChanged(object sender, EventArgs e)
-        {
-			PaintGEQGraph();
-			if (!internalChanged)
-				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_1K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
-			_config.settings.Effectors.GEqualizer.GEQ_1K = ((ColorSlider.ColorSlider)sender).Value;
-		}
-
-		private void TrkGEQ2K_ValueChanged(object sender, EventArgs e)
-        {
-			PaintGEQGraph();
-			if (!internalChanged)
-				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_2K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
-			_config.settings.Effectors.GEqualizer.GEQ_2K = ((ColorSlider.ColorSlider)sender).Value;
-		}
-
-		private void TrkGEQ4K_ValueChanged(object sender, EventArgs e)
-        {
-			PaintGEQGraph();
-			if (!internalChanged)
-				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_4K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
-			_config.settings.Effectors.GEqualizer.GEQ_4K = ((ColorSlider.ColorSlider)sender).Value;
-		}
-
-		private void TrkGEQ8K_ValueChanged(object sender, EventArgs e)
-        {
-			PaintGEQGraph();
-			if (!internalChanged)
-				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_8K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
-			_config.settings.Effectors.GEqualizer.GEQ_8K = ((ColorSlider.ColorSlider)sender).Value;
-		}
-
-		private void TrkGEQ16K_ValueChanged(object sender, EventArgs e)
-        {
-			PaintGEQGraph();
-			if (!internalChanged)
-				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_16K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
-			_config.settings.Effectors.GEqualizer.GEQ_16K = ((ColorSlider.ColorSlider)sender).Value;
-		}
-
-		private void TrkGEQ20K_ValueChanged(object sender, EventArgs e)
-        {
-			PaintGEQGraph();
-			if (!internalChanged)
-				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_20K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
-			_config.settings.Effectors.GEqualizer.GEQ_20K = ((ColorSlider.ColorSlider)sender).Value;
-		}
-
-		private void TrkGEQ22K_ValueChanged(object sender, EventArgs e)
-		{
-			PaintGEQGraph();
-			if (!internalChanged)
-				_engine.effector.GEqualizer.SetGain(Engine.Effector.GEqualizer.EQ_HZ.HZ_22K, (float)((ColorSlider.ColorSlider)sender).Value / 10f);
-			_config.settings.Effectors.GEqualizer.GEQ_22K = ((ColorSlider.ColorSlider)sender).Value;
-		}
-
+      // update configuration via indexed accessor to avoid switch duplication in the form
+		_config.settings.Effectors.GEqualizer.SetByIndex(index, value);
+        }
 		private void BtnUpdate_Click(object sender, EventArgs e)
         {
 			// デバイスはPlayLoad()で反映されるため、ここでの即時反映は不要

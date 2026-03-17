@@ -708,7 +708,7 @@
 			TrkGEQ60.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			TrkGEQ60.TickDivide = 10F;
 			TrkGEQ60.Value = new decimal(new int[] { 0, 0, 0, 0 });
-			TrkGEQ60.ValueChanged += TrkGEQ60_ValueChanged;
+			TrkGEQ60.ValueChanged += EqTrackBar_ValueChanged;
 			// 
 			// TrkGEQ32
 			// 
@@ -745,7 +745,7 @@
 			TrkGEQ32.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			TrkGEQ32.TickDivide = 10F;
 			TrkGEQ32.Value = new decimal(new int[] { 0, 0, 0, 0 });
-			TrkGEQ32.ValueChanged += TrkGEQ32_ValueChanged;
+			TrkGEQ32.ValueChanged += EqTrackBar_ValueChanged;
 			// 
 			// TrkGEQ125
 			// 
@@ -782,7 +782,7 @@
 			TrkGEQ125.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			TrkGEQ125.TickDivide = 10F;
 			TrkGEQ125.Value = new decimal(new int[] { 0, 0, 0, 0 });
-			TrkGEQ125.ValueChanged += TrkGEQ125_ValueChanged;
+			TrkGEQ125.ValueChanged += EqTrackBar_ValueChanged;
 			// 
 			// TrkGEQ250
 			// 
@@ -819,7 +819,7 @@
 			TrkGEQ250.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			TrkGEQ250.TickDivide = 10F;
 			TrkGEQ250.Value = new decimal(new int[] { 0, 0, 0, 0 });
-			TrkGEQ250.ValueChanged += TrkGEQ250_ValueChanged;
+			TrkGEQ250.ValueChanged += EqTrackBar_ValueChanged;
 			// 
 			// TrkGEQ500
 			// 
@@ -856,7 +856,7 @@
 			TrkGEQ500.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			TrkGEQ500.TickDivide = 10F;
 			TrkGEQ500.Value = new decimal(new int[] { 0, 0, 0, 0 });
-			TrkGEQ500.ValueChanged += TrkGEQ500_ValueChanged;
+			TrkGEQ500.ValueChanged += EqTrackBar_ValueChanged;
 			// 
 			// TrkGEQ1K
 			// 
@@ -893,7 +893,7 @@
 			TrkGEQ1K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			TrkGEQ1K.TickDivide = 10F;
 			TrkGEQ1K.Value = new decimal(new int[] { 0, 0, 0, 0 });
-			TrkGEQ1K.ValueChanged += TrkGEQ1K_ValueChanged;
+			TrkGEQ1K.ValueChanged += EqTrackBar_ValueChanged;
 			// 
 			// TrkGEQ2K
 			// 
@@ -930,7 +930,7 @@
 			TrkGEQ2K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			TrkGEQ2K.TickDivide = 10F;
 			TrkGEQ2K.Value = new decimal(new int[] { 0, 0, 0, 0 });
-			TrkGEQ2K.ValueChanged += TrkGEQ2K_ValueChanged;
+			TrkGEQ2K.ValueChanged += EqTrackBar_ValueChanged;
 			// 
 			// TrkGEQ4K
 			// 
@@ -967,7 +967,7 @@
 			TrkGEQ4K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			TrkGEQ4K.TickDivide = 10F;
 			TrkGEQ4K.Value = new decimal(new int[] { 0, 0, 0, 0 });
-			TrkGEQ4K.ValueChanged += TrkGEQ4K_ValueChanged;
+			TrkGEQ4K.ValueChanged += EqTrackBar_ValueChanged;
 			// 
 			// TrkGEQ8K
 			// 
@@ -1004,7 +1004,7 @@
 			TrkGEQ8K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			TrkGEQ8K.TickDivide = 10F;
 			TrkGEQ8K.Value = new decimal(new int[] { 0, 0, 0, 0 });
-			TrkGEQ8K.ValueChanged += TrkGEQ8K_ValueChanged;
+			TrkGEQ8K.ValueChanged += EqTrackBar_ValueChanged;
 			// 
 			// TrkGEQ16K
 			// 
@@ -1041,7 +1041,7 @@
 			TrkGEQ16K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			TrkGEQ16K.TickDivide = 10F;
 			TrkGEQ16K.Value = new decimal(new int[] { 0, 0, 0, 0 });
-			TrkGEQ16K.ValueChanged += TrkGEQ16K_ValueChanged;
+			TrkGEQ16K.ValueChanged += EqTrackBar_ValueChanged;
 			// 
 			// TrkGEQ20K
 			// 
@@ -1078,7 +1078,7 @@
 			TrkGEQ20K.TickColor = System.Drawing.SystemColors.ControlDarkDark;
 			TrkGEQ20K.TickDivide = 10F;
 			TrkGEQ20K.Value = new decimal(new int[] { 0, 0, 0, 0 });
-			TrkGEQ20K.ValueChanged += TrkGEQ20K_ValueChanged;
+			TrkGEQ20K.ValueChanged += EqTrackBar_ValueChanged;
 			// 
 			// TrkGEQ22K
 			// 
@@ -1116,7 +1116,7 @@
 			TrkGEQ22K.TickDivide = 10F;
 			TrkGEQ22K.TickStyle = System.Windows.Forms.TickStyle.Both;
 			TrkGEQ22K.Value = new decimal(new int[] { 0, 0, 0, 0 });
-			TrkGEQ22K.ValueChanged += TrkGEQ22K_ValueChanged;
+			TrkGEQ22K.ValueChanged += EqTrackBar_ValueChanged;
 			// 
 			// btnGEQPresetSave
 			// 

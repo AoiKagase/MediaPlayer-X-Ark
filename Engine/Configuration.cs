@@ -96,6 +96,27 @@ namespace MediaPlayer_X_Ark.Engine
         public decimal GEQ_20K { get; set; }
         [JsonPropertyName("22000")]
         public decimal GEQ_22K { get; set; }
+
+        // Helper to update band value by index to avoid duplicated switch logic across UI
+        public void SetByIndex(int index, int value)
+        {
+            switch (index)
+            {
+                case 0: GEQ_32 = value; break;
+                case 1: GEQ_60 = value; break;
+                case 2: GEQ_125 = value; break;
+                case 3: GEQ_250 = value; break;
+                case 4: GEQ_500 = value; break;
+                case 5: GEQ_1K = value; break;
+                case 6: GEQ_2K = value; break;
+                case 7: GEQ_4K = value; break;
+                case 8: GEQ_8K = value; break;
+                case 9: GEQ_16K = value; break;
+                case 10: GEQ_20K = value; break;
+                case 11: GEQ_22K = value; break;
+                default: break;
+            }
+        }
     }
 
     public class CfgDistortion
