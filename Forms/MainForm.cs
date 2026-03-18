@@ -424,7 +424,7 @@ namespace MediaPlayer_X_Ark
             player.SetOutputTypeBeforeInit(config.GetOutputType());
 
 			// ③ init() を実行
-			player.Initialize();
+			player.Initialize(config.settings.Buffer);
 
 			// ④ Device は init() 後でOK
 			player.SetDevice(config.settings.Device);

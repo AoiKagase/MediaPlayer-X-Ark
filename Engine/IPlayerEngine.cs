@@ -19,7 +19,7 @@ namespace MediaPlayer_X_Ark.Engine
         Effector.Effectors effector { get; }
 
         // ── 初期化 ───────────────────────────────────
-        void Initialize();
+        void Initialize(CfgBuffer bufferSettings = null);
 
         // ── 再生制御 ─────────────────────────────────
         bool IsPlaying();

@@ -46,9 +46,31 @@ namespace MediaPlayer_X_Ark.Engine
         /// スキン
         /// </summary>
         public string Skin { get; set; }
-    }
 
-    public class CfgEffectors
+		public CfgBuffer Buffer { get; set; } = new CfgBuffer();
+	}
+	public class CfgBuffer
+	{
+		/// <summary>
+		/// ストリームバッファサイズ（KB）
+		/// デフォルト：128KB、推奨範囲：16〜512
+		/// </summary>
+		public int StreamBufferSizeKB { get; set; } = 128;
+
+		/// <summary>
+		/// DSPバッファサイズ（サンプル数）
+		/// デフォルト：2048、推奨値：512/1024/2048/4096
+		/// </summary>
+		public int DspBufferSize { get; set; } = 2048;
+
+		/// <summary>
+		/// DSPバッファ数
+		/// デフォルト：4
+		/// </summary>
+		public int DspBufferCount { get; set; } = 4;
+	}
+
+	public class CfgEffectors
     {
         /// <summary>
         /// Graphic Equalizer

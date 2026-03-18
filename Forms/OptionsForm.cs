@@ -1085,8 +1085,11 @@ namespace MediaPlayer_X_Ark
             cmbDevice.ValueMember = "GUID";
             cmbDevice.SelectedValue = _configService.settings.Device;
 
-            // Equalizer
-            CheckGEQ.Checked = _configService.settings.Effectors.GEqualizer.Enable;
+			nudStreamBuffer.Value = _configService.settings.Buffer.StreamBufferSizeKB;
+			nudDspBufferSize.Value = _configService.settings.Buffer.DspBufferSize;
+			nudDspBufferCount.Value = _configService.settings.Buffer.DspBufferCount;
+			// Equalizer
+			CheckGEQ.Checked = _configService.settings.Effectors.GEqualizer.Enable;
             cmbGEQPreset.SelectedIndex = _configService.settings.Effectors.GEqualizer.Preset;
             TrkGEQ32.Value = _configService.settings.Effectors.GEqualizer.GEQ_32;
             TrkGEQ60.Value = _configService.settings.Effectors.GEqualizer.GEQ_60;
@@ -1101,8 +1104,7 @@ namespace MediaPlayer_X_Ark
             TrkGEQ20K.Value = _configService.settings.Effectors.GEqualizer.GEQ_20K;
             TrkGEQ22K.Value = _configService.settings.Effectors.GEqualizer.GEQ_22K;
 
-
-        }
+		}
 
         private void lnkAboutGitHub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -1229,13 +1231,18 @@ namespace MediaPlayer_X_Ark
             if (cmbDevice.Enabled)
                 _configService.settings.Device = cmbDevice.SelectedValue.ToString();
             _configService.settings.OutputType = cmbOutput.SelectedIndex;
-            _configService.Save();
 
-            string message = requiresRestart
-                ? "設定を保存しました。\n出力形式は次回起動時に反映されます。"
-                : "設定を保存しました。\nデバイスは次回再生時に反映されます。";
+			_configService.settings.Buffer.StreamBufferSizeKB = (int)nudStreamBuffer.Value;
+			_configService.settings.Buffer.DspBufferSize = (int)nudDspBufferSize.Value;
+			_configService.settings.Buffer.DspBufferCount = (int)nudDspBufferCount.Value;
 
-            MessageBox.Show(message, "設定保存", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			_configService.Save();
+
+			string message = requiresRestart
+				? "設定を保存しました。\n出力形式・バッファサイズは次回起動時に反映されます。"
+				: "設定を保存しました。\nデバイスは次回再生時に反映されます。";
+
+			MessageBox.Show(message, "設定保存", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void OptionsForm_FormClosing(object sender, FormClosingEventArgs e)

@@ -155,7 +155,7 @@ namespace MediaPlayer_X_Ark.Engine
 		/// <summary>
 		/// System Initialize.
 		/// </summary>
-		public void Initialize()
+		public void Initialize(CfgBuffer bufferSettings = null)
 		{
 			// System Create.
 			{
@@ -173,12 +173,19 @@ namespace MediaPlayer_X_Ark.Engine
 					}
 				}
 
-				// バッファ設定
-                FmodSystem.setStreamBufferSize(128 * 1024, FMOD.TIMEUNIT.RAWBYTES); // 128KB
-                FmodSystem.setDSPBufferSize(2048, 4);
+				// init()より前にバッファ設定を適用
+				if (bufferSettings != null)
+				{
+					FmodSystem.setStreamBufferSize(
+						(uint)(bufferSettings.StreamBufferSizeKB * 1024),
+						FMOD.TIMEUNIT.RAWBYTES);
+					FmodSystem.setDSPBufferSize(
+						(uint)bufferSettings.DspBufferSize,
+						bufferSettings.DspBufferCount);
+				}
 
-                // System Init.
-                if (FmodCallFunction(FmodSystem.init(channelCount, FMOD.INITFLAGS.NORMAL, IntPtr.Zero)) == RESULT.OK)
+				// System Init.
+				if (FmodCallFunction(FmodSystem.init(channelCount, FMOD.INITFLAGS.NORMAL, IntPtr.Zero)) == RESULT.OK)
 				{
 					// Create Channel Group.
 					if (FmodCallFunction(FmodSystem.createChannelGroup("Channel 01", out FmodChannelGroup)) == RESULT.OK)
