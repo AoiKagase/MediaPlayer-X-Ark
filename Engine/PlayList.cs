@@ -7,8 +7,13 @@ using System.Threading.Tasks;
 using System.IO;
 namespace MediaPlayer_X_Ark.Engine
 {
-    public class PlayList
-    {
+    public class PlayList : INotifyPropertyChanged
+	{
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected void OnPropertyChanged(string propertyName)
+			=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
 		private uint _length;
 		private string _title;
 		private string _fileName;
@@ -39,6 +44,7 @@ namespace MediaPlayer_X_Ark.Engine
 			set
 			{
 				_title = value;
+				OnPropertyChanged(nameof(Title));
 			}
 		}
 		[DisplayName("Artist")]
@@ -63,6 +69,7 @@ namespace MediaPlayer_X_Ark.Engine
 		public void SetLength(uint length)
 		{
 			this._length = length;
+			OnPropertyChanged(nameof(length));
 		}
 
 		// ファイルパスのみで作成（遅延ロード用）
@@ -83,5 +90,6 @@ namespace MediaPlayer_X_Ark.Engine
 			if (this.Sound.hasHandle())
 				this.Sound.release();
         }
-    }
+
+	}
 }

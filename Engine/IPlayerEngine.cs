@@ -58,7 +58,5 @@ namespace MediaPlayer_X_Ark.Engine
         void SetDevice(string driver);
         List<DEVICE_INFO> GetDeviceListForOutputType(FMOD.OUTPUTTYPE outputType);
         List<DEVICE_INFO> GetCurrentDeviceList();
-
-
-    }
+   	}
 }

@@ -490,9 +490,12 @@ namespace MediaPlayer_X_Ark
 			{
 				Left += e.X - mousePoint.X;
 				Top += e.Y - mousePoint.Y;
-
-				playListForm.Left = Left - _currentSkin.PlayListForm.Position.Left;
-				playListForm.Top = Top - _currentSkin.PlayListForm.Position.Top;
+				// マグネットモードONのスキンの場合はドッキング位置に表示
+				if (_currentSkin != null && _currentSkin.PlayListForm.MagnetMode)
+				{
+					playListForm.Left = Left - _currentSkin.PlayListForm.Position.Left;
+					playListForm.Top = Top - _currentSkin.PlayListForm.Position.Top;
+				}
 			}
 		}
 
@@ -887,12 +890,8 @@ namespace MediaPlayer_X_Ark
 
 			playListForm.Show();
 
-			// マグネットモードONのスキンの場合はドッキング位置に表示
-			if (_currentSkin != null && _currentSkin.PlayListForm.MagnetMode)
-			{
-				playListForm.Left = Left - _currentSkin.PlayListForm.Position.Left;
-				playListForm.Top = Top - _currentSkin.PlayListForm.Position.Top;
-			}
+			playListForm.Left = Left - _currentSkin.PlayListForm.Position.Left;
+			playListForm.Top = Top - _currentSkin.PlayListForm.Position.Top;
 
 		}
 		private void BtnMinisize_Click(object sender, EventArgs e)

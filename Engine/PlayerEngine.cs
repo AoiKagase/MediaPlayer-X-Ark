@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark.Engine
@@ -43,6 +45,7 @@ namespace MediaPlayer_X_Ark.Engine
     public class PlayerEngine : IPlayerEngine
 	{
 		private bool _disposed = false;  // 二重解放防止フラグ
+		private readonly SemaphoreSlim _tagLoadSemaphore = new SemaphoreSlim(3, 3);
 
 		[DllImport("kernel32.dll")]
 		public static extern IntPtr LoadLibrary(string dllToLoad);
@@ -118,12 +121,13 @@ namespace MediaPlayer_X_Ark.Engine
             {
                 if (disposing)
 				{
-                    spectrum?.Dispose();
+					spectrum?.Dispose();
                     wave?.Dispose();
-                }
+					_tagLoadSemaphore?.Dispose(); 
+				}
 
-                // Relase FMOD handles for Channel.
-                if (FmodChannel.hasHandle())
+				// Relase FMOD handles for Channel.
+				if (FmodChannel.hasHandle())
 					FmodChannel.stop();
 
 				// Relase FMOD handles for ChannelGroup.
@@ -514,9 +518,66 @@ namespace MediaPlayer_X_Ark.Engine
 			PlayList.Add(plist);
 			index = PlayList.Count - 1;
 
+			// ★バックグラウンドでタグ・長さを取得
+			int capturedIndex = index;
+			_ = LoadTagsOnlyAsync(capturedIndex);
+
 			return FMOD.RESULT.OK;
         }
+		private async Task LoadTagsOnlyAsync(int index)
+		{
+			await _tagLoadSemaphore.WaitAsync();
+			try
+			{
+				if (index < 0 || index >= PlayList.Count) return;
 
+				string filename = PlayList[index].FileName;
+
+				await Task.Run(() =>
+				{
+					FMOD.Sound sound;
+					FMOD.CREATESOUNDEXINFO info = new FMOD.CREATESOUNDEXINFO();
+					info.cbsize = Marshal.SizeOf(info);
+
+					FMOD.RESULT result;
+					if (Path.GetExtension(filename).Equals(".mid"))
+					{
+						info.suggestedsoundtype = FMOD.SOUND_TYPE.MIDI;
+						result = FmodSystem.createSound(
+							filename, FMOD.MODE.DEFAULT, ref info, out sound);
+					}
+					else
+					{
+						result = FmodSystem.createStream(
+							filename, FMOD.MODE.DEFAULT, ref info, out sound);
+					}
+
+					if (result != FMOD.RESULT.OK) return;
+
+					try
+					{
+						// ★一時的にSoundを代入してGetTagsを呼ぶ
+						PlayList[index].Sound = sound;
+
+						uint length;
+						sound.getLength(out length, FMOD.TIMEUNIT.MS);
+						PlayList[index].SetLength(length);
+						GetTags(index);
+					}
+					finally
+					{
+						sound.release();
+						PlayList[index].Sound = default;
+					}
+				});
+			}
+			catch { }
+			finally
+			{
+				_tagLoadSemaphore.Release();
+			}
+
+		}
 		/// <summary>
 		/// メモリ上のPCMデータからSoundを生成してプレイリストへ追加する。
 		/// CDDA固定：44100Hz / ステレオ / 16bit
