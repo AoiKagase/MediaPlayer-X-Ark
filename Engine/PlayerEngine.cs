@@ -517,10 +517,13 @@ namespace MediaPlayer_X_Ark.Engine
 			var plist = new Engine.PlayList(filename);
 			PlayList.Add(plist);
 			index = PlayList.Count - 1;
-
-			// ★バックグラウンドでタグ・長さを取得
-			int capturedIndex = index;
-			_ = LoadTagsOnlyAsync(capturedIndex);
+			// ★URLの場合はバックグラウンドタグ取得をスキップ
+			if (!filename.StartsWith("http://") && !filename.StartsWith("https://"))
+			{
+				// ★バックグラウンドでタグ・長さを取得
+				int capturedIndex = index;
+				_ = LoadTagsOnlyAsync(capturedIndex);
+			}
 
 			return FMOD.RESULT.OK;
         }
