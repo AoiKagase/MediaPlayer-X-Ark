@@ -12,12 +12,18 @@ namespace MediaPlayer_X_Ark.Engine
 		private uint _length;
 		private string _title;
 		private string _fileName;
+		[Browsable(false)]
 		public string FileName
 		{
 			get { return _fileName; }
 			set { _fileName = value; }
 		}
+		[Browsable(false)] 
 		public FMOD.Sound Sound { get; set; }
+
+		// ロード済みかどうか
+		[Browsable(false)]
+		public bool IsLoaded => Sound.hasHandle();
 
 		// TAG
 		[DisplayName("Title")]
@@ -39,8 +45,11 @@ namespace MediaPlayer_X_Ark.Engine
 		public string Artist { get; set; }
 		[DisplayName("Album")]
 		public string Album { get; set; }
+		[Browsable(false)] 
 		public FMOD.SOUND_TYPE SoundType { get; set; }
+		[Browsable(false)] 
 		public FMOD.SOUND_FORMAT Format { get; set; }
+		[Browsable(false)] 
 		public int Bit { get; set; }
 		[DisplayName("Length")]
 		public string length
@@ -54,6 +63,13 @@ namespace MediaPlayer_X_Ark.Engine
 		public void SetLength(uint length)
 		{
 			this._length = length;
+		}
+
+		// ファイルパスのみで作成（遅延ロード用）
+		public PlayList(string fileName)
+		{
+			this.FileName = fileName;
+			this.Sound = default; // 未ロード状態
 		}
 
 		public PlayList(string fileName, FMOD.Sound sound)

@@ -35,16 +35,11 @@ namespace MediaPlayer_X_Ark
 			//        public FMOD.SOUND_FORMAT Format { get; set; }
 			//        public int Bit { get; set; }
 			//        public uint length { get; set; }
-			this.PlayListGrid.Columns[0].Visible = false;
 			this.PlayListGrid.Columns[1].Visible = false;
-			this.PlayListGrid.Columns[3].Visible = false;
-			this.PlayListGrid.Columns[4].Visible = false;
-			this.PlayListGrid.Columns[5].Visible = false;
-			this.PlayListGrid.Columns[6].Visible = false;
-			this.PlayListGrid.Columns[7].Visible = false;
+			this.PlayListGrid.Columns[2].Visible = false;
 
-			this.PlayListGrid.Columns[2].AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-			this.PlayListGrid.Columns[8].AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+			this.PlayListGrid.Columns[0].AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+			this.PlayListGrid.Columns[3].AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
 		}
 
 		private void PBtnOpen_MouseDown(object sender, MouseEventArgs e)

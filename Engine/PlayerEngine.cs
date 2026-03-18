@@ -132,8 +132,9 @@ namespace MediaPlayer_X_Ark.Engine
 
 				// Relase FMOD handles for Sound.
 				for (int i = 0; i < PlayList.Count; i++)
-                {
-					if (PlayList[i].Sound.hasHandle())
+				{
+					// ★IsLoadedチェックを追加
+					if (PlayList[i].IsLoaded && PlayList[i].Sound.hasHandle())
 						PlayList[i].Sound.release();
 				}
 				PlayList.Clear();
@@ -408,16 +409,31 @@ namespace MediaPlayer_X_Ark.Engine
 		/// <param name="channel"></param>
 		public RESULT PlaySound(int index)
         {
-			FMOD.RESULT result = RESULT.OK;
-
             if (index >= PlayList.Count)
-                return result;
+				return FMOD.RESULT.OK;
 
-            if (PlayList[index].Sound.hasHandle())
-            {
-				result = FmodCallFunction(FmodSystem.playSound(PlayList[index].Sound, FmodChannelGroup, false, out FmodChannel));
-				GetTags(index);
+			// ★再生前にロード
+			var loadResult = LoadSound(index);
+			if (loadResult != FMOD.RESULT.OK)
+				return loadResult;
+
+			// 再生
+			var result = FmodCallFunction(FmodSystem.playSound(
+				PlayList[index].Sound, FmodChannelGroup, false, out FmodChannel));
+
+			// ★再生中以外の不要なSoundを解放
+			for (int i = 0; i < PlayList.Count; i++)
+			{
+				if (i == index) continue;
+				// 次曲はプリロードのため保持（ギャップレス再生への布石）
+				if (i == index + 1) continue;
+				if (PlayList[i].IsLoaded && i != index)
+				{
+					PlayList[i].Sound.release();
+					PlayList[i].Sound = default;
+				}
 			}
+
 			return result;
         }
 
@@ -492,36 +508,13 @@ namespace MediaPlayer_X_Ark.Engine
 		/// <param name="filename"></param>
 		public RESULT CreateSound(string filename, out int index)
         {
-			// CD Player
-			//if (filename.Substring(0, 3).Equals("cd:"))
-			//{
-			//	FmodSystem.createStream(filename.Substring(4, 2), (FMOD.MODE._2D | FMOD.MODE.CREATESTREAM | FMOD.MODE.OPENONLY | FMOD.MODE.OPENMEMORY), out FmodSound);
-			//}
-			FMOD.Sound sound;
-			FMOD.RESULT result;
-			FMOD.CREATESOUNDEXINFO info = new FMOD.CREATESOUNDEXINFO();
-			info.cbsize = Marshal.SizeOf(info);
 			index = 0;
-			if (Path.GetExtension(filename).Equals(".mid"))
-			{
-				info.suggestedsoundtype = FMOD.SOUND_TYPE.MIDI;
-				if ((result = FmodCallFunction(FmodSystem.createSound(filename, FMOD.MODE.DEFAULT, ref info, out sound))) == RESULT.OK)
-				{
-					Engine.PlayList plist = new Engine.PlayList(filename, sound);
-					PlayList.Add(plist);
-					index = PlayList.Count - 1;
-				}
-			}
-			else
-			{
-				if ((result = FmodCallFunction(FmodSystem.createStream(filename, FMOD.MODE.DEFAULT, ref info, out sound))) == RESULT.OK)
-				{
-					Engine.PlayList plist = new Engine.PlayList(filename, sound);
-					PlayList.Add(plist);
-					index = PlayList.Count - 1;
-				}
-			}
-			return result;
+
+			var plist = new Engine.PlayList(filename);
+			PlayList.Add(plist);
+			index = PlayList.Count - 1;
+
+			return FMOD.RESULT.OK;
         }
 
 		/// <summary>
@@ -553,7 +546,41 @@ namespace MediaPlayer_X_Ark.Engine
 			}
 			return result;
 		}
+		private FMOD.RESULT LoadSound(int index)
+		{
+			if (index < 0 || index >= PlayList.Count)
+				return FMOD.RESULT.ERR_INVALID_PARAM;
 
+			// 既にロード済みの場合はスキップ
+			if (PlayList[index].IsLoaded)
+				return FMOD.RESULT.OK;
+
+			string filename = PlayList[index].FileName;
+			FMOD.Sound sound;
+			FMOD.RESULT result;
+			FMOD.CREATESOUNDEXINFO info = new FMOD.CREATESOUNDEXINFO();
+			info.cbsize = Marshal.SizeOf(info);
+
+			if (Path.GetExtension(filename).Equals(".mid"))
+			{
+				info.suggestedsoundtype = FMOD.SOUND_TYPE.MIDI;
+				result = FmodCallFunction(FmodSystem.createSound(
+					filename, FMOD.MODE.DEFAULT, ref info, out sound));
+			}
+			else
+			{
+				result = FmodCallFunction(FmodSystem.createStream(
+					filename, FMOD.MODE.DEFAULT, ref info, out sound));
+			}
+
+			if (result == FMOD.RESULT.OK)
+			{
+				PlayList[index].Sound = sound;
+				GetTags(index);
+			}
+
+			return result;
+		}
 		/// <summary>
 		/// プレイリストを全消去する。
 		/// </summary>
@@ -562,7 +589,8 @@ namespace MediaPlayer_X_Ark.Engine
 			Stop();
 			for (int i = 0; i < PlayList.Count; i++)
 			{
-				if (PlayList[i].Sound.hasHandle())
+				// ★ロード済みのものだけ解放
+				if (PlayList[i].IsLoaded)
 					PlayList[i].Sound.release();
 			}
 			PlayList.Clear();

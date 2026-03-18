@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark
@@ -1421,53 +1422,63 @@ namespace MediaPlayer_X_Ark
             LoadSkinPreview(_configService.settings.Skin);
         }
 
-        private void LoadSkinPreview(string skinPath)
+        private async void LoadSkinPreview(string skinPath)
         {
             // メタ情報をリセット
             lblSkinName.Text = "";
             lblSkinAuthor.Text = "";
             lblSkinDesc.Text = "";
+			PictSkinPreview.Image = null;
 
-            try
+			try
             {
-                using (var pkg = SkinPackage.Open(skinPath))
+				Image previewImage = null;
+				string name = "", author = "", desc = "";
+                await Task.Run(() =>
                 {
-                    // プレビュー画像
-                    if (pkg.MainImagePath != null && File.Exists(pkg.MainImagePath))
+                    using (var pkg = SkinPackage.Open(skinPath))
                     {
-                        // ファイルロックを避けるためメモリストリーム経由でロード
-                        using (var stream = new FileStream(pkg.MainImagePath, FileMode.Open, FileAccess.Read))
+                        // プレビュー画像
+                        if (pkg.MainImagePath != null && File.Exists(pkg.MainImagePath))
                         {
-                            PictSkinPreview.Image = new Bitmap(stream);
-                            PictSkinPreview.SizeMode = PictureBoxSizeMode.Zoom;
+                            // ファイルロックを避けるためメモリストリーム経由でロード
+                            using (var stream = new FileStream(pkg.MainImagePath, FileMode.Open, FileAccess.Read))
+                            {
+                                var ms = new MemoryStream();
+                                stream.CopyTo(ms);
+                                ms.Seek(0, SeekOrigin.Begin);
+                                previewImage = new Bitmap(ms);
+                            }
+                        }
+
+                        // メタ情報（新形式のみ）
+                        if (pkg.Format == SkinPackage.SkinFormat.NewXsk &&
+                            pkg.DefinitionPath != null &&
+                            File.Exists(pkg.DefinitionPath))
+                        {
+                            var json = File.ReadAllText(pkg.DefinitionPath,
+                                System.Text.Encoding.UTF8);
+                            var skin = System.Text.Json.JsonSerializer
+                                .Deserialize<Skin.NewSkinSystem.SkinJson>(json);
+
+                            name = skin?.Meta?.Name ?? "";
+                            author = skin?.Meta?.Author ?? "";
+                            desc = skin?.Meta?.Description ?? "";
+                        }
+                        else
+                        {
+                            // 旧形式はファイル名を表示
+                            name = Path.GetFileNameWithoutExtension(skinPath);
                         }
                     }
-                    else
-                    {
-                        PictSkinPreview.Image = null;
-                    }
-
-                    // メタ情報（新形式のみ）
-                    if (pkg.Format == SkinPackage.SkinFormat.NewXsk &&
-                        pkg.DefinitionPath != null &&
-                        File.Exists(pkg.DefinitionPath))
-                    {
-                        var json = File.ReadAllText(pkg.DefinitionPath,
-                            System.Text.Encoding.UTF8);
-                        var skin = System.Text.Json.JsonSerializer
-                            .Deserialize<Skin.NewSkinSystem.SkinJson>(json);
-
-                        lblSkinName.Text = skin?.Meta?.Name ?? "";
-                        lblSkinAuthor.Text = skin?.Meta?.Author ?? "";
-                        lblSkinDesc.Text = skin?.Meta?.Description ?? "";
-                    }
-                    else
-                    {
-                        // 旧形式はファイル名を表示
-                        lblSkinName.Text = Path.GetFileNameWithoutExtension(skinPath);
-                    }
-                }
-            }
+                });
+				// UI更新はUIスレッドで
+				PictSkinPreview.Image = previewImage;
+				PictSkinPreview.SizeMode = PictureBoxSizeMode.Zoom;
+				lblSkinName.Text = name;
+				lblSkinAuthor.Text = author;
+				lblSkinDesc.Text = desc;
+			}
             catch
             {
                 PictSkinPreview.Image = null;
@@ -1492,14 +1503,23 @@ namespace MediaPlayer_X_Ark
             }
         }
 
-        private void BtnSkinApply_Click(object sender, EventArgs e)
+        private async void BtnSkinApply_Click(object sender, EventArgs e)
         {
             var skinPath = txtSkinPath.Text;
             if (string.IsNullOrEmpty(skinPath)) return;
 
-            try
+			BtnSkinApply.Enabled = false;
+			BtnSkinBrowse.Enabled = false;
+
+			try
             {
-                _configService.settings.Skin = skinPath;
+				// ZIPの展開等ファイルI/Oのみ別スレッド
+				await Task.Run(() =>
+				{
+					using (var pkg = SkinPackage.Open(skinPath)) { }
+				});
+
+				_configService.settings.Skin = skinPath;
                 _configService.Save();
                 _mainForm.SkinLoad(skinPath); // MainForm.SkinLoadをpublicに変更が必要
                 MessageBox.Show(
@@ -1515,8 +1535,13 @@ namespace MediaPlayer_X_Ark
                     "エラー",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
-            }
-        }
+			}
+			finally
+			{
+				BtnSkinApply.Enabled = true;
+				BtnSkinBrowse.Enabled = true;
+			}
+		}
 
         private void LoadChorusPresets() => LoadEffectPresets<ChorusPreset>(cmbChorusPreset, "Chorus");
 
