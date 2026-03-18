@@ -67,7 +67,6 @@
             label46 = new System.Windows.Forms.Label();
             label45 = new System.Windows.Forms.Label();
             label44 = new System.Windows.Forms.Label();
-            cmbEqPreset = new System.Windows.Forms.ComboBox();
             CheckGEQ = new System.Windows.Forms.CheckBox();
             PictGEQGraph = new System.Windows.Forms.PictureBox();
             TrkGEQ60 = new ColorSlider.ColorSlider();
@@ -82,8 +81,6 @@
             TrkGEQ16K = new ColorSlider.ColorSlider();
             TrkGEQ20K = new ColorSlider.ColorSlider();
             TrkGEQ22K = new ColorSlider.ColorSlider();
-            btnGEQPresetSave = new System.Windows.Forms.Button();
-            btnGEQPresetDelete = new System.Windows.Forms.Button();
             tabPitch = new System.Windows.Forms.TabPage();
             GroupSpeed = new System.Windows.Forms.GroupBox();
             lblValSpeed = new System.Windows.Forms.TextBox();
@@ -103,18 +100,12 @@
             label4 = new System.Windows.Forms.Label();
             KnobPitchPitch = new UI.Knob();
             CheckPitch = new System.Windows.Forms.CheckBox();
-            cmbPitchPreset = new System.Windows.Forms.ComboBox();
-            btnPitchPresetSave = new System.Windows.Forms.Button();
-            btnPitchPresetDelete = new System.Windows.Forms.Button();
             tabDistortion = new System.Windows.Forms.TabPage();
             GroupDistortion = new System.Windows.Forms.GroupBox();
             CheckDistortion = new System.Windows.Forms.CheckBox();
             lblValDistortionLevel = new System.Windows.Forms.TextBox();
             KnobDistortionLevel = new UI.Knob();
             label1 = new System.Windows.Forms.Label();
-            cmbDistortionPreset = new System.Windows.Forms.ComboBox();
-            btnDistortionPresetSave = new System.Windows.Forms.Button();
-            btnDistortionPresetDelete = new System.Windows.Forms.Button();
             tabChorus = new System.Windows.Forms.TabPage();
             GroupChorus = new System.Windows.Forms.GroupBox();
             lblValChorusDepth = new System.Windows.Forms.TextBox();
@@ -127,9 +118,6 @@
             label3 = new System.Windows.Forms.Label();
             KnobChorusMix = new UI.Knob();
             CheckChorus = new System.Windows.Forms.CheckBox();
-            cmbChorusPreset = new System.Windows.Forms.ComboBox();
-            btnChorusPresetSave = new System.Windows.Forms.Button();
-            btnChorusPresetDelete = new System.Windows.Forms.Button();
             tabEcho = new System.Windows.Forms.TabPage();
             GroupEcho = new System.Windows.Forms.GroupBox();
             lblValEchoWet = new System.Windows.Forms.TextBox();
@@ -145,9 +133,6 @@
             label13 = new System.Windows.Forms.Label();
             KnobEchoDelay = new UI.Knob();
             CheckEcho = new System.Windows.Forms.CheckBox();
-            cmbEchoPreset = new System.Windows.Forms.ComboBox();
-            btnEchoPresetSave = new System.Windows.Forms.Button();
-            btnEchoPresetDelete = new System.Windows.Forms.Button();
             tabFlanger = new System.Windows.Forms.TabPage();
             GroupFlanger = new System.Windows.Forms.GroupBox();
             lblValFlangerDepth = new System.Windows.Forms.TextBox();
@@ -160,9 +145,6 @@
             label37 = new System.Windows.Forms.Label();
             KnobFlangerMix = new UI.Knob();
             CheckFlanger = new System.Windows.Forms.CheckBox();
-            cmbFlangerPreset = new System.Windows.Forms.ComboBox();
-            btnFlangerPresetSave = new System.Windows.Forms.Button();
-            btnFlangerPresetDelete = new System.Windows.Forms.Button();
             tabHightpass = new System.Windows.Forms.TabPage();
             GroupHighpass = new System.Windows.Forms.GroupBox();
             lblValHighpassResonance = new System.Windows.Forms.TextBox();
@@ -172,9 +154,6 @@
             label23 = new System.Windows.Forms.Label();
             KnobHighpassCutoff = new UI.Knob();
             CheckHighpass = new System.Windows.Forms.CheckBox();
-            cmbHighpassPreset = new System.Windows.Forms.ComboBox();
-            btnHighpassPresetSave = new System.Windows.Forms.Button();
-            btnHighpassPresetDelete = new System.Windows.Forms.Button();
             tabLowpass = new System.Windows.Forms.TabPage();
             GroupLowpass = new System.Windows.Forms.GroupBox();
             lblValLowpassResonance = new System.Windows.Forms.TextBox();
@@ -184,9 +163,6 @@
             label19 = new System.Windows.Forms.Label();
             KnobLowpassCutoff = new UI.Knob();
             CheckLowpass = new System.Windows.Forms.CheckBox();
-            cmbLowpassPreset = new System.Windows.Forms.ComboBox();
-            btnLowpassPresetSave = new System.Windows.Forms.Button();
-            btnLowpassPresetDelete = new System.Windows.Forms.Button();
             tabCompressor = new System.Windows.Forms.TabPage();
             GroupCompressor = new System.Windows.Forms.GroupBox();
             CheckCompLinked = new System.Windows.Forms.CheckBox();
@@ -206,9 +182,6 @@
             label31 = new System.Windows.Forms.Label();
             KnobCompThreshold = new UI.Knob();
             CheckCompressor = new System.Windows.Forms.CheckBox();
-            cmbCompressorPreset = new System.Windows.Forms.ComboBox();
-            btnCompressorPresetSave = new System.Windows.Forms.Button();
-            btnCompressorPresetDelete = new System.Windows.Forms.Button();
             tabReverb = new System.Windows.Forms.TabPage();
             GroupReverb = new System.Windows.Forms.GroupBox();
             CheckReverb = new System.Windows.Forms.CheckBox();
@@ -252,9 +225,6 @@
             KnobReverbEarlyLate = new UI.Knob();
             KnobReverbWet = new UI.Knob();
             KnobReverbDry = new UI.Knob();
-            cmbReverbPreset = new System.Windows.Forms.ComboBox();
-            btnReverbPresetSave = new System.Windows.Forms.Button();
-            btnReverbPresetDelete = new System.Windows.Forms.Button();
             tabSkin = new System.Windows.Forms.TabPage();
             lblSkinPath = new System.Windows.Forms.Label();
             txtSkinPath = new System.Windows.Forms.TextBox();
@@ -502,7 +472,6 @@
             GroupGEQ.Controls.Add(label46);
             GroupGEQ.Controls.Add(label45);
             GroupGEQ.Controls.Add(label44);
-            GroupGEQ.Controls.Add(cmbEqPreset);
             GroupGEQ.Controls.Add(CheckGEQ);
             GroupGEQ.Controls.Add(PictGEQGraph);
             GroupGEQ.Controls.Add(TrkGEQ60);
@@ -517,8 +486,6 @@
             GroupGEQ.Controls.Add(TrkGEQ16K);
             GroupGEQ.Controls.Add(TrkGEQ20K);
             GroupGEQ.Controls.Add(TrkGEQ22K);
-            GroupGEQ.Controls.Add(btnGEQPresetSave);
-            GroupGEQ.Controls.Add(btnGEQPresetDelete);
             GroupGEQ.Location = new System.Drawing.Point(3, 6);
             GroupGEQ.Name = "GroupGEQ";
             GroupGEQ.Size = new System.Drawing.Size(563, 377);
@@ -640,16 +607,6 @@
             label44.Name = "label44";
             label44.Size = new System.Drawing.Size(521, 1);
             label44.TabIndex = 15;
-            // 
-            // cmbEqPreset
-            // 
-            cmbEqPreset.FormattingEnabled = true;
-            cmbEqPreset.Items.AddRange(new object[] { "Normal", "Rock", "Pop", "Bass Boost", "Trable Boost", "Total Boost", "Total Reduce" });
-            cmbEqPreset.Location = new System.Drawing.Point(6, 25);
-            cmbEqPreset.Name = "cmbEqPreset";
-            cmbEqPreset.Size = new System.Drawing.Size(121, 23);
-            cmbEqPreset.TabIndex = 14;
-            cmbEqPreset.SelectedIndexChanged += cmbEqPreset_SelectedIndexChanged;
             // 
             // CheckGEQ
             // 
@@ -1118,24 +1075,6 @@
             TrkGEQ22K.Value = new decimal(new int[] { 0, 0, 0, 0 });
             TrkGEQ22K.ValueChanged += EqTrackBar_ValueChanged;
             // 
-            // btnGEQPresetSave
-            // 
-            btnGEQPresetSave.Location = new System.Drawing.Point(133, 25);
-            btnGEQPresetSave.Name = "btnGEQPresetSave";
-            btnGEQPresetSave.Size = new System.Drawing.Size(50, 23);
-            btnGEQPresetSave.TabIndex = 29;
-            btnGEQPresetSave.Text = "保存";
-            btnGEQPresetSave.Click += BtnGEQPresetSave_Click;
-            // 
-            // btnGEQPresetDelete
-            // 
-            btnGEQPresetDelete.Location = new System.Drawing.Point(189, 25);
-            btnGEQPresetDelete.Name = "btnGEQPresetDelete";
-            btnGEQPresetDelete.Size = new System.Drawing.Size(50, 23);
-            btnGEQPresetDelete.TabIndex = 30;
-            btnGEQPresetDelete.Text = "削除";
-            btnGEQPresetDelete.Click += BtnGEQPresetDelete_Click;
-            // 
             // tabPitch
             // 
             tabPitch.BackColor = System.Drawing.Color.Transparent;
@@ -1297,9 +1236,6 @@
             GroupPitchShift.Controls.Add(label4);
             GroupPitchShift.Controls.Add(KnobPitchPitch);
             GroupPitchShift.Controls.Add(CheckPitch);
-            GroupPitchShift.Controls.Add(cmbPitchPreset);
-            GroupPitchShift.Controls.Add(btnPitchPresetSave);
-            GroupPitchShift.Controls.Add(btnPitchPresetDelete);
             GroupPitchShift.Font = new System.Drawing.Font("Yu Gothic UI", 12F);
             GroupPitchShift.Location = new System.Drawing.Point(3, 3);
             GroupPitchShift.Name = "GroupPitchShift";
@@ -1407,33 +1343,6 @@
             CheckPitch.UseVisualStyleBackColor = false;
             CheckPitch.CheckedChanged += CheckPitch_CheckedChanged;
             // 
-            // cmbPitchPreset
-            // 
-            cmbPitchPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbPitchPreset.Location = new System.Drawing.Point(6, 130);
-            cmbPitchPreset.Name = "cmbPitchPreset";
-            cmbPitchPreset.Size = new System.Drawing.Size(150, 29);
-            cmbPitchPreset.TabIndex = 6;
-            cmbPitchPreset.SelectedIndexChanged += cmbPitchPreset_SelectedIndexChanged;
-            // 
-            // btnPitchPresetSave
-            // 
-            btnPitchPresetSave.Location = new System.Drawing.Point(162, 130);
-            btnPitchPresetSave.Name = "btnPitchPresetSave";
-            btnPitchPresetSave.Size = new System.Drawing.Size(50, 23);
-            btnPitchPresetSave.TabIndex = 7;
-            btnPitchPresetSave.Text = "保存";
-            btnPitchPresetSave.Click += BtnPitchPresetSave_Click;
-            // 
-            // btnPitchPresetDelete
-            // 
-            btnPitchPresetDelete.Location = new System.Drawing.Point(218, 130);
-            btnPitchPresetDelete.Name = "btnPitchPresetDelete";
-            btnPitchPresetDelete.Size = new System.Drawing.Size(50, 23);
-            btnPitchPresetDelete.TabIndex = 8;
-            btnPitchPresetDelete.Text = "削除";
-            btnPitchPresetDelete.Click += BtnPitchPresetDelete_Click;
-            // 
             // tabDistortion
             // 
             tabDistortion.BackColor = System.Drawing.Color.Transparent;
@@ -1451,9 +1360,6 @@
             GroupDistortion.Controls.Add(lblValDistortionLevel);
             GroupDistortion.Controls.Add(KnobDistortionLevel);
             GroupDistortion.Controls.Add(label1);
-            GroupDistortion.Controls.Add(cmbDistortionPreset);
-            GroupDistortion.Controls.Add(btnDistortionPresetSave);
-            GroupDistortion.Controls.Add(btnDistortionPresetDelete);
             GroupDistortion.Location = new System.Drawing.Point(6, 6);
             GroupDistortion.Name = "GroupDistortion";
             GroupDistortion.Size = new System.Drawing.Size(560, 378);
@@ -1516,33 +1422,6 @@
             label1.Text = "Level";
             label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // cmbDistortionPreset
-            // 
-            cmbDistortionPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbDistortionPreset.Location = new System.Drawing.Point(6, 25);
-            cmbDistortionPreset.Name = "cmbDistortionPreset";
-            cmbDistortionPreset.Size = new System.Drawing.Size(150, 23);
-            cmbDistortionPreset.TabIndex = 12;
-            cmbDistortionPreset.SelectedIndexChanged += cmbDistortionPreset_SelectedIndexChanged;
-            // 
-            // btnDistortionPresetSave
-            // 
-            btnDistortionPresetSave.Location = new System.Drawing.Point(162, 25);
-            btnDistortionPresetSave.Name = "btnDistortionPresetSave";
-            btnDistortionPresetSave.Size = new System.Drawing.Size(50, 23);
-            btnDistortionPresetSave.TabIndex = 13;
-            btnDistortionPresetSave.Text = "保存";
-            btnDistortionPresetSave.Click += BtnEchoPresetSave_Click;
-            // 
-            // btnDistortionPresetDelete
-            // 
-            btnDistortionPresetDelete.Location = new System.Drawing.Point(218, 25);
-            btnDistortionPresetDelete.Name = "btnDistortionPresetDelete";
-            btnDistortionPresetDelete.Size = new System.Drawing.Size(50, 23);
-            btnDistortionPresetDelete.TabIndex = 14;
-            btnDistortionPresetDelete.Text = "削除";
-            btnDistortionPresetDelete.Click += BtnDistortionPresetDelete_Click;
-            // 
             // tabChorus
             // 
             tabChorus.BackColor = System.Drawing.Color.Transparent;
@@ -1566,9 +1445,6 @@
             GroupChorus.Controls.Add(label3);
             GroupChorus.Controls.Add(KnobChorusMix);
             GroupChorus.Controls.Add(CheckChorus);
-            GroupChorus.Controls.Add(cmbChorusPreset);
-            GroupChorus.Controls.Add(btnChorusPresetSave);
-            GroupChorus.Controls.Add(btnChorusPresetDelete);
             GroupChorus.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
             GroupChorus.Location = new System.Drawing.Point(6, 3);
             GroupChorus.Name = "GroupChorus";
@@ -1716,36 +1592,6 @@
             CheckChorus.UseVisualStyleBackColor = false;
             CheckChorus.CheckedChanged += CheckChorus_CheckedChanged;
             // 
-            // cmbChorusPreset
-            // 
-            cmbChorusPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbChorusPreset.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-            cmbChorusPreset.Location = new System.Drawing.Point(6, 28);
-            cmbChorusPreset.Name = "cmbChorusPreset";
-            cmbChorusPreset.Size = new System.Drawing.Size(150, 23);
-            cmbChorusPreset.TabIndex = 9;
-            cmbChorusPreset.SelectedIndexChanged += cmbChorusPreset_SelectedIndexChanged;
-            // 
-            // btnChorusPresetSave
-            // 
-            btnChorusPresetSave.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-            btnChorusPresetSave.Location = new System.Drawing.Point(162, 28);
-            btnChorusPresetSave.Name = "btnChorusPresetSave";
-            btnChorusPresetSave.Size = new System.Drawing.Size(50, 23);
-            btnChorusPresetSave.TabIndex = 10;
-            btnChorusPresetSave.Text = "保存";
-            btnChorusPresetSave.Click += BtnChorusPresetSave_Click;
-            // 
-            // btnChorusPresetDelete
-            // 
-            btnChorusPresetDelete.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
-            btnChorusPresetDelete.Location = new System.Drawing.Point(218, 28);
-            btnChorusPresetDelete.Name = "btnChorusPresetDelete";
-            btnChorusPresetDelete.Size = new System.Drawing.Size(50, 23);
-            btnChorusPresetDelete.TabIndex = 11;
-            btnChorusPresetDelete.Text = "削除";
-            btnChorusPresetDelete.Click += BtnChorusPresetDelete_Click;
-            // 
             // tabEcho
             // 
             tabEcho.BackColor = System.Drawing.Color.Transparent;
@@ -1773,9 +1619,6 @@
             GroupEcho.Controls.Add(label13);
             GroupEcho.Controls.Add(KnobEchoDelay);
             GroupEcho.Controls.Add(CheckEcho);
-            GroupEcho.Controls.Add(cmbEchoPreset);
-            GroupEcho.Controls.Add(btnEchoPresetSave);
-            GroupEcho.Controls.Add(btnEchoPresetDelete);
             GroupEcho.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
             GroupEcho.Location = new System.Drawing.Point(3, 3);
             GroupEcho.Name = "GroupEcho";
@@ -1970,33 +1813,6 @@
             CheckEcho.UseVisualStyleBackColor = false;
             CheckEcho.CheckedChanged += CheckEcho_CheckedChanged;
             // 
-            // cmbEchoPreset
-            // 
-            cmbEchoPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbEchoPreset.Location = new System.Drawing.Point(18, 139);
-            cmbEchoPreset.Name = "cmbEchoPreset";
-            cmbEchoPreset.Size = new System.Drawing.Size(150, 23);
-            cmbEchoPreset.TabIndex = 12;
-            cmbEchoPreset.SelectedIndexChanged += cmbEchoPreset_SelectedIndexChanged;
-            // 
-            // btnEchoPresetSave
-            // 
-            btnEchoPresetSave.Location = new System.Drawing.Point(174, 139);
-            btnEchoPresetSave.Name = "btnEchoPresetSave";
-            btnEchoPresetSave.Size = new System.Drawing.Size(50, 23);
-            btnEchoPresetSave.TabIndex = 13;
-            btnEchoPresetSave.Text = "保存";
-            btnEchoPresetSave.Click += BtnEchoPresetSave_Click;
-            // 
-            // btnEchoPresetDelete
-            // 
-            btnEchoPresetDelete.Location = new System.Drawing.Point(230, 139);
-            btnEchoPresetDelete.Name = "btnEchoPresetDelete";
-            btnEchoPresetDelete.Size = new System.Drawing.Size(50, 23);
-            btnEchoPresetDelete.TabIndex = 14;
-            btnEchoPresetDelete.Text = "削除";
-            btnEchoPresetDelete.Click += BtnEchoPresetDelete_Click;
-            // 
             // tabFlanger
             // 
             tabFlanger.BackColor = System.Drawing.Color.Transparent;
@@ -2019,9 +1835,6 @@
             GroupFlanger.Controls.Add(label37);
             GroupFlanger.Controls.Add(KnobFlangerMix);
             GroupFlanger.Controls.Add(CheckFlanger);
-            GroupFlanger.Controls.Add(cmbFlangerPreset);
-            GroupFlanger.Controls.Add(btnFlangerPresetSave);
-            GroupFlanger.Controls.Add(btnFlangerPresetDelete);
             GroupFlanger.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
             GroupFlanger.Location = new System.Drawing.Point(3, 3);
             GroupFlanger.Name = "GroupFlanger";
@@ -2170,33 +1983,6 @@
             CheckFlanger.UseVisualStyleBackColor = false;
             CheckFlanger.CheckedChanged += CheckFlanger_CheckedChanged;
             // 
-            // cmbFlangerPreset
-            // 
-            cmbFlangerPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbFlangerPreset.Location = new System.Drawing.Point(6, 130);
-            cmbFlangerPreset.Name = "cmbFlangerPreset";
-            cmbFlangerPreset.Size = new System.Drawing.Size(150, 23);
-            cmbFlangerPreset.TabIndex = 9;
-            cmbFlangerPreset.SelectedIndexChanged += cmbFlangerPreset_SelectedIndexChanged;
-            // 
-            // btnFlangerPresetSave
-            // 
-            btnFlangerPresetSave.Location = new System.Drawing.Point(162, 130);
-            btnFlangerPresetSave.Name = "btnFlangerPresetSave";
-            btnFlangerPresetSave.Size = new System.Drawing.Size(50, 23);
-            btnFlangerPresetSave.TabIndex = 10;
-            btnFlangerPresetSave.Text = "保存";
-            btnFlangerPresetSave.Click += BtnFlangerPresetSave_Click;
-            // 
-            // btnFlangerPresetDelete
-            // 
-            btnFlangerPresetDelete.Location = new System.Drawing.Point(218, 130);
-            btnFlangerPresetDelete.Name = "btnFlangerPresetDelete";
-            btnFlangerPresetDelete.Size = new System.Drawing.Size(50, 23);
-            btnFlangerPresetDelete.TabIndex = 11;
-            btnFlangerPresetDelete.Text = "削除";
-            btnFlangerPresetDelete.Click += BtnFlangerPresetDelete_Click;
-            // 
             // tabHightpass
             // 
             tabHightpass.BackColor = System.Drawing.Color.Transparent;
@@ -2216,9 +2002,6 @@
             GroupHighpass.Controls.Add(label23);
             GroupHighpass.Controls.Add(KnobHighpassCutoff);
             GroupHighpass.Controls.Add(CheckHighpass);
-            GroupHighpass.Controls.Add(cmbHighpassPreset);
-            GroupHighpass.Controls.Add(btnHighpassPresetSave);
-            GroupHighpass.Controls.Add(btnHighpassPresetDelete);
             GroupHighpass.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
             GroupHighpass.Location = new System.Drawing.Point(3, 3);
             GroupHighpass.Name = "GroupHighpass";
@@ -2325,33 +2108,6 @@
             CheckHighpass.UseVisualStyleBackColor = false;
             CheckHighpass.CheckedChanged += CheckHighpass_CheckedChanged;
             // 
-            // cmbHighpassPreset
-            // 
-            cmbHighpassPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbHighpassPreset.Location = new System.Drawing.Point(6, 130);
-            cmbHighpassPreset.Name = "cmbHighpassPreset";
-            cmbHighpassPreset.Size = new System.Drawing.Size(150, 23);
-            cmbHighpassPreset.TabIndex = 6;
-            cmbHighpassPreset.SelectedIndexChanged += cmbHighpassPreset_SelectedIndexChanged;
-            // 
-            // btnHighpassPresetSave
-            // 
-            btnHighpassPresetSave.Location = new System.Drawing.Point(162, 130);
-            btnHighpassPresetSave.Name = "btnHighpassPresetSave";
-            btnHighpassPresetSave.Size = new System.Drawing.Size(50, 23);
-            btnHighpassPresetSave.TabIndex = 7;
-            btnHighpassPresetSave.Text = "保存";
-            btnHighpassPresetSave.Click += BtnHighpassPresetSave_Click;
-            // 
-            // btnHighpassPresetDelete
-            // 
-            btnHighpassPresetDelete.Location = new System.Drawing.Point(218, 130);
-            btnHighpassPresetDelete.Name = "btnHighpassPresetDelete";
-            btnHighpassPresetDelete.Size = new System.Drawing.Size(50, 23);
-            btnHighpassPresetDelete.TabIndex = 8;
-            btnHighpassPresetDelete.Text = "削除";
-            btnHighpassPresetDelete.Click += BtnHighpassPresetDelete_Click;
-            // 
             // tabLowpass
             // 
             tabLowpass.BackColor = System.Drawing.Color.Transparent;
@@ -2371,9 +2127,6 @@
             GroupLowpass.Controls.Add(label19);
             GroupLowpass.Controls.Add(KnobLowpassCutoff);
             GroupLowpass.Controls.Add(CheckLowpass);
-            GroupLowpass.Controls.Add(cmbLowpassPreset);
-            GroupLowpass.Controls.Add(btnLowpassPresetSave);
-            GroupLowpass.Controls.Add(btnLowpassPresetDelete);
             GroupLowpass.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
             GroupLowpass.Location = new System.Drawing.Point(3, 3);
             GroupLowpass.Name = "GroupLowpass";
@@ -2480,33 +2233,6 @@
             CheckLowpass.UseVisualStyleBackColor = false;
             CheckLowpass.CheckedChanged += CheckLowpass_CheckedChanged;
             // 
-            // cmbLowpassPreset
-            // 
-            cmbLowpassPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbLowpassPreset.Location = new System.Drawing.Point(6, 130);
-            cmbLowpassPreset.Name = "cmbLowpassPreset";
-            cmbLowpassPreset.Size = new System.Drawing.Size(150, 23);
-            cmbLowpassPreset.TabIndex = 6;
-            cmbLowpassPreset.SelectedIndexChanged += cmbLowpassPreset_SelectedIndexChanged;
-            // 
-            // btnLowpassPresetSave
-            // 
-            btnLowpassPresetSave.Location = new System.Drawing.Point(162, 130);
-            btnLowpassPresetSave.Name = "btnLowpassPresetSave";
-            btnLowpassPresetSave.Size = new System.Drawing.Size(50, 23);
-            btnLowpassPresetSave.TabIndex = 7;
-            btnLowpassPresetSave.Text = "保存";
-            btnLowpassPresetSave.Click += BtnLowpassPresetSave_Click;
-            // 
-            // btnLowpassPresetDelete
-            // 
-            btnLowpassPresetDelete.Location = new System.Drawing.Point(218, 130);
-            btnLowpassPresetDelete.Name = "btnLowpassPresetDelete";
-            btnLowpassPresetDelete.Size = new System.Drawing.Size(50, 23);
-            btnLowpassPresetDelete.TabIndex = 8;
-            btnLowpassPresetDelete.Text = "削除";
-            btnLowpassPresetDelete.Click += BtnLowpassPresetDelete_Click;
-            // 
             // tabCompressor
             // 
             tabCompressor.BackColor = System.Drawing.Color.Transparent;
@@ -2536,9 +2262,6 @@
             GroupCompressor.Controls.Add(label31);
             GroupCompressor.Controls.Add(KnobCompThreshold);
             GroupCompressor.Controls.Add(CheckCompressor);
-            GroupCompressor.Controls.Add(cmbCompressorPreset);
-            GroupCompressor.Controls.Add(btnCompressorPresetSave);
-            GroupCompressor.Controls.Add(btnCompressorPresetDelete);
             GroupCompressor.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
             GroupCompressor.Location = new System.Drawing.Point(3, 3);
             GroupCompressor.Name = "GroupCompressor";
@@ -2792,33 +2515,6 @@
             CheckCompressor.UseVisualStyleBackColor = false;
             CheckCompressor.CheckedChanged += CheckCompressor_CheckedChanged;
             // 
-            // cmbCompressorPreset
-            // 
-            cmbCompressorPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbCompressorPreset.Location = new System.Drawing.Point(6, 130);
-            cmbCompressorPreset.Name = "cmbCompressorPreset";
-            cmbCompressorPreset.Size = new System.Drawing.Size(150, 23);
-            cmbCompressorPreset.TabIndex = 17;
-            cmbCompressorPreset.SelectedIndexChanged += cmbCompressorPreset_SelectedIndexChanged;
-            // 
-            // btnCompressorPresetSave
-            // 
-            btnCompressorPresetSave.Location = new System.Drawing.Point(162, 130);
-            btnCompressorPresetSave.Name = "btnCompressorPresetSave";
-            btnCompressorPresetSave.Size = new System.Drawing.Size(50, 23);
-            btnCompressorPresetSave.TabIndex = 18;
-            btnCompressorPresetSave.Text = "保存";
-            btnCompressorPresetSave.Click += BtnCompressorPresetSave_Click;
-            // 
-            // btnCompressorPresetDelete
-            // 
-            btnCompressorPresetDelete.Location = new System.Drawing.Point(218, 130);
-            btnCompressorPresetDelete.Name = "btnCompressorPresetDelete";
-            btnCompressorPresetDelete.Size = new System.Drawing.Size(50, 23);
-            btnCompressorPresetDelete.TabIndex = 19;
-            btnCompressorPresetDelete.Text = "削除";
-            btnCompressorPresetDelete.Click += BtnCompressorPresetDelete_Click;
-            // 
             // tabReverb
             // 
             tabReverb.BackColor = System.Drawing.Color.Transparent;
@@ -2872,9 +2568,6 @@
             GroupReverb.Controls.Add(KnobReverbEarlyLate);
             GroupReverb.Controls.Add(KnobReverbWet);
             GroupReverb.Controls.Add(KnobReverbDry);
-            GroupReverb.Controls.Add(cmbReverbPreset);
-            GroupReverb.Controls.Add(btnReverbPresetSave);
-            GroupReverb.Controls.Add(btnReverbPresetDelete);
             GroupReverb.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
             GroupReverb.Location = new System.Drawing.Point(3, 3);
             GroupReverb.Name = "GroupReverb";
@@ -3478,33 +3171,6 @@
             KnobReverbDry.TickColor = System.Drawing.SystemColors.ControlDarkDark;
             KnobReverbDry.ValueChanged += KnobReverbDry_ValueChanged;
             // 
-            // cmbReverbPreset
-            // 
-            cmbReverbPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbReverbPreset.Location = new System.Drawing.Point(6, 130);
-            cmbReverbPreset.Name = "cmbReverbPreset";
-            cmbReverbPreset.Size = new System.Drawing.Size(150, 23);
-            cmbReverbPreset.TabIndex = 112;
-            cmbReverbPreset.SelectedIndexChanged += cmbReverbPreset_SelectedIndexChanged;
-            // 
-            // btnReverbPresetSave
-            // 
-            btnReverbPresetSave.Location = new System.Drawing.Point(162, 130);
-            btnReverbPresetSave.Name = "btnReverbPresetSave";
-            btnReverbPresetSave.Size = new System.Drawing.Size(50, 23);
-            btnReverbPresetSave.TabIndex = 113;
-            btnReverbPresetSave.Text = "保存";
-            btnReverbPresetSave.Click += BtnReverbPresetSave_Click;
-            // 
-            // btnReverbPresetDelete
-            // 
-            btnReverbPresetDelete.Location = new System.Drawing.Point(218, 130);
-            btnReverbPresetDelete.Name = "btnReverbPresetDelete";
-            btnReverbPresetDelete.Size = new System.Drawing.Size(50, 23);
-            btnReverbPresetDelete.TabIndex = 114;
-            btnReverbPresetDelete.Text = "削除";
-            btnReverbPresetDelete.Click += BtnReverbPresetDelete_Click;
-            // 
             // tabSkin
             // 
             tabSkin.BackColor = System.Drawing.Color.Transparent;
@@ -4105,7 +3771,6 @@
         private System.Windows.Forms.GroupBox GroupDistortion;
         private System.Windows.Forms.GroupBox GroupGEQ;
         private System.Windows.Forms.CheckBox CheckGEQ;
-        private System.Windows.Forms.ComboBox cmbEqPreset;
         private ColorSlider.ColorSlider TrkGEQ32;
         private ColorSlider.ColorSlider TrkGEQ22K;
         private ColorSlider.ColorSlider TrkGEQ20K;
@@ -4118,11 +3783,9 @@
         private ColorSlider.ColorSlider TrkGEQ4K;
         private ColorSlider.ColorSlider TrkGEQ8K;
         private ColorSlider.ColorSlider TrkGEQ16K;
-        private System.Windows.Forms.Button btnGEQPresetSave;
-		private System.Windows.Forms.Button btnGEQPresetDelete;
 
 		private System.Windows.Forms.Label lblOutputNote;
-		// Reverb Labels（旧 label10〜label34 の Reverb 関連）
+
 		private System.Windows.Forms.Label lblReverbDecayTime;
 		private System.Windows.Forms.Label lblReverbEarlyDelay;
 		private System.Windows.Forms.Label lblReverbLateDelay;
@@ -4165,41 +3828,5 @@
         private System.Windows.Forms.Label lblAboutCopyright;
         private System.Windows.Forms.Label lblAboutCompany;
         private System.Windows.Forms.LinkLabel lnkAboutGitHub;
-
-        private System.Windows.Forms.ComboBox cmbChorusPreset;
-        private System.Windows.Forms.Button btnChorusPresetSave;
-        private System.Windows.Forms.Button btnChorusPresetDelete;
-
-        private System.Windows.Forms.ComboBox cmbEchoPreset;
-        private System.Windows.Forms.Button btnEchoPresetSave;
-        private System.Windows.Forms.Button btnEchoPresetDelete;
-
-        private System.Windows.Forms.ComboBox cmbDistortionPreset;
-        private System.Windows.Forms.Button btnDistortionPresetSave;
-        private System.Windows.Forms.Button btnDistortionPresetDelete;
-
-        private System.Windows.Forms.ComboBox cmbFlangerPreset;
-        private System.Windows.Forms.Button btnFlangerPresetSave;
-        private System.Windows.Forms.Button btnFlangerPresetDelete;
-
-        private System.Windows.Forms.ComboBox cmbHighpassPreset;
-        private System.Windows.Forms.Button btnHighpassPresetSave;
-        private System.Windows.Forms.Button btnHighpassPresetDelete;
-
-        private System.Windows.Forms.ComboBox cmbLowpassPreset;
-        private System.Windows.Forms.Button btnLowpassPresetSave;
-        private System.Windows.Forms.Button btnLowpassPresetDelete;
-
-        private System.Windows.Forms.ComboBox cmbCompressorPreset;
-        private System.Windows.Forms.Button btnCompressorPresetSave;
-        private System.Windows.Forms.Button btnCompressorPresetDelete;
-
-        private System.Windows.Forms.ComboBox cmbReverbPreset;
-        private System.Windows.Forms.Button btnReverbPresetSave;
-        private System.Windows.Forms.Button btnReverbPresetDelete;
-
-        private System.Windows.Forms.ComboBox cmbPitchPreset;
-        private System.Windows.Forms.Button btnPitchPresetSave;
-        private System.Windows.Forms.Button btnPitchPresetDelete;
     }
 }

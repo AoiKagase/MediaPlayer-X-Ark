@@ -1,24 +1,60 @@
-﻿using ColorSlider;
-using MediaPlayer_X_Ark.Engine;
+﻿using MediaPlayer_X_Ark.Engine;
 using MediaPlayer_X_Ark.Engine.Effector;
 using MediaPlayer_X_Ark.Engine.Effector.Presets;
 using MediaPlayer_X_Ark.Skin;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark
 {
     public partial class OptionsForm : Form
     {
+        // プリセットコントロール（コードで生成）
+        private ComboBox cmbGEQPreset = new ComboBox();
+        private Button btnGEQPresetSave = new Button();
+        private Button btnGEQPresetDelete = new Button();
+
+        private ComboBox cmbChorusPreset = new ComboBox();
+        private Button btnChorusPresetSave = new Button();
+        private Button btnChorusPresetDelete = new Button();
+
+        private ComboBox cmbDistortionPreset = new ComboBox();
+        private Button btnDistortionPresetSave = new Button();
+        private Button btnDistortionPresetDelete = new Button();
+
+        private ComboBox cmbEchoPreset = new ComboBox();
+        private Button btnEchoPresetSave = new Button();
+        private Button btnEchoPresetDelete = new Button();
+
+        private ComboBox cmbFlangerPreset = new ComboBox();
+        private Button btnFlangerPresetSave = new Button();
+        private Button btnFlangerPresetDelete = new Button();
+
+        private ComboBox cmbHighpassPreset = new ComboBox();
+        private Button btnHighpassPresetSave = new Button();
+        private Button btnHighpassPresetDelete = new Button();
+
+        private ComboBox cmbLowpassPreset = new ComboBox();
+        private Button btnLowpassPresetSave = new Button();
+        private Button btnLowpassPresetDelete = new Button();
+
+        private ComboBox cmbCompressorPreset = new ComboBox();
+        private Button btnCompressorPresetSave = new Button();
+        private Button btnCompressorPresetDelete = new Button();
+
+        private ComboBox cmbReverbPreset = new ComboBox();
+        private Button btnReverbPresetSave = new Button();
+        private Button btnReverbPresetDelete = new Button();
+
+        //private ComboBox cmbPitchPreset = new ComboBox();
+        //private Button btnPitchPresetSave = new Button();
+        //private Button btnPitchPresetDelete = new Button();
+
         private IPlayerEngine _engine;
         private IConfigService _configService;
 
@@ -53,12 +89,11 @@ namespace MediaPlayer_X_Ark
             LoadLowpassPresets();
             LoadCompressorPresets();
             LoadReverbPresets();
-            LoadPitchPresets();
+            //LoadPitchPresets();
 
         }
 
-        private void LoadEffectPresets<T>(ComboBox cmb, string effectName)
-    where T : EffectPreset
+        private void LoadEffectPresets<T>(ComboBox cmb, string effectName) where T : EffectPreset
         {
             cmb.Items.Clear();
             cmb.Items.Add(""); // 空選択
@@ -69,11 +104,7 @@ namespace MediaPlayer_X_Ark
                 cmb.SelectedItem = current;
         }
 
-        private void SaveEffectPreset<T>(
-            ComboBox cmb,
-            string effectName,
-            Func<string, T> createPreset)
-            where T : EffectPreset
+        private void SaveEffectPreset<T>(ComboBox cmb, string effectName, Func<string, T> createPreset) where T : EffectPreset
         {
             using (var form = new PresetNameInputForm())
             {
@@ -86,10 +117,7 @@ namespace MediaPlayer_X_Ark
             }
         }
 
-        private void DeleteEffectPreset<T>(
-            ComboBox cmb,
-            string effectName)
-            where T : EffectPreset, new()
+        private void DeleteEffectPreset<T>(ComboBox cmb, string effectName) where T : EffectPreset, new()
         {
             var name = cmb.SelectedItem as string;
             if (string.IsNullOrEmpty(name)) return;
@@ -103,25 +131,61 @@ namespace MediaPlayer_X_Ark
             LoadEffectPresets<T>(cmb, effectName);
         }
 
+        private void AddPresetControls(
+            GroupBox groupBox,
+            ComboBox cmb,
+            Button btnSave,
+            Button btnDelete,
+            EventHandler onSave,
+            EventHandler onDelete,
+            EventHandler onSelectedIndexChanged)
+        {
+            // GroupBox
+            groupBox.Location = new System.Drawing.Point(3, 6);
+            groupBox.Size = new System.Drawing.Size(563, 377);
+
+            // ComboBox
+            cmb.Location = new Point(6, 25);
+            cmb.Size = new Size(121, 23);
+            cmb.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmb.FormattingEnabled = true;
+            cmb.SelectedIndexChanged += onSelectedIndexChanged;
+
+            // 保存ボタン
+            btnSave.Location = new Point(133, 25);
+            btnSave.Size = new Size(50, 23);
+            btnSave.Text = "保存";
+            btnSave.Click += onSave;
+
+            // 削除ボタン
+            btnDelete.Location = new Point(189, 25);
+            btnDelete.Size = new Size(50, 23);
+            btnDelete.Text = "削除";
+            btnDelete.Click += onDelete;
+
+            groupBox.Controls.Add(cmb);
+            groupBox.Controls.Add(btnSave);
+            groupBox.Controls.Add(btnDelete);
+        }
 
         private void LoadGEQPresets()
         {
             // 組み込みプリセットは保持したままユーザープリセットを追記
             // まず組み込み以外を削除してからユーザープリセットを追加
-            for (int i = cmbEqPreset.Items.Count - 1; i >= 0; i--)
+            for (int i = cmbGEQPreset.Items.Count - 1; i >= 0; i--)
             {
-                var item = cmbEqPreset.Items[i] as string;
+                var item = cmbGEQPreset.Items[i] as string;
                 if (!_geqBuiltinPresets.Contains(item))
-                    cmbEqPreset.Items.RemoveAt(i);
+                    cmbGEQPreset.Items.RemoveAt(i);
             }
 
             foreach (var name in EffectPreset.GetPresetNames("GEQ"))
                 if (!_geqBuiltinPresets.Contains(name))
-                    cmbEqPreset.Items.Add(name);
+                    cmbGEQPreset.Items.Add(name);
 
             // config から現在のプリセットを復元
             if (_configService.settings.EffectPresets.TryGetValue("GEQ", out var current))
-                cmbEqPreset.SelectedItem = current;
+                cmbGEQPreset.SelectedItem = current;
         }
 
         private void BtnGEQPresetSave_Click(object sender, EventArgs e)
@@ -153,13 +217,13 @@ namespace MediaPlayer_X_Ark
                 };
                 preset.Save();
                 LoadGEQPresets();
-                cmbEqPreset.SelectedItem = preset.Name;
+                cmbGEQPreset.SelectedItem = preset.Name;
                 _configService.settings.EffectPresets["GEQ"] = preset.Name;
             }
         }
         private void BtnGEQPresetDelete_Click(object sender, EventArgs e)
         {
-            var name = cmbEqPreset.SelectedItem as string;
+            var name = cmbGEQPreset.SelectedItem as string;
             if (string.IsNullOrEmpty(name)) return;
 
             // 組み込みプリセットは削除不可
@@ -178,16 +242,16 @@ namespace MediaPlayer_X_Ark
             _configService.settings.EffectPresets.Remove("GEQ");
             LoadGEQPresets();
 
-            cmbEqPreset.SelectedItem = "Normal";
+            cmbGEQPreset.SelectedItem = "Normal";
             _configService.settings.Effectors.GEqualizer.Preset = 0;
         }
 
         private void OptionsForm_Load(object sender, EventArgs e)
         {
             TreeMenu.ExpandAll();
+            EffectControlInitialize();
             OptionOutput();
             OptionSkin(); // 追加
-            EffectControlInitialize();
             PaintGEQGraph();
 
             // AssemblyInfo から情報を取得して表示
@@ -601,6 +665,64 @@ namespace MediaPlayer_X_Ark
 
         private void EffectControlInitialize()
         {
+            // ★プリセットコントロールを動的生成
+            AddPresetControls(GroupGEQ, cmbGEQPreset,
+                btnGEQPresetSave, btnGEQPresetDelete,
+                BtnGEQPresetSave_Click, BtnGEQPresetDelete_Click,
+                cmbGEQPreset_SelectedIndexChanged);
+            cmbGEQPreset.Items.AddRange(new object[] { "Normal", "Rock", "Pop", "Bass Boost", "Trable Boost", "Total Boost", "Total Reduce" });
+
+            AddPresetControls(GroupChorus, cmbChorusPreset,
+                btnChorusPresetSave, btnChorusPresetDelete,
+                BtnChorusPresetSave_Click, BtnChorusPresetDelete_Click,
+                cmbChorusPreset_SelectedIndexChanged);
+
+            AddPresetControls(GroupDistortion, cmbDistortionPreset,
+                btnDistortionPresetSave, btnDistortionPresetDelete,
+                BtnDistortionPresetSave_Click, BtnDistortionPresetDelete_Click,
+                cmbDistortionPreset_SelectedIndexChanged);
+
+            AddPresetControls(GroupEcho, cmbEchoPreset,
+                btnEchoPresetSave, btnEchoPresetDelete,
+                BtnEchoPresetSave_Click, BtnEchoPresetDelete_Click,
+                cmbEchoPreset_SelectedIndexChanged);
+
+            AddPresetControls(GroupFlanger, cmbFlangerPreset,
+                btnFlangerPresetSave, btnFlangerPresetDelete,
+                BtnFlangerPresetSave_Click, BtnFlangerPresetDelete_Click,
+                cmbFlangerPreset_SelectedIndexChanged);
+
+            AddPresetControls(GroupHighpass, cmbHighpassPreset,
+                btnHighpassPresetSave, btnHighpassPresetDelete,
+                BtnHighpassPresetSave_Click, BtnHighpassPresetDelete_Click,
+                cmbHighpassPreset_SelectedIndexChanged);
+
+            AddPresetControls(GroupLowpass, cmbLowpassPreset,
+                btnLowpassPresetSave, btnLowpassPresetDelete,
+                BtnLowpassPresetSave_Click, BtnLowpassPresetDelete_Click,
+                cmbLowpassPreset_SelectedIndexChanged);
+
+            AddPresetControls(GroupCompressor, cmbCompressorPreset,
+                btnCompressorPresetSave, btnCompressorPresetDelete,
+                BtnCompressorPresetSave_Click, BtnCompressorPresetDelete_Click,
+                cmbCompressorPreset_SelectedIndexChanged);
+
+            AddPresetControls(GroupReverb, cmbReverbPreset,
+                btnReverbPresetSave, btnReverbPresetDelete,
+                BtnReverbPresetSave_Click, BtnReverbPresetDelete_Click,
+                cmbReverbPreset_SelectedIndexChanged);
+
+            //AddPresetControls(GroupPitchShift, cmbPitchPreset,
+            //    btnPitchPresetSave, btnPitchPresetDelete,
+            //    BtnPitchPresetSave_Click, BtnPitchPresetDelete_Click,
+            //    cmbPitchPreset_SelectedIndexChanged);
+            GroupPitchShift.Location = new System.Drawing.Point(3, 6);
+            GroupPitchShift.Size = new System.Drawing.Size(149, 377);
+            GroupFrequency.Location = new System.Drawing.Point(158, 6);
+            GroupFrequency.Size = new System.Drawing.Size(100, 377);
+            GroupSpeed.Location = new System.Drawing.Point(264, 6);
+            GroupSpeed.Size = new System.Drawing.Size(100, 377);
+
             // Equalizer
             _engine.effector.GEqualizer.PropertyChanged += new PropertyChangedEventHandler(EqualizerChanged);
 
@@ -609,6 +731,7 @@ namespace MediaPlayer_X_Ark
             // Level: 0.0～1.0 → ×100
             // ===========================
             CheckDistortion.Checked = _engine.effector.Distortion.Enabled;
+            CheckDistortion.Location = new Point(6, 0);
             KnobDistortionLevel.ParameterName = "Level";
             KnobDistortionLevel.Unit = "";
             KnobDistortionLevel.Scales = 100f;
@@ -625,7 +748,7 @@ namespace MediaPlayer_X_Ark
             // Depth: 0.0～100.0 → ×1
             // ===========================
             CheckChorus.Checked = _engine.effector.Chorus.Enabled;
-
+            CheckChorus.Location = new Point(6, 0);
             KnobChorusMix.ParameterName = "Mix";
             KnobChorusMix.Unit = "%";
             KnobChorusMix.Scales = 1f;
@@ -657,6 +780,7 @@ namespace MediaPlayer_X_Ark
             // Dry/Wet: -80.0～10.0dB  → ×1
             // ===========================
             CheckEcho.Checked = _engine.effector.Echo.Enabled;
+            CheckEcho.Location = new Point(6, 0);
 
             KnobEchoDelay.ParameterName = "Delay";
             KnobEchoDelay.Unit = "ms";
@@ -697,6 +821,7 @@ namespace MediaPlayer_X_Ark
             // Depth: 0.01～1.0  → ×100
             // ===========================
             CheckFlanger.Checked = _engine.effector.Flanger.Enabled;
+            CheckFlanger.Location = new Point(6, 0);
 
             KnobFlangerMix.ParameterName = "Mix";
             KnobFlangerMix.Unit = "%";
@@ -729,6 +854,7 @@ namespace MediaPlayer_X_Ark
             // Resonance: 0.0～10.0      → ×10
             // ===========================
             CheckHighpass.Checked = _engine.effector.Highpass.Enabled;
+            CheckHighpass.Location = new Point(6, 0);
 
             KnobHighpassCutoff.ParameterName = "Cutoff";
             KnobHighpassCutoff.Unit = "Hz";
@@ -753,6 +879,7 @@ namespace MediaPlayer_X_Ark
             // Resonance: 0.0～10.0      → ×10
             // ===========================
             CheckLowpass.Checked = _engine.effector.Lowpass.Enabled;
+            CheckLowpass.Location = new Point(6, 0);
 
             KnobLowpassCutoff.ParameterName = "Cutoff";
             KnobLowpassCutoff.Unit = "Hz";
@@ -779,6 +906,7 @@ namespace MediaPlayer_X_Ark
             // Gain:     -30.0～30.0dB   → ×10
             // ===========================
             CheckCompressor.Checked = _engine.effector.Compressor.Enabled;
+            CheckCompressor.Location = new Point(6, 0);
 
             KnobCompThreshold.ParameterName = "Threshold";
             KnobCompThreshold.Unit = "dB";
@@ -826,6 +954,8 @@ namespace MediaPlayer_X_Ark
             // FFTSize: 256～4096 → ×1（固定値のみ）
             // ===========================
             CheckPitch.Checked = _engine.effector.PitchShift.Enabled;
+            CheckPitch.Location = new Point(6, 0);
+
             _engine.effector.PitchShift.PropertyChanged += new PropertyChangedEventHandler(PitchChanged);
 
             KnobPitchPitch.ParameterName = "Pitch";
@@ -849,6 +979,7 @@ namespace MediaPlayer_X_Ark
                 _engine.effector.PitchShift.Pitch = KnobPitchPitch.Value / 100f;
 
             CheckFrequency.Checked = _engine.effector.Frequency.Enabled;
+            CheckFrequency.Location = new Point(6, 0);
             KnobFrequency.ParameterName = "Frequency";
             KnobFrequency.Unit = "(−100=低速 / 0=標準 / 100=高速)";
             KnobFrequency.Scales = 1f;
@@ -878,6 +1009,7 @@ namespace MediaPlayer_X_Ark
             // Reverb
             // ===========================
             CheckReverb.Checked = _configService.settings.Effectors.Reverb.Enable;
+            CheckReverb.Location = new Point(6, 0);
 
             KnobReverbDecayTime.ParameterName = "Decay Time"; KnobReverbDecayTime.Unit = "ms"; KnobReverbDecayTime.Scales = 1f; KnobReverbDecayTime.LargeChange = 500;
             KnobReverbEarlyDelay.ParameterName = "Early Delay"; KnobReverbEarlyDelay.Unit = "ms"; KnobReverbEarlyDelay.Scales = 1f; KnobReverbEarlyDelay.LargeChange = 10;
@@ -955,7 +1087,7 @@ namespace MediaPlayer_X_Ark
 
             // Equalizer
             CheckGEQ.Checked = _configService.settings.Effectors.GEqualizer.Enable;
-            cmbEqPreset.SelectedIndex = _configService.settings.Effectors.GEqualizer.Preset;
+            cmbGEQPreset.SelectedIndex = _configService.settings.Effectors.GEqualizer.Preset;
             TrkGEQ32.Value = _configService.settings.Effectors.GEqualizer.GEQ_32;
             TrkGEQ60.Value = _configService.settings.Effectors.GEqualizer.GEQ_60;
             TrkGEQ125.Value = _configService.settings.Effectors.GEqualizer.GEQ_125;
@@ -1112,9 +1244,9 @@ namespace MediaPlayer_X_Ark
             this.Hide();
         }
 
-        private void cmbEqPreset_SelectedIndexChanged(object sender, EventArgs e)
+        private void cmbGEQPreset_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var name = cmbEqPreset.SelectedItem as string;
+            var name = cmbGEQPreset.SelectedItem as string;
             if (string.IsNullOrEmpty(name)) return;
 
             // 組み込みプリセットの場合は既存の SetPreset を使う
@@ -1608,33 +1740,33 @@ namespace MediaPlayer_X_Ark
             _configService.settings.EffectPresets["Reverb"] = name;
         }
 
-        private void LoadPitchPresets()
-            => LoadEffectPresets<PitchPreset>(cmbPitchPreset, "Pitch");
+        //private void LoadPitchPresets()
+        //    => LoadEffectPresets<PitchPreset>(cmbPitchPreset, "Pitch");
 
-        private void BtnPitchPresetSave_Click(object sender, EventArgs e)
-            => SaveEffectPreset<PitchPreset>(cmbPitchPreset, "Pitch", name => new PitchPreset
-            {
-                Name = name,
-                Pitch = KnobPitchPitch.Value / 100f,
-                FFTSize = KnobPitchFFT.Value,
-                Frequency = KnobFrequency.Value,
-                Speed = KnobSpeed.Value,
-            });
+        //private void BtnPitchPresetSave_Click(object sender, EventArgs e)
+        //    => SaveEffectPreset<PitchPreset>(cmbPitchPreset, "Pitch", name => new PitchPreset
+        //    {
+        //        Name = name,
+        //        Pitch = KnobPitchPitch.Value / 100f,
+        //        FFTSize = KnobPitchFFT.Value,
+        //        Frequency = KnobFrequency.Value,
+        //        Speed = KnobSpeed.Value,
+        //    });
 
-        private void BtnPitchPresetDelete_Click(object sender, EventArgs e)
-            => DeleteEffectPreset<PitchPreset>(cmbPitchPreset, "Pitch");
+        //private void BtnPitchPresetDelete_Click(object sender, EventArgs e)
+        //    => DeleteEffectPreset<PitchPreset>(cmbPitchPreset, "Pitch");
 
-        private void cmbPitchPreset_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var name = cmbPitchPreset.SelectedItem as string;
-            if (string.IsNullOrEmpty(name)) return;
-            var preset = EffectPreset.Load<PitchPreset>("Pitch", name);
-            if (preset == null) return;
-            KnobPitchPitch.Value = (int)(preset.Pitch * 100f);
-            KnobPitchFFT.Value = (int)preset.FFTSize;
-            KnobFrequency.Value = (int)preset.Frequency;
-            KnobSpeed.Value = (int)preset.Speed;
-            _configService.settings.EffectPresets["Pitch"] = name;
-        }
+        //private void cmbPitchPreset_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    var name = cmbPitchPreset.SelectedItem as string;
+        //    if (string.IsNullOrEmpty(name)) return;
+        //    var preset = EffectPreset.Load<PitchPreset>("Pitch", name);
+        //    if (preset == null) return;
+        //    KnobPitchPitch.Value = (int)(preset.Pitch * 100f);
+        //    KnobPitchFFT.Value = (int)preset.FFTSize;
+        //    KnobFrequency.Value = (int)preset.Frequency;
+        //    KnobSpeed.Value = (int)preset.Speed;
+        //    _configService.settings.EffectPresets["Pitch"] = name;
+        //}
     }
 }
