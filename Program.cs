@@ -19,7 +19,7 @@ namespace MediaPlayer_X_Ark
             //            Application.Run(new MainForm());
             StartUp winAppBase = new StartUp();
             // initialize configuration and expose as IConfigService for DI migration
-            var cfg = new Engine.Configration(Engine.PlayerEngineStaticHolder.EngineInstance);
+            var cfg = new Engine.Configuration(Engine.PlayerEngineStaticHolder.EngineInstance);
             var configService = cfg.AsService();
 
             // The temporary holder provides the PlayerEngine instance used across the app until DI is introduced

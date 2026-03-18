@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MediaPlayer_X_Ark.Engine;
 
 namespace MediaPlayer_X_Ark
 {
@@ -34,7 +35,7 @@ namespace MediaPlayer_X_Ark
             InitializeComponent();
             _engine = engine;
             // prefer explicitly provided service, fall back to static holder, then to a fresh adapter
-            _configService = configService ?? Engine.PlayerEngineStaticHolder.ConfigService ?? new Engine.Configration(engine).AsService();
+            _configService = configService ?? Engine.PlayerEngineStaticHolder.ConfigService ?? new Engine.Configuration(engine).AsService();
             _mainForm = mainForm;
 
             LoadGEQPresets();

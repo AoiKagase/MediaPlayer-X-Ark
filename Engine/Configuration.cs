@@ -211,16 +211,16 @@ namespace MediaPlayer_X_Ark.Engine
         public int WetLevel { get; set; }
         public int DryLevel { get; set; }
     }
-    public class Configration
+    public class Configuration : IConfigService
     {
-        public ConfigurationData settings;
+        public ConfigurationData settings { get; set; }
         protected PlayerEngine engine;
 
         // Backwards-compatible shim to expose existing functionality via IConfigService
         public IConfigService AsService() => new ConfigServiceAdapter(this);
 
         // Constructor no longer requires a `ref` parameter. Pass the engine instance by value.
-        public Configration(PlayerEngine engine)
+        public Configuration(PlayerEngine engine)
         {
             this.engine = engine;
             if (File.Exists(Path.Combine(Application.StartupPath, "config.json")))
@@ -257,11 +257,11 @@ namespace MediaPlayer_X_Ark.Engine
             }
         }
 
-        // Adapter to expose Configration via IConfigService without breaking existing code
+        // Adapter to expose Configuration via IConfigService without breaking existing code
         internal class ConfigServiceAdapter : IConfigService
         {
-            private readonly Configration _cfg;
-            public ConfigServiceAdapter(Configration cfg) { _cfg = cfg; }
+            private readonly Configuration _cfg;
+            public ConfigServiceAdapter(Configuration cfg) { _cfg = cfg; }
             public ConfigurationData settings => _cfg.settings;
             public void Save() => _cfg.Save();
             public FMOD.OUTPUTTYPE GetOutputType() => _cfg.GetOutputType();

@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace MediaPlayer_X_Ark
+namespace MediaPlayer_X_Ark.Engine
 {
     public struct DEVICE_INFO
 	{
@@ -40,21 +40,26 @@ namespace MediaPlayer_X_Ark
         LOOP_ALL		= 0x08, // 1000
     }
 
-    public class PlayerEngine : IDisposable
+    public class PlayerEngine : IPlayerEngine
 	{
 		private bool _disposed = false;  // 二重解放防止フラグ
 
 		[DllImport("kernel32.dll")]
 		public static extern IntPtr LoadLibrary(string dllToLoad);
 
-		protected bool initialized = false;
-		public string lastError = "";
-		public string lastErrFunction = "";
-		public FMOD.RESULT lastErrCode;
+        public FmodSpectrum spectrum { get; private set; }
+        public FmodWave wave { get; private set; }
+        public Effector.Effectors effector { get; private set; }
+        public LOOP_MODE loop { get; set; }
+        public string lastError { get; protected set; } = "";
+        public string lastErrFunction { get; protected set; } = "";
+        public FMOD.RESULT lastErrCode { get; protected set; }
+
+        protected bool initialized = false;
 
 		// FMOD SYSTEM.
-		public BindingList<Engine.PlayList> PlayList = new BindingList<Engine.PlayList>();
-		protected FMOD.System FmodSystem;
+		public BindingList<Engine.PlayList> PlayList { get; set; } = new BindingList<Engine.PlayList>();
+        protected FMOD.System FmodSystem;
 		protected FMOD.ChannelGroup FmodChannelGroup;
 		protected FMOD.Channel FmodChannel;
 
@@ -66,14 +71,7 @@ namespace MediaPlayer_X_Ark
 
 		protected List<DEVICE_INFO> FmodDeviceList = new List<DEVICE_INFO>();
 
-		private const int channelCount = 1;
-
-		public FmodSpectrum spectrum;
-		public FmodWave wave;
-
-		public Engine.Effector.Effectors effector;
-
-		public LOOP_MODE loop;
+        private const int channelCount = 1;
 
 		public List<DEVICE_INFO> DeviceList
         {

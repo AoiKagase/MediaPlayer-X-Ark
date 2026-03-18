@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Numerics;
 using System.Windows.Forms;
+using MediaPlayer_X_Ark.Engine;
 
 namespace MediaPlayer_X_Ark
 {
@@ -18,7 +19,7 @@ namespace MediaPlayer_X_Ark
 		private PlayListForm playListForm;
 		private OptionsForm optionsForm;
 		private CDForm cdForm;
-		private static Engine.Configration config;
+		private static Engine.Configuration config;
 		private bool nowplaying = false;
 		public int PlayingIndex => playingIndex;
 
@@ -415,7 +416,7 @@ namespace MediaPlayer_X_Ark
 			player = new PlayerEngine();
 
             // ① 設定を先に読み込む
-			config = new Engine.Configration(player);
+			config = new Engine.Configuration(player);
 
 			// ② OutputType と SoftwareFormat は init() より前に設定
 			player.SetOutputTypeBeforeInit(config.GetOutputType());
@@ -429,7 +430,7 @@ namespace MediaPlayer_X_Ark
 			playListForm = new PlayListForm(this);
             playListForm.Owner = this;
             //            playListForm.Show(this);
-            optionsForm = new OptionsForm(player, Engine.PlayerEngineStaticHolder.ConfigService ?? config.AsService(), this);
+            optionsForm = new OptionsForm(player, PlayerEngineStaticHolder.ConfigService ?? config.AsService(), this);
 			cdForm = new CDForm(this);
 
 			// 予定：設定ファイルの読み込み スキンファイルの指定も含む
