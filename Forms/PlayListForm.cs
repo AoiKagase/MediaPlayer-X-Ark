@@ -12,10 +12,13 @@ namespace MediaPlayer_X_Ark
 {
 	public partial class PlayListForm : Form
 	{
-      MainForm mainForm;
+		private ContextMenuStrip _gridContextMenu;
+		private ContextMenuStrip _formContextMenu;
+
+		MainForm mainForm;
 		// When true, do not forward mouse messages to owner (used while modal dialogs are open)
 		private bool _suppressForwarding = false;
-		
+
 		public PlayListForm(MainForm main)
 		{
 			mainForm = main;
@@ -40,8 +43,87 @@ namespace MediaPlayer_X_Ark
 
 			this.PlayListGrid.Columns[0].AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
 			this.PlayListGrid.Columns[3].AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-		}
 
+			// ★コンテキストメニュー初期化
+			InitContextMenus();
+		}
+		private void InitContextMenus()
+		{
+			// グリッド用コンテキストメニュー
+			_gridContextMenu = new ContextMenuStrip();
+			var menuPlay = new ToolStripMenuItem("再生");
+			var menuDelete = new ToolStripMenuItem("削除");
+			var menuUp = new ToolStripMenuItem("上へ移動");
+			var menuDown = new ToolStripMenuItem("下へ移動");
+
+			menuPlay.Click += (s, e) =>
+			{
+				if (PlayListGrid.SelectedRows.Count > 0)
+					mainForm.PlayLoad(PlayListGrid.SelectedRows[0].Index);
+			};
+			menuDelete.Click += (s, e) => PBtnRemove_Click(s, e);
+			menuUp.Click += (s, e) => PBtnUp_Click(s, e);
+			menuDown.Click += (s, e) => PBtnDown_Click(s, e);
+
+			_gridContextMenu.Items.AddRange(new ToolStripItem[]
+			{
+		menuPlay,
+		new ToolStripSeparator(),
+		menuDelete,
+		new ToolStripSeparator(),
+		menuUp,
+		menuDown,
+			});
+
+			// フォーム用コンテキストメニュー
+			_formContextMenu = new ContextMenuStrip();
+			var menuOpen = new ToolStripMenuItem("ファイルを開く");
+			var menuSave = new ToolStripMenuItem("保存");
+			var menuClear = new ToolStripMenuItem("全消去");
+
+			menuOpen.Click += (s, e) => PBtnOpen_Click(s, e);
+			menuSave.Click += (s, e) => PBtnSave_Click(s, e);
+			menuClear.Click += (s, e) => PBtnClear_Click(s, e);
+
+			_formContextMenu.Items.AddRange(new ToolStripItem[]
+			{
+		menuOpen,
+		menuSave,
+		new ToolStripSeparator(),
+		menuClear,
+			});
+
+			// グリッドの右クリックイベント
+			PlayListGrid.MouseDown += PlayListGrid_MouseDown;
+
+			// フォームの右クリックイベント
+			this.MouseDown += PlayListForm_MouseDown_ContextMenu;
+		}
+		private void PlayListGrid_MouseDown(object sender, MouseEventArgs e)
+		{
+			if (e.Button != MouseButtons.Right) return;
+
+			// クリック位置の行を選択
+			var hitTest = PlayListGrid.HitTest(e.X, e.Y);
+			if (hitTest.RowIndex >= 0)
+			{
+				PlayListGrid.ClearSelection();
+				PlayListGrid.Rows[hitTest.RowIndex].Selected = true;
+
+				// グリッド用メニュー：選択行がある場合のみ操作を有効化
+				_gridContextMenu.Show(PlayListGrid, e.Location);
+			}
+			else
+			{
+				// 行以外の場所はフォーム用メニュー
+				_formContextMenu.Show(PlayListGrid, e.Location);
+			}
+		}
+		private void PlayListForm_MouseDown_ContextMenu(object sender, MouseEventArgs e)
+		{
+			if (e.Button != MouseButtons.Right) return;
+			_formContextMenu.Show(this, e.Location);
+		}
 		private void PBtnOpen_MouseDown(object sender, MouseEventArgs e)
 		{
 			mainForm.BtnDownEvent(ref sender);
@@ -134,7 +216,7 @@ namespace MediaPlayer_X_Ark
 		/// </summary>
 		private void PBtnOpen_Click(object sender, EventArgs e)
 		{
-          using (var dlg = new OpenFileDialog())
+			using (var dlg = new OpenFileDialog())
 			{
 				dlg.Filter = "プレイリストファイル|*.m3u;*.m3u8;*.pls;*.wpl|" +
 							 "M3U|*.m3u;*.m3u8|" +
@@ -142,7 +224,7 @@ namespace MediaPlayer_X_Ark
 							 "WPL|*.wpl|" +
 							 "全てのファイル|*.*";
 				dlg.DefaultExt = "m3u";
-                // disable forwarding while modal dialog is shown to avoid re-entrancy / environment-specific issues
+				// disable forwarding while modal dialog is shown to avoid re-entrancy / environment-specific issues
 				try
 				{
 					_suppressForwarding = true;
@@ -366,66 +448,66 @@ namespace MediaPlayer_X_Ark
 				System.IO.Path.Combine(baseDir, filePath));
 		}
 
-        /// <summary>
-        /// 本体ドラッグによるウィンドウ移動
-        /// </summary>
-        private Point mousePoint;
-        /// <summary>
-        /// フォーム内のマウス押下処理
-        /// 位置の記憶
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PlayList_MouseDown(object sender, MouseEventArgs e)
-        {
-            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
-            {
-                //位置を記憶する
-                mousePoint = new Point(e.X, e.Y);
-                mainForm.Activate();
-            }
-        }
+		/// <summary>
+		/// 本体ドラッグによるウィンドウ移動
+		/// </summary>
+		private Point mousePoint;
+		/// <summary>
+		/// フォーム内のマウス押下処理
+		/// 位置の記憶
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void PlayList_MouseDown(object sender, MouseEventArgs e)
+		{
+			if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+			{
+				//位置を記憶する
+				mousePoint = new Point(e.X, e.Y);
+				mainForm.Activate();
+			}
+		}
 
-        /// <summary>
-        /// フォーム内のマウス移動処理
-        /// フォームの位置をマウス移動量に応じて移動する
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PlayList_MouseMove(object sender, MouseEventArgs e)
-        {
-            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
-            {
-                Left += e.X - mousePoint.X;
-                Top += e.Y - mousePoint.Y;
+		/// <summary>
+		/// フォーム内のマウス移動処理
+		/// フォームの位置をマウス移動量に応じて移動する
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void PlayList_MouseMove(object sender, MouseEventArgs e)
+		{
+			if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+			{
+				Left += e.X - mousePoint.X;
+				Top += e.Y - mousePoint.Y;
 
-                mainForm.Left = Left + mainForm.CurrentSkin.PlayListForm.Position.Left;
-                mainForm.Top = Top + mainForm.CurrentSkin.PlayListForm.Position.Top;
-            }
-        }
+				mainForm.Left = Left + mainForm.CurrentSkin.PlayListForm.Position.Left;
+				mainForm.Top = Top + mainForm.CurrentSkin.PlayListForm.Position.Top;
+			}
+		}
 
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                const int WS_EX_TRANSPARENT = 0x00000020;
-                var cp = base.CreateParams;
-                // 透過ピクセル上のみ透過させるため
-                // WndProc の HTTRANSPARENT と組み合わせて使用
-                return cp;
-            }
-        }
-        protected override void WndProc(ref Message m)
-        {
-            const int WM_NCHITTEST = 0x0084;
-            const int WM_MOUSEMOVE = 0x0200;
-            const int WM_LBUTTONDOWN = 0x0201;
-            const int WM_LBUTTONUP = 0x0202;
-            const int WM_RBUTTONDOWN = 0x0204;
-            const int WM_RBUTTONUP = 0x0205;
-            const int HTTRANSPARENT = -1;
+		protected override CreateParams CreateParams
+		{
+			get
+			{
+				const int WS_EX_TRANSPARENT = 0x00000020;
+				var cp = base.CreateParams;
+				// 透過ピクセル上のみ透過させるため
+				// WndProc の HTTRANSPARENT と組み合わせて使用
+				return cp;
+			}
+		}
+		protected override void WndProc(ref Message m)
+		{
+			const int WM_NCHITTEST = 0x0084;
+			const int WM_MOUSEMOVE = 0x0200;
+			const int WM_LBUTTONDOWN = 0x0201;
+			const int WM_LBUTTONUP = 0x0202;
+			const int WM_RBUTTONDOWN = 0x0204;
+			const int WM_RBUTTONUP = 0x0205;
+			const int HTTRANSPARENT = -1;
 
-            if (m.Msg == WM_NCHITTEST)
+			if (m.Msg == WM_NCHITTEST)
 			{
 				try
 				{
@@ -448,13 +530,13 @@ namespace MediaPlayer_X_Ark
 				return;
 			}
 
-            if (m.Msg == WM_MOUSEMOVE ||
+			if (m.Msg == WM_MOUSEMOVE ||
 				m.Msg == WM_LBUTTONDOWN ||
 				m.Msg == WM_LBUTTONUP ||
 				m.Msg == WM_RBUTTONDOWN ||
 				m.Msg == WM_RBUTTONUP)
 			{
-                // do not forward messages while a modal dialog is active (some environments crash when forwarded)
+				// do not forward messages while a modal dialog is active (some environments crash when forwarded)
 				if (_suppressForwarding) { base.WndProc(ref m); return; }
 				try
 				{
@@ -487,20 +569,20 @@ namespace MediaPlayer_X_Ark
 				}
 			}
 
-            base.WndProc(ref m);
-        }
+			base.WndProc(ref m);
+		}
 
-        private bool IsTransparentPixel(Point pt)
-        {
-            var img = this.BackgroundImage as Bitmap;
-            if (img == null) return false;
-            if (pt.X < 0 || pt.Y < 0 || pt.X >= img.Width || pt.Y >= img.Height)
-                return false;
+		private bool IsTransparentPixel(Point pt)
+		{
+			var img = this.BackgroundImage as Bitmap;
+			if (img == null) return false;
+			if (pt.X < 0 || pt.Y < 0 || pt.X >= img.Width || pt.Y >= img.Height)
+				return false;
 
-            var pixel = img.GetPixel(pt.X, pt.Y);
-            return pixel.R == mainForm.CurrentSkin.PlayListForm.TransparentKey.R &&
-                   pixel.G == mainForm.CurrentSkin.PlayListForm.TransparentKey.G &&
-                   pixel.B == mainForm.CurrentSkin.PlayListForm.TransparentKey.B;
-        }
-    }
+			var pixel = img.GetPixel(pt.X, pt.Y);
+			return pixel.R == mainForm.CurrentSkin.PlayListForm.TransparentKey.R &&
+				   pixel.G == mainForm.CurrentSkin.PlayListForm.TransparentKey.G &&
+				   pixel.B == mainForm.CurrentSkin.PlayListForm.TransparentKey.B;
+		}
+	}
 }
