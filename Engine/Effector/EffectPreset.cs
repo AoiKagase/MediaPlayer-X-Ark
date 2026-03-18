@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,9 +20,11 @@ namespace MediaPlayer_X_Ark.Engine.Effector
             Path.Combine(Application.StartupPath, "Presets");
 
         // エフェクト名（サブクラスで定義）
+        [JsonIgnore]
         public abstract string EffectName { get; }
 
         // 保存先パス
+        [JsonIgnore]
         public string FilePath =>
             Path.Combine(PresetRoot, EffectName, Name + ".json");
         public static T Load<T>(string effectName, string name)
@@ -36,9 +40,10 @@ namespace MediaPlayer_X_Ark.Engine.Effector
         {
             var dir = Path.GetDirectoryName(FilePath);
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-            var json = System.Text.Json.JsonSerializer.Serialize(
-                this,
-                new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            var json = JsonSerializer.Serialize(this, this.GetType(), options);
+
             File.WriteAllText(FilePath, json, System.Text.Encoding.UTF8);
         }
 

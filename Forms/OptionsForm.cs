@@ -1,4 +1,5 @@
 ﻿using ColorSlider;
+using MediaPlayer_X_Ark.Engine;
 using MediaPlayer_X_Ark.Engine.Effector;
 using MediaPlayer_X_Ark.Engine.Effector.Presets;
 using MediaPlayer_X_Ark.Skin;
@@ -13,7 +14,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MediaPlayer_X_Ark.Engine;
 
 namespace MediaPlayer_X_Ark
 {
@@ -26,7 +26,7 @@ namespace MediaPlayer_X_Ark
         private static readonly string[] _geqBuiltinPresets =
         {
             "Normal", "Rock", "Pop", "Bass Boost",
-            "Trable Boost", "Total Boost", "Total Reduce", "Custom"
+            "Trable Boost", "Total Boost", "Total Reduce"
         };
         ColorSlider.ColorSlider[] _eqTrackBars =
         {
@@ -37,6 +37,12 @@ namespace MediaPlayer_X_Ark
             _engine = engine;
             _configService = configService;
             _mainForm = mainForm;
+
+            _eqTrackBars = new ColorSlider.ColorSlider[]{
+                TrkGEQ32, TrkGEQ60, TrkGEQ125, TrkGEQ250, TrkGEQ500,
+                TrkGEQ1K, TrkGEQ2K, TrkGEQ4K, TrkGEQ8K, TrkGEQ16K,
+                TrkGEQ20K, TrkGEQ22K
+            };
 
             LoadGEQPresets();
             LoadChorusPresets();
@@ -49,11 +55,6 @@ namespace MediaPlayer_X_Ark
             LoadReverbPresets();
             LoadPitchPresets();
 
-            _eqTrackBars = new ColorSlider.ColorSlider[]{
-                TrkGEQ32, TrkGEQ60, TrkGEQ125, TrkGEQ250, TrkGEQ500,
-                TrkGEQ1K, TrkGEQ2K, TrkGEQ4K, TrkGEQ8K, TrkGEQ16K,
-                TrkGEQ20K, TrkGEQ22K
-            };
         }
 
         private void LoadEffectPresets<T>(ComboBox cmb, string effectName)
@@ -137,18 +138,18 @@ namespace MediaPlayer_X_Ark
                 var preset = new GEqualizerPreset
                 {
                     Name = form.PresetNameValue,
-                    Hz32 = (float)TrkGEQ32.Value,
-                    Hz60 = (float)TrkGEQ60.Value,
-                    Hz125 = (float)TrkGEQ125.Value,
-                    Hz250 = (float)TrkGEQ250.Value,
-                    Hz500 = (float)TrkGEQ500.Value,
-                    Hz1K = (float)TrkGEQ1K.Value,
-                    Hz2K = (float)TrkGEQ2K.Value,
-                    Hz4K = (float)TrkGEQ4K.Value,
-                    Hz8K = (float)TrkGEQ8K.Value,
-                    Hz16K = (float)TrkGEQ16K.Value,
-                    Hz20K = (float)TrkGEQ20K.Value,
-                    Hz22K = (float)TrkGEQ22K.Value,
+                    Hz32 = _engine.effector.GEqualizer.GetGain(GEqualizer.EQ_HZ.HZ_32) * 10f,
+                    Hz60 = _engine.effector.GEqualizer.GetGain(GEqualizer.EQ_HZ.HZ_60) * 10f,
+                    Hz125 = _engine.effector.GEqualizer.GetGain(GEqualizer.EQ_HZ.HZ_125) * 10f,
+                    Hz250 = _engine.effector.GEqualizer.GetGain(GEqualizer.EQ_HZ.HZ_250) * 10f,
+                    Hz500 = _engine.effector.GEqualizer.GetGain(GEqualizer.EQ_HZ.HZ_500) * 10f,
+                    Hz1K = _engine.effector.GEqualizer.GetGain(GEqualizer.EQ_HZ.HZ_1K) * 10f,
+                    Hz2K = _engine.effector.GEqualizer.GetGain(GEqualizer.EQ_HZ.HZ_2K) * 10f,
+                    Hz4K = _engine.effector.GEqualizer.GetGain(GEqualizer.EQ_HZ.HZ_4K) * 10f,
+                    Hz8K = _engine.effector.GEqualizer.GetGain(GEqualizer.EQ_HZ.HZ_8K) * 10f,
+                    Hz16K = _engine.effector.GEqualizer.GetGain(GEqualizer.EQ_HZ.HZ_16K) * 10f,
+                    Hz20K = _engine.effector.GEqualizer.GetGain(GEqualizer.EQ_HZ.HZ_20K) * 10f,
+                    Hz22K = _engine.effector.GEqualizer.GetGain(GEqualizer.EQ_HZ.HZ_22K) * 10f,
                 };
                 preset.Save();
                 LoadGEQPresets();
@@ -156,7 +157,6 @@ namespace MediaPlayer_X_Ark
                 _configService.settings.EffectPresets["GEQ"] = preset.Name;
             }
         }
-
         private void BtnGEQPresetDelete_Click(object sender, EventArgs e)
         {
             var name = cmbEqPreset.SelectedItem as string;
@@ -177,6 +177,9 @@ namespace MediaPlayer_X_Ark
             new GEqualizerPreset { Name = name }.Delete();
             _configService.settings.EffectPresets.Remove("GEQ");
             LoadGEQPresets();
+
+            cmbEqPreset.SelectedItem = "Normal";
+            _configService.settings.Effectors.GEqualizer.Preset = 0;
         }
 
         private void OptionsForm_Load(object sender, EventArgs e)
@@ -590,13 +593,8 @@ namespace MediaPlayer_X_Ark
         {
             if (sender.GetType() == typeof(CheckBox))
             {
-                foreach (Control control in ((CheckBox)sender).Parent.Controls)
-                {
-                    if (control == sender) continue;
-                    // Keep ColorSlider controls enabled so user can adjust GEQ even when effect is off
-                    if (control is ColorSlider.ColorSlider) continue;
-                    control.Enabled = ((CheckBox)sender).Checked;
-                }
+                var checkBox = (CheckBox)sender;
+                SetControlsEnabled(checkBox.Parent, checkBox, checkBox.Checked);
             }
             return ((CheckBox)sender).Checked;
         }
@@ -910,6 +908,7 @@ namespace MediaPlayer_X_Ark
             KnobReverbWet.Value = _configService.settings.Effectors.Reverb.WetLevel != 0 ? _configService.settings.Effectors.Reverb.WetLevel : -6;
             KnobReverbDry.Value = _configService.settings.Effectors.Reverb.DryLevel;
 
+            InitGroupBoxState(GroupGEQ, CheckGEQ);
             InitGroupBoxState(GroupDistortion, CheckDistortion);
             InitGroupBoxState(GroupChorus, CheckChorus);
             InitGroupBoxState(GroupEcho, CheckEcho);
@@ -932,8 +931,17 @@ namespace MediaPlayer_X_Ark
         }
         private void InitGroupBoxState(GroupBox groupBox, CheckBox checkBox)
         {
-            foreach (Control c in groupBox.Controls)
-                if (c != checkBox) c.Enabled = checkBox.Checked;
+            SetControlsEnabled(groupBox, checkBox, checkBox.Checked);
+        }
+        private void SetControlsEnabled(Control parent, Control exclude, bool enabled)
+        {
+            foreach (Control c in parent.Controls)
+            {
+                if (c == exclude) continue;
+                c.Enabled = enabled;
+                if (c.Controls.Count > 0)
+                    SetControlsEnabled(c, exclude, enabled);
+            }
         }
         private void OptionOutput()
         {
@@ -1106,9 +1114,55 @@ namespace MediaPlayer_X_Ark
 
         private void cmbEqPreset_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_engine.effector != null)
-                _engine.effector.GEqualizer.SetPreset(((ComboBox)sender).SelectedIndex);
-            _configService.settings.Effectors.GEqualizer.Preset = ((ComboBox)sender).SelectedIndex;
+            var name = cmbEqPreset.SelectedItem as string;
+            if (string.IsNullOrEmpty(name)) return;
+
+            // 組み込みプリセットの場合は既存の SetPreset を使う
+            int builtinIndex = Array.IndexOf(_geqBuiltinPresets, name);
+            if (builtinIndex >= 0)
+            {
+                _engine.effector.GEqualizer.SetPreset(builtinIndex);
+                _configService.settings.Effectors.GEqualizer.Preset = builtinIndex;
+                // スライダーへの反映は EqualizerChanged イベント経由で行われる
+                return;
+            }
+
+            // ユーザープリセットの場合はファイルからロード
+            var preset = EffectPreset.Load<GEqualizerPreset>("GEQ", name);
+            if (preset == null) return;
+
+            // スライダーに反映
+            internalChanged = true;
+            TrkGEQ32.Value = (decimal)preset.Hz32;
+            TrkGEQ60.Value = (decimal)preset.Hz60;
+            TrkGEQ125.Value = (decimal)preset.Hz125;
+            TrkGEQ250.Value = (decimal)preset.Hz250;
+            TrkGEQ500.Value = (decimal)preset.Hz500;
+            TrkGEQ1K.Value = (decimal)preset.Hz1K;
+            TrkGEQ2K.Value = (decimal)preset.Hz2K;
+            TrkGEQ4K.Value = (decimal)preset.Hz4K;
+            TrkGEQ8K.Value = (decimal)preset.Hz8K;
+            TrkGEQ16K.Value = (decimal)preset.Hz16K;
+            TrkGEQ20K.Value = (decimal)preset.Hz20K;
+            TrkGEQ22K.Value = (decimal)preset.Hz22K;
+            internalChanged = false;
+
+            // DSPに反映
+            _engine.effector.GEqualizer.SetGain(GEqualizer.EQ_HZ.HZ_32, preset.Hz32 / 10f);
+            _engine.effector.GEqualizer.SetGain(GEqualizer.EQ_HZ.HZ_60, preset.Hz60 / 10f);
+            _engine.effector.GEqualizer.SetGain(GEqualizer.EQ_HZ.HZ_125, preset.Hz125 / 10f);
+            _engine.effector.GEqualizer.SetGain(GEqualizer.EQ_HZ.HZ_250, preset.Hz250 / 10f);
+            _engine.effector.GEqualizer.SetGain(GEqualizer.EQ_HZ.HZ_500, preset.Hz500 / 10f);
+            _engine.effector.GEqualizer.SetGain(GEqualizer.EQ_HZ.HZ_1K, preset.Hz1K / 10f);
+            _engine.effector.GEqualizer.SetGain(GEqualizer.EQ_HZ.HZ_2K, preset.Hz2K / 10f);
+            _engine.effector.GEqualizer.SetGain(GEqualizer.EQ_HZ.HZ_4K, preset.Hz4K / 10f);
+            _engine.effector.GEqualizer.SetGain(GEqualizer.EQ_HZ.HZ_8K, preset.Hz8K / 10f);
+            _engine.effector.GEqualizer.SetGain(GEqualizer.EQ_HZ.HZ_16K, preset.Hz16K / 10f);
+            _engine.effector.GEqualizer.SetGain(GEqualizer.EQ_HZ.HZ_20K, preset.Hz20K / 10f);
+            _engine.effector.GEqualizer.SetGain(GEqualizer.EQ_HZ.HZ_22K, preset.Hz22K / 10f);
+
+            _configService.settings.EffectPresets["GEQ"] = name;
+            PaintGEQGraph();
         }
 
         private void CheckCompLinked_CheckedChanged(object sender, EventArgs e)
