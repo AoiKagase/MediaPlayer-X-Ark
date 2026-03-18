@@ -239,7 +239,8 @@ namespace MediaPlayer_X_Ark
         /// </summary>
         public void DrawSpectrum()
         {
-            RECT line1 = new RECT(0, 0, 0, 0);
+			
+			RECT line1 = new RECT(0, 0, 0, 0);
             RECT line3 = new RECT(0, 0, 0, 0);
 
             // バックバッファ初期化
@@ -247,133 +248,141 @@ namespace MediaPlayer_X_Ark
 
 			using (var snowBrush = new SolidBrush(Color.White))
 			{
+                // ★スレッド起動時点の時刻にリセット
+                nextframe = (double)System.Environment.TickCount64 - 1;
 				while (Initialized)
 				{
-					if ((double)System.Environment.TickCount >= nextframe)
+					double now = (double)System.Environment.TickCount64;
+					if (now >= nextframe)
 					{
-						if ((double)System.Environment.TickCount < nextframe + wait)
+						// ★サイズ変更を検知して再生成
+						if (_backBuffer.Width != this.Width || _backBuffer.Height != this.Height)
 						{
-							// バックバッファへ描画
-							lock (_bitmapLock)
+							_backBuffer.Dispose();
+							_backBuffer = new Bitmap(this.Width, this.Height);
+							// Snow も再初期化
+							analyzerSnow = new float[windowSize];
+						}
+						// バックバッファへ描画
+						lock (_bitmapLock)
+						{
+							using (var g = Graphics.FromImage(_backBuffer))
 							{
-								using (var g = Graphics.FromImage(_backBuffer))
+								// ① 背景クリア（PatBlt / BitBlt の代替）
+								if (_BitmapBackground != null)
+									g.DrawImage(_BitmapBackground, 0, 0);
+								else
+									g.Clear(Color.Black);
+
+								switch (Mode)
 								{
-									// ① 背景クリア（PatBlt / BitBlt の代替）
-									if (_BitmapBackground != null)
-										g.DrawImage(_BitmapBackground, 0, 0);
-									else
-										g.Clear(Color.Black);
-
-									switch (Mode)
-									{
-										// WAVE MODE
-										case 4:
-											// L ch（ライム色）
-											if (mWaveL != null)
-											{
-												int prevX = 0, prevY = this.Height / 2;
-												using (var pen = new Pen(Color.Lime, 1))
-												{
-													for (int i = 0; i < mWaveL.Length && i < this.Width; i++)
-													{
-														int x = i;
-														int y = (int)((1.0f - mWaveL[i]) * this.Height / 2f);
-														y = Math.Max(0, Math.Min(this.Height - 1, y));
-														g.DrawLine(pen, prevX, prevY, x, y);
-														prevX = x; prevY = y;
-													}
-												}
-											}
-											// R ch（シアン色）
-											if (mWaveR != null)
-											{
-												int prevX = 0, prevY = this.Height / 2;
-												using (var pen = new Pen(Color.Cyan, 1))
-												{
-													for (int i = 0; i < mWaveR.Length && i < this.Width; i++)
-													{
-														int x = i;
-														int y = this.Height - (int)((1.0f - mWaveR[i]) * this.Height / 2f);
-														y = Math.Max(0, Math.Min(this.Height - 1, y));
-														g.DrawLine(pen, prevX, prevY, x, y);
-														prevX = x; prevY = y;
-													}
-												}
-											}
-											break;
-
-										// SNOW BLOCK / BAR
-										case 3:
-										default:
-											if (mFFT != null)
-											{
-												int step = (Mode > 0) ? Mode * 2 : 1;
-
-												for (int i = 0; i < windowSize; i += step)
-												{
-													int lineHeight = this.Height - (int)((this.Height / 80f) * (lin2dB(mFFT[i]) + 80f));
-
-													line3.Left = i;
-													line3.Bottom = this.Height;
-													line3.Right = (this.Width > windowSize)
-														? i + (this.Width / windowSize) + (int)(Mode / 2f)
-														: i + 1 + (int)(Mode / 2f);
-
-													if (analyzerSnow[i] > lineHeight)
-														line3.Bottom = (int)(analyzerSnow[i] = lineHeight);
-													else if (analyzerSnow[i] < this.Height)
-														line3.Bottom = (int)(analyzerSnow[i] += 0.2f);
-
-													line3.Top = line3.Bottom - 1;
-
-													line1.Bottom = this.Height;
-													line1.Top = lineHeight;
-													line1.Left = line3.Left;
-													line1.Right = line3.Right;
-
-													// SnowBlock 描画
-													//if (_BitmapSnow != null)
-													//{
-													//	var snowSrc = new Rectangle(0, 0, line3.Right - line3.Left, 1);
-													//	var snowDst = new Rectangle(line3.Left, line3.Top, line3.Right - line3.Left, 1);
-													//	g.DrawImage(_BitmapSnow, snowDst, snowSrc, GraphicsUnit.Pixel);
-													//}
-													g.FillRectangle(snowBrush, line3.Left, line3.Top,
-                                                        line3.Right - line3.Left, 1);
-
-                                                    // Spectrum Bar 描画
-                                                    if (Mode != 3 && _BitmapSpectrum != null)
-													{
-														var barSrc = new Rectangle(line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top);
-														var barDst = new Rectangle(line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top);
-														g.DrawImage(_BitmapSpectrum, barDst, barSrc, GraphicsUnit.Pixel);
-													}
-												}
-											}
-											break;
-									}
-								}
-							}
-
-							// ② バックバッファを画面へ転送
-							if (this.IsHandleCreated && !this.IsDisposed)
-							{
-								try
-								{
-									this.Invoke((Action)(() =>
-									{
-										if (!this.IsDisposed)
+									// WAVE MODE
+									case 4:
+										// L ch（ライム色）
+										if (mWaveL != null)
 										{
-											using (var g = this.CreateGraphics())
-												g.DrawImage(_backBuffer, 0, 0);
+											int prevX = 0, prevY = this.Height / 2;
+											using (var pen = new Pen(Color.Lime, 1))
+											{
+												for (int i = 0; i < mWaveL.Length && i < this.Width; i++)
+												{
+													int x = i;
+													int y = (int)((1.0f - mWaveL[i]) * this.Height / 2f);
+													y = Math.Max(0, Math.Min(this.Height - 1, y));
+													g.DrawLine(pen, prevX, prevY, x, y);
+													prevX = x; prevY = y;
+												}
+											}
 										}
-									}));
+										// R ch（シアン色）
+										if (mWaveR != null)
+										{
+											int prevX = 0, prevY = this.Height / 2;
+											using (var pen = new Pen(Color.Cyan, 1))
+											{
+												for (int i = 0; i < mWaveR.Length && i < this.Width; i++)
+												{
+													int x = i;
+													int y = this.Height - (int)((1.0f - mWaveR[i]) * this.Height / 2f);
+													y = Math.Max(0, Math.Min(this.Height - 1, y));
+													g.DrawLine(pen, prevX, prevY, x, y);
+													prevX = x; prevY = y;
+												}
+											}
+										}
+										break;
+
+									// SNOW BLOCK / BAR
+									case 3:
+									default:
+										if (mFFT != null)
+										{
+											int step = (Mode > 0) ? Mode * 2 : 1;
+
+											for (int i = 0; i < windowSize; i += step)
+											{
+												int lineHeight = this.Height - (int)((this.Height / 80f) * (lin2dB(mFFT[i]) + 80f));
+
+												line3.Left = i;
+												line3.Bottom = this.Height;
+												line3.Right = (this.Width > windowSize)
+													? i + (this.Width / windowSize) + (int)(Mode / 2f)
+													: i + 1 + (int)(Mode / 2f);
+
+												if (analyzerSnow[i] > lineHeight)
+													line3.Bottom = (int)(analyzerSnow[i] = lineHeight);
+												else if (analyzerSnow[i] < this.Height)
+													line3.Bottom = (int)(analyzerSnow[i] += 0.2f);
+
+												line3.Top = line3.Bottom - 1;
+
+												line1.Bottom = this.Height;
+												line1.Top = lineHeight;
+												line1.Left = line3.Left;
+												line1.Right = line3.Right;
+
+												// SnowBlock 描画
+												//if (_BitmapSnow != null)
+												//{
+												//	var snowSrc = new Rectangle(0, 0, line3.Right - line3.Left, 1);
+												//	var snowDst = new Rectangle(line3.Left, line3.Top, line3.Right - line3.Left, 1);
+												//	g.DrawImage(_BitmapSnow, snowDst, snowSrc, GraphicsUnit.Pixel);
+												//}
+												g.FillRectangle(snowBrush, line3.Left, line3.Top,
+													line3.Right - line3.Left, 1);
+
+												// Spectrum Bar 描画
+												if (Mode != 3 && _BitmapSpectrum != null)
+												{
+													var barSrc = new Rectangle(line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top);
+													var barDst = new Rectangle(line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top);
+													g.DrawImage(_BitmapSpectrum, barDst, barSrc, GraphicsUnit.Pixel);
+												}
+											}
+										}
+										break;
 								}
-								catch (ObjectDisposedException) { }
-								catch (InvalidAsynchronousStateException) { }
 							}
 						}
-						nextframe += wait;
+
+						// ② バックバッファを画面へ転送
+						if (this.IsHandleCreated && !this.IsDisposed)
+						{
+							try
+							{
+								this.Invoke((Action)(() =>
+								{
+									if (!this.IsDisposed)
+									{
+										using (var g = this.CreateGraphics())
+											g.DrawImage(_backBuffer, 0, 0);
+									}
+								}));
+							}
+							catch (ObjectDisposedException) { }
+							catch (InvalidAsynchronousStateException) { }
+						}
+						nextframe = now + wait;
 					}
 
 					Application.DoEvents();
