@@ -37,7 +37,9 @@ namespace MediaPlayer_X_Ark.Engine
                            out uint buffered,
                            out bool starving,
                            out bool diskBusy);
+        FMOD.RESULT CreateSoundFromPCM(byte[] pcmData, string title, out int index);
 
+        void ClearPlayList();
         // ── 音量・パン ───────────────────────────────
         void SetVolume(float vol);
         int GetVolume();
@@ -56,5 +58,7 @@ namespace MediaPlayer_X_Ark.Engine
         void SetDevice(string driver);
         List<DEVICE_INFO> GetDeviceListForOutputType(FMOD.OUTPUTTYPE outputType);
         List<DEVICE_INFO> GetCurrentDeviceList();
+
+
     }
 }

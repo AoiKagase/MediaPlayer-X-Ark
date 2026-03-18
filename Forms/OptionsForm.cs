@@ -19,8 +19,9 @@ namespace MediaPlayer_X_Ark
 {
     public partial class OptionsForm : Form
     {
-        private PlayerEngine _engine;
-        private Engine.IConfigService _configService;
+        private IPlayerEngine _engine;
+        private IConfigService _configService;
+
         private MainForm _mainForm; // 追加
         private static readonly string[] _geqBuiltinPresets =
         {
@@ -30,12 +31,11 @@ namespace MediaPlayer_X_Ark
         ColorSlider.ColorSlider[] _eqTrackBars =
         {
         };
-        public OptionsForm(PlayerEngine engine, Engine.IConfigService configService, MainForm mainForm)
+        public OptionsForm(IPlayerEngine engine, IConfigService configService, MainForm mainForm)
         {
             InitializeComponent();
             _engine = engine;
-            // prefer explicitly provided service, fall back to static holder, then to a fresh adapter
-            _configService = configService ?? Engine.PlayerEngineStaticHolder.ConfigService ?? new Engine.Configuration(engine).AsService();
+            _configService = configService;
             _mainForm = mainForm;
 
             LoadGEQPresets();

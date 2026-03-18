@@ -214,13 +214,13 @@ namespace MediaPlayer_X_Ark.Engine
     public class Configuration : IConfigService
     {
         public ConfigurationData settings { get; set; }
-        protected PlayerEngine engine;
+        protected IPlayerEngine engine;
 
         // Backwards-compatible shim to expose existing functionality via IConfigService
         public IConfigService AsService() => new ConfigServiceAdapter(this);
 
         // Constructor no longer requires a `ref` parameter. Pass the engine instance by value.
-        public Configuration(PlayerEngine engine)
+        public Configuration(IPlayerEngine engine)
         {
             this.engine = engine;
             if (File.Exists(Path.Combine(Application.StartupPath, "config.json")))

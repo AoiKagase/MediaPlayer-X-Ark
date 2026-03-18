@@ -12,14 +12,16 @@ namespace MediaPlayer_X_Ark
 	public partial class MainForm : Form
 	{
 		bool initialize = false;
-		public static PlayerEngine player;
 
-		private ToolTip _toolTip;
+        public static IPlayerEngine player;
+        private static IConfigService config;
+
+        private ToolTip _toolTip;
 		private int playingIndex = 0;
 		private PlayListForm playListForm;
 		private OptionsForm optionsForm;
 		private CDForm cdForm;
-		private static Engine.Configuration config;
+
 		private bool nowplaying = false;
 		public int PlayingIndex => playingIndex;
 
@@ -416,7 +418,7 @@ namespace MediaPlayer_X_Ark
 			player = new PlayerEngine();
 
             // ① 設定を先に読み込む
-			config = new Engine.Configuration(player);
+			config = new Configuration(player);
 
 			// ② OutputType と SoftwareFormat は init() より前に設定
 			player.SetOutputTypeBeforeInit(config.GetOutputType());
@@ -428,10 +430,9 @@ namespace MediaPlayer_X_Ark
 			player.SetDevice(config.settings.Device);
 
 			playListForm = new PlayListForm(this);
-            playListForm.Owner = this;
-            //            playListForm.Show(this);
-            optionsForm = new OptionsForm(player, PlayerEngineStaticHolder.ConfigService ?? config.AsService(), this);
-			cdForm = new CDForm(this);
+
+            optionsForm = new OptionsForm(player, config, this);
+            cdForm = new CDForm(this);
 
 			// 予定：設定ファイルの読み込み スキンファイルの指定も含む
 			// 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
