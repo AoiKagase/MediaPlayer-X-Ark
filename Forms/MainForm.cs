@@ -414,14 +414,14 @@ namespace MediaPlayer_X_Ark
 			// ツールチップ
 			_toolTip = new ToolTip(components);
 
-			// FMODサウンドエンジン
-			player = new PlayerEngine();
-
+            // FMODサウンドエンジン
+            var engine = new PlayerEngine();
+            player = engine;
             // ① 設定を先に読み込む
-			config = new Configuration(player);
+            config = new Configuration(engine);
 
-			// ② OutputType と SoftwareFormat は init() より前に設定
-			player.SetOutputTypeBeforeInit(config.GetOutputType());
+            // ② OutputType と SoftwareFormat は init() より前に設定
+            player.SetOutputTypeBeforeInit(config.GetOutputType());
 
 			// ③ init() を実行
 			player.Initialize();
@@ -1125,7 +1125,6 @@ namespace MediaPlayer_X_Ark
                 player.loop = mode;
                 if (isRandom) player.loop |= LOOP_MODE.LOOP_RANDOM;
             }
-            player.loop |= mode;
         }
 
         private void OpenOptionsTab(string tabName)
