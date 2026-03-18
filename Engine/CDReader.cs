@@ -15,8 +15,8 @@ namespace MediaPlayer_X_Ark.Engine
 		public long EndSector { get; set; }
 		public long SectorCount => EndSector - StartSector;
 		public TimeSpan Duration => TimeSpan.FromSeconds(SectorCount / 75.0);
-		public string Title => $"Track {TrackNumber:D2}";
-		public string DurationText => Duration.ToString(@"mm\:ss");
+        public string Title { get; set; }
+        public string DurationText => Duration.ToString(@"mm\:ss");
 	}
 
 	/// <summary>
@@ -112,11 +112,14 @@ namespace MediaPlayer_X_Ark.Engine
 		public IReadOnlyList<CdTrackInfo> Tracks => _tracks;
 		public int AudioTracks => _tracks?.Count ?? 0;
 		public char DriveLetter => _driveLetter;
-
-		// ===========================
-		// コンストラクタ
-		// ===========================
-		public CdReader(char driveLetter)
+        public uint FreeDbDiscId { get; private set; }  // FreeDB/Gnudb用
+        public string MusicBrainzId { get; private set; }  // MusicBrainz用
+        public int TotalSeconds { get; private set; }  // FreeDB問い合わせに必要
+        public long LeadOutSector { get; private set; }
+        // ===========================
+        // コンストラクタ
+        // ===========================
+        public CdReader(char driveLetter)
 		{
 			_driveLetter = char.ToUpper(driveLetter);
 			_tracks = new List<CdTrackInfo>();
@@ -185,28 +188,109 @@ namespace MediaPlayer_X_Ark.Engine
 					long startSector = MsfToLba(current.Address);
 					long endSector = MsfToLba(next.Address);
 
-					_tracks.Add(new CdTrackInfo
+                    // リードアウトはLastTrack+1番目のエントリ
+                    TRACK_DATA leadOut = toc.TrackData[toc.LastTrack - toc.FirstTrack + 1];
+                    LeadOutSector = MsfToLba(leadOut.Address) + MSF_OFFSET;
+
+                    _tracks.Add(new CdTrackInfo
 					{
 						TrackNumber = current.TrackNumber,
 						StartSector = startSector,
 						EndSector = endSector,
-					});
-				}
+                        Title = $"Track {current.TrackNumber:D2}", // デフォルト
+                    });
+                    // DiscId計算
+                    MusicBrainzId = CalculateDiscId(toc);
+					FreeDbDiscId = CalculateFreeDbDiscId(toc);
+                }
 			}
 			finally
 			{
 				Marshal.FreeHGlobal(tocPtr);
 			}
 		}
+        private string CalculateDiscId(CDROM_TOC toc)
+        {
+            // MusicBrainz DiscId 計算
+            // https://musicbrainz.org/doc/Disc_ID_Calculation
+            int firstTrack = toc.FirstTrack;
+            int lastTrack = toc.LastTrack;
 
-		// ===========================
-		// トラックのPCMデータ取得
-		// ===========================
-		/// <summary>
-		/// 指定トラックのPCMデータを byte[] で返す。
-		/// CDDA固定：44100Hz / ステレオ / 16bit
-		/// </summary>
-		public byte[] ReadTrack(int trackIndex)
+            // オフセット配列（最大100トラック + リードアウト）
+            // [0] = リードアウト, [1]～[99] = 各トラック開始セクタ
+            int[] offsets = new int[100];
+
+            // リードアウト
+            TRACK_DATA leadOut = toc.TrackData[lastTrack - firstTrack + 1];
+            offsets[0] = (int)(MsfToLba(leadOut.Address) + MSF_OFFSET);
+
+            // 各トラック
+            for (int i = 0; i <= lastTrack - firstTrack; i++)
+            {
+                TRACK_DATA td = toc.TrackData[i];
+                offsets[td.TrackNumber] = (int)(MsfToLba(td.Address) + MSF_OFFSET);
+            }
+
+            // SHA-1 計算
+            using (var sha1 = System.Security.Cryptography.SHA1.Create())
+            {
+                // 入力文字列を構築
+                string input = $"{firstTrack:X2}{lastTrack:X2}";
+                for (int i = 0; i < 100; i++)
+                    input += $"{offsets[i]:X8}";
+
+                byte[] hash = sha1.ComputeHash(System.Text.Encoding.ASCII.GetBytes(input));
+
+                // Base64 変換（MusicBrainz形式：+→., /→_, =→-）
+                return Convert.ToBase64String(hash)
+                    .Replace('+', '.')
+                    .Replace('/', '_')
+                    .Replace('=', '-');
+            }
+        }
+        private uint CalculateFreeDbDiscId(CDROM_TOC toc)
+        {
+            int firstTrack = toc.FirstTrack;
+            int lastTrack = toc.LastTrack;
+
+            // 各トラックの開始時間（秒）のチェックサム計算
+            uint checksum = 0;
+            for (int i = 0; i < lastTrack - firstTrack + 1; i++)
+            {
+                TRACK_DATA td = toc.TrackData[i];
+                // MSF→秒変換
+                int seconds = td.Address[1] * 60 + td.Address[2];
+                // 各桁の和
+                while (seconds > 0)
+                {
+                    checksum += (uint)(seconds % 10);
+                    seconds /= 10;
+                }
+            }
+
+            // リードアウトとトラック1の差（総演奏時間）
+            TRACK_DATA leadOut = toc.TrackData[lastTrack - firstTrack + 1];
+            TRACK_DATA first = toc.TrackData[0];
+            int totalSeconds =
+                (leadOut.Address[1] * 60 + leadOut.Address[2]) -
+                (first.Address[1] * 60 + first.Address[2]);
+
+            int trackCount = lastTrack - firstTrack + 1;
+
+            uint discId = ((checksum & 0xFF) << 24)
+                        | ((uint)totalSeconds << 8)
+                        | (uint)trackCount;
+
+            return discId;
+        }
+        // ===========================
+        // トラックのPCMデータ取得
+        // ===========================
+        /// <summary>
+        /// 指定トラックのPCMデータを byte[] で返す。
+        /// CDDA固定：44100Hz / ステレオ / 16bit
+        /// </summary>
+        public byte[] ReadTrack(int trackIndex)
 		{
 			if (trackIndex < 0 || trackIndex >= _tracks.Count)
 				throw new ArgumentOutOfRangeException(nameof(trackIndex));
