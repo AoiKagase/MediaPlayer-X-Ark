@@ -384,8 +384,6 @@ namespace MediaPlayer_X_Ark
 						}
 						nextframe = now + wait;
 					}
-
-					Application.DoEvents();
 					Thread.Sleep(1);
 				}
 			}

@@ -173,8 +173,12 @@ namespace MediaPlayer_X_Ark.Engine
 					}
 				}
 
-				// System Init.
-				if (FmodCallFunction(FmodSystem.init(channelCount, FMOD.INITFLAGS.NORMAL, IntPtr.Zero)) == RESULT.OK)
+				// バッファ設定
+                FmodSystem.setStreamBufferSize(128 * 1024, FMOD.TIMEUNIT.RAWBYTES); // 128KB
+                FmodSystem.setDSPBufferSize(2048, 4);
+
+                // System Init.
+                if (FmodCallFunction(FmodSystem.init(channelCount, FMOD.INITFLAGS.NORMAL, IntPtr.Zero)) == RESULT.OK)
 				{
 					// Create Channel Group.
 					if (FmodCallFunction(FmodSystem.createChannelGroup("Channel 01", out FmodChannelGroup)) == RESULT.OK)
