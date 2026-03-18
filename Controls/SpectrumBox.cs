@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Threading;
@@ -12,27 +13,6 @@ namespace MediaPlayer_X_Ark
     public partial class SpectrumBox : PictureBox
 	{
 		private readonly object _bitmapLock = new object();
-		/// <summary>
-		/// Graphics Buffer
-		/// </summary>
-		private Graphics gAnalyzer;
-		private Graphics gBuffer;
-		private Graphics gSnow;
-
-		/// <summary>
-		/// HDC Pointers
-		/// </summary>
-		private IntPtr hdcBuffer;
-		private IntPtr hdc1Analyzer;
-		private IntPtr hdc3Snow;
-		private IntPtr hdc2AnalyzerSrc;
-		private IntPtr hdc3SnowSrc;
-
-		/// <summary>
-		/// HBitmap Object
-		/// </summary>
-		private IntPtr Prog1;
-		private IntPtr Prog2;
 
 		/// <summary>
 		/// 画像
@@ -42,11 +22,12 @@ namespace MediaPlayer_X_Ark
 		private Bitmap _BitmapSpectrum;
 		private Bitmap _BitmapSnow;
 		private Bitmap _BitmapWave;
-
-		/// <summary>
-		/// スレッド
-		/// </summary>
-		private Thread DrawThread;
+        // バックバッファ（ダブルバッファリング用）
+        private Bitmap _backBuffer;
+        /// <summary>
+        /// スレッド
+        /// </summary>
+        private Thread DrawThread;
 
 		/// <summary>
 		/// スペクトラム領域
@@ -253,228 +234,162 @@ namespace MediaPlayer_X_Ark
 			DrawThread.Start();
 		}
 
-		/// <summary>
-		/// メインループ処理
-		/// </summary>
-		public void DrawSpectrum()
-		{
-			// 各座標初期化
-			RECT line1 = new RECT(0, 0, 0, 0);
-			RECT line2 = new RECT(0, 0, this.Width, this.Height); // BackGround
-			RECT line3 = new RECT(0, 0, 0, 0);  // Snow
+        /// <summary>
+        /// メインループ処理
+        /// </summary>
+        public void DrawSpectrum()
+        {
+            RECT line1 = new RECT(0, 0, 0, 0);
+            RECT line3 = new RECT(0, 0, 0, 0);
 
-			// HBitmapポインタ取得
-			IntPtr hdc4BackgroundSrc = IntPtr.Zero;
+            // バックバッファ初期化
+            _backBuffer = new Bitmap(this.Width, this.Height);
 
-			// バックバッファーを保持する
-			gAnalyzer = this.CreateGraphics();
-			gSnow = Graphics.FromImage(_BitmapSnow);
-			gBuffer = Graphics.FromImage(_BitmapSpectrum);
-
-			// Snow block色設定
-			using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 255, 255)))
+			using (var snowBrush = new SolidBrush(Color.White))
 			{
-				gSnow.FillRectangle(brush, 0, 0, this.Width, this.Height);
-			}
-
-			// HDC確保
-			hdcBuffer = gBuffer.GetHdc();
-			hdc1Analyzer = gAnalyzer.GetHdc();
-			hdc2AnalyzerSrc = Win32API.CreateCompatibleDC(hdc1Analyzer);
-			hdc3Snow = gSnow.GetHdc();
-			hdc3SnowSrc = Win32API.CreateCompatibleDC(hdc3Snow);
-			if (_BitmapBackground != null)
-			{
-				hdc4BackgroundSrc = Win32API.CreateCompatibleDC(hdc1Analyzer);
-			}
-			// 初期化済みであればループ開始
-			while (Initialized)
-			{
-				IntPtr hBSrc = IntPtr.Zero;
-				IntPtr hBSnow = IntPtr.Zero;
-				IntPtr hBBackground = IntPtr.Zero;
-				// ビットマップ取得をロックで保護
-
-				lock (_bitmapLock)
+				while (Initialized)
 				{
-					if (_BitmapSpectrum != null) hBSrc = _BitmapSpectrum.GetHbitmap(Color.Transparent);
-					if (_BitmapSnow != null) hBSnow = _BitmapSnow.GetHbitmap(Color.White);
-					if (_BitmapBackground != null) hBBackground = _BitmapBackground.GetHbitmap(Color.Transparent);
-				}
-				// HBitmapオブジェクト確保
-				Prog1 = Win32API.SelectObject(hdc2AnalyzerSrc, hBSrc);
-				Prog2 = Win32API.SelectObject(hdc3SnowSrc, hBSnow);
-
-				// 次フレーム数を超えている場合
-				if ((double)System.Environment.TickCount >= nextframe)
-				{
-					// かつ＋1FPS秒（さらに次フレーム）以内
-					if ((double)System.Environment.TickCount < nextframe + wait)
+					if ((double)System.Environment.TickCount >= nextframe)
 					{
-						// 変更後
-						if (hBBackground != IntPtr.Zero && hdc4BackgroundSrc != IntPtr.Zero)
+						if ((double)System.Environment.TickCount < nextframe + wait)
 						{
-							// 背景画像でクリア
-							Win32API.SelectObject(hdc4BackgroundSrc, hBBackground);
-							Win32API.BitBlt(
-								hdcBuffer, 0, 0, this.Width, this.Height,
-								hdc4BackgroundSrc, 0, 0,
-								Win32API.TernaryRasterOperations.SRCCOPY);
-						}
-						else
-						{
-							// 背景画像なし → 黒でクリア
-							Win32API.PatBlt(hdcBuffer, 0, 0, this.Width, this.Height, 0);
-						}
-						switch (Mode)
-						{
-							// WAVE MODE
-							case 4:
-								using (var g = Graphics.FromHdc(hdcBuffer))
+							// バックバッファへ描画
+							lock (_bitmapLock)
+							{
+								using (var g = Graphics.FromImage(_backBuffer))
 								{
-									// L ch（ライム色）
-									if (mWaveL != null)
-									{
-										int prevX = 0;
-										int prevY = this.Height / 2;
-										using (var pen = new Pen(Color.Lime, 1))
-										{
-											for (int i = 0; i < mWaveL.Length && i < this.Width; i++)
-											{
-												int x = i;
-												int y = (int)((1.0f - mWaveL[i]) * this.Height / 2f);
-												y = Math.Max(0, Math.Min(this.Height - 1, y));
-												g.DrawLine(pen, prevX, prevY, x, y);
-												prevX = x;
-												prevY = y;
-											}
-										}
-									}
+									// ① 背景クリア（PatBlt / BitBlt の代替）
+									if (_BitmapBackground != null)
+										g.DrawImage(_BitmapBackground, 0, 0);
+									else
+										g.Clear(Color.Black);
 
-									// R ch（シアン色）
-									if (mWaveR != null)
+									switch (Mode)
 									{
-										int prevX = 0;
-										int prevY = this.Height / 2;
-										using (var pen = new Pen(Color.Cyan, 1))
-										{
-											for (int i = 0; i < mWaveR.Length && i < this.Width; i++)
+										// WAVE MODE
+										case 4:
+											// L ch（ライム色）
+											if (mWaveL != null)
 											{
-												int x = i;
-												int y = this.Height - (int)((1.0f - mWaveR[i]) * this.Height / 2f);
-												y = Math.Max(0, Math.Min(this.Height - 1, y));
-												g.DrawLine(pen, prevX, prevY, x, y);
-												prevX = x;
-												prevY = y;
+												int prevX = 0, prevY = this.Height / 2;
+												using (var pen = new Pen(Color.Lime, 1))
+												{
+													for (int i = 0; i < mWaveL.Length && i < this.Width; i++)
+													{
+														int x = i;
+														int y = (int)((1.0f - mWaveL[i]) * this.Height / 2f);
+														y = Math.Max(0, Math.Min(this.Height - 1, y));
+														g.DrawLine(pen, prevX, prevY, x, y);
+														prevX = x; prevY = y;
+													}
+												}
 											}
-										}
+											// R ch（シアン色）
+											if (mWaveR != null)
+											{
+												int prevX = 0, prevY = this.Height / 2;
+												using (var pen = new Pen(Color.Cyan, 1))
+												{
+													for (int i = 0; i < mWaveR.Length && i < this.Width; i++)
+													{
+														int x = i;
+														int y = this.Height - (int)((1.0f - mWaveR[i]) * this.Height / 2f);
+														y = Math.Max(0, Math.Min(this.Height - 1, y));
+														g.DrawLine(pen, prevX, prevY, x, y);
+														prevX = x; prevY = y;
+													}
+												}
+											}
+											break;
+
+										// SNOW BLOCK / BAR
+										case 3:
+										default:
+											if (mFFT != null)
+											{
+												int step = (Mode > 0) ? Mode * 2 : 1;
+
+												for (int i = 0; i < windowSize; i += step)
+												{
+													int lineHeight = this.Height - (int)((this.Height / 80f) * (lin2dB(mFFT[i]) + 80f));
+
+													line3.Left = i;
+													line3.Bottom = this.Height;
+													line3.Right = (this.Width > windowSize)
+														? i + (this.Width / windowSize) + (int)(Mode / 2f)
+														: i + 1 + (int)(Mode / 2f);
+
+													if (analyzerSnow[i] > lineHeight)
+														line3.Bottom = (int)(analyzerSnow[i] = lineHeight);
+													else if (analyzerSnow[i] < this.Height)
+														line3.Bottom = (int)(analyzerSnow[i] += 0.2f);
+
+													line3.Top = line3.Bottom - 1;
+
+													line1.Bottom = this.Height;
+													line1.Top = lineHeight;
+													line1.Left = line3.Left;
+													line1.Right = line3.Right;
+
+													// SnowBlock 描画
+													//if (_BitmapSnow != null)
+													//{
+													//	var snowSrc = new Rectangle(0, 0, line3.Right - line3.Left, 1);
+													//	var snowDst = new Rectangle(line3.Left, line3.Top, line3.Right - line3.Left, 1);
+													//	g.DrawImage(_BitmapSnow, snowDst, snowSrc, GraphicsUnit.Pixel);
+													//}
+													g.FillRectangle(snowBrush, line3.Left, line3.Top,
+                                                        line3.Right - line3.Left, 1);
+
+                                                    // Spectrum Bar 描画
+                                                    if (Mode != 3 && _BitmapSpectrum != null)
+													{
+														var barSrc = new Rectangle(line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top);
+														var barDst = new Rectangle(line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top);
+														g.DrawImage(_BitmapSpectrum, barDst, barSrc, GraphicsUnit.Pixel);
+													}
+												}
+											}
+											break;
 									}
 								}
-								break; 
-							// SNOW BLOCK
-							case 3:
-							default:
-								// FFT取得済み
-								if (mFFT != null)
+							}
+
+							// ② バックバッファを画面へ転送
+							if (this.IsHandleCreated && !this.IsDisposed)
+							{
+								try
 								{
-									// バーの高さ初期化
-									int lineHeight = 0;
-
-									// 横間隔の取得
-									int step = (Mode > 0) ? Mode * 2 : 1;
-
-									// 画像処理用の座標計算開始
-									// 横間隔で間引き有り
-									for (int i = 0; i < windowSize; i += step)
+									this.Invoke((Action)(() =>
 									{
-										// バー高さ取得
-										lineHeight = this.Height - (int)((this.Height / 80f) * ((lin2dB(mFFT[i]) + 80f)));
-										//                                Math.Clamp((float)Math.Log10(linear) * 20.0f, -80.0f, 0.0f);
-
-										// 横位置（左）
-										line3.Left = i;
-										line3.Bottom = this.Height;
-										// 横位置（右）左位置+1pxを基準として横間隔/2分広げる
-										// スペクトラム領域より描画域が広い場合はバーの横幅を広げる
-										if (this.Width > windowSize)
-											line3.Right = i + (this.Width / windowSize) + (int)(Mode / 2f);
-										else
-											line3.Right = i + 1 + (int)(Mode / 2f);
-
-										// SnowBlockの位置計算
-										// 1フレーム前のSnowBlock高さより現フレームのバー高さの方が高い場合は押し上げる
-										if (analyzerSnow[i] > lineHeight)
-											line3.Bottom = (int)(analyzerSnow[i] = lineHeight);
-										// 落下
-										else if (analyzerSnow[i] < this.Height)
-											line3.Bottom = (int)(analyzerSnow[i] += 0.2f);
-
-										// SnowBlockの上位置 下位値の-1px
-										line3.Top = line3.Bottom - 1;
-
-										// バー位置
-										line1.Bottom = this.Height; // 下部固定
-										line1.Top = lineHeight;     // 上部計算
-										line1.Left = line3.Left;    // Snow Block左に合わせる(前処理で計算済み)
-										line1.Right = line3.Right;  // Snow Block右に合わせる(前処理で計算済み)
-
-										// 描画元画像の読み取り位置
-										src1.Top = lineHeight;
-										src1.Bottom = this.Height;
-
-										// バックバッファへ描画
-										// SnowBlock
-										Win32API.BitBlt(hdcBuffer, line3.Left, line3.Top, line3.Right - line3.Left, 1, hdc3SnowSrc, 0, 0, Win32API.TernaryRasterOperations.SRCCOPY);
-										if (Mode != 3)
+										if (!this.IsDisposed)
 										{
-											// Spectrum Bar
-											Win32API.BitBlt(hdcBuffer, line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top, hdc2AnalyzerSrc, line1.Left, line1.Top, Win32API.TernaryRasterOperations.SRCCOPY);
+											using (var g = this.CreateGraphics())
+												g.DrawImage(_backBuffer, 0, 0);
 										}
-									}
+									}));
 								}
-								break;
+								catch (ObjectDisposedException) { }
+								catch (InvalidAsynchronousStateException) { }
+							}
 						}
-						// バックバッファから転送
-						Win32API.BitBlt(hdc1Analyzer, 0, 0, this.Width, this.Height, hdcBuffer, 0, 0, Win32API.TernaryRasterOperations.SRCCOPY);
+						nextframe += wait;
 					}
-					// 次フレーム計算
-					nextframe += wait;
+
+					Application.DoEvents();
+					Thread.Sleep(1);
 				}
-
-				// HBitmapオブジェクトリリース
-				if (hBSrc != IntPtr.Zero) Win32API.DeleteObject(hBSrc);
-				if (hBSnow != IntPtr.Zero) Win32API.DeleteObject(hBSnow);
-				if (hBBackground != IntPtr.Zero) Win32API.DeleteObject(hBBackground); 
-				Win32API.DeleteObject(Prog2);
-				Win32API.DeleteObject(Prog1);
-
-				// おまじない
-				Application.DoEvents();
-				Thread.Sleep(1);
 			}
-
-			// リソース解放
-			Win32API.DeleteDC(hdc2AnalyzerSrc);
-			Win32API.DeleteDC(hdc3SnowSrc);
-			Win32API.DeleteObject(hdc2AnalyzerSrc);
-			Win32API.DeleteObject(hdc3SnowSrc);
-			if (hdc4BackgroundSrc != IntPtr.Zero)
-			{
-				Win32API.DeleteDC(hdc4BackgroundSrc);
-				Win32API.DeleteObject(hdc4BackgroundSrc);
-			}
-
-			gAnalyzer.ReleaseHdc(hdc1Analyzer);
-			gSnow.ReleaseHdc(hdc3Snow);
-			gAnalyzer.Dispose();
-			gSnow.Dispose();
-		}
-		/// <summary>
-		/// Linear to Decibel
-		/// </summary>
-		/// <param name="linear"></param>
-		/// <returns></returns>
-		private float lin2dB(float linear)
+            // リソース解放
+            _backBuffer?.Dispose();
+            _backBuffer = null;
+        }
+        /// <summary>
+        /// Linear to Decibel
+        /// </summary>
+        /// <param name="linear"></param>
+        /// <returns></returns>
+        private float lin2dB(float linear)
 		{
 			return Math.Clamp((float)Math.Log10(linear) * 20.0f, -80.0f, 0.0f);
 		}

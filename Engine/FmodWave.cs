@@ -4,8 +4,9 @@ using System.Runtime.InteropServices;
 
 namespace MediaPlayer_X_Ark.Engine
 {
-	public class FmodWave
-	{
+	public class FmodWave : IDisposable
+
+    {
 		// メインスレッドと共有するバッファ
 		private readonly object _bufferLock = new object();
 		private float[] _waveBuffer;
@@ -15,8 +16,10 @@ namespace MediaPlayer_X_Ark.Engine
 		private FMOD.System _fmodSystem;
 		private FMOD.ChannelGroup _fmodChannelGroup;
 
-		// コールバックをGCに回収されないようフィールドで保持
-		private FMOD.DSP_READ_CALLBACK _readCallback;
+        private bool _disposed = false;
+
+        // コールバックをGCに回収されないようフィールドで保持
+        private FMOD.DSP_READ_CALLBACK _readCallback;
 
 		public FmodWave(ref FMOD.System system, ref FMOD.ChannelGroup channelGroup)
 		{
@@ -119,11 +122,27 @@ namespace MediaPlayer_X_Ark.Engine
 		}
 		~FmodWave()
 		{
-			if (_dsp.hasHandle())
-			{
-				_fmodChannelGroup.removeDSP(_dsp);
-				_dsp.release();
-			}
-		}
-	}
+            Dispose(false);
+        }
+
+        // 外部から明示的に呼ぶ用
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed) return;
+
+            if (_dsp.hasHandle())
+            {
+                _fmodChannelGroup.removeDSP(_dsp);
+                _dsp.release();
+            }
+
+            _disposed = true;
+        }
+    }
 }

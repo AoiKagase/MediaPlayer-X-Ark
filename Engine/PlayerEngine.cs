@@ -116,8 +116,14 @@ namespace MediaPlayer_X_Ark.Engine
 			if (_disposed) return;  // 二重解放防止
 			if (initialized)
             {
-				// Relase FMOD handles for Channel.
-				if (FmodChannel.hasHandle())
+                if (disposing)
+				{
+                    spectrum?.Dispose();
+                    wave?.Dispose();
+                }
+
+                // Relase FMOD handles for Channel.
+                if (FmodChannel.hasHandle())
 					FmodChannel.stop();
 
 				// Relase FMOD handles for ChannelGroup.

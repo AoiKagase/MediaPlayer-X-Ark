@@ -10,9 +10,11 @@ namespace MediaPlayer_X_Ark
 		public float Y;
 	}
 
-    public class FmodSpectrum
-	{
-		protected DSP mFFT;
+    public class FmodSpectrum : IDisposable
+    {
+        private bool _disposed = false;
+
+        protected DSP mFFT;
 		protected float[] mFFTSpectrum;
 		protected FMOD.System FmodSystem;
 		protected ChannelGroup FmodChannelGroup;
@@ -38,15 +40,29 @@ namespace MediaPlayer_X_Ark
 
 			}
 		}
-
-		~FmodSpectrum()
+        public void Dispose()
         {
-			if (mFFT.hasHandle())
-				FmodChannelGroup.removeDSP(mFFT);
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-			mFFT.release();
-		}
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed) return;
 
+            if (mFFT.hasHandle())
+            {
+                FmodChannelGroup.removeDSP(mFFT);
+                mFFT.release();
+            }
+
+            _disposed = true;
+        }
+
+        ~FmodSpectrum()
+        {
+            Dispose(false);
+        }
 
 		private static float[] lineBottom = new float[128];
 		public float[] UpdateSpectrum()
