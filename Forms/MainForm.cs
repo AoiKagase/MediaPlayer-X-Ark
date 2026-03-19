@@ -431,6 +431,7 @@ namespace MediaPlayer_X_Ark
 			player.SetDevice(config.settings.Device);
 
 			playListForm = new PlayListForm(this);
+			playListForm.Owner = this;
 
 			optionsForm = new OptionsForm(player, config, this);
 			cdForm = new CDForm(this);
@@ -474,7 +475,6 @@ namespace MediaPlayer_X_Ark
 			{
 				//位置を記憶する
 				mousePoint = new Point(e.X, e.Y);
-				playListForm.Activate();
 				this.Activate();
 			}
 		}
@@ -889,7 +889,7 @@ namespace MediaPlayer_X_Ark
 				return;
 			}
 
-			playListForm.Show();
+			playListForm.Show(this);
 
 			playListForm.Left = Left - _currentSkin.PlayListForm.Position.Left;
 			playListForm.Top = Top - _currentSkin.PlayListForm.Position.Top;
