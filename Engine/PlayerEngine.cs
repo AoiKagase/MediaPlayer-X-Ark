@@ -540,20 +540,23 @@ namespace MediaPlayer_X_Ark.Engine
         {
 			index = 0;
 
-			var plist = new Engine.PlayList(filename);
-			PlayList.Add(plist);
-			index = PlayList.Count - 1;
 			// ★URLの場合はバックグラウンドタグ取得をスキップ
 			if (!filename.StartsWith("http://") && !filename.StartsWith("https://"))
 			{
                 var existing = PlayList.FirstOrDefault(p => p.FileName == filename);
-                if (existing != null)
+
+				if (existing != null)
                 {
                     index = PlayList.IndexOf(existing);
-                    return FMOD.RESULT.OK;
+					return FMOD.RESULT.OK;
                 }
-                // ★バックグラウンドでタグ・長さを取得
-                int capturedIndex = index;
+
+				var plist = new Engine.PlayList(filename);
+				PlayList.Add(plist);
+				index = PlayList.Count - 1;
+
+				// ★バックグラウンドでタグ・長さを取得
+				int capturedIndex = index;
 				_ = LoadTagsOnlyAsync(capturedIndex);
 			}
 
