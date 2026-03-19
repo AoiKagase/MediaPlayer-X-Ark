@@ -17,7 +17,8 @@ namespace MediaPlayer_X_Ark.Engine
         FmodSpectrum spectrum { get; }
         FmodWave wave { get; }
         Effector.Effectors effector { get; }
-
+        int PlayingIndex { get; }
+        bool NowPlaying { get; }
         // ── 初期化 ───────────────────────────────────
         void Initialize(CfgBuffer bufferSettings = null);
 
@@ -26,7 +27,8 @@ namespace MediaPlayer_X_Ark.Engine
         FMOD.RESULT PlaySound(int index);
         void Stop();
         void Pause();
-
+        void PlayNext();
+        void PlayPrevious();
         // ── サウンド管理 ─────────────────────────────
         FMOD.RESULT CreateSound(string filename, out int index);
         uint GetLength(int index);
@@ -58,5 +60,9 @@ namespace MediaPlayer_X_Ark.Engine
         void SetDevice(string driver);
         List<DEVICE_INFO> GetDeviceListForOutputType(FMOD.OUTPUTTYPE outputType);
         List<DEVICE_INFO> GetCurrentDeviceList();
-   	}
+
+        event EventHandler TrackEnded;
+
+        void Sort<T>(Func<Engine.PlayList, T> keySelector);
+    }
 }

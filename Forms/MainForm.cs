@@ -18,13 +18,11 @@ namespace MediaPlayer_X_Ark
 		private static IConfigService config;
 
 		private ToolTip _toolTip;
-		private int playingIndex = 0;
+
 		private PlayListForm playListForm;
 		private OptionsForm optionsForm;
 		private CDForm cdForm;
 
-		private bool nowplaying = false;
-		public int PlayingIndex => playingIndex;
 
 		private ISkinSystem _currentSkin;
 		public ISkinSystem CurrentSkin => _currentSkin;
@@ -291,11 +289,10 @@ namespace MediaPlayer_X_Ark
 		/// <param name="fileName"></param>
 		public void OpenFile(string fileName)
 		{
-			// Open File
-			if (player.CreateSound(fileName, out playingIndex) == FMOD.RESULT.OK)
-			{
-				PlayLoad();
-			}
+			int idx;
+            // Open File
+            if (player.CreateSound(fileName, out idx) == FMOD.RESULT.OK)
+                PlayLoad(idx);
 		}
 
 		/// <summary>
@@ -304,37 +301,12 @@ namespace MediaPlayer_X_Ark
 		/// <param name="index"></param>
 		public void PlayLoad(int index)
 		{
-			playingIndex = index;
-			PlayLoad();
-		}
+            player.SetDevice(config.settings.Device);
+            player.PlaySound(index);
+            UpdateTrackUI();
+        }
+        private void PlayLoad() => PlayLoad(player.PlayingIndex);
 
-		private void PlayLoad()
-		{
-			// デバイスの反映
-			player.SetDevice(config.settings.Device);
-
-			// 再生
-			player.PlaySound(playingIndex);
-
-			// 曲長に合わせてトラックバーの総量調整
-			SldTrack.Maximum = (int)player.GetLength(playingIndex);
-
-			// ボリュームを設定値へ
-			float volume = ((float)SldVolume.Value) / 100f;
-			player.SetVolume(volume);
-
-			// PANを設定値へ
-			float pan = ((float)SldPan.Value) / 10f;
-			player.SetPan(pan);
-
-			// タグ取得
-			player.GetTags(playingIndex);
-			LabelTitle.Value.Text = (!string.IsNullOrEmpty(player.PlayList[playingIndex].Title)) ? player.PlayList[playingIndex].Title : Path.GetFileName(player.PlayList[playingIndex].FileName);
-			LabelTitle.Value.Text += (!string.IsNullOrEmpty(player.PlayList[playingIndex].Artist)) ? (" - " + player.PlayList[playingIndex].Artist) : "";
-			LabelTitle.Value.Text += (!string.IsNullOrEmpty(player.PlayList[playingIndex].Album)) ? (" - " + player.PlayList[playingIndex].Album) : "";
-
-			nowplaying = true;
-		}
 		/// <summary>
 		/// ボタンクリック時のイベント（MouseDown時）
 		/// </summary>
@@ -430,7 +402,18 @@ namespace MediaPlayer_X_Ark
 			// ④ Device は init() 後でOK
 			player.SetDevice(config.settings.Device);
 
-			playListForm = new PlayListForm(this);
+            // ★曲終了イベント購読
+            player.TrackEnded += (s, e) =>
+            {
+                this.BeginInvoke((Action)(() =>
+                {
+                    if (!player.NowPlaying) return;
+                    player.PlayNext();
+                    UpdateTrackUI();
+                }));
+            };
+
+            playListForm = new PlayListForm(this);
 			playListForm.Owner = this;
 
 			optionsForm = new OptionsForm(player, config, this);
@@ -458,10 +441,28 @@ namespace MediaPlayer_X_Ark
 			}
 		}
 
-		/// <summary>
-		/// 本体ドラッグによるウィンドウ移動
-		/// </summary>
-		private Point mousePoint;
+        private void UpdateTrackUI()
+        {
+            int index = player.PlayingIndex;
+            if (index < 0 || index >= player.PlayList.Count) return;
+
+            SldTrack.Maximum = (int)player.GetLength(index);
+            float volume = ((float)SldVolume.Value) / 100f;
+            player.SetVolume(volume);
+            float pan = ((float)SldPan.Value) / 10f;
+            player.SetPan(pan);
+
+            player.GetTags(index);
+            var item = player.PlayList[index];
+            LabelTitle.Value.Text = (!string.IsNullOrEmpty(item.Title)) ? item.Title : Path.GetFileName(item.FileName);
+            LabelTitle.Value.Text += (!string.IsNullOrEmpty(item.Artist)) ? (" - " + item.Artist) : "";
+            LabelTitle.Value.Text += (!string.IsNullOrEmpty(item.Album)) ? (" - " + item.Album) : "";
+        }
+
+        /// <summary>
+        /// 本体ドラッグによるウィンドウ移動
+        /// </summary>
+        private Point mousePoint;
 
 		/// <summary>
 		/// フォーム内のマウス押下処理
@@ -525,60 +526,18 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void PlayerTimer_Tick(object sender, EventArgs e)
 		{
-			// 初期化済みの場合のみ処理する
-			if (!initialize)
-				return;
+            // 初期化済みの場合のみ処理する
+            if (!initialize || player == null || player.spectrum == null) return;
 
-			if (player == null || player.spectrum == null)
-				return;
+            // スペクトラム画像の反映
+            Spectrum.mFFT = player.spectrum.UpdateSpectrum();
+            Spectrum.mWaveL = player.wave.GetWaveDataByChannel(0);
+            Spectrum.mWaveR = player.wave.GetWaveDataByChannel(1);
 
-			// スペクトラム画像の反映
-			float[] mFFT = player.spectrum.UpdateSpectrum();
-			Spectrum.mFFT = mFFT;
-			// Waveデータ（追加）
-			Spectrum.mWaveL = player.wave.GetWaveDataByChannel(0);
-			Spectrum.mWaveR = player.wave.GetWaveDataByChannel(1);
-
-			// 曲調トラックバーの反映 (シーク中はボタン側で動作する為動かさない)
-			if (this.seekValue == 0)
-				SldTrack.Value = (int)player.GetPosition();
-			if (!player.IsPlaying())
-			{
-				if (player.PlayList.Count > 1)
-				{
-					switch (player.loop)
-					{
-						case LOOP_MODE.LOOP_NONE:
-							if (nowplaying && playingIndex > -1 && playingIndex < player.PlayList.Count - 1)
-							{
-								playingIndex++;
-								PlayLoad();
-							}
-							break;
-						case LOOP_MODE.LOOP_ONE_REPEAT:
-							if (nowplaying)
-								PlayLoad();
-							break;
-						case LOOP_MODE.LOOP_ALL:
-							if (nowplaying)
-							{
-								if (playingIndex > -1 && playingIndex < player.PlayList.Count - 1)
-								{
-									playingIndex++;
-									PlayLoad();
-								}
-								else
-								{
-									if (playingIndex == player.PlayList.Count - 1)
-										playingIndex = 0;
-									PlayLoad();
-								}
-							}
-							break;
-					}
-				}
-			}
-
+            // 曲調トラックバーの反映 (シーク中はボタン側で動作する為動かさない)
+            if (this.seekValue == 0)
+                SldTrack.Value = (int)player.GetPosition();
+			            
 			TimeSpan time1 = TimeSpan.FromMilliseconds(SldTrack.Value);
 			TimeSpan time2 = TimeSpan.FromMilliseconds(SldTrack.Maximum);
 			LabelTime.Value.Text = time1.ToString(@"mm\:ss") + "/" + time2.ToString(@"mm\:ss");
@@ -772,7 +731,7 @@ namespace MediaPlayer_X_Ark
 			if (player.IsPlaying())
 				player.Pause();
 			else
-				if (playingIndex < player.PlayList.Count)
+				if (player.PlayingIndex < player.PlayList.Count)
 					PlayLoad();
 		}
 
@@ -783,10 +742,9 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void BtnStop_Click(object sender, EventArgs e)
 		{
-			// 問答無用の停止
-			player.Stop();
-			nowplaying = false;
-		}
+            // 問答無用の停止
+            player.Stop();
+        }
 
 
 		/// <summary>
@@ -807,26 +765,12 @@ namespace MediaPlayer_X_Ark
 		}
 		private void BtnBack_Click(object sender, EventArgs e)
 		{
-			// ループ無し：最初の曲まで減算
-			// １曲ループ：最初の曲まで減算
-			// 全曲ループ：最初の曲まで減算、最初の曲から最後の曲へ戻る
-			switch (player.loop)
-			{
-				case LOOP_MODE.LOOP_NONE:
-				case LOOP_MODE.LOOP_ONE_REPEAT:
-					if (playingIndex > 0)
-						playingIndex--;
-					break;
-				case LOOP_MODE.LOOP_ALL:
-					if (playingIndex > 0)
-						playingIndex--;
-					else
-						playingIndex = player.PlayList.Count - 1;
-					break;
-
-			}
-			PlayLoad();
-		}
+            // ループ無し：最初の曲まで減算
+            // １曲ループ：最初の曲まで減算
+            // 全曲ループ：最初の曲まで減算、最初の曲から最後の曲へ戻る
+            player.PlayPrevious();
+            UpdateTrackUI();
+        }
 		private void BtnSeekBack_Click(object sender, EventArgs e)
 		{
 		}
@@ -838,25 +782,12 @@ namespace MediaPlayer_X_Ark
 		}
 		private void BtnNext_Click(object sender, EventArgs e)
 		{
-			// ループ無し：最後の曲まで加算
-			// １曲ループ：最後の曲まで加算
-			// 全曲ループ：最後の曲まで加算、最後の曲から最初の曲へ戻る
-			switch (player.loop)
-			{
-				case LOOP_MODE.LOOP_NONE:
-				case LOOP_MODE.LOOP_ONE_REPEAT:
-					if (playingIndex < player.PlayList.Count - 1)
-						playingIndex++;
-					break;
-				case LOOP_MODE.LOOP_ALL:
-					if (playingIndex < player.PlayList.Count - 1)
-						playingIndex++;
-					else
-						playingIndex = 0;
-					break;
-			}
-			PlayLoad();
-		}
+            // ループ無し：最後の曲まで加算
+            // １曲ループ：最後の曲まで加算
+            // 全曲ループ：最後の曲まで加算、最後の曲から最初の曲へ戻る
+            player.PlayNext();
+            UpdateTrackUI();
+        }
 		private void BtnRandom_Click(object sender, EventArgs e)
 		{
 		}

@@ -67,12 +67,12 @@ namespace MediaPlayer_X_Ark
 
 			_gridContextMenu.Items.AddRange(new ToolStripItem[]
 			{
-		menuPlay,
-		new ToolStripSeparator(),
-		menuDelete,
-		new ToolStripSeparator(),
-		menuUp,
-		menuDown,
+				menuPlay,
+				new ToolStripSeparator(),
+				menuDelete,
+				new ToolStripSeparator(),
+				menuUp,
+				menuDown,
 			});
 
 			// フォーム用コンテキストメニュー
@@ -80,18 +80,32 @@ namespace MediaPlayer_X_Ark
 			var menuOpen = new ToolStripMenuItem("ファイルを開く");
 			var menuSave = new ToolStripMenuItem("保存");
 			var menuClear = new ToolStripMenuItem("全消去");
+            var menuSort = new ToolStripMenuItem("並び替え");
+            var menuSortFile = new ToolStripMenuItem("ファイル名順");
+            var menuSortTitle = new ToolStripMenuItem("タイトル順");
+            var menuSortArtist = new ToolStripMenuItem("アーティスト順");
 
-			menuOpen.Click += (s, e) => PBtnOpen_Click(s, e);
+            menuOpen.Click += (s, e) => PBtnOpen_Click(s, e);
 			menuSave.Click += (s, e) => PBtnSave_Click(s, e);
 			menuClear.Click += (s, e) => PBtnClear_Click(s, e);
-
-			_formContextMenu.Items.AddRange(new ToolStripItem[]
+            menuSortFile.Click += (s, e) => SortPlayList(x => x.FileName);
+            menuSortTitle.Click += (s, e) => SortPlayList(x => x.Title ?? x.FileName);
+			menuSortArtist.Click += (s, e) => SortPlayList(x => x.Artist ?? "");
+            menuSort.DropDownItems.AddRange(new ToolStripItem[]
 			{
-		menuOpen,
-		menuSave,
-		new ToolStripSeparator(),
-		menuClear,
+				menuSortFile,
+				menuSortTitle,
+				menuSortArtist,
 			});
+            _formContextMenu.Items.AddRange(new ToolStripItem[]
+			{
+				menuOpen,
+				menuSave,
+				new ToolStripSeparator(),
+				menuClear,
+	            new ToolStripSeparator(),   // ← 追加
+				menuSort
+            });
 
 			// グリッドの右クリックイベント
 			PlayListGrid.MouseDown += PlayListGrid_MouseDown;
@@ -99,7 +113,11 @@ namespace MediaPlayer_X_Ark
 			// フォームの右クリックイベント
 			this.MouseDown += PlayListForm_MouseDown_ContextMenu;
 		}
-		private void PlayListGrid_MouseDown(object sender, MouseEventArgs e)
+        private void SortPlayList<T>(Func<Engine.PlayList, T> keySelector)
+        {
+            MainForm.player.Sort(keySelector);
+        }
+        private void PlayListGrid_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (e.Button != MouseButtons.Right) return;
 
@@ -282,7 +300,7 @@ namespace MediaPlayer_X_Ark
 				.ToList();
 
 			// 再生中インデックスが削除対象に含まれる場合は停止
-			if (indices.Contains(mainForm.PlayingIndex))
+			if (indices.Contains(MainForm.player.PlayingIndex))
 				MainForm.player.Stop();
 
 			foreach (int i in indices)

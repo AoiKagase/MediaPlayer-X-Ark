@@ -46,8 +46,13 @@ namespace MediaPlayer_X_Ark.Engine
 	{
 		private bool _disposed = false;  // 二重解放防止フラグ
 		private readonly SemaphoreSlim _tagLoadSemaphore = new SemaphoreSlim(3, 3);
+        // フィールド追加（GC対策）
+        private FMOD.CHANNELCONTROL_CALLBACK _channelEndCallback;
 
-		[DllImport("kernel32.dll")]
+        // イベント
+        public event EventHandler TrackEnded;
+
+        [DllImport("kernel32.dll")]
 		public static extern IntPtr LoadLibrary(string dllToLoad);
 
         public FmodSpectrum spectrum { get; private set; }
@@ -57,11 +62,12 @@ namespace MediaPlayer_X_Ark.Engine
         public string lastError { get; protected set; } = "";
         public string lastErrFunction { get; protected set; } = "";
         public FMOD.RESULT lastErrCode { get; protected set; }
-
+        public int PlayingIndex { get; private set; } = -1;
         protected bool initialized = false;
-
-		// FMOD SYSTEM.
-		public BindingList<Engine.PlayList> PlayList { get; set; } = new BindingList<Engine.PlayList>();
+        private bool _nowPlaying = false;
+        public bool NowPlaying => _nowPlaying;
+        // FMOD SYSTEM.
+        public BindingList<Engine.PlayList> PlayList { get; set; } = new BindingList<Engine.PlayList>();
         protected FMOD.System FmodSystem;
 		protected FMOD.ChannelGroup FmodChannelGroup;
 		protected FMOD.Channel FmodChannel;
@@ -416,13 +422,15 @@ namespace MediaPlayer_X_Ark.Engine
             if (index >= PlayList.Count)
 				return FMOD.RESULT.OK;
 
-			// ★再生前にロード
-			var loadResult = LoadSound(index);
+            // ★再生前にロード
+            var loadResult = LoadSound(index);
 			if (loadResult != FMOD.RESULT.OK)
 				return loadResult;
 
-			// 再生
-			var result = FmodCallFunction(FmodSystem.playSound(
+            PlayingIndex = index;
+
+            // 再生
+            var result = FmodCallFunction(FmodSystem.playSound(
 				PlayList[index].Sound, FmodChannelGroup, false, out FmodChannel));
 
 			// ★再生中以外の不要なSoundを解放
@@ -438,7 +446,19 @@ namespace MediaPlayer_X_Ark.Engine
 				}
 			}
 
-			return result;
+            // ★コールバック設定（再生開始ごとに登録）
+            _channelEndCallback = (channelraw, controltype, callbacktype, cd1, cd2) =>
+            {
+                if (callbacktype == FMOD.CHANNELCONTROL_CALLBACK_TYPE.END)
+                    TrackEnded?.Invoke(this, EventArgs.Empty);
+                return FMOD.RESULT.OK;
+            };
+            FmodChannel.setCallback(_channelEndCallback);
+
+            PlayingIndex = index;
+            _nowPlaying = true;
+
+            return result;
         }
 
 		public uint GetLength(int index)
@@ -650,7 +670,8 @@ namespace MediaPlayer_X_Ark.Engine
 		/// </summary>
 		public void ClearPlayList()
 		{
-			Stop();
+            PlayingIndex = -1;
+            Stop();
 			for (int i = 0; i < PlayList.Count; i++)
 			{
 				// ★ロード済みのものだけ解放
@@ -663,14 +684,64 @@ namespace MediaPlayer_X_Ark.Engine
 		public void CreateSoundForMidi(string filename)
         {
 		}
-
-		/// <summary>
-		/// Stop Player
-		/// </summary>
-		/// <param name="channel"></param>
-		public void Stop()
+        public void PlayNext()
         {
-			if (FmodChannel.hasHandle() && IsPlaying())
+            if (PlayList.Count == 0) return;
+            int next;
+            switch (loop)
+            {
+                case LOOP_MODE.LOOP_ONE_REPEAT:
+                    next = PlayingIndex;
+                    break;
+                case LOOP_MODE.LOOP_ALL:
+                    next = (PlayingIndex < PlayList.Count - 1) ? PlayingIndex + 1 : 0;
+                    break;
+                default: // LOOP_NONE
+                    if (PlayingIndex >= PlayList.Count - 1) { _nowPlaying = false; return; }
+                    next = PlayingIndex + 1;
+                    break;
+            }
+            PlaySound(next);
+        }
+        public void Sort<T>(Func<Engine.PlayList, T> keySelector)
+        {
+            var playingItem = (PlayingIndex >= 0 && PlayingIndex < PlayList.Count)
+                ? PlayList[PlayingIndex]
+                : null;
+
+            var sorted = PlayList.OrderBy(keySelector).ToList();
+            PlayList.Clear();
+            foreach (var item in sorted)
+                PlayList.Add(item);
+
+            // private set なので内部で更新可能
+            if (playingItem != null)
+                PlayingIndex = PlayList.IndexOf(playingItem);
+        }
+
+        public void PlayPrevious()
+        {
+            if (PlayList.Count == 0) return;
+            int prev;
+            switch (loop)
+            {
+                case LOOP_MODE.LOOP_ALL:
+                    prev = (PlayingIndex > 0) ? PlayingIndex - 1 : PlayList.Count - 1;
+                    break;
+                default:
+                    prev = Math.Max(0, PlayingIndex - 1);
+                    break;
+            }
+            PlaySound(prev);
+        }
+        /// <summary>
+        /// Stop Player
+        /// </summary>
+        /// <param name="channel"></param>
+        public void Stop()
+        {
+            _nowPlaying = false;
+            if (FmodChannel.hasHandle() && IsPlaying())
 				FmodCallFunction(FmodChannel.stop());
 		}
 
