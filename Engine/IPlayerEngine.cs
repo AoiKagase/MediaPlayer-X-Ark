@@ -39,7 +39,6 @@ namespace MediaPlayer_X_Ark.Engine
         uint GetLength(int index);
         uint GetPosition();
         void SetPosition(uint position);
-        void GetTags(int index);
         Bitmap GetCoverArt(int index);
         FMOD.OPENSTATE GetOpenState(int index,
                            out uint buffered,
@@ -66,8 +65,6 @@ namespace MediaPlayer_X_Ark.Engine
         void SetDevice(string driver);
         List<DEVICE_INFO> GetDeviceListForOutputType(FMOD.OUTPUTTYPE outputType);
         List<DEVICE_INFO> GetCurrentDeviceList();
-
-        event EventHandler TrackEnded;
 
         void Sort<T>(Func<Engine.PlayList, T> keySelector);
     }

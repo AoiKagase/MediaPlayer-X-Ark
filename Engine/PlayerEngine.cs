@@ -48,11 +48,6 @@ namespace MediaPlayer_X_Ark.Engine
 	{
 		private bool _disposed = false;  // 二重解放防止フラグ
 		private readonly SemaphoreSlim _tagLoadSemaphore = new SemaphoreSlim(3, 3);
-        // フィールド追加（GC対策）
-        private FMOD.CHANNELCONTROL_CALLBACK _channelEndCallback;
-
-        // イベント
-        public event EventHandler TrackEnded;
 
         [DllImport("kernel32.dll")]
 		public static extern IntPtr LoadLibrary(string dllToLoad);
@@ -446,7 +441,6 @@ namespace MediaPlayer_X_Ark.Engine
 
 			var result = FmodCallFunction(FmodSystem.playSound(
 				PlayList[index].Sound, FmodChannelGroup, false, out FmodChannel));
-			FmodChannel.setCallback(_channelEndCallback);
 
 			_nowPlaying = true;
 			return result;
@@ -461,60 +455,6 @@ namespace MediaPlayer_X_Ark.Engine
             FmodCallFunction(PlayList[index].Sound.getLength(out length, TIMEUNIT.MS));
 			return length;
         }
-		/// <summary>
-		/// Get Sound file Tags.
-		/// </summary>
-        public void GetTags(int index)
-        {
-			FMOD.TAG tags;
-
-			int numtags = 0;
-			int updated = 0;
-
-			if (index >= PlayList.Count)
-				return;
-
-            PlayList[index].Sound.getNumTags(out numtags, out updated);
-
-			if (updated > 0)
-            {
-				for (int i = 0; i < numtags; i++)
-//				while(FmodSound.getTag(null, -1, out tags) == FMOD.RESULT.OK)
-                {
-					PlayList[index].Sound.getTag(null, i, out tags);
-					if (tags.type == TAGTYPE.ID3V1 || tags.type == TAGTYPE.ID3V2 || tags.type == TAGTYPE.VORBISCOMMENT)
-                    {
-						string tagname = ((string)tags.name).ToUpper();
-						if (tagname.Equals("ARTIST") || tagname.Equals("ARTIST NAME"))
-							PlayList[index].Artist = Marshal.PtrToStringUTF8(tags.data, (int)tags.datalen);
-
-						if ((tagname).Equals("TITLE") || tagname.Equals("TRACK TITLE"))
-							PlayList[index].Title = Marshal.PtrToStringUTF8(tags.data, (int)tags.datalen);
-
-						if ((tagname).Equals("AUTHOR"))
-							PlayList[index].Artist = Marshal.PtrToStringUTF8(tags.data, (int)tags.datalen);
-
-						if ((tagname).Equals("ALBUM") || tagname.Equals("ALBUM TITLE"))
-							PlayList[index].Album = Marshal.PtrToStringUTF8(tags.data, (int)tags.datalen);
-
-					}
-				}
-			}
-
-			int channel;
-			SOUND_TYPE soundtype;
-			SOUND_FORMAT soundformat;
-			int bit;
-			uint length;
-
-			PlayList[index].Sound.getFormat(out soundtype, out soundformat, out channel, out bit);
-			PlayList[index].Sound.getLength(out length, FMOD.TIMEUNIT.MS);
-
-			PlayList[index].SoundType = soundtype;
-			PlayList[index].Format = soundformat;
-			PlayList[index].Bit = bit;
-			PlayList[index].SetLength(length);
-		}
 
 		/// <summary>
 		/// Create Sound.
@@ -646,7 +586,6 @@ namespace MediaPlayer_X_Ark.Engine
 			if (result == FMOD.RESULT.OK)
 			{
 				PlayList[index].Sound = sound;
-				GetTags(index);
 			}
 
 			return result;
@@ -656,7 +595,6 @@ namespace MediaPlayer_X_Ark.Engine
 		/// </summary>
 		public void ClearPlayList()
 		{
-            PlayingIndex = -1;
             Stop();
 			for (int i = 0; i < PlayList.Count; i++)
 			{
@@ -746,9 +684,10 @@ namespace MediaPlayer_X_Ark.Engine
         /// <param name="channel"></param>
         public void Stop()
         {
-			FmodChannel.stop();
 			_nowPlaying = false;
 			PlayingIndex = -1;
+			if (FmodChannel.hasHandle())
+				FmodChannel.stop();
 		}
 
 		/// <summary>
@@ -895,15 +834,6 @@ namespace MediaPlayer_X_Ark.Engine
 
             // プレイリストに追加せず直接再生
             FmodCallFunction(FmodSystem.playSound(sound, FmodChannelGroup, false, out FmodChannel));
-
-            // コールバック設定
-            _channelEndCallback = (channelraw, controltype, callbacktype, cd1, cd2) =>
-            {
-                if (callbacktype == FMOD.CHANNELCONTROL_CALLBACK_TYPE.END)
-                    TrackEnded?.Invoke(this, EventArgs.Empty);
-                return FMOD.RESULT.OK;
-            };
-            FmodChannel.setCallback(_channelEndCallback);
 
             _nowPlaying = true;
             return FMOD.RESULT.OK;

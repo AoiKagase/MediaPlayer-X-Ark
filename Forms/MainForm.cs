@@ -448,7 +448,6 @@ namespace MediaPlayer_X_Ark
             float pan = ((float)SldPan.Value) / 10f;
             player.SetPan(pan);
 
-            player.GetTags(index);
             var item = player.PlayList[index];
             LabelTitle.Value.Text = (!string.IsNullOrEmpty(item.Title)) ? item.Title : Path.GetFileName(item.FileName);
             LabelTitle.Value.Text += (!string.IsNullOrEmpty(item.Artist)) ? (" - " + item.Artist) : "";
