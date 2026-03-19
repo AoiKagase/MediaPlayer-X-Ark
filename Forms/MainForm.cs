@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Numerics;
+using System.Security.Policy;
 using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark
@@ -16,7 +17,7 @@ namespace MediaPlayer_X_Ark
 
         public static IPlayerEngine player;
         private static IConfigService config;
-
+        private FileInfoForm _fileInfoForm;
         private ToolTip _toolTip;
 
         private PlayListForm playListForm;
@@ -462,6 +463,10 @@ namespace MediaPlayer_X_Ark
             LabelTitle.Value.Text = (!string.IsNullOrEmpty(item.Title)) ? item.Title : Path.GetFileName(item.FileName);
             LabelTitle.Value.Text += (!string.IsNullOrEmpty(item.Artist)) ? (" - " + item.Artist) : "";
             LabelTitle.Value.Text += (!string.IsNullOrEmpty(item.Album)) ? (" - " + item.Album) : "";
+
+            // ★FileInfoFormが開いている場合は自動更新
+            if (_fileInfoForm != null && _fileInfoForm.Visible)
+                _fileInfoForm.LoadInfo(index);
         }
 
         /// <summary>
@@ -1083,24 +1088,66 @@ namespace MediaPlayer_X_Ark
                 e.Effect = DragDropEffects.None;
         }
 
+        ToolStripMenuItem menuPlayModeNormal = new ToolStripMenuItem("Normal", null, null, "menuPlayModeNormal");
+        ToolStripMenuItem menuPlayModeRandom = new ToolStripMenuItem("Random", null, null, "menuPlayModeRandom");
+        ToolStripMenuItem menuPlayModeRepeat = new ToolStripMenuItem("Repeat", null, null, "menuPlayModeRepeat");
+        ToolStripMenuItem menuPlayModeLoop = new ToolStripMenuItem("Loop", null, null, "menuPlayModeLoop");
         private void InitContextMenu()
         {
+            var menuOpen = new ToolStripMenuItem("Open(&O)", null, BtnOpenFile_Click, "menuOpen");
+            var menuUrlOpen = new ToolStripMenuItem("URL Open(&R)", null, BtnUrlOpen_Click, "menuUrlOpen");
+            var menuPlay = new ToolStripMenuItem("Play(&P)", null, BtnPlay_Click, "menuPlay");
+            var menuPause = new ToolStripMenuItem("Pause(&H)", null, BtnPause_Click, "menuPause");
+            var menuStop = new ToolStripMenuItem("Stop(&S)", null,BtnStop_Click, "menuStop");
+            var menuBack = new ToolStripMenuItem("Back(&Z)", null, BtnBack_Click, "menuBack");
+            var menuNext = new ToolStripMenuItem("Next(&B)", null, BtnNext_Click, "menuNext");
+            var menuPlayMode = new ToolStripMenuItem("PlayMode", null, null, "menuPlayMode");
+            var menuPlayList = new ToolStripMenuItem("PlayList(&L)", null, BtnPlaylist_Click, "menuPlayList");
+            var menuOption = new ToolStripMenuItem("Option(&T)", null, BtnSetting_Click, "menuOption");
+            var menuEffects = new ToolStripMenuItem("Effects(&E)", null, null, "menuEffects");
+            var menuEqualizer = new ToolStripMenuItem("Equalizer(&Q)", null, null, "menuEqualizer");
+            var menuExtensions = new ToolStripMenuItem("Extensions(&D)", null, null, "menuExtensions");
+            var menuSkinSelect = new ToolStripMenuItem("Skin Select(&A)", null, null, "menuSkinSelect");
+            var menuAutoUpdateCheck = new ToolStripMenuItem("Auto Update Check(&U)", null, null, "menuAutoUpdateCheck");
+            var menuAbout = new ToolStripMenuItem("About(&C)", null, null, "menuAbout");
+            var menuHelp = new ToolStripMenuItem("Help(&V)", null, null, "menuHelp");
+            var menuMinimize = new ToolStripMenuItem("Minimize(&X)", null, BtnMinisize_Click, "menuMinimize");
+            var menuExit = new ToolStripMenuItem("Exit(&Z)", null, BtnClose_Click, "menuExit");
+
             var menuSleep = new ToolStripMenuItem("スリープタイマー");
             var menuSleep15 = new ToolStripMenuItem("15分後");
             var menuSleep30 = new ToolStripMenuItem("30分後");
             var menuSleep60 = new ToolStripMenuItem("60分後");
             var menuSleepCancel = new ToolStripMenuItem("キャンセル");
+            var menuFileInfo = new ToolStripMenuItem("ファイル情報");
 
-            contextMenu.Items.Add(new ToolStripSeparator());
-            contextMenu.Items.Add(menuSleep);
+            menuOpen.Size = new System.Drawing.Size(192, 22);
+            menuUrlOpen.Size = new System.Drawing.Size(192, 22);
+            menuPlay.Size = new System.Drawing.Size(192, 22);
+            menuPause.Size = new System.Drawing.Size(192, 22);
+            menuStop.Size = new System.Drawing.Size(192, 22);
+            menuBack.Size = new System.Drawing.Size(192, 22);
+            menuNext.Size = new System.Drawing.Size(192, 22);
+            menuPlayMode.Size = new System.Drawing.Size(192, 22);
+            menuPlayModeNormal.Size = new System.Drawing.Size(118, 22);
+            menuPlayModeRandom.Size = new System.Drawing.Size(118, 22);
+            menuPlayModeRepeat.Size = new System.Drawing.Size(118, 22);
+            menuHelp.Size = new System.Drawing.Size(192, 22);
+            menuPlayModeLoop.Size = new System.Drawing.Size(118, 22);
+            menuPlayList.Size = new System.Drawing.Size(192, 22);
+            menuOption.Size = new System.Drawing.Size(192, 22);
+            menuEffects.Size = new System.Drawing.Size(192, 22);
+            menuEqualizer.Size = new System.Drawing.Size(192, 22);
+            menuExtensions.Size = new System.Drawing.Size(192, 22);
+            menuSkinSelect.Size = new System.Drawing.Size(192, 22);
+            menuAutoUpdateCheck.Size = new System.Drawing.Size(192, 22);
+            menuAbout.Size = new System.Drawing.Size(192, 22);
+            menuMinimize.Size = new System.Drawing.Size(192, 22);
+            menuExit.Size = new System.Drawing.Size(192, 22);
 
-            menuOpen.Click += (s, e) => BtnOpenFile_Click(s, e);
-            menuUrlOpen.Click += (s, e) => BtnUrlOpen_Click(s, e);
-            menuPlay.Click += (s, e) => BtnPlay_Click(s, e);
-            menuPause.Click += (s, e) => BtnPause_Click(s, e);
-            menuStop.Click += (s, e) => BtnStop_Click(s, e);
-            menuBack.Click += (s, e) => BtnBack_Click(s, e);
-            menuForward.Click += (s, e) => BtnSeekForward_Click(s, e);
+            menuPlayMode.DropDownItems.AddRange(new ToolStripItem[] { 
+                menuPlayModeNormal, menuPlayModeRandom, menuPlayModeRepeat, menuPlayModeLoop });
+
             menuPlayList.Click += (s, e) => BtnPlaylist_Click(s, e);
             menuOption.Click += (s, e) => BtnSetting_Click(s, e);
             menuMinimize.Click += (s, e) => this.WindowState = FormWindowState.Minimized;
@@ -1111,11 +1158,6 @@ namespace MediaPlayer_X_Ark
             menuSleep60.Click += (s, e) => _sleepTimerRemaining = 60 * 60;
             menuSleepCancel.Click += (s, e) => _sleepTimerRemaining = 0;
 
-            // PlayMode
-            menuPlayModeNormal.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_NONE);
-            menuPlayModeRandom.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_RANDOM);
-            menuPlayModeRepeat.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_ONE_REPEAT);
-            menuPlayModeLoop.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_ALL);
             menuSleep.DropDownItems.AddRange(new ToolStripItem[]
             {
                 menuSleep15,
@@ -1125,6 +1167,17 @@ namespace MediaPlayer_X_Ark
                 menuSleepCancel,
             });
 
+            menuFileInfo.Click += (s, e) =>
+            {
+                if (player.PlayingIndex < 0) return;
+                // 既存のフォームを使い回す
+                if (_fileInfoForm == null || _fileInfoForm.IsDisposed)
+                    _fileInfoForm = new FileInfoForm(player);
+
+                _fileInfoForm.LoadInfo(player.PlayingIndex);
+                _fileInfoForm.Show(this);
+                _fileInfoForm.Activate();
+            };
             // Effects / Equalizer / Extensions / SkinSelect は
             // OptionsForm の該当タブを開く形にする
             menuEffects.Click += (s, e) => OpenOptionsTab("PITCH");
@@ -1132,6 +1185,47 @@ namespace MediaPlayer_X_Ark
             menuExtensions.Click += (s, e) => OpenOptionsTab("EXTENSIONS");
             menuSkinSelect.Click += (s, e) => OpenOptionsTab("SKIN");
             menuAbout.Click += (s, e) => OpenOptionsTab("ABOUT");
+
+            // 
+            // contextMenu
+            // 
+            contextMenu.Items.AddRange(new ToolStripItem[] { 
+                menuOpen, 
+                menuUrlOpen,
+                new ToolStripSeparator(),
+                menuPlay, 
+                menuPause, 
+                menuStop, 
+                menuBack, 
+                menuNext,
+                new ToolStripSeparator(),
+                menuFileInfo,
+                menuPlayMode,
+                menuSleep,
+                new ToolStripSeparator(),
+                menuPlayList,
+                menuOption, 
+                menuEffects, 
+                menuEqualizer, 
+                menuExtensions, 
+                menuSkinSelect,
+                new ToolStripSeparator(),
+                menuAutoUpdateCheck,
+                new ToolStripSeparator(),
+                menuAbout, 
+                menuHelp,
+                new ToolStripSeparator(),
+                menuMinimize, 
+                menuExit 
+            });
+            contextMenu.Name = "contextMenu";
+            contextMenu.Size = new System.Drawing.Size(193, 422);
+
+            // PlayMode
+            menuPlayModeNormal.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_NONE);
+            menuPlayModeRandom.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_RANDOM);
+            menuPlayModeRepeat.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_ONE_REPEAT);
+            menuPlayModeLoop.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_ALL);
 
             // 開く前にチェック状態を更新
             contextMenu.Opening += ContextMenu_Opening;

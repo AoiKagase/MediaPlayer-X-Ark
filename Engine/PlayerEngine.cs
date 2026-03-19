@@ -3,6 +3,7 @@ using MediaPlayer_X_Ark.Engine;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -931,6 +932,37 @@ namespace MediaPlayer_X_Ark.Engine
 
             _nowPlaying = true;
             return FMOD.RESULT.OK;
+        }
+
+        public Bitmap GetCoverArt(int index)
+        {
+            if (index < 0 || index >= PlayList.Count) return null;
+            if (!PlayList[index].IsLoaded) return null;
+
+            int tagCount, updatedCount;
+            PlayList[index].Sound.getNumTags(out tagCount, out updatedCount);
+            System.Diagnostics.Debug.WriteLine($"tagCount={tagCount} updatedCount={updatedCount}");
+            var coverTagNames = new HashSet<string> { "APIC", "PICTURE", "WM/Picture", "METADATA_BLOCK_PICTURE" };
+            for (int i = 0; i < tagCount; i++)
+            {
+                FMOD.TAG tag;
+                if (PlayList[index].Sound.getTag(null, i, out tag) != FMOD.RESULT.OK) continue;
+                string tagName = (string)tag.name;
+                // デバッグ用：全タグ名を出力
+                System.Diagnostics.Debug.WriteLine($"Tag[{i}]: dataType={tag.datatype} name={tagName} type={tag.type} datalen={tag.datalen}");
+
+                if (!coverTagNames.Contains(tagName)) continue;
+
+                try
+                {
+                    byte[] data = new byte[tag.datalen];
+                    Marshal.Copy(tag.data, data, 0, (int)tag.datalen);
+                    using (var ms = new MemoryStream(data))
+                        return new Bitmap(ms);
+                }
+                catch { }
+            }
+            return null;
         }
     }
 }

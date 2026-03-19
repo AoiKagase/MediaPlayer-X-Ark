@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 
 namespace MediaPlayer_X_Ark.Engine
 {
@@ -39,6 +40,7 @@ namespace MediaPlayer_X_Ark.Engine
         uint GetPosition();
         void SetPosition(uint position);
         void GetTags(int index);
+        Bitmap GetCoverArt(int index);
         FMOD.OPENSTATE GetOpenState(int index,
                            out uint buffered,
                            out bool starving,
