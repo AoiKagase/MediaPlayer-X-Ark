@@ -380,6 +380,9 @@ namespace MediaPlayer_X_Ark
             // 
             Spectrum.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             Spectrum.BitmapBackground = null;
+            Spectrum.BitmapSnow = (System.Drawing.Bitmap)resources.GetObject("Spectrum.BitmapSnow");
+            Spectrum.BitmapSpectrum = (System.Drawing.Bitmap)resources.GetObject("Spectrum.BitmapSpectrum");
+            Spectrum.BitmapWave = (System.Drawing.Bitmap)resources.GetObject("Spectrum.BitmapWave");
             Spectrum.Location = new System.Drawing.Point(138, 275);
             Spectrum.mFFT = null;
             Spectrum.Mode = 0;
@@ -411,7 +414,7 @@ namespace MediaPlayer_X_Ark
             // 
             contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { menuOpen, menuUrlOpen, menuPlay, menuPause, menuStop, menuBack, menuForward, menuPlayMode, menuPlayList, menuOption, menuEffects, menuEqualizer, menuExtensions, menuSkinSelect, menuAutoUpdateCheck, menuAbout, menuHelp, menuMinimize, menuExit });
             contextMenu.Name = "contextMenu";
-            contextMenu.Size = new System.Drawing.Size(193, 458);
+            contextMenu.Size = new System.Drawing.Size(193, 422);
             // 
             // menuOpen
             // 
@@ -595,6 +598,8 @@ namespace MediaPlayer_X_Ark
             Load += MainForm_Load;
             DragDrop += MainForm_DragDrop;
             DragEnter += MainForm_DragEnter;
+            KeyDown += MainForm_KeyDown;
+            KeyUp += MainForm_KeyUp;
             MouseDown += MainForm_MouseDown;
             MouseMove += MainForm_MouseMove;
             ((System.ComponentModel.ISupportInitialize)Spectrum).EndInit();

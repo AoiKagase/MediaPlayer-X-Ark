@@ -1,4 +1,7 @@
-﻿namespace MediaPlayer_X_Ark
+﻿using System.Drawing;
+using System.Windows.Forms;
+
+namespace MediaPlayer_X_Ark
 {
     partial class OptionsForm
     {
@@ -362,10 +365,14 @@
 			TreeMenu.Size = new System.Drawing.Size(199, 420);
 			TreeMenu.TabIndex = 3;
 			TreeMenu.AfterSelect += TreeMenu_AfterSelect;
-			// 
-			// tabControlEffects
-			// 
-			tabControlEffects.Controls.Add(tabSetting);
+
+            // 
+            // tabControlEffects
+            // 
+            tabControlEffects.Appearance = TabAppearance.Normal;
+            tabControlEffects.ItemSize = new Size(0, 1);
+            tabControlEffects.SizeMode = TabSizeMode.Fixed;
+            tabControlEffects.Controls.Add(tabSetting);
 			tabControlEffects.Controls.Add(tabGEqualizer);
 			tabControlEffects.Controls.Add(tabPitch);
 			tabControlEffects.Controls.Add(tabDistortion);
