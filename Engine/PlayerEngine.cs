@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MediaPlayer_X_Ark.Engine
 {
@@ -641,7 +642,12 @@ namespace MediaPlayer_X_Ark.Engine
 			}
 			return result;
 		}
-		private FMOD.RESULT LoadSound(int index)
+
+        private static readonly HashSet<string> _trackerExtensions = new HashSet<string>
+			{
+				".mod", ".xm", ".it", ".s3m"
+			};
+        private FMOD.RESULT LoadSound(int index)
 		{
 			if (index < 0 || index >= PlayList.Count)
 				return FMOD.RESULT.ERR_INVALID_PARAM;
@@ -655,14 +661,20 @@ namespace MediaPlayer_X_Ark.Engine
 			FMOD.RESULT result;
 			FMOD.CREATESOUNDEXINFO info = new FMOD.CREATESOUNDEXINFO();
 			info.cbsize = Marshal.SizeOf(info);
-
-			if (Path.GetExtension(filename).Equals(".mid"))
+            string ext = Path.GetExtension(filename).ToLower();
+            if (ext == ".mid")
 			{
 				info.suggestedsoundtype = FMOD.SOUND_TYPE.MIDI;
 				result = FmodCallFunction(FmodSystem.createSound(
 					filename, FMOD.MODE.DEFAULT, ref info, out sound));
 			}
-			else
+            else if (_trackerExtensions.Contains(ext))
+            {
+                // トラッカー形式はcreateSound
+                result = FmodCallFunction(FmodSystem.createSound(
+                    filename, FMOD.MODE.DEFAULT, ref info, out sound));
+            }
+            else
 			{
 				result = FmodCallFunction(FmodSystem.createStream(
 					filename, FMOD.MODE.DEFAULT, ref info, out sound));

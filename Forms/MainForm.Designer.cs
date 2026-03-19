@@ -59,7 +59,6 @@ namespace MediaPlayer_X_Ark
             contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
             notifyIcon = new System.Windows.Forms.NotifyIcon(components);
             ((System.ComponentModel.ISupportInitialize)Spectrum).BeginInit();
-            contextMenu.SuspendLayout();
             SuspendLayout();
             // 
             // BtnPlay
@@ -97,10 +96,6 @@ namespace MediaPlayer_X_Ark
             // 
             Timer.Enabled = true;
             Timer.Tick += PlayerTimer_Tick;
-            // 
-            // OpenFileDialog
-            // 
-            OpenFileDialog.FileName = "openFileDialog1";
             // 
             // BtnOpen
             // 
@@ -387,6 +382,11 @@ namespace MediaPlayer_X_Ark
             BtnCD.MouseDown += BtnCD_MouseDown;
             BtnCD.MouseUp += BtnCD_MouseUp;
             // 
+            // contextMenu
+            // 
+            contextMenu.Name = "contextMenu";
+            contextMenu.Size = new System.Drawing.Size(61, 4);
+            // 
             // notifyIcon
             // 
             notifyIcon.Text = "MediaPlayer X-Ark";
@@ -435,7 +435,6 @@ namespace MediaPlayer_X_Ark
             MouseDown += MainForm_MouseDown;
             MouseMove += MainForm_MouseMove;
             ((System.ComponentModel.ISupportInitialize)Spectrum).EndInit();
-            contextMenu.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
