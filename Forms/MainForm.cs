@@ -23,8 +23,9 @@ namespace MediaPlayer_X_Ark
 		private OptionsForm optionsForm;
 		private CDForm cdForm;
 
+        private int _sleepTimerRemaining = 0; // 残り秒数（0=無効）
 
-		private ISkinSystem _currentSkin;
+        private ISkinSystem _currentSkin;
 		public ISkinSystem CurrentSkin => _currentSkin;
 
 		public MainForm()
@@ -546,7 +547,18 @@ namespace MediaPlayer_X_Ark
 			{
 				LabelTitle.Value.Text = player.lastErrFunction + " - " + player.lastError;
 			}
-		}
+
+
+            if (_sleepTimerRemaining > 0)
+            {
+                _sleepTimerRemaining -= Timer.Interval;
+                if (_sleepTimerRemaining <= 0)
+                {
+                    _sleepTimerRemaining = 0;
+                    player.Stop();
+                }
+            }
+        }
 		#endregion
 
 		#region Button MouseDown Event
@@ -1003,7 +1015,16 @@ namespace MediaPlayer_X_Ark
 
 		private void InitContextMenu()
 		{
-			menuOpen.Click += (s, e) => BtnOpenFile_Click(s, e);
+            var menuSleep = new ToolStripMenuItem("スリープタイマー");
+            var menuSleep15 = new ToolStripMenuItem("15分後");
+            var menuSleep30 = new ToolStripMenuItem("30分後");
+            var menuSleep60 = new ToolStripMenuItem("60分後");
+            var menuSleepCancel = new ToolStripMenuItem("キャンセル");
+
+            contextMenu.Items.Add(new ToolStripSeparator());
+            contextMenu.Items.Add(menuSleep);
+
+            menuOpen.Click += (s, e) => BtnOpenFile_Click(s, e);
 			menuUrlOpen.Click += (s, e) => BtnUrlOpen_Click(s, e);
 			menuPlay.Click += (s, e) => BtnPlay_Click(s, e);
 			menuPause.Click += (s, e) => BtnPause_Click(s, e);
@@ -1015,23 +1036,36 @@ namespace MediaPlayer_X_Ark
 			menuMinimize.Click += (s, e) => this.WindowState = FormWindowState.Minimized;
 			menuExit.Click += (s, e) => Application.Exit();
 
-			// PlayMode
-			menuPlayModeNormal.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_NONE);
+            menuSleep15.Click += (s, e) => _sleepTimerRemaining = 15 * 60;
+            menuSleep30.Click += (s, e) => _sleepTimerRemaining = 30 * 60;
+            menuSleep60.Click += (s, e) => _sleepTimerRemaining = 60 * 60;
+            menuSleepCancel.Click += (s, e) => _sleepTimerRemaining = 0;
+
+            // PlayMode
+            menuPlayModeNormal.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_NONE);
 			menuPlayModeRandom.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_RANDOM);
 			menuPlayModeRepeat.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_ONE_REPEAT);
 			menuPlayModeLoop.Click += (s, e) => SetPlayMode(LOOP_MODE.LOOP_ALL);
+            menuSleep.DropDownItems.AddRange(new ToolStripItem[]
+			{
+				menuSleep15,
+				menuSleep30,
+				menuSleep60,
+				new ToolStripSeparator(),
+				menuSleepCancel,
+			});
 
-			// Effects / Equalizer / Extensions / SkinSelect は
-			// OptionsForm の該当タブを開く形にする
-			menuEffects.Click += (s, e) => OpenOptionsTab("PITCH");
+            // Effects / Equalizer / Extensions / SkinSelect は
+            // OptionsForm の該当タブを開く形にする
+            menuEffects.Click += (s, e) => OpenOptionsTab("PITCH");
 			menuEqualizer.Click += (s, e) => OpenOptionsTab("GEQ");
 			menuExtensions.Click += (s, e) => OpenOptionsTab("EXTENSIONS");
 			menuSkinSelect.Click += (s, e) => OpenOptionsTab("SKIN");
 			menuAbout.Click += (s, e) => OpenOptionsTab("ABOUT");
 
-			// 開く前にチェック状態を更新
-			contextMenu.Opening += ContextMenu_Opening;
-		}
+            // 開く前にチェック状態を更新
+            contextMenu.Opening += ContextMenu_Opening;
+        }
 		private void ContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			// PlayMode チェック状態を更新
