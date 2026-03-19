@@ -387,9 +387,11 @@ namespace MediaPlayer_X_Ark
 			// ===================================
 			// ツールチップ
 			_toolTip = new ToolTip(components);
-
-			// FMODサウンドエンジン
-			var engine = new PlayerEngine();
+			notifyIcon.Visible = false;
+            notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
+            notifyIcon.Icon = this.Icon;
+            // FMODサウンドエンジン
+            var engine = new PlayerEngine();
 			player = engine;
 			// ① 設定を先に読み込む
 			config = new Configuration(engine);
@@ -513,7 +515,9 @@ namespace MediaPlayer_X_Ark
 			cdForm?.Dispose();   // 追加
 			player.Dispose();  // 明示的に解放
 			player = null;
-			SkinPackage.CleanupTempDirectory(); // 追加
+			notifyIcon.Visible = false;
+            notifyIcon.Dispose();
+            SkinPackage.CleanupTempDirectory(); // 追加
 		}
 		#endregion
 
@@ -840,17 +844,29 @@ namespace MediaPlayer_X_Ark
 		}
 		private void BtnMinisize_Click(object sender, EventArgs e)
 		{
-		}
-		#endregion
+            this.Hide();
+            playListForm.Hide();
+            notifyIcon.Visible = true;
+        }
+        // NotifyIcon ダブルクリックで復元
+        private void NotifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            this.Show();
+            if (player.PlayingIndex >= 0)
+                playListForm.Show(this);
+            notifyIcon.Visible = false;
+            this.Activate();
+        }
+        #endregion
 
-		#region Slider Event
-		/// <summary>
-		/// トラックスライダー
-		/// 移動時
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void SldTrack_SliderMoving(object sender, MouseEventArgs e)
+        #region Slider Event
+        /// <summary>
+        /// トラックスライダー
+        /// 移動時
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SldTrack_SliderMoving(object sender, MouseEventArgs e)
 		{
 			TimeSpan time = TimeSpan.FromMilliseconds(SldTrack.Value);
 			_toolTip.Show(time.ToString(@"hh\:mm\:ss"), this, ((CustomSlider)(sender)).Left, ((CustomSlider)(sender)).Top);
@@ -1065,6 +1081,21 @@ namespace MediaPlayer_X_Ark
 
             // 開く前にチェック状態を更新
             contextMenu.Opening += ContextMenu_Opening;
+
+
+            var trayMenuRestore = new ToolStripMenuItem("復元");
+            var trayMenuExit = new ToolStripMenuItem("終了");
+
+            trayMenuRestore.Click += (s, e) => NotifyIcon_DoubleClick(s, e);
+            trayMenuExit.Click += (s, e) => Application.Exit();
+
+            notifyIcon.ContextMenuStrip = new ContextMenuStrip();
+            notifyIcon.ContextMenuStrip.Items.AddRange(new ToolStripItem[]
+            {
+				trayMenuRestore,
+				new ToolStripSeparator(),
+				trayMenuExit,
+            });
         }
 		private void ContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
@@ -1082,8 +1113,10 @@ namespace MediaPlayer_X_Ark
 			{
 				// ランダムはトグル
 				player.loop ^= LOOP_MODE.LOOP_RANDOM;
+                if ((player.loop & LOOP_MODE.LOOP_RANDOM) != 0)
+                    player.BuildShuffleQueue(); // ONになった時点で生成
 			}
-			else
+            else
 			{
 				// ランダムフラグを保持しつつ他のモードを切り替え
 				bool isRandom = (player.loop & LOOP_MODE.LOOP_RANDOM) != 0;

@@ -308,7 +308,8 @@ namespace MediaPlayer_X_Ark
 				if (MainForm.player.PlayList[i].Sound.hasHandle())
 					MainForm.player.PlayList[i].Sound.release();
 				MainForm.player.PlayList.RemoveAt(i);
-			}
+                MainForm.player.UpdateShuffleQueueOnRemove(i);
+            }
 		}
 
 		/// <summary>

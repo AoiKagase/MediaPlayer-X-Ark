@@ -29,6 +29,9 @@ namespace MediaPlayer_X_Ark.Engine
         void Pause();
         void PlayNext();
         void PlayPrevious();
+
+        void BuildShuffleQueue();
+        void UpdateShuffleQueueOnRemove(int removedIndex);
         // ── サウンド管理 ─────────────────────────────
         FMOD.RESULT CreateSound(string filename, out int index);
         uint GetLength(int index);

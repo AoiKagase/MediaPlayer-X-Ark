@@ -82,7 +82,11 @@ namespace MediaPlayer_X_Ark.Engine
 
         private const int channelCount = 1;
 
-		public List<DEVICE_INFO> DeviceList
+        private List<int> _shuffleQueue = new List<int>();
+        private int _shuffleQueueIndex = 0;
+        private readonly Random _rng = new Random();
+
+        public List<DEVICE_INFO> DeviceList
         {
             get { return FmodDeviceList; }
         }
@@ -687,6 +691,16 @@ namespace MediaPlayer_X_Ark.Engine
         public void PlayNext()
         {
             if (PlayList.Count == 0) return;
+
+            if ((loop & LOOP_MODE.LOOP_RANDOM) != 0)
+            {
+                // キューが終わったら再シャッフル
+                if (_shuffleQueueIndex >= _shuffleQueue.Count)
+                    BuildShuffleQueue();
+                PlaySound(_shuffleQueue[_shuffleQueueIndex++]);
+                return;
+            }
+
             int next;
             switch (loop)
             {
@@ -722,6 +736,16 @@ namespace MediaPlayer_X_Ark.Engine
         public void PlayPrevious()
         {
             if (PlayList.Count == 0) return;
+
+            if ((loop & LOOP_MODE.LOOP_RANDOM) != 0)
+            {
+                // キューを1つ戻る（最低0）
+                _shuffleQueueIndex = Math.Max(0, _shuffleQueueIndex - 2);
+                if (_shuffleQueueIndex < _shuffleQueue.Count)
+                    PlaySound(_shuffleQueue[_shuffleQueueIndex++]);
+                return;
+            }
+
             int prev;
             switch (loop)
             {
@@ -845,5 +869,35 @@ namespace MediaPlayer_X_Ark.Engine
 			}
 			return list;
 		}
-	}
+
+        public void BuildShuffleQueue()
+        {
+            _shuffleQueue = Enumerable.Range(0, PlayList.Count).ToList();
+
+            // Fisher-Yatesシャッフル
+            for (int i = _shuffleQueue.Count - 1; i > 0; i--)
+            {
+                int j = _rng.Next(i + 1);
+                (_shuffleQueue[i], _shuffleQueue[j]) = (_shuffleQueue[j], _shuffleQueue[i]);
+            }
+            _shuffleQueueIndex = 0;
+        }
+
+        public void UpdateShuffleQueueOnRemove(int removedIndex)
+        {
+            for (int i = _shuffleQueue.Count - 1; i >= 0; i--)
+            {
+                if (_shuffleQueue[i] == removedIndex)
+                {
+                    _shuffleQueue.RemoveAt(i);
+                    if (i < _shuffleQueueIndex)
+                        _shuffleQueueIndex--;
+                }
+                else if (_shuffleQueue[i] > removedIndex)
+                {
+                    _shuffleQueue[i]--;
+                }
+            }
+        }
+    }
 }

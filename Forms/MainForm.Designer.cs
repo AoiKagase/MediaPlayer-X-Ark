@@ -56,98 +56,33 @@ namespace MediaPlayer_X_Ark
             SeekiTimer = new System.Windows.Forms.Timer(components);
             Spectrum = new SpectrumBox();
             BtnCD = new System.Windows.Forms.Button();
-
-            this.contextMenu = new System.Windows.Forms.ContextMenuStrip();
-            this.menuOpen = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuUrlOpen = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuPlay = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuPause = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStop = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuBack = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuForward = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuPlayMode = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuPlayModeNormal = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuPlayModeRandom = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuPlayModeRepeat = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuPlayModeLoop = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuPlayList = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuOption = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuEffects = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuEqualizer = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuExtensions = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuSkinSelect = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuAutoUpdateCheck = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuAbout = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuHelp = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuMinimize = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuExit = new System.Windows.Forms.ToolStripMenuItem();
-
-            // メニュー項目設定
-            this.menuOpen.Text = "Open(&O)";
-            this.menuUrlOpen.Text = "URL Open(&R)";
-            this.menuPlay.Text = "Play(&P)";
-            this.menuPause.Text = "Pause(&H)";
-            this.menuStop.Text = "Stop(&S)";
-            this.menuBack.Text = "Back(&B)";
-            this.menuForward.Text = "Forward(&F)";
-            this.menuPlayMode.Text = "PlayMode";
-            this.menuPlayModeNormal.Text = "Normal";
-            this.menuPlayModeRandom.Text = "Random";
-            this.menuPlayModeRepeat.Text = "Repeat";
-            this.menuPlayModeLoop.Text = "Loop";
-            this.menuPlayList.Text = "PlayList(&L)";
-            this.menuOption.Text = "Option(&T)";
-            this.menuEffects.Text = "Effects(&E)";
-            this.menuEqualizer.Text = "Equalizer(&Q)";
-            this.menuExtensions.Text = "Extensions(&D)";
-            this.menuSkinSelect.Text = "Skin Select(&A)";
-            this.menuAutoUpdateCheck.Text = "Auto Update Check(&U)";
-            this.menuAbout.Text = "About(&C)";
-            this.menuHelp.Text = "Help(&V)";
-            this.menuMinimize.Text = "Minimize(&X)";
-            this.menuExit.Text = "Exit(&Z)";
-            // PlayMode サブメニュー
-            this.menuPlayMode.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[]
-            {
-    this.menuPlayModeNormal,
-    this.menuPlayModeRandom,
-    this.menuPlayModeRepeat,
-    this.menuPlayModeLoop,
-            });
-
-            // ContextMenuStrip 構成
-            this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[]
-            {
-                this.menuOpen,
-                this.menuUrlOpen,
-                new System.Windows.Forms.ToolStripSeparator(),
-                this.menuPlay,
-                this.menuPause,
-                this.menuStop,
-                this.menuBack,
-                this.menuForward,
-                new System.Windows.Forms.ToolStripSeparator(),
-                this.menuPlayMode,
-                new System.Windows.Forms.ToolStripSeparator(),
-                this.menuPlayList,
-                this.menuOption,
-                new System.Windows.Forms.ToolStripSeparator(),
-                this.menuEffects,
-                this.menuEqualizer,
-                this.menuExtensions,
-                this.menuSkinSelect,
-                new System.Windows.Forms.ToolStripSeparator(),
-                this.menuAutoUpdateCheck,
-                new System.Windows.Forms.ToolStripSeparator(),
-                this.menuAbout,
-                this.menuHelp,
-                this.menuMinimize,
-                this.menuExit,
-            });
-
-            // フォームに設定
-            this.ContextMenuStrip = this.contextMenu;
+            contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
+            menuOpen = new System.Windows.Forms.ToolStripMenuItem();
+            menuUrlOpen = new System.Windows.Forms.ToolStripMenuItem();
+            menuPlay = new System.Windows.Forms.ToolStripMenuItem();
+            menuPause = new System.Windows.Forms.ToolStripMenuItem();
+            menuStop = new System.Windows.Forms.ToolStripMenuItem();
+            menuBack = new System.Windows.Forms.ToolStripMenuItem();
+            menuForward = new System.Windows.Forms.ToolStripMenuItem();
+            menuPlayMode = new System.Windows.Forms.ToolStripMenuItem();
+            menuPlayModeNormal = new System.Windows.Forms.ToolStripMenuItem();
+            menuPlayModeRandom = new System.Windows.Forms.ToolStripMenuItem();
+            menuPlayModeRepeat = new System.Windows.Forms.ToolStripMenuItem();
+            menuPlayModeLoop = new System.Windows.Forms.ToolStripMenuItem();
+            menuPlayList = new System.Windows.Forms.ToolStripMenuItem();
+            menuOption = new System.Windows.Forms.ToolStripMenuItem();
+            menuEffects = new System.Windows.Forms.ToolStripMenuItem();
+            menuEqualizer = new System.Windows.Forms.ToolStripMenuItem();
+            menuExtensions = new System.Windows.Forms.ToolStripMenuItem();
+            menuSkinSelect = new System.Windows.Forms.ToolStripMenuItem();
+            menuAutoUpdateCheck = new System.Windows.Forms.ToolStripMenuItem();
+            menuAbout = new System.Windows.Forms.ToolStripMenuItem();
+            menuHelp = new System.Windows.Forms.ToolStripMenuItem();
+            menuMinimize = new System.Windows.Forms.ToolStripMenuItem();
+            menuExit = new System.Windows.Forms.ToolStripMenuItem();
+            notifyIcon = new System.Windows.Forms.NotifyIcon(components);
             ((System.ComponentModel.ISupportInitialize)Spectrum).BeginInit();
+            contextMenu.SuspendLayout();
             SuspendLayout();
             // 
             // BtnPlay
@@ -443,14 +378,13 @@ namespace MediaPlayer_X_Ark
             // 
             // Spectrum
             // 
-            Spectrum.BackColor = System.Drawing.Color.Transparent;
             Spectrum.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            Spectrum.BitmapSnow = (System.Drawing.Bitmap)resources.GetObject("Spectrum.BitmapSnow");
-            Spectrum.BitmapSpectrum = (System.Drawing.Bitmap)resources.GetObject("Spectrum.BitmapSpectrum");
-            Spectrum.BitmapWave = (System.Drawing.Bitmap)resources.GetObject("Spectrum.BitmapWave");
+            Spectrum.BitmapBackground = null;
             Spectrum.Location = new System.Drawing.Point(138, 275);
             Spectrum.mFFT = null;
             Spectrum.Mode = 0;
+            Spectrum.mWaveL = null;
+            Spectrum.mWaveR = null;
             Spectrum.Name = "Spectrum";
             Spectrum.Size = new System.Drawing.Size(128, 54);
             Spectrum.TabIndex = 20;
@@ -473,14 +407,164 @@ namespace MediaPlayer_X_Ark
             BtnCD.MouseDown += BtnCD_MouseDown;
             BtnCD.MouseUp += BtnCD_MouseUp;
             // 
+            // contextMenu
+            // 
+            contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { menuOpen, menuUrlOpen, menuPlay, menuPause, menuStop, menuBack, menuForward, menuPlayMode, menuPlayList, menuOption, menuEffects, menuEqualizer, menuExtensions, menuSkinSelect, menuAutoUpdateCheck, menuAbout, menuHelp, menuMinimize, menuExit });
+            contextMenu.Name = "contextMenu";
+            contextMenu.Size = new System.Drawing.Size(193, 458);
+            // 
+            // menuOpen
+            // 
+            menuOpen.Name = "menuOpen";
+            menuOpen.Size = new System.Drawing.Size(192, 22);
+            menuOpen.Text = "Open(&O)";
+            // 
+            // menuUrlOpen
+            // 
+            menuUrlOpen.Name = "menuUrlOpen";
+            menuUrlOpen.Size = new System.Drawing.Size(192, 22);
+            menuUrlOpen.Text = "URL Open(&R)";
+            // 
+            // menuPlay
+            // 
+            menuPlay.Name = "menuPlay";
+            menuPlay.Size = new System.Drawing.Size(192, 22);
+            menuPlay.Text = "Play(&P)";
+            // 
+            // menuPause
+            // 
+            menuPause.Name = "menuPause";
+            menuPause.Size = new System.Drawing.Size(192, 22);
+            menuPause.Text = "Pause(&H)";
+            // 
+            // menuStop
+            // 
+            menuStop.Name = "menuStop";
+            menuStop.Size = new System.Drawing.Size(192, 22);
+            menuStop.Text = "Stop(&S)";
+            // 
+            // menuBack
+            // 
+            menuBack.Name = "menuBack";
+            menuBack.Size = new System.Drawing.Size(192, 22);
+            menuBack.Text = "Back(&B)";
+            // 
+            // menuForward
+            // 
+            menuForward.Name = "menuForward";
+            menuForward.Size = new System.Drawing.Size(192, 22);
+            menuForward.Text = "Forward(&F)";
+            // 
+            // menuPlayMode
+            // 
+            menuPlayMode.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { menuPlayModeNormal, menuPlayModeRandom, menuPlayModeRepeat, menuPlayModeLoop });
+            menuPlayMode.Name = "menuPlayMode";
+            menuPlayMode.Size = new System.Drawing.Size(192, 22);
+            menuPlayMode.Text = "PlayMode";
+            // 
+            // menuPlayModeNormal
+            // 
+            menuPlayModeNormal.Name = "menuPlayModeNormal";
+            menuPlayModeNormal.Size = new System.Drawing.Size(118, 22);
+            menuPlayModeNormal.Text = "Normal";
+            // 
+            // menuPlayModeRandom
+            // 
+            menuPlayModeRandom.Name = "menuPlayModeRandom";
+            menuPlayModeRandom.Size = new System.Drawing.Size(118, 22);
+            menuPlayModeRandom.Text = "Random";
+            // 
+            // menuPlayModeRepeat
+            // 
+            menuPlayModeRepeat.Name = "menuPlayModeRepeat";
+            menuPlayModeRepeat.Size = new System.Drawing.Size(118, 22);
+            menuPlayModeRepeat.Text = "Repeat";
+            // 
+            // menuPlayModeLoop
+            // 
+            menuPlayModeLoop.Name = "menuPlayModeLoop";
+            menuPlayModeLoop.Size = new System.Drawing.Size(118, 22);
+            menuPlayModeLoop.Text = "Loop";
+            // 
+            // menuPlayList
+            // 
+            menuPlayList.Name = "menuPlayList";
+            menuPlayList.Size = new System.Drawing.Size(192, 22);
+            menuPlayList.Text = "PlayList(&L)";
+            // 
+            // menuOption
+            // 
+            menuOption.Name = "menuOption";
+            menuOption.Size = new System.Drawing.Size(192, 22);
+            menuOption.Text = "Option(&T)";
+            // 
+            // menuEffects
+            // 
+            menuEffects.Name = "menuEffects";
+            menuEffects.Size = new System.Drawing.Size(192, 22);
+            menuEffects.Text = "Effects(&E)";
+            // 
+            // menuEqualizer
+            // 
+            menuEqualizer.Name = "menuEqualizer";
+            menuEqualizer.Size = new System.Drawing.Size(192, 22);
+            menuEqualizer.Text = "Equalizer(&Q)";
+            // 
+            // menuExtensions
+            // 
+            menuExtensions.Name = "menuExtensions";
+            menuExtensions.Size = new System.Drawing.Size(192, 22);
+            menuExtensions.Text = "Extensions(&D)";
+            // 
+            // menuSkinSelect
+            // 
+            menuSkinSelect.Name = "menuSkinSelect";
+            menuSkinSelect.Size = new System.Drawing.Size(192, 22);
+            menuSkinSelect.Text = "Skin Select(&A)";
+            // 
+            // menuAutoUpdateCheck
+            // 
+            menuAutoUpdateCheck.Name = "menuAutoUpdateCheck";
+            menuAutoUpdateCheck.Size = new System.Drawing.Size(192, 22);
+            menuAutoUpdateCheck.Text = "Auto Update Check(&U)";
+            // 
+            // menuAbout
+            // 
+            menuAbout.Name = "menuAbout";
+            menuAbout.Size = new System.Drawing.Size(192, 22);
+            menuAbout.Text = "About(&C)";
+            // 
+            // menuHelp
+            // 
+            menuHelp.Name = "menuHelp";
+            menuHelp.Size = new System.Drawing.Size(192, 22);
+            menuHelp.Text = "Help(&V)";
+            // 
+            // menuMinimize
+            // 
+            menuMinimize.Name = "menuMinimize";
+            menuMinimize.Size = new System.Drawing.Size(192, 22);
+            menuMinimize.Text = "Minimize(&X)";
+            // 
+            // menuExit
+            // 
+            menuExit.Name = "menuExit";
+            menuExit.Size = new System.Drawing.Size(192, 22);
+            menuExit.Text = "Exit(&Z)";
+            // 
+            // notifyIcon
+            // 
+            notifyIcon.Text = "MediaPlayer X-Ark";
+            notifyIcon.Visible = true;
+            // 
             // MainForm
             // 
             AllowDrop = true;
-            AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             BackColor = System.Drawing.SystemColors.Window;
             BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             ClientSize = new System.Drawing.Size(500, 500);
+            ContextMenuStrip = contextMenu;
             ControlBox = false;
             Controls.Add(BtnPlaylist);
             Controls.Add(BtnCD);
@@ -514,6 +598,7 @@ namespace MediaPlayer_X_Ark
             MouseDown += MainForm_MouseDown;
             MouseMove += MainForm_MouseMove;
             ((System.ComponentModel.ISupportInitialize)Spectrum).EndInit();
+            contextMenu.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -567,6 +652,7 @@ namespace MediaPlayer_X_Ark
         private System.Windows.Forms.Timer SeekiTimer;
         private SpectrumBox Spectrum;
         private System.Windows.Forms.Button BtnCD;
+        private System.Windows.Forms.NotifyIcon notifyIcon;
     }
 }
 
