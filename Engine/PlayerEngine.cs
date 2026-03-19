@@ -418,54 +418,58 @@ namespace MediaPlayer_X_Ark.Engine
 			return state;
         }
 
+		private bool _suppressEndCallback = false;
+		public FMOD.RESULT PlaySound(int index)
+		{
+			if (index >= PlayList.Count) return FMOD.RESULT.OK;
 
-		/// <summary>
-		/// Play Sound for Loaded Channels.
-		/// </summary>
-		/// <param name="channel"></param>
-		public RESULT PlaySound(int index)
-        {
-            if (index >= PlayList.Count)
-				return FMOD.RESULT.OK;
+			// ★①フラグを立ててから停止
+			_suppressEndCallback = true;
+			FmodChannel.stop();
 
-            // ★再生前にロード
-            var loadResult = LoadSound(index);
-			if (loadResult != FMOD.RESULT.OK)
-				return loadResult;
-
-            PlayingIndex = index;
-
-            // 再生
-            var result = FmodCallFunction(FmodSystem.playSound(
-				PlayList[index].Sound, FmodChannelGroup, false, out FmodChannel));
-
-			// ★再生中以外の不要なSoundを解放
+			// Sound解放
 			for (int i = 0; i < PlayList.Count; i++)
 			{
 				if (i == index) continue;
-				// 次曲はプリロードのため保持（ギャップレス再生への布石）
 				if (i == index + 1) continue;
-				if (PlayList[i].IsLoaded && i != index)
+				if (PlayList[i].IsLoaded)
 				{
 					PlayList[i].Sound.release();
 					PlayList[i].Sound = default;
 				}
 			}
 
-            // ★コールバック設定（再生開始ごとに登録）
-            _channelEndCallback = (channelraw, controltype, callbacktype, cd1, cd2) =>
-            {
-                if (callbacktype == FMOD.CHANNELCONTROL_CALLBACK_TYPE.END)
-                    TrackEnded?.Invoke(this, EventArgs.Empty);
-                return FMOD.RESULT.OK;
-            };
-            FmodChannel.setCallback(_channelEndCallback);
+			// ロード
+			var loadResult = LoadSound(index);
+			if (loadResult != FMOD.RESULT.OK) return loadResult;
 
-            PlayingIndex = index;
-            _nowPlaying = true;
+			PlayingIndex = index;
 
-            return result;
-        }
+			// ★②コールバックを再登録
+			_channelEndCallback = (channelraw, controltype, callbacktype, cd1, cd2) =>
+			{
+				if (callbacktype == FMOD.CHANNELCONTROL_CALLBACK_TYPE.END)
+				{
+					if (!_suppressEndCallback)
+						TrackEnded?.Invoke(this, EventArgs.Empty);
+					_suppressEndCallback = false;
+				}
+				return FMOD.RESULT.OK;
+			};
+
+			// ★③再生
+			var result = FmodCallFunction(FmodSystem.playSound(
+				PlayList[index].Sound, FmodChannelGroup, false, out FmodChannel));
+
+			// ★④再生後にコールバック設定（Channelが確定してから）
+			FmodChannel.setCallback(_channelEndCallback);
+
+			// ★⑤再生開始後にフラグをリセット
+			_suppressEndCallback = false;
+
+			_nowPlaying = true;
+			return result;
+		}
 
 		public uint GetLength(int index)
         {
@@ -573,40 +577,15 @@ namespace MediaPlayer_X_Ark.Engine
 
 				await Task.Run(() =>
 				{
-					FMOD.Sound sound;
-					FMOD.CREATESOUNDEXINFO info = new FMOD.CREATESOUNDEXINFO();
-					info.cbsize = Marshal.SizeOf(info);
-
-					FMOD.RESULT result;
-					if (Path.GetExtension(filename).Equals(".mid"))
-					{
-						info.suggestedsoundtype = FMOD.SOUND_TYPE.MIDI;
-						result = FmodSystem.createSound(
-							filename, FMOD.MODE.DEFAULT, ref info, out sound);
-					}
-					else
-					{
-						result = FmodSystem.createStream(
-							filename, FMOD.MODE.DEFAULT, ref info, out sound);
-					}
-
-					if (result != FMOD.RESULT.OK) return;
-
 					try
 					{
-						// ★一時的にSoundを代入してGetTagsを呼ぶ
-						PlayList[index].Sound = sound;
-
-						uint length;
-						sound.getLength(out length, FMOD.TIMEUNIT.MS);
-						PlayList[index].SetLength(length);
-						GetTags(index);
+						var track = new ATL.Track(filename);
+						PlayList[index].Title = track.Title;
+						PlayList[index].Artist = track.Artist;
+						PlayList[index].Album = track.Album;
+						PlayList[index].SetLength((uint)track.DurationMs);
 					}
-					finally
-					{
-						sound.release();
-						PlayList[index].Sound = default;
-					}
+					catch { }
 				});
 			}
 			catch { }
@@ -786,9 +765,10 @@ namespace MediaPlayer_X_Ark.Engine
         /// <param name="channel"></param>
         public void Stop()
         {
-            _nowPlaying = false;
-            if (FmodChannel.hasHandle() && IsPlaying())
-				FmodCallFunction(FmodChannel.stop());
+			_suppressEndCallback = true;
+			FmodChannel.stop();
+			_nowPlaying = false;
+			PlayingIndex = -1;
 		}
 
 		/// <summary>
@@ -949,35 +929,24 @@ namespace MediaPlayer_X_Ark.Engine
             return FMOD.RESULT.OK;
         }
 
-        public Bitmap GetCoverArt(int index)
-        {
-            if (index < 0 || index >= PlayList.Count) return null;
-            if (!PlayList[index].IsLoaded) return null;
+		public Bitmap GetCoverArt(int index)
+		{
+			if (index < 0 || index >= PlayList.Count) return null;
+			string filename = PlayList[index].FileName;
+			if (string.IsNullOrEmpty(filename) || !File.Exists(filename)) return null;
 
-            int tagCount, updatedCount;
-            PlayList[index].Sound.getNumTags(out tagCount, out updatedCount);
-            System.Diagnostics.Debug.WriteLine($"tagCount={tagCount} updatedCount={updatedCount}");
-            var coverTagNames = new HashSet<string> { "APIC", "PICTURE", "WM/Picture", "METADATA_BLOCK_PICTURE" };
-            for (int i = 0; i < tagCount; i++)
-            {
-                FMOD.TAG tag;
-                if (PlayList[index].Sound.getTag(null, i, out tag) != FMOD.RESULT.OK) continue;
-                string tagName = (string)tag.name;
-                // デバッグ用：全タグ名を出力
-                System.Diagnostics.Debug.WriteLine($"Tag[{i}]: dataType={tag.datatype} name={tagName} type={tag.type} datalen={tag.datalen}");
-
-                if (!coverTagNames.Contains(tagName)) continue;
-
-                try
-                {
-                    byte[] data = new byte[tag.datalen];
-                    Marshal.Copy(tag.data, data, 0, (int)tag.datalen);
-                    using (var ms = new MemoryStream(data))
-                        return new Bitmap(ms);
-                }
-                catch { }
-            }
-            return null;
-        }
-    }
+			try
+			{
+				var track = new ATL.Track(filename);
+				if (track.EmbeddedPictures?.Count > 0)
+				{
+					using (var ms = new MemoryStream(
+						track.EmbeddedPictures[0].PictureData))
+						return new Bitmap(ms);
+				}
+			}
+			catch { }
+			return null;
+		}
+	}
 }

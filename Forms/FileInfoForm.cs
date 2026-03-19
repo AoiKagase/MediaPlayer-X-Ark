@@ -78,12 +78,13 @@ namespace MediaPlayer_X_Ark.Forms
                 lblChannelVal.Text = channels == 1 ? "Mono" : "Stereo";
             }
 
-            // カバーアート
-            // TODO: プラグインシステム実装後にカバーアート取得に差し替え
-            SetDummyCoverArt();
-        }
+			// カバーアート
+			// TODO: プラグインシステム実装後にカバーアート取得に差し替え
+			var cover = MainForm.player.GetCoverArt(_currentIndex);
+			picCover.Image = cover ?? SetDummyCoverArt();
+		}
         // カバーアートはダミー表示
-        private void SetDummyCoverArt()
+        private Image SetDummyCoverArt()
         {
             // グレーの四角をダミーとして表示
             var bmp = new Bitmap(picCover.Width, picCover.Height);
@@ -95,7 +96,7 @@ namespace MediaPlayer_X_Ark.Forms
                     Brushes.White,
                     new PointF(picCover.Width / 2 - 30, picCover.Height / 2 - 8));
             }
-            picCover.Image = bmp;
+            return bmp;
         }
         private void FileInfoForm_Load(object sender, EventArgs e)
         {

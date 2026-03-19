@@ -619,7 +619,8 @@ namespace MediaPlayer_X_Ark
                 {
                     _sleepTimerRemaining = 0;
                     player.Stop();
-                }
+					UpdateSleepTimerMenu(null);
+				}
             }
         }
         #endregion
@@ -1092,7 +1093,13 @@ namespace MediaPlayer_X_Ark
         ToolStripMenuItem menuPlayModeRandom = new ToolStripMenuItem("Random", null, null, "menuPlayModeRandom");
         ToolStripMenuItem menuPlayModeRepeat = new ToolStripMenuItem("Repeat", null, null, "menuPlayModeRepeat");
         ToolStripMenuItem menuPlayModeLoop = new ToolStripMenuItem("Loop", null, null, "menuPlayModeLoop");
-        private void InitContextMenu()
+		ToolStripMenuItem menuSleep = new ToolStripMenuItem("スリープタイマー");
+		ToolStripMenuItem menuSleep15 = new ToolStripMenuItem("15分後");
+		ToolStripMenuItem menuSleep30 = new ToolStripMenuItem("30分後");
+		ToolStripMenuItem menuSleep60 = new ToolStripMenuItem("60分後");
+		ToolStripMenuItem menuSleepCancel = new ToolStripMenuItem("キャンセル");
+
+		private void InitContextMenu()
         {
             var menuOpen = new ToolStripMenuItem("Open(&O)", null, BtnOpenFile_Click, "menuOpen");
             var menuUrlOpen = new ToolStripMenuItem("URL Open(&R)", null, BtnUrlOpen_Click, "menuUrlOpen");
@@ -1114,11 +1121,6 @@ namespace MediaPlayer_X_Ark
             var menuMinimize = new ToolStripMenuItem("Minimize(&X)", null, BtnMinisize_Click, "menuMinimize");
             var menuExit = new ToolStripMenuItem("Exit(&Z)", null, BtnClose_Click, "menuExit");
 
-            var menuSleep = new ToolStripMenuItem("スリープタイマー");
-            var menuSleep15 = new ToolStripMenuItem("15分後");
-            var menuSleep30 = new ToolStripMenuItem("30分後");
-            var menuSleep60 = new ToolStripMenuItem("60分後");
-            var menuSleepCancel = new ToolStripMenuItem("キャンセル");
             var menuFileInfo = new ToolStripMenuItem("ファイル情報");
 
             menuOpen.Size = new System.Drawing.Size(192, 22);
@@ -1153,12 +1155,27 @@ namespace MediaPlayer_X_Ark
             menuMinimize.Click += (s, e) => this.WindowState = FormWindowState.Minimized;
             menuExit.Click += (s, e) => Application.Exit();
 
-            menuSleep15.Click += (s, e) => _sleepTimerRemaining = 15 * 60;
-            menuSleep30.Click += (s, e) => _sleepTimerRemaining = 30 * 60;
-            menuSleep60.Click += (s, e) => _sleepTimerRemaining = 60 * 60;
-            menuSleepCancel.Click += (s, e) => _sleepTimerRemaining = 0;
-
-            menuSleep.DropDownItems.AddRange(new ToolStripItem[]
+			menuSleep15.Click += (s, e) =>
+			{
+				_sleepTimerRemaining = 15 * 60 * 1000;
+				UpdateSleepTimerMenu(menuSleep15);
+			};
+			menuSleep30.Click += (s, e) =>
+			{
+				_sleepTimerRemaining = 30 * 60 * 1000;
+				UpdateSleepTimerMenu(menuSleep30);
+			};
+			menuSleep60.Click += (s, e) =>
+			{
+				_sleepTimerRemaining = 60 * 60 * 1000;
+				UpdateSleepTimerMenu(menuSleep60);
+			};
+			menuSleepCancel.Click += (s, e) =>
+			{
+				_sleepTimerRemaining = 0;
+				UpdateSleepTimerMenu(null);
+			};
+			menuSleep.DropDownItems.AddRange(new ToolStripItem[]
             {
                 menuSleep15,
                 menuSleep30,
@@ -1245,7 +1262,15 @@ namespace MediaPlayer_X_Ark
                 trayMenuExit,
             });
         }
-        private void ContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+		private void UpdateSleepTimerMenu(ToolStripMenuItem selected)
+		{
+			menuSleep15.Checked = false;
+			menuSleep30.Checked = false;
+			menuSleep60.Checked = false;
+			if (selected != null)
+				selected.Checked = true;
+		}
+		private void ContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             // PlayMode チェック状態を更新
             menuPlayModeRandom.Enabled = false; // 未実装
