@@ -372,16 +372,17 @@ namespace MediaPlayer_X_Ark
                 { "PBtnClear",      _currentSkin.PBtnClear      },
             };
         }
-        /// =============================================================
-        /// 各コントロールイベント
-        /// =============================================================
-        #region MainForm Event
-        /// <summary>
-        /// フォームロード処理
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MainForm_Load(object sender, EventArgs e)
+		private bool _isHandlingTrackEnded = false;
+		/// =============================================================
+		/// 各コントロールイベント
+		/// =============================================================
+		#region MainForm Event
+		/// <summary>
+		/// フォームロード処理
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void MainForm_Load(object sender, EventArgs e)
         {
             // ===================================
             // インスタンスの生成
@@ -408,18 +409,7 @@ namespace MediaPlayer_X_Ark
             // ④ Device は init() 後でOK
             player.SetDevice(config.settings.Device);
 
-            // ★曲終了イベント購読
-            player.TrackEnded += (s, e) =>
-            {
-                this.BeginInvoke((Action)(() =>
-                {
-                    if (!player.NowPlaying) return;
-                    player.PlayNext();
-                    UpdateTrackUI();
-                }));
-            };
-
-            playListForm = new PlayListForm(this);
+			playListForm = new PlayListForm(this);
             playListForm.Owner = this;
 
             optionsForm = new OptionsForm(player, config, this);
@@ -622,7 +612,25 @@ namespace MediaPlayer_X_Ark
 					UpdateSleepTimerMenu(null);
 				}
             }
-        }
+
+			// 曲終了検知（コールバックが信頼できないため）
+			if (player.NowPlaying && !player.IsPlaying())
+			{
+				if (!_isHandlingTrackEnded)
+				{
+					_isHandlingTrackEnded = true;
+					try
+					{
+						player.PlayNext();
+						UpdateTrackUI();
+					}
+					finally
+					{
+						_isHandlingTrackEnded = false;
+					}
+				}
+			}
+		}
         #endregion
 
         #region Button MouseDown Event

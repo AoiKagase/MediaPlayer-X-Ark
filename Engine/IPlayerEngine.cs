@@ -29,10 +29,10 @@ namespace MediaPlayer_X_Ark.Engine
         FMOD.RESULT PlayUrl(string url);
         void Stop();
         void Pause();
-        void PlayNext();
-        void PlayPrevious();
+		void PlayNext();
+		void PlayPrevious();
 
-        void BuildShuffleQueue();
+		void BuildShuffleQueue();
         void UpdateShuffleQueueOnRemove(int removedIndex);
         // ── サウンド管理 ─────────────────────────────
         FMOD.RESULT CreateSound(string filename, out int index);

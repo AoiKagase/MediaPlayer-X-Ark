@@ -418,14 +418,13 @@ namespace MediaPlayer_X_Ark.Engine
 			return state;
         }
 
-		private bool _suppressEndCallback = false;
 		public FMOD.RESULT PlaySound(int index)
 		{
 			if (index >= PlayList.Count) return FMOD.RESULT.OK;
 
-			// ★①フラグを立ててから停止
-			_suppressEndCallback = true;
-			FmodChannel.stop();
+			// ★チャンネルが有効な場合のみstop（二重発火防止）
+			if (FmodChannel.hasHandle())
+				FmodChannel.stop();
 
 			// Sound解放
 			for (int i = 0; i < PlayList.Count; i++)
@@ -445,27 +444,9 @@ namespace MediaPlayer_X_Ark.Engine
 
 			PlayingIndex = index;
 
-			// ★②コールバックを再登録
-			_channelEndCallback = (channelraw, controltype, callbacktype, cd1, cd2) =>
-			{
-				if (callbacktype == FMOD.CHANNELCONTROL_CALLBACK_TYPE.END)
-				{
-					if (!_suppressEndCallback)
-						TrackEnded?.Invoke(this, EventArgs.Empty);
-					_suppressEndCallback = false;
-				}
-				return FMOD.RESULT.OK;
-			};
-
-			// ★③再生
 			var result = FmodCallFunction(FmodSystem.playSound(
 				PlayList[index].Sound, FmodChannelGroup, false, out FmodChannel));
-
-			// ★④再生後にコールバック設定（Channelが確定してから）
 			FmodChannel.setCallback(_channelEndCallback);
-
-			// ★⑤再生開始後にフラグをリセット
-			_suppressEndCallback = false;
 
 			_nowPlaying = true;
 			return result;
@@ -689,8 +670,8 @@ namespace MediaPlayer_X_Ark.Engine
 		public void CreateSoundForMidi(string filename)
         {
 		}
-        public void PlayNext()
-        {
+		public void PlayNext()
+		{
             if (PlayList.Count == 0) return;
 
             if ((loop & LOOP_MODE.LOOP_RANDOM) != 0)
@@ -716,8 +697,8 @@ namespace MediaPlayer_X_Ark.Engine
                     next = PlayingIndex + 1;
                     break;
             }
-            PlaySound(next);
-        }
+			PlaySound(next);
+		}
         public void Sort<T>(Func<Engine.PlayList, T> keySelector)
         {
             var playingItem = (PlayingIndex >= 0 && PlayingIndex < PlayList.Count)
@@ -765,7 +746,6 @@ namespace MediaPlayer_X_Ark.Engine
         /// <param name="channel"></param>
         public void Stop()
         {
-			_suppressEndCallback = true;
 			FmodChannel.stop();
 			_nowPlaying = false;
 			PlayingIndex = -1;
