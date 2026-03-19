@@ -1187,40 +1187,25 @@ namespace MediaPlayer_X_Ark
 
         private void BtnUrlOpen_Click(object sender, EventArgs e)
         {
-            using (var form = new UrlInputForm())
+            // UrlInputForm or InputBox でURL取得
+            string url = Microsoft.VisualBasic.Interaction.InputBox(
+                "再生するURLを入力してください",
+                "URL Open",
+                "https://");
+
+            if (string.IsNullOrWhiteSpace(url)) return;
+            if (!url.StartsWith("http://") && !url.StartsWith("https://"))
             {
-                if (form.ShowDialog(this) != DialogResult.OK) return;
-                string url = form.Url;
+                MessageBox.Show("URLはhttp://またはhttps://で始まる必要があります。",
+                    "URL Open", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
-                if (string.IsNullOrWhiteSpace(url)) return;
-                if (!url.StartsWith("http://") && !url.StartsWith("https://"))
-                {
-                    MessageBox.Show("URLはhttp://またはhttps://で始まる必要があります。",
-                        "URL Open", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                int index;
-                var result = player.CreateSound(url, out index);
-                if (result != FMOD.RESULT.OK)
-                {
-                    MessageBox.Show($"URLを開けませんでした。\n{player.lastError}",
-                        "URL Open", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    // ★失敗した場合はPlayListから削除
-                    if (index >= 0 && index < player.PlayList.Count)
-                        player.PlayList.RemoveAt(index);
-                    return;
-                }
-
-                result = player.PlaySound(index);
-                if (result != FMOD.RESULT.OK)
-                {
-                    MessageBox.Show($"URLを再生できませんでした。\n{player.lastError}",
-                        "URL Open", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    // ★失敗した場合はPlayListから削除
-                    if (index >= 0 && index < player.PlayList.Count)
-                        player.PlayList.RemoveAt(index);
-                }
+            var result = player.PlayUrl(url);
+            if (result != FMOD.RESULT.OK)
+            {
+                MessageBox.Show($"URLを開けませんでした。\n{player.lastError}",
+                    "URL Open", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

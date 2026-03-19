@@ -544,8 +544,14 @@ namespace MediaPlayer_X_Ark.Engine
 			// ★URLの場合はバックグラウンドタグ取得をスキップ
 			if (!filename.StartsWith("http://") && !filename.StartsWith("https://"))
 			{
-				// ★バックグラウンドでタグ・長さを取得
-				int capturedIndex = index;
+                var existing = PlayList.FirstOrDefault(p => p.FileName == filename);
+                if (existing != null)
+                {
+                    index = PlayList.IndexOf(existing);
+                    return FMOD.RESULT.OK;
+                }
+                // ★バックグラウンドでタグ・長さを取得
+                int capturedIndex = index;
 				_ = LoadTagsOnlyAsync(capturedIndex);
 			}
 
@@ -898,6 +904,33 @@ namespace MediaPlayer_X_Ark.Engine
                     _shuffleQueue[i]--;
                 }
             }
+        }
+
+        public FMOD.RESULT PlayUrl(string url)
+        {
+            FMOD.Sound sound;
+            FMOD.CREATESOUNDEXINFO info = new FMOD.CREATESOUNDEXINFO();
+            info.cbsize = Marshal.SizeOf(info);
+
+            var result = FmodCallFunction(FmodSystem.createStream(
+                url, FMOD.MODE.DEFAULT | FMOD.MODE.NONBLOCKING, ref info, out sound));
+
+            if (result != FMOD.RESULT.OK) return result;
+
+            // プレイリストに追加せず直接再生
+            FmodCallFunction(FmodSystem.playSound(sound, FmodChannelGroup, false, out FmodChannel));
+
+            // コールバック設定
+            _channelEndCallback = (channelraw, controltype, callbacktype, cd1, cd2) =>
+            {
+                if (callbacktype == FMOD.CHANNELCONTROL_CALLBACK_TYPE.END)
+                    TrackEnded?.Invoke(this, EventArgs.Empty);
+                return FMOD.RESULT.OK;
+            };
+            FmodChannel.setCallback(_channelEndCallback);
+
+            _nowPlaying = true;
+            return FMOD.RESULT.OK;
         }
     }
 }

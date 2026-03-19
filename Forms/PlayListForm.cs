@@ -509,7 +509,7 @@ namespace MediaPlayer_X_Ark
 		{
 			get
 			{
-				const int WS_EX_TRANSPARENT = 0x00000020;
+				//const int WS_EX_TRANSPARENT = 0x00000020;
 				var cp = base.CreateParams;
 				// 透過ピクセル上のみ透過させるため
 				// WndProc の HTTRANSPARENT と組み合わせて使用
