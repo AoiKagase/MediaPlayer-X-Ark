@@ -496,6 +496,12 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void PlayList_MouseMove(object sender, MouseEventArgs e)
 		{
+			if (mainForm.SuppressNextMouseDown)
+			{
+				mainForm.SuppressNextMouseDown = false;
+				return;
+			}
+
 			if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
 			{
 				Left += e.X - mousePoint.X;

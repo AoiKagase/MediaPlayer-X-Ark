@@ -360,10 +360,14 @@ namespace MediaPlayer_X_Ark
 
             InitContextMenu();
 
+			_openFileDialogMedia = new OpenFileDialog();
+			_openFileDialogMedia.Filter = "音楽ファイル|*.mp3;*.flac;*.ogg;*.wav;*.aac;*.m4a;*.wma;*.mid;*.mod;*.xm;*.it;*.s3m|すべてのファイル|*.*";
+			_openFileDialogMedia.Multiselect = true;
+			
             initialize = true;
 
-            // 起動パラメータを取得し、ファイルパスが取得出来るならばOpen関数へ引き渡す
-            string[] parameters = System.Environment.GetCommandLineArgs();
+			// 起動パラメータを取得し、ファイルパスが取得出来るならばOpen関数へ引き渡す
+			string[] parameters = System.Environment.GetCommandLineArgs();
             if (parameters.Length > 1)
             {
                 if (File.Exists(parameters[1]))
@@ -459,7 +463,7 @@ namespace MediaPlayer_X_Ark
         /// <param name="e"></param>
         private void MainForm_MouseDown(object sender, MouseEventArgs e)
         {
-            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+			if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
             {
                 //位置を記憶する
                 mousePoint = new Point(e.X, e.Y);
@@ -475,6 +479,11 @@ namespace MediaPlayer_X_Ark
         /// <param name="e"></param>
         private void MainForm_MouseMove(object sender, MouseEventArgs e)
         {
+            if (SuppressNextMouseDown)
+            {
+				SuppressNextMouseDown = false;
+                return;
+			}
 			if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
 			{
 				Left += e.X - mousePoint.X;
@@ -686,8 +695,19 @@ namespace MediaPlayer_X_Ark
         }
         private void BtnRandom_MouseUp(object sender, MouseEventArgs e)
         {
-            BtnUpEvent(ref sender);
-        }
+            var btnRandom = _currentSkin.Buttons["BtnRandom"];
+			if (btnRandom != null)
+            {
+                if ((player.loop & LOOP_MODE.LOOP_RANDOM) != 0x00)
+                {
+					((Button)sender).BackgroundImage = btnRandom.DownImage;
+                } else
+                {
+					((Button)sender).BackgroundImage = btnRandom.BackImage;
+				}
+			}
+			((Button)sender).Refresh();
+		}
         private void BtnLoop_MouseUp(object sender, MouseEventArgs e)
         {
 			if (!_currentSkin.Buttons.TryGetValue("BtnLoop", out var bc)) return;
@@ -721,15 +741,17 @@ namespace MediaPlayer_X_Ark
         #endregion
 
         #region Button Click Event
-        /// <summary>
-        /// ファイルを開くボタンをクリック
-        /// ファイルオープンダイアログにてファイル選択後、自動で再生する
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnOpenFile_Click(object sender, EventArgs e)
+        public bool SuppressNextMouseDown { get; set; } = false;
+
+		/// <summary>
+		/// ファイルを開くボタンをクリック
+		/// ファイルオープンダイアログにてファイル選択後、自動で再生する
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void BtnOpenFile_Click(object sender, EventArgs e)
         {
-            if (this.IsDisposed || OpenFileDialog == null)
+            if (this.IsDisposed || _openFileDialogMedia == null)
                 return;
 
             try
@@ -745,7 +767,12 @@ namespace MediaPlayer_X_Ark
             {
                 MessageBox.Show("ファイルのオープンに失敗しました。\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
+			finally
+			{
+				// ★ダイアログを閉じた後の最初のMouseDownを無視
+				SuppressNextMouseDown = true;
+			}
+		}
 
         /// <summary>
         /// 再生/一時停止ボタンのクリック
@@ -817,26 +844,36 @@ namespace MediaPlayer_X_Ark
         }
         private void BtnRandom_Click(object sender, EventArgs e)
         {
-        }
-        private void BtnLoop_Click(object sender, EventArgs e)
-        {
-			if (!_currentSkin.Buttons.TryGetValue("BtnLoop", out var bc)) return;
-
-			switch (player.loop)
+            var btnRandom = _currentSkin.Buttons["BtnRandom"];
+            if (btnRandom != null)
             {
-                case LOOP_MODE.LOOP_NONE:
-                    player.loop = LOOP_MODE.LOOP_ONE_REPEAT;
-                    break;
-                case LOOP_MODE.LOOP_ONE_REPEAT:
-                    player.loop = LOOP_MODE.LOOP_ALL;
-                    break;
-                case LOOP_MODE.LOOP_ALL:
-                    player.loop = LOOP_MODE.LOOP_NONE;
-                    break;
-            }
-			((Button)sender).BackgroundImage = bc.DownImage;
-			((Button)sender).Refresh();
-        }
+				SetPlayMode(LOOP_MODE.LOOP_RANDOM);
+				((Button)sender).BackgroundImage = btnRandom.DownImage;
+				((Button)sender).Refresh();
+			}
+		}
+		private void BtnLoop_Click(object sender, EventArgs e)
+        {
+			var btnLoop = _currentSkin.Buttons["BtnLoop"];
+			if (btnLoop != null)
+            {
+				switch (player.loop)
+				{
+					case LOOP_MODE.LOOP_NONE:
+						SetPlayMode(LOOP_MODE.LOOP_ONE_REPEAT);
+						break;
+					case LOOP_MODE.LOOP_ONE_REPEAT:
+						SetPlayMode(LOOP_MODE.LOOP_ALL);
+						break;
+					case LOOP_MODE.LOOP_ALL:
+						SetPlayMode(LOOP_MODE.LOOP_NONE);
+						break;
+				}
+
+				((Button)sender).BackgroundImage = btnLoop.DownImage;
+				((Button)sender).Refresh();
+			}
+		}
         private void BtnSetting_Click(object sender, EventArgs e)
         {
             optionsForm.Show();
