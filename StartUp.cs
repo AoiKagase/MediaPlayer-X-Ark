@@ -13,7 +13,25 @@ namespace MediaPlayer_X_Ark
     {
         public StartUp() : base()
         {
-            this.EnableVisualStyles = true;
+			AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+			{
+				string libsPath = Path.Combine(
+					AppDomain.CurrentDomain.BaseDirectory, "Libs");
+				string assemblyName = new System.Reflection.AssemblyName(args.Name).Name;
+				string assemblyPath = Path.Combine(libsPath, assemblyName + ".dll");
+
+				if (File.Exists(assemblyPath))
+					return System.Reflection.Assembly.LoadFrom(assemblyPath);
+
+				return null;
+			};
+
+			// ★Libs フォルダのネイティブDLLを先にロード
+			string libsPath = Path.Combine(
+				AppDomain.CurrentDomain.BaseDirectory, "Libs");
+			Win32API.LoadLibrary(Path.Combine(libsPath, "fmod.dll"));
+
+			this.EnableVisualStyles = true;
             this.IsSingleInstance = true;
             this.MainForm = new MainForm();
             this.StartupNextInstance += new StartupNextInstanceEventHandler(StartUp_StartupNextInstance);

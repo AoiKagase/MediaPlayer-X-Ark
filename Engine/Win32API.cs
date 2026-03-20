@@ -27,7 +27,8 @@ namespace MediaPlayer_X_Ark
 			WHITENESS = 0x00FF0062,
 			CAPTUREBLT = 0x40000000
 		}
-
+		[DllImport("kernel32.dll")]
+		public static extern IntPtr LoadLibrary(string path);
 		[DllImport("gdi32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool BitBlt(IntPtr hdc, int nXDest, int nYDest, int nWidth, int nHeight,

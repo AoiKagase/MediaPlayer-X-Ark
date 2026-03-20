@@ -153,43 +153,33 @@ namespace MediaPlayer_X_Ark.Skin
 		// ===========================
 		public FormComponents MainForm { get; private set; }
 		public SpectrumComponents ImgSpectrum { get; private set; }
-		public ButtonComponents BtnOpen { get; private set; }
-		public ButtonComponents BtnClose { get; private set; }
-		public ButtonComponents BtnPlay { get; private set; }
-		public ButtonComponents BtnStop { get; private set; }
-		public ButtonComponents BtnBack { get; private set; }
-		public ButtonComponents BtnSeekBack { get; private set; }
-		public ButtonComponents BtnPause { get; private set; }
-		public ButtonComponents BtnSeekForward { get; private set; }
-		public ButtonComponents BtnNext { get; private set; }
-		public ButtonComponents BtnRandom { get; private set; }
-		public ButtonComponents BtnLoop { get; private set; }
-		public ButtonComponents BtnSetting { get; private set; }
-		public ButtonComponents BtnPlaylist { get; private set; }
-		public ButtonComponents BtnMinisize { get; private set; }
-		public ButtonComponents BtnCD { get; private set; }
-		public SliderComponents SldVolume { get; private set; }
-		public SliderComponents SldPan { get; private set; }
-		public SliderComponents SldTrack { get; private set; }
-		public GraphicComponents LabelTitle { get; private set; }
-		public GraphicComponents LabelTime { get; private set; }
-		public FormComponents PlayListForm { get; private set; }
-		public PListGrid PlayListGrid { get; private set; }
-		public ButtonComponents PBtnOpen { get; private set; }
-		public ButtonComponents PBtnSave { get; private set; }
-		public ButtonComponents PBtnRemove { get; private set; }
-		public ButtonComponents PBtnUp { get; private set; }
-		public ButtonComponents PBtnDown { get; private set; }
-		public ButtonComponents PBtnClose { get; private set; }
-		public ButtonComponents PBtnClear { get; private set; }
+		// 追加（辞書プロパティ）
+		public Dictionary<string, ButtonComponents> Buttons { get; private set; }
+		public Dictionary<string, SliderComponents> Sliders { get; private set; }
+		public Dictionary<string, GraphicComponents> Labels { get; private set; }
+
+		private static readonly Dictionary<string, ButtonComponents> _emptyButtons = new Dictionary<string, ButtonComponents>();
+
+		private Dictionary<string, FormComponents> _forms;
+		private Dictionary<string, PListGrid> _grids;
+		private Dictionary<string, Dictionary<string, ButtonComponents>> _formButtons;
+
+		public Dictionary<string, FormComponents> Forms => _forms;
+		public Dictionary<string, PListGrid> Grids => _grids;
+		public Dictionary<string, Dictionary<string, ButtonComponents>> FormButtons => _formButtons;
+		public FormComponents this[string formName] =>
+			_forms.TryGetValue(formName, out var f) ? f : null;
+
+		public Dictionary<string, ButtonComponents> GetFormButtons(string formName) =>
+			_formButtons.TryGetValue(formName, out var b) ? b : _emptyButtons;
 
 		// ===========================
 		// インデクサ（OldSkinSystemとの互換）
 		// ===========================
-		public object this[string propertyName]
-		{
-			get { return typeof(NewSkinSystem).GetProperty(propertyName).GetValue(this); }
-		}
+		//public object this[string propertyName]
+		//{
+		//	get { return typeof(NewSkinSystem).GetProperty(propertyName).GetValue(this); }
+		//}
 
 		// ===========================
 		// ロード済み画像キャッシュ
@@ -246,26 +236,20 @@ namespace MediaPlayer_X_Ark.Skin
 			};
 
 			// Buttons
-			BtnOpen = LoadButton(skin.Buttons, "BtnOpen");
-			BtnClose = LoadButton(skin.Buttons, "BtnClose");
-			BtnPlay = LoadButton(skin.Buttons, "BtnPlay");
-			BtnStop = LoadButton(skin.Buttons, "BtnStop");
-			BtnBack = LoadButton(skin.Buttons, "BtnBack");
-			BtnSeekBack = LoadButton(skin.Buttons, "BtnSeekBack");
-			BtnPause = LoadButton(skin.Buttons, "BtnPause");
-			BtnSeekForward = LoadButton(skin.Buttons, "BtnSeekForward");
-			BtnNext = LoadButton(skin.Buttons, "BtnNext");
-			BtnRandom = LoadButton(skin.Buttons, "BtnRandom");
-			BtnLoop = LoadButton(skin.Buttons, "BtnLoop");
-			BtnSetting = LoadButton(skin.Buttons, "BtnSetting");
-			BtnPlaylist = LoadButton(skin.Buttons, "BtnPlaylist");
-			BtnMinisize = LoadButton(skin.Buttons, "BtnMinisize");
-			BtnCD = LoadButton(skin.Buttons, "BtnCD");
+			Buttons = new Dictionary<string, ButtonComponents>();
+			foreach (var kv in skin.Buttons ?? new Dictionary<string, ButtonDef>())
+				Buttons[kv.Key] = LoadButton(skin.Buttons, kv.Key);
 
 			// Sliders
-			SldVolume = LoadSlider(skin.Sliders, "SldVolume");
-			SldPan = LoadSlider(skin.Sliders, "SldPan");
-			SldTrack = LoadSlider(skin.Sliders, "SldTrack");
+			Sliders = new Dictionary<string, SliderComponents>();
+			foreach (var kv in skin.Sliders ?? new Dictionary<string, SliderDef>())
+				Sliders[kv.Key] = LoadSlider(skin.Sliders, kv.Key);
+
+			// Labels
+			Labels = new Dictionary<string, GraphicComponents>();
+			foreach (var kv in skin.Text ?? new Dictionary<string, TextDef>())
+				Labels[kv.Key] = LoadText(skin.Text, kv.Key);
+
 
 			// Spectrum
 			var sp = skin.Spectrum;
@@ -283,45 +267,46 @@ namespace MediaPlayer_X_Ark.Skin
 				Enabled = true,
 			};
 
-			// Text
-			LabelTitle = LoadText(skin.Text, "LabelTitle");
-			LabelTime = LoadText(skin.Text, "LabelTime");
-
-			// PlayList
+			// PlayListForm
 			var pl = skin.PlayList;
-			PlayListForm = new FormComponents
+			_forms = new Dictionary<string, FormComponents>
 			{
-				BackImage = CropImage(pl.Image, pl.Src),
-				TransparentKey = ParseColor(skin.Settings?.TransparentKey ?? "202030"),
-				Position = new RECT
+				["PlayListForm"] = new FormComponents
 				{
-					Left = pl.OffsetX,
-					Top = pl.OffsetY,
-					Width = pl.Width,
-					Height = pl.Height,
-				},
-				MagnetMode = pl.MagnetMode,
+					BackImage = CropImage(pl.Image, pl.Src),
+					TransparentKey = ParseColor(skin.Settings?.TransparentKey ?? "202030"),
+					Position = new RECT
+					{
+						Left = pl.OffsetX,
+						Top = pl.OffsetY,
+						Width = pl.Width,
+						Height = pl.Height,
+					},
+					MagnetMode = pl.MagnetMode,
+				}
 			};
-			PlayListGrid = new PListGrid
+			_grids = new Dictionary<string, PListGrid>
 			{
-				ListBackColor = ParseColor(pl.ListBackColor ?? "000001"),
-				ListForeColor = ParseColor(pl.ListForeColor ?? "FFFFFF"),
-				ListPosition = new RECT
+				["PlayListGrid"] = new PListGrid
 				{
-					Left = pl.ListX,
-					Top = pl.ListY,
-					Width = pl.ListWidth,
-					Height = pl.ListHeight,
-				},
+					ListBackColor = ParseColor(pl.ListBackColor ?? "000001"),
+					ListForeColor = ParseColor(pl.ListForeColor ?? "FFFFFF"),
+					ListPosition = new RECT
+					{
+						Left = pl.ListX,
+						Top = pl.ListY,
+						Width = pl.ListWidth,
+						Height = pl.ListHeight,
+					},
+				}
 			};
 
-			PBtnOpen = LoadButton(pl.Buttons, "PBtnOpen");
-			PBtnSave = LoadButton(pl.Buttons, "PBtnSave");
-			PBtnRemove = LoadButton(pl.Buttons, "PBtnRemove");
-			PBtnUp = LoadButton(pl.Buttons, "PBtnUp");
-			PBtnDown = LoadButton(pl.Buttons, "PBtnDown");
-			PBtnClose = LoadButton(pl.Buttons, "PBtnClose");
-			PBtnClear = LoadButton(pl.Buttons, "PBtnClear");
+			// FormButtons
+			_formButtons = new Dictionary<string, Dictionary<string, ButtonComponents>>();
+			var plButtons = new Dictionary<string, ButtonComponents>();
+			foreach (var kv in pl.Buttons ?? new Dictionary<string, ButtonDef>())
+				plButtons[kv.Key] = LoadButton(pl.Buttons, kv.Key);
+			_formButtons["PlayListForm"] = plButtons;
 		}
 
 		// ===========================

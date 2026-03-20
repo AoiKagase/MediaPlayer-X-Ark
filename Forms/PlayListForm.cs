@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ATL.Playlist;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -499,9 +500,15 @@ namespace MediaPlayer_X_Ark
 			{
 				Left += e.X - mousePoint.X;
 				Top += e.Y - mousePoint.Y;
-
-				mainForm.Left = Left + mainForm.CurrentSkin.PlayListForm.Position.Left;
-				mainForm.Top = Top + mainForm.CurrentSkin.PlayListForm.Position.Top;
+				var plForm = mainForm.CurrentSkin?["PlayListForm"];
+				if (plForm != null)
+				{
+					if (plForm.MagnetMode)
+					{
+						mainForm.Left = Left + plForm.Position.Left;
+						mainForm.Top = Top + plForm.Position.Top;
+					}
+				}
 			}
 		}
 
@@ -599,9 +606,14 @@ namespace MediaPlayer_X_Ark
 				return false;
 
 			var pixel = img.GetPixel(pt.X, pt.Y);
-			return pixel.R == mainForm.CurrentSkin.PlayListForm.TransparentKey.R &&
-				   pixel.G == mainForm.CurrentSkin.PlayListForm.TransparentKey.G &&
-				   pixel.B == mainForm.CurrentSkin.PlayListForm.TransparentKey.B;
+			var plForm = mainForm.CurrentSkin?["PlayListForm"];
+			if (plForm != null)
+			{
+				return pixel.R == plForm.TransparentKey.R &&
+					   pixel.G == plForm.TransparentKey.G &&
+					   pixel.B == plForm.TransparentKey.B;
+			}
+			return false;
 		}
 	}
 }

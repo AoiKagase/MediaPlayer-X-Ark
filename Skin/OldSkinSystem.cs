@@ -40,9 +40,9 @@ namespace MediaPlayer_X_Ark.Skin
 		public int Maximum;
 		public int Minimum;
 	}
-	
+
 	public class GraphicComponents
-    {
+	{
 		public bool Enabled;
 		public int Interval;
 		public bool ScrollEnable;
@@ -50,19 +50,19 @@ namespace MediaPlayer_X_Ark.Skin
 		public Font Font;
 		public Color BackColor;
 		public Color FontColor;
-    }
+	}
 
-    public class SpectrumComponents
-    {
+	public class SpectrumComponents
+	{
 		public string ImageFile;
 		public Image Image;
 		public Color Color;
 		public RECT Position;
 		public bool Enabled;
-    }
+	}
 
-    public class PListGrid
-    {
+	public class PListGrid
+	{
 		public Color ListBackColor;
 		public Color ListForeColor;
 		public RECT ListPosition;
@@ -104,6 +104,21 @@ namespace MediaPlayer_X_Ark.Skin
 		public ButtonComponents PBtnDown { get; private set; }
 		public ButtonComponents PBtnClose { get; private set; }
 		public ButtonComponents PBtnClear { get; private set; }
+		public Dictionary<string, ButtonComponents> Buttons { get; private set; }
+		public Dictionary<string, SliderComponents> Sliders { get; private set; }
+		public Dictionary<string, GraphicComponents> Labels { get; private set; }
+		public Dictionary<string, FormComponents> Forms { get; private set; }
+		public Dictionary<string, PListGrid> Grids { get; private set; }
+		public Dictionary<string, Dictionary<string, ButtonComponents>> FormButtons { get; private set; }
+
+		private static readonly Dictionary<string, ButtonComponents> _emptyButtons
+			= new Dictionary<string, ButtonComponents>();
+
+		public FormComponents this[string formName] =>
+			Forms.TryGetValue(formName, out var f) ? f : null;
+
+		public Dictionary<string, ButtonComponents> GetFormButtons(string formName) =>
+			FormButtons.TryGetValue(formName, out var b) ? b : _emptyButtons;
 
 		public OldSkinSystem()
 		{
@@ -178,7 +193,8 @@ namespace MediaPlayer_X_Ark.Skin
 			{
 				ImgSpectrum.ImageFile = skinDir + "\\" + nValue.ToString();
 				ImgSpectrum.Image = LoadImage(ImgSpectrum.ImageFile);
-			} else
+			}
+			else
 			{
 				ImgSpectrum.ImageFile = "";
 				if (ImgSpectrum.Image != null)
@@ -281,56 +297,81 @@ namespace MediaPlayer_X_Ark.Skin
 			PBtnClose = LoadPListComponents(skinDir, extension, "5", "-PClose", skinFile);
 			PBtnClear = LoadPListComponents(skinDir, extension, "6", "-PClear", skinFile);
 
-			/*
+			Buttons = new Dictionary<string, ButtonComponents>
+			{
+				{ "BtnOpen",        BtnOpen        },
+				{ "BtnClose",       BtnClose       },
+				{ "BtnPlay",        BtnPlay        },
+				{ "BtnStop",        BtnStop        },
+				{ "BtnBack",        BtnBack        },
+				{ "BtnSeekBack",    BtnSeekBack    },
+				{ "BtnPause",       BtnPause       },
+				{ "BtnSeekForward", BtnSeekForward },
+				{ "BtnNext",        BtnNext        },
+				{ "BtnRandom",      BtnRandom      },
+				{ "BtnLoop",        BtnLoop        },
+				{ "BtnSetting",     BtnSetting     },
+				{ "BtnPlaylist",    BtnPlaylist    },
+				{ "BtnMinisize",    BtnMinisize    },
+				{ "BtnCD",          BtnCD          },
+			};
 
-			BtnOpen.position.Top = (int)Win32API.GetPrivateProfileInt("ButtonVector", "-OpenCDY", 0, skinFile);
-			BtnOpen.position.Left = (int)Win32API.GetPrivateProfileInt("ButtonVector", "-OpenCDX", 0, skinFile);
+			Sliders = new Dictionary<string, SliderComponents>
+			{
+				{ "SldVolume", SldVolume },
+				{ "SldPan",    SldPan    },
+				{ "SldTrack",  SldTrack  },
+			};
 
-						result = Win32API.GetPrivateProfileString("GraphicArea", "-ClearColor", Hex$(RGB(48, 32, 32)), nName, Leng, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaY", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaWidth", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaHeight", 0, skinFile);
+			Labels = new Dictionary<string, GraphicComponents>
+			{
+				{ "LabelTitle", LabelTitle },
+				{ "LabelTime",  LabelTime  },
+			};
 
-						result = Win32API.GetPrivateProfileString("GraphicArea", "-SpectrumWaveColor", "FFFFFF", nName, Leng, skinFile);
-						result = Win32API.GetPrivateProfileString("GraphicArea", "-SpectrumPicture", "", nName, Leng, skinFile);
+			Forms = new Dictionary<string, FormComponents>
+			{
+				{ "PlayListForm", PlayListForm },
+			};
 
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaBackColor", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TitleAreaX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-TitleAreaY", 0, skinFile);
+			Grids = new Dictionary<string, PListGrid>
+			{
+				{ "PlayListGrid", PlayListGrid },
+			};
 
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-FileTxtArea", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-FileTxtAreaX", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-FileTxtAreaY", 0, skinFile);
-						result = Win32API.GetPrivateProfileString("GraphicArea", "-FileTxtColor", "FFFFFF", nName, Leng, skinFile);
-						result = Win32API.GetPrivateProfileString("GraphicArea", "-FileTxtFont", "MS UI Gothic", nName, Leng, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-FileTxtFontBold", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-FileTxtFontItalic", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("GraphicArea", "-FileTxtFontSize", 0, skinFile);
-
-						result = Win32API.GetPrivateProfileInt("PlayListMain", "-ListTab", 0, skinFile);
-						result = Win32API.GetPrivateProfileInt("PlaylistMain", "-ListCharCount", 30, skinFile);
-			*/
+			FormButtons = new Dictionary<string, Dictionary<string, ButtonComponents>>
+			{
+				["PlayListForm"] = new Dictionary<string, ButtonComponents>
+				{
+					{ "PBtnOpen",   PBtnOpen   },
+					{ "PBtnSave",   PBtnSave   },
+					{ "PBtnRemove", PBtnRemove },
+					{ "PBtnUp",     PBtnUp     },
+					{ "PBtnDown",   PBtnDown   },
+					{ "PBtnClose",  PBtnClose  },
+					{ "PBtnClear",  PBtnClear  },
+				}
+			};
 		}
 
 		//インデクサの定義
-		public object this[string propertyName]
-		{
-			get
-			{
-				return typeof(OldSkinSystem).GetField(propertyName).GetValue(this);
-			}
-			set
-			{
-				typeof(OldSkinSystem).GetProperty(propertyName).SetValue(this, value);
-			}
-		}
+		//public object this[string propertyName]
+		//{
+		//	get
+		//	{
+		//		return typeof(OldSkinSystem).GetField(propertyName).GetValue(this);
+		//	}
+		//	set
+		//	{
+		//		typeof(OldSkinSystem).GetProperty(propertyName).SetValue(this, value);
+		//	}
+		//}
 
 		private ButtonComponents LoadButtonComponents(
 			string skinDir, string buttonNo, string extension,
 			string section, string key, string skinFile)
 		{
-			ButtonComponents result = new ButtonComponents { Enabled = false }; 
+			ButtonComponents result = new ButtonComponents { Enabled = false };
 
 			if (File.Exists(skinDir + "\\0-" + buttonNo + "." + extension))
 			{
@@ -346,7 +387,7 @@ namespace MediaPlayer_X_Ark.Skin
 					result.Position.Top = (int)Win32API.GetPrivateProfileInt(section, key + "Y", 0, skinFile);
 					result.Position.Left = (int)Win32API.GetPrivateProfileInt(section, key + "X", 0, skinFile);
 					result.Position.Width = result.BackImage.Width;
-					result.Position.Height= result.BackImage.Height;
+					result.Position.Height = result.BackImage.Height;
 					result.Enabled = true;
 				}
 				else
@@ -391,22 +432,22 @@ namespace MediaPlayer_X_Ark.Skin
 				result.Enabled = true;
 			}
 			return result;
-        }
+		}
 
 		private Image LoadImage(string path)
-        {
-			if (File.Exists (path))
+		{
+			if (File.Exists(path))
 				return Image.FromFile(path);
 			else
 				return null;
-        }
+		}
 
 		private Color LoadColor(string color)
-        {
+		{
 			if (color == "")
 				color = "0000000";
 			return ColorTranslator.FromWin32(Int32.Parse(color, System.Globalization.NumberStyles.HexNumber));
-        }
+		}
 
 		private ButtonComponents LoadPListComponents(string skinDir, string extension, string buttonNo, string key, string skinFile)
 		{
@@ -431,6 +472,6 @@ namespace MediaPlayer_X_Ark.Skin
 				result.Enabled = false;
 			}
 			return result;
-        }
+		}
 	}
 }

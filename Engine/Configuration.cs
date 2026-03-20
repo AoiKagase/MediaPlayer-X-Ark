@@ -48,6 +48,8 @@ namespace MediaPlayer_X_Ark.Engine
         public string Skin { get; set; }
 
 		public CfgBuffer Buffer { get; set; } = new CfgBuffer();
+
+		public string LastMediaDirectory { get; set; } = "";
 	}
 	public class CfgBuffer
 	{

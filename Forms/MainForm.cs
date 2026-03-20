@@ -29,7 +29,10 @@ namespace MediaPlayer_X_Ark
         private ISkinSystem _currentSkin;
         public ISkinSystem CurrentSkin => _currentSkin;
 
-        public MainForm()
+		// 用途別にOpenFileDialogを分離
+		private OpenFileDialog _openFileDialogMedia;   // 音楽ファイル用
+		private OpenFileDialog _openFileDialogSkin;    // スキン用
+		public MainForm()
         {
             InitializeComponent();
         }
@@ -130,161 +133,114 @@ namespace MediaPlayer_X_Ark
                 Spectrum.BitmapBackground = null;
             }
 
-            // コントロール名 → スキンプロパティのマッピング
-            var buttonMap = new Dictionary<string, ButtonComponents>
-            {
-                { "BtnOpen",        skin.BtnOpen        },
-                { "BtnClose",       skin.BtnClose       },
-                { "BtnPlay",        skin.BtnPlay        },
-                { "BtnStop",        skin.BtnStop        },
-                { "BtnBack",        skin.BtnBack        },
-                { "BtnSeekBack",    skin.BtnSeekBack    },
-                { "BtnPause",       skin.BtnPause       },
-                { "BtnSeekForward", skin.BtnSeekForward },
-                { "BtnNext",        skin.BtnNext        },
-                { "BtnRandom",      skin.BtnRandom      },
-                { "BtnLoop",        skin.BtnLoop        },
-                { "BtnSetting",     skin.BtnSetting     },
-                { "BtnPlaylist",    skin.BtnPlaylist    },
-                { "BtnMinisize",    skin.BtnMinisize    },
-                { "BtnCD",          skin.BtnCD          },
-                    };
+			// MainFormコントロール
+			foreach (Control c in Controls)
+			{
+				string cName = c.Name;
 
-            var sliderMap = new Dictionary<string, SliderComponents>
-            {
-                { "SldVolume", skin.SldVolume },
-                { "SldPan",    skin.SldPan   },
-                { "SldTrack",  skin.SldTrack },
-            };
+				if (c is Button btn && skin.Buttons.TryGetValue(cName, out var bc))
+				{
+					if (bc.BackImage == null || !bc.Enabled)
+					{ btn.Visible = false; btn.Enabled = false; continue; }
+					btn.AutoSize = false;
+					btn.BackgroundImage = bc.BackImage;
+					btn.BackgroundImageLayout = ImageLayout.None;
+					btn.Top = bc.Position.Top;
+					btn.Left = bc.Position.Left;
+					btn.Width = bc.Position.Width;
+					btn.Height = bc.Position.Height;
+					btn.Enabled = bc.Enabled;
+					btn.Visible = bc.Enabled;
+					btn.Refresh();
+				}
+				else if (c is CustomSlider slider && skin.Sliders.TryGetValue(cName, out var sc))
+				{
+					if (sc.SliderImage == null) continue;
+					slider.SliderImage = sc.SliderImage;
+					slider.Orientation = sc.Orientation;
+					slider.Minimum = sc.Minimum;
+					slider.Maximum = sc.Maximum;
+					slider.Top = sc.Position.Top;
+					slider.Left = sc.Position.Left;
+					slider.Width = sc.Position.Width;
+					slider.Height = sc.Position.Height;
+					slider.Enabled = sc.Enabled;
+					slider.Visible = sc.Enabled;
+					slider.Value = 0;
+					slider.Refresh();
+				}
+				else if (c is ScrollLabel lbl && skin.Labels.TryGetValue(cName, out var gc))
+				{
+					lbl.BackColor = Color.Transparent;
+					lbl.Value.Font = gc.Font;
+					lbl.Value.ForeColor = gc.FontColor;
+					lbl.Top = gc.Position.Top;
+					lbl.Left = gc.Position.Left;
+					lbl.Width = gc.Position.Width;
+					lbl.Height = gc.Position.Height;
+					lbl.Enabled = gc.Enabled;
+					lbl.Visible = gc.Enabled;
+					lbl.Value.Left = 0;
+					lbl.Value.Width = gc.Position.Width;
+					lbl.Value.Height = gc.Position.Height;
+					lbl.ScrollEnable = gc.ScrollEnable;
+					lbl.Timer.Interval = gc.Interval > 0 ? gc.Interval : 100;
+					lbl.Timer.Enabled = gc.Interval > 0;
+				}
+			}
 
-            var labelMap = new Dictionary<string, GraphicComponents>
-            {
-                { "LabelTitle", skin.LabelTitle },
-                { "LabelTime",  skin.LabelTime  },
-            };
+			this.Refresh();
+			var plForm = _currentSkin["PlayListForm"];
+			if (plForm != null)
+			{
+				playListForm.Left = Left - plForm.Position.Left;
+				playListForm.Top = Top - plForm.Position.Top;
+				playListForm.BackgroundImage = plForm.BackImage;
+				playListForm.Width = plForm.Position.Width;
+				playListForm.Height = plForm.Position.Height;
+				playListForm.TransparencyKey = plForm.TransparentKey;
+				playListForm.Refresh();
+			}
 
-            foreach (Control c in Controls)
-            {
-                string cName = c.Name;
+			if (_currentSkin.Grids.TryGetValue("PlayListGrid", out var plGrid))
+			{
+				foreach (Control c in playListForm.Controls)
+				{
+					if (c is DataGridView grid)
+					{
+						grid.BackgroundColor = plGrid.ListBackColor;
+						grid.RowsDefaultCellStyle.BackColor = plGrid.ListBackColor;
+						grid.RowsDefaultCellStyle.ForeColor = plGrid.ListForeColor;
+						grid.ForeColor = plGrid.ListForeColor;
+						grid.Left = plGrid.ListPosition.Left;
+						grid.Top = plGrid.ListPosition.Top;
+						grid.Width = plGrid.ListPosition.Width;
+						grid.Height = plGrid.ListPosition.Height;
+					}
+				}
+			}
 
-                if (c is Button btn && buttonMap.TryGetValue(cName, out var bc))
-                {
-                    if (bc.BackImage == null || !bc.Enabled)
-                    {
-                        // 定義なし or 無効のボタンは非表示
-                        btn.Visible = false;
-                        btn.Enabled = false;
-                        continue;
-                    }
-                    btn.AutoSize = false;
-                    btn.BackgroundImage = bc.BackImage;
-                    btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-                    btn.Top = bc.Position.Top;
-                    btn.Left = bc.Position.Left;
-                    btn.Width = bc.Position.Width;
-                    btn.Height = bc.Position.Height;
-                    btn.Enabled = bc.Enabled;
-                    btn.Visible = bc.Enabled;
-                    btn.Refresh();
-                }
-                else if (c is CustomSlider slider && sliderMap.TryGetValue(cName, out var sc))
-                {
-                    if (sc.SliderImage == null) continue;
-                    slider.SliderImage = sc.SliderImage;
-                    slider.Orientation = sc.Orientation;
-                    slider.Minimum = sc.Minimum;
-                    slider.Maximum = sc.Maximum;
-                    slider.Top = sc.Position.Top;
-                    slider.Left = sc.Position.Left;
-                    slider.Width = sc.Position.Width;
-                    slider.Height = sc.Position.Height;
-                    slider.Enabled = sc.Enabled;
-                    slider.Visible = sc.Enabled;
-                    slider.Value = 0;
-                    slider.Refresh();
-                }
-                else if (c is ScrollLabel lbl && labelMap.TryGetValue(cName, out var gc))
-                {
-                    lbl.BackColor = Color.Transparent;
-                    lbl.Value.Font = gc.Font;
-                    lbl.Value.ForeColor = gc.FontColor;
-                    lbl.Top = gc.Position.Top;
-                    lbl.Left = gc.Position.Left;
-                    lbl.Width = gc.Position.Width;
-                    lbl.Height = gc.Position.Height;
-                    lbl.Enabled = gc.Enabled;
-                    lbl.Visible = gc.Enabled;
-
-                    // 内部Labelのサイズをリセット
-                    lbl.Value.Left = 0;
-                    lbl.Value.Width = gc.Position.Width;
-                    lbl.Value.Height = gc.Position.Height;
-
-                    // スクロール設定
-                    lbl.ScrollEnable = gc.ScrollEnable;
-                    lbl.Timer.Interval = gc.Interval > 0 ? gc.Interval : 100;
-                    lbl.Timer.Enabled = gc.Interval > 0;
-                }
-            }
-
-            this.Refresh();
-
-            // プレイリストフォーム
-            playListForm.Left = Left - skin.PlayListForm.Position.Left;
-            playListForm.Top = Top - skin.PlayListForm.Position.Top;
-            playListForm.BackgroundImage = skin.PlayListForm.BackImage;
-            playListForm.Width = skin.PlayListForm.Position.Width;
-            playListForm.Height = skin.PlayListForm.Position.Height;
-            playListForm.TransparencyKey = skin.PlayListForm.TransparentKey;
-            playListForm.Refresh();
-
-            var plButtonMap = new Dictionary<string, ButtonComponents>
-            {
-                { "PBtnOpen",   skin.PBtnOpen   },
-                { "PBtnSave",   skin.PBtnSave   },
-                { "PBtnRemove", skin.PBtnRemove },
-                { "PBtnUp",     skin.PBtnUp     },
-                { "PBtnDown",   skin.PBtnDown   },
-                { "PBtnClose",  skin.PBtnClose  },
-                { "PBtnClear",  skin.PBtnClear  },
-            };
-
-            foreach (Control c in playListForm.Controls)
-            {
-                string cName = c.Name;
-
-                if (c is DataGridView grid)
-                {
-                    grid.BackgroundColor = skin.PlayListGrid.ListBackColor;
-                    grid.RowsDefaultCellStyle.BackColor = skin.PlayListGrid.ListBackColor;
-                    grid.RowsDefaultCellStyle.ForeColor = skin.PlayListGrid.ListForeColor;
-                    grid.ForeColor = skin.PlayListGrid.ListForeColor;
-                    grid.Left = skin.PlayListGrid.ListPosition.Left;
-                    grid.Top = skin.PlayListGrid.ListPosition.Top;
-                    grid.Width = skin.PlayListGrid.ListPosition.Width;
-                    grid.Height = skin.PlayListGrid.ListPosition.Height;
-                }
-                else if (c is Button btn && plButtonMap.TryGetValue(cName, out var bc))
-                {
-                    if (bc.BackImage == null || !bc.Enabled)
-                    {
-                        btn.Visible = false;
-                        btn.Enabled = false;
-                        continue;
-                    }
-                    btn.AutoSize = false;
-                    btn.BackgroundImage = bc.BackImage;
-                    btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-                    btn.Top = bc.Position.Top;
-                    btn.Left = bc.Position.Left;
-                    btn.Width = bc.Position.Width;
-                    btn.Height = bc.Position.Height;
-                    btn.Enabled = bc.Enabled;
-                    btn.Visible = bc.Enabled;
-                    btn.Refresh();
-                }
-            }
-        }
+			// PlayListFormのボタン
+			var plButtons = _currentSkin.GetFormButtons("PlayListForm");
+			foreach (Control c in playListForm.Controls)
+			{
+				if (c is Button btn && plButtons.TryGetValue(c.Name, out var bc))
+				{
+					if (bc.BackImage == null || !bc.Enabled)
+					{ btn.Visible = false; btn.Enabled = false; continue; }
+					btn.AutoSize = false;
+					btn.BackgroundImage = bc.BackImage;
+					btn.BackgroundImageLayout = ImageLayout.None;
+					btn.Top = bc.Position.Top;
+					btn.Left = bc.Position.Left;
+					btn.Width = bc.Position.Width;
+					btn.Height = bc.Position.Height;
+					btn.Enabled = bc.Enabled;
+					btn.Visible = bc.Enabled;
+					btn.Refresh();
+				}
+			}
+		}
         /// <summary>
         /// ファイルを開く
         /// </summary>
@@ -346,32 +302,12 @@ namespace MediaPlayer_X_Ark
         }
         private Dictionary<string, ButtonComponents> GetButtonMap()
         {
-            return new Dictionary<string, ButtonComponents>
-            {
-                { "BtnOpen",        _currentSkin.BtnOpen        },
-                { "BtnClose",       _currentSkin.BtnClose       },
-                { "BtnPlay",        _currentSkin.BtnPlay        },
-                { "BtnStop",        _currentSkin.BtnStop        },
-                { "BtnBack",        _currentSkin.BtnBack        },
-                { "BtnSeekBack",    _currentSkin.BtnSeekBack    },
-                { "BtnPause",       _currentSkin.BtnPause       },
-                { "BtnSeekForward", _currentSkin.BtnSeekForward },
-                { "BtnNext",        _currentSkin.BtnNext        },
-                { "BtnRandom",      _currentSkin.BtnRandom      },
-                { "BtnLoop",        _currentSkin.BtnLoop        },
-                { "BtnSetting",     _currentSkin.BtnSetting     },
-                { "BtnPlaylist",    _currentSkin.BtnPlaylist    },
-                { "BtnMinisize",    _currentSkin.BtnMinisize    },
-                { "BtnCD",          _currentSkin.BtnCD          },
-                { "PBtnOpen",       _currentSkin.PBtnOpen       },
-                { "PBtnSave",       _currentSkin.PBtnSave       },
-                { "PBtnRemove",     _currentSkin.PBtnRemove     },
-                { "PBtnUp",         _currentSkin.PBtnUp         },
-                { "PBtnDown",       _currentSkin.PBtnDown       },
-                { "PBtnClose",      _currentSkin.PBtnClose      },
-                { "PBtnClear",      _currentSkin.PBtnClear      },
-            };
-        }
+			var map = new Dictionary<string, ButtonComponents>(_currentSkin.Buttons);
+			foreach (var formButtons in _currentSkin.FormButtons.Values)
+				foreach (var kv in formButtons)
+					map[kv.Key] = kv.Value;
+			return map;
+		}
 		private bool _isHandlingTrackEnded = false;
 		/// =============================================================
 		/// 各コントロールイベント
@@ -539,18 +475,22 @@ namespace MediaPlayer_X_Ark
         /// <param name="e"></param>
         private void MainForm_MouseMove(object sender, MouseEventArgs e)
         {
-            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
-            {
-                Left += e.X - mousePoint.X;
-                Top += e.Y - mousePoint.Y;
-                // マグネットモードONのスキンの場合はドッキング位置に表示
-                if (_currentSkin != null && _currentSkin.PlayListForm.MagnetMode)
-                {
-                    playListForm.Left = Left - _currentSkin.PlayListForm.Position.Left;
-                    playListForm.Top = Top - _currentSkin.PlayListForm.Position.Top;
-                }
-            }
-        }
+			if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+			{
+				Left += e.X - mousePoint.X;
+				Top += e.Y - mousePoint.Y;
+
+				var plForm = _currentSkin?["PlayListForm"];
+				if (plForm != null)
+				{
+                    if (plForm.MagnetMode)
+                    {
+						playListForm.Left = Left - plForm.Position.Left;
+						playListForm.Top = Top - plForm.Position.Top;
+					}
+				}
+			}
+		}
 
         /// <summary>
         /// フォームクローズ処理
@@ -750,20 +690,22 @@ namespace MediaPlayer_X_Ark
         }
         private void BtnLoop_MouseUp(object sender, MouseEventArgs e)
         {
-            switch (player.loop)
-            {
-                case LOOP_MODE.LOOP_NONE:
-                    ((Button)sender).BackgroundImage = _currentSkin.BtnLoop.BackImage;
-                    break;
-                case LOOP_MODE.LOOP_ONE_REPEAT:
-                    ((Button)sender).BackgroundImage = _currentSkin.BtnLoop.DownImage;
-                    break;
-                case LOOP_MODE.LOOP_ALL:
-                    ((Button)sender).BackgroundImage = _currentSkin.BtnLoop.OptionalImage;
-                    break;
-            }
-            ((Button)sender).Refresh();
-        }
+			if (!_currentSkin.Buttons.TryGetValue("BtnLoop", out var bc)) return;
+
+			switch (player.loop)
+			{
+				case LOOP_MODE.LOOP_NONE:
+					((Button)sender).BackgroundImage = bc.BackImage;
+					break;
+				case LOOP_MODE.LOOP_ONE_REPEAT:
+					((Button)sender).BackgroundImage = bc.DownImage;
+					break;
+				case LOOP_MODE.LOOP_ALL:
+					((Button)sender).BackgroundImage = bc.OptionalImage;
+					break;
+			}
+			((Button)sender).Refresh();
+		}
         private void BtnSetting_MouseUp(object sender, MouseEventArgs e)
         {
             BtnUpEvent(ref sender);
@@ -792,9 +734,11 @@ namespace MediaPlayer_X_Ark
 
             try
             {
-                if (OpenFileDialog.ShowDialog() == DialogResult.OK)
+				_openFileDialogMedia.InitialDirectory = config.settings.LastMediaDirectory;
+				if (_openFileDialogMedia.ShowDialog() == DialogResult.OK)
                 {
-                    OpenFile(OpenFileDialog.FileName);
+					config.settings.LastMediaDirectory = Path.GetDirectoryName(_openFileDialogMedia.FileName);
+					OpenFile(_openFileDialogMedia.FileName);
                 }
             }
             catch (Exception ex)
@@ -876,7 +820,9 @@ namespace MediaPlayer_X_Ark
         }
         private void BtnLoop_Click(object sender, EventArgs e)
         {
-            switch (player.loop)
+			if (!_currentSkin.Buttons.TryGetValue("BtnLoop", out var bc)) return;
+
+			switch (player.loop)
             {
                 case LOOP_MODE.LOOP_NONE:
                     player.loop = LOOP_MODE.LOOP_ONE_REPEAT;
@@ -888,8 +834,8 @@ namespace MediaPlayer_X_Ark
                     player.loop = LOOP_MODE.LOOP_NONE;
                     break;
             }
-            ((Button)sender).BackgroundImage = _currentSkin.BtnLoop.DownImage;
-            ((Button)sender).Refresh();
+			((Button)sender).BackgroundImage = bc.DownImage;
+			((Button)sender).Refresh();
         }
         private void BtnSetting_Click(object sender, EventArgs e)
         {
@@ -904,11 +850,15 @@ namespace MediaPlayer_X_Ark
             }
 
             playListForm.Show(this);
+			var plForm = _currentSkin?["PlayListForm"];
 
-            playListForm.Left = Left - _currentSkin.PlayListForm.Position.Left;
-            playListForm.Top = Top - _currentSkin.PlayListForm.Position.Top;
+			if (plForm != null)
+			{
+				playListForm.Left = Left - plForm.Position.Left;
+				playListForm.Top = Top - plForm.Position.Top;
+			}
 
-        }
+		}
         private void BtnMinisize_Click(object sender, EventArgs e)
         {
             this.Hide();

@@ -49,9 +49,6 @@ namespace MediaPlayer_X_Ark.Engine
 		private bool _disposed = false;  // 二重解放防止フラグ
 		private readonly SemaphoreSlim _tagLoadSemaphore = new SemaphoreSlim(3, 3);
 
-        [DllImport("kernel32.dll")]
-		public static extern IntPtr LoadLibrary(string dllToLoad);
-
         public FmodSpectrum spectrum { get; private set; }
         public FmodWave wave { get; private set; }
         public Effector.Effectors effector { get; private set; }
