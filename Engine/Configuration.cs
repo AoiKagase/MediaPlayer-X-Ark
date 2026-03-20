@@ -23,24 +23,31 @@ namespace MediaPlayer_X_Ark.Engine
         /// </summary>
         public int Volume { get; set; }
 
-        /// ===================================
-        /// 出力設定
-        /// ===================================
-        /// <summary>
-        /// 出力形式
-        /// </summary>
-        public int OutputType { get; set; }
+		public bool RestorePlaylist { get; set; } = false;
+		public bool RestorePosition { get; set; } = false;
+		public bool AutoSavePlaylist { get; set; } = false;
+		public bool AlwaysOnTop { get; set; } = false;
+		public int OpenFileAction { get; set; } = 0;
+		public int DefaultSpectrumMode { get; set; } = 0;
+		public bool SnowBlockEnabled { get; set; } = false;
+		/// ===================================
+		/// 出力設定
+		/// ===================================
+		/// <summary>
+		/// 出力形式
+		/// </summary>
+		public int OutputType { get; set; }
 
         /// <summary>
         /// デバイス
         /// </summary>
         public string Device { get; set; }
 
-
-        /// ===================================
-        /// エフェクト
-        /// ===================================
-        public CfgEffectors Effectors { get; set; } = new CfgEffectors();
+		public string SoundFontPath { get; set; } = "";
+		/// ===================================
+		/// エフェクト
+		/// ===================================
+		public CfgEffectors Effectors { get; set; } = new CfgEffectors();
         public Dictionary<string, string> EffectPresets { get; set; } = new Dictionary<string, string>();
         /// <summary>
         /// スキン
@@ -272,17 +279,16 @@ namespace MediaPlayer_X_Ark.Engine
                         break;
                 }
                 settings.Device = engine.GetDeviceGUID();
-
-                // 新形式を優先、なければ旧形式
-                var defaultXsk = Path.Combine(Application.StartupPath, "Skins", "Default", "Default.xsk");
+				// 新形式を優先、なければ旧形式
+				var defaultXsk = Path.Combine(Application.StartupPath, "Skins", "Default", "Default.xsk");
                 var defaultXsf = ".\\bbbs\\bs.xsf"; // 既存のデフォルト
 
                 settings.Skin = File.Exists(defaultXsk) ? defaultXsk : defaultXsf;
             }
-        }
+		}
 
-        // Adapter to expose Configuration via IConfigService without breaking existing code
-        internal class ConfigServiceAdapter : IConfigService
+		// Adapter to expose Configuration via IConfigService without breaking existing code
+		internal class ConfigServiceAdapter : IConfigService
         {
             private readonly Configuration _cfg;
             public ConfigServiceAdapter(Configuration cfg) { _cfg = cfg; }

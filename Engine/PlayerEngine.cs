@@ -79,8 +79,15 @@ namespace MediaPlayer_X_Ark.Engine
         private List<int> _shuffleQueue = new List<int>();
         private int _shuffleQueueIndex = 0;
         private readonly Random _rng = new Random();
+		// SF2パス
+		private string _soundFontPath = "";
+		public string SoundFontPath
+		{
+			get => _soundFontPath;
+			set => _soundFontPath = value ?? "";
+		}
 
-        public List<DEVICE_INFO> DeviceList
+		public List<DEVICE_INFO> DeviceList
         {
             get { return FmodDeviceList; }
         }
@@ -166,6 +173,11 @@ namespace MediaPlayer_X_Ark.Engine
 		/// </summary>
 		public void Initialize(CfgBuffer bufferSettings = null)
 		{
+			// Initialize() 内の先頭に追加
+			var fluidSynthPath = Path.Combine(
+				AppDomain.CurrentDomain.BaseDirectory, "Libs", "fluidsynth.dll");
+			_fluidSynthAvailable = File.Exists(fluidSynthPath);
+
 			// System Create.
 			{
 				// Get Version.
@@ -542,6 +554,8 @@ namespace MediaPlayer_X_Ark.Engine
 			}
 			return result;
 		}
+		private bool _fluidSynthAvailable = false;
+		public bool FluidSynthAvailable => _fluidSynthAvailable;
 
         private static readonly HashSet<string> _trackerExtensions = new HashSet<string>
 			{
@@ -564,9 +578,68 @@ namespace MediaPlayer_X_Ark.Engine
             string ext = Path.GetExtension(filename).ToLower();
             if (ext == ".mid")
 			{
+				if (_fluidSynthAvailable && !string.IsNullOrEmpty(_soundFontPath)
+					&& File.Exists(_soundFontPath))
+				{
+					// ★FluidSynthでPCMにレンダリング
+					try
+					{
+						using (var renderer = new FluidSynthMidiRenderer())
+						  {
+							var pcm = renderer.Render(filename, _soundFontPath);
+							System.Diagnostics.Debug.WriteLine($"PCM size: {pcm.Length}");
+
+							if (pcm != null && pcm.Length > 0)
+							{
+								// ★PlayListを経由せず直接FMOD Soundを生成
+								FMOD.CREATESOUNDEXINFO pcmInfo = new FMOD.CREATESOUNDEXINFO();
+								pcmInfo.cbsize = Marshal.SizeOf(pcmInfo);
+								pcmInfo.length = (uint)pcm.Length;
+								pcmInfo.numchannels = 2;
+								pcmInfo.defaultfrequency = 44100;
+								pcmInfo.format = FMOD.SOUND_FORMAT.PCM16;
+
+								result = FmodCallFunction(FmodSystem.createSound(
+									pcm,
+									FMOD.MODE.OPENMEMORY | FMOD.MODE.OPENRAW |
+									FMOD.MODE._2D | FMOD.MODE.CREATESAMPLE,
+									ref pcmInfo,
+									out sound));
+
+								if (result == FMOD.RESULT.OK)
+								{
+									PlayList[index].Sound = sound;
+									return result;
+								}
+							}
+						}
+					}
+					catch (Exception ex)
+					{
+						lastError = $"FluidSynth error: {ex.Message}";
+						// フォールバック：FMODのDLSで再生
+					}
+				}
+
 				info.suggestedsoundtype = FMOD.SOUND_TYPE.MIDI;
-				result = FmodCallFunction(FmodSystem.createSound(
-					filename, FMOD.MODE.DEFAULT, ref info, out sound));
+				// ★SF2ファイルが設定されている場合は適用
+				IntPtr dlsPtr = IntPtr.Zero;
+				if (!string.IsNullOrEmpty(_soundFontPath) &&
+					File.Exists(_soundFontPath) &&
+					!_fluidSynthAvailable) // FluidSynth未導入時のみDLSを使用
+				{
+					dlsPtr = Marshal.StringToHGlobalAnsi(_soundFontPath);
+					info.dlsname = dlsPtr;
+				}
+				try
+				{
+					result = FmodCallFunction(FmodSystem.createSound(
+						filename, FMOD.MODE.DEFAULT, ref info, out sound));
+				} finally
+				{
+					if (dlsPtr != IntPtr.Zero)
+						Marshal.FreeHGlobal(dlsPtr);
+				}
 			}
             else if (_trackerExtensions.Contains(ext))
             {

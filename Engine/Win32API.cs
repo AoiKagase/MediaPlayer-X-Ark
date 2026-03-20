@@ -67,7 +67,11 @@ namespace MediaPlayer_X_Ark
 
         [DllImport("user32.dll")]
         public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-    }
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		public static extern bool SetDllDirectory(string lpPathName);
+
+	}
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct RECT

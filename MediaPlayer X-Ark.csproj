@@ -32,11 +32,17 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+		<PackageReference Include="nfluidsynth" Version="0.3.1" />
 		<PackageReference Include="System.Data.DataSetExtensions" Version="4.6.0-preview3.19128.7" />
 		<PackageReference Include="z440.atl.core" Version="7.11.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="Mathf.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Forms\_OptionsForm.bak" />
+	  <None Remove="Forms\_OptionsForm.Designer.bak" />
+	  <None Remove="Forms\_OptionsForm.resx.bak" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="Properties\Settings.Designer.cs">
@@ -60,14 +66,8 @@
 	</Target>
 	<Target Name="MoveLibs" AfterTargets="Build">
 		<MakeDir Directories="$(OutputPath)Libs" />
-		<Move SourceFiles="$(OutputPath)fmod.dll"
-			  DestinationFolder="$(OutputPath)Libs\"
-			  Condition="Exists('$(OutputPath)fmod.dll')" />
-		<Move SourceFiles="$(OutputPath)ATL.dll"
-			  DestinationFolder="$(OutputPath)Libs\"
-			  Condition="Exists('$(OutputPath)ATL.dll')" />
-		<Move SourceFiles="$(OutputPath)Ude.NetStandard.dll"
-			  DestinationFolder="$(OutputPath)Libs\"
-			  Condition="Exists('$(OutputPath)Ude.NetStandard.dll')" />
+		<Move SourceFiles="$(OutputPath)fmod.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)fmod.dll')" />
+		<Move SourceFiles="$(OutputPath)ATL.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)ATL.dll')" />
+		<Move SourceFiles="$(OutputPath)Ude.NetStandard.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)Ude.NetStandard.dll')" />
 	</Target>
 </Project>

@@ -344,6 +344,7 @@ namespace MediaPlayer_X_Ark
 
             // ④ Device は init() 後でOK
             player.SetDevice(config.settings.Device);
+			player.SoundFontPath = config.settings.SoundFontPath;
 
 			playListForm = new PlayListForm(this);
             playListForm.Owner = this;

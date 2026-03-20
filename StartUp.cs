@@ -29,8 +29,10 @@ namespace MediaPlayer_X_Ark
 			// ★Libs フォルダのネイティブDLLを先にロード
 			string libsPath = Path.Combine(
 				AppDomain.CurrentDomain.BaseDirectory, "Libs");
+            Win32API.SetDllDirectory(libsPath);
 			Win32API.LoadLibrary(Path.Combine(libsPath, "fmod.dll"));
-
+			// fmod.dllの次に追加
+			Win32API.LoadLibrary(Path.Combine(libsPath, "fluidsynth.dll"));
 			this.EnableVisualStyles = true;
             this.IsSingleInstance = true;
             this.MainForm = new MainForm();

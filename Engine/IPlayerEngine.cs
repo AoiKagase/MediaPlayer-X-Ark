@@ -11,8 +11,9 @@ namespace MediaPlayer_X_Ark.Engine
         string lastError { get; }
         string lastErrFunction { get; }
         FMOD.RESULT lastErrCode { get; }
-
-        BindingList<PlayList> PlayList { get; }
+		bool FluidSynthAvailable { get; }
+		string SoundFontPath { get; set; }
+		BindingList<PlayList> PlayList { get; }
         List<DEVICE_INFO> DeviceList { get; }
         LOOP_MODE loop { get; set; }
         FmodSpectrum spectrum { get; }
