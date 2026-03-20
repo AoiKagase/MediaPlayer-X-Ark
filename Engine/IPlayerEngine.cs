@@ -27,7 +27,8 @@ namespace MediaPlayer_X_Ark.Engine
         // ── 再生制御 ─────────────────────────────────
         bool IsPlaying();
         FMOD.RESULT PlaySound(int index);
-        FMOD.RESULT PlayUrl(string url);
+		FMOD.RESULT PlaySoundPaused(int index, uint position = 0);
+		FMOD.RESULT PlayUrl(string url);
         void Stop();
         void Pause();
 		void PlayNext();

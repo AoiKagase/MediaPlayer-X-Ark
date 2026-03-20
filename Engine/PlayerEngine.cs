@@ -454,7 +454,28 @@ namespace MediaPlayer_X_Ark.Engine
 			_nowPlaying = true;
 			return result;
 		}
+		public FMOD.RESULT PlaySoundPaused(int index, uint position = 0)
+		{
+			if (index >= PlayList.Count) return FMOD.RESULT.OK;
 
+			if (FmodChannel.hasHandle())
+				FmodChannel.stop();
+
+			var loadResult = LoadSound(index);
+			if (loadResult != FMOD.RESULT.OK) return loadResult;
+
+			PlayingIndex = index;
+
+			// ★paused=true で再生開始（音が出ない）
+			var result = FmodCallFunction(FmodSystem.playSound(
+				PlayList[index].Sound, FmodChannelGroup, true, out FmodChannel));
+
+			if (result == FMOD.RESULT.OK && position > 0)
+				FmodChannel.setPosition(position, FMOD.TIMEUNIT.MS);
+
+			_nowPlaying = true;
+			return result;
+		}
 		public uint GetLength(int index)
         {
 			uint length = 0;
@@ -462,6 +483,11 @@ namespace MediaPlayer_X_Ark.Engine
                 return 0;
 
             FmodCallFunction(PlayList[index].Sound.getLength(out length, TIMEUNIT.MS));
+
+			// ★FMODで取得できない場合はATLの値を使用
+			if (length == 0 || length == 0xFFFFFFFF)
+				length = PlayList[index].LengthMs;
+
 			return length;
         }
 
@@ -645,7 +671,7 @@ namespace MediaPlayer_X_Ark.Engine
             {
                 // トラッカー形式はcreateSound
                 result = FmodCallFunction(FmodSystem.createSound(
-                    filename, FMOD.MODE.DEFAULT, ref info, out sound));
+                    filename, FMOD.MODE.DEFAULT | FMOD.MODE.ACCURATETIME | FMOD.MODE.LOOP_OFF, ref info, out sound));
             }
             else
 			{

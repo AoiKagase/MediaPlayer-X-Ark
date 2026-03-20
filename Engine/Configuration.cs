@@ -57,6 +57,10 @@ namespace MediaPlayer_X_Ark.Engine
 		public CfgBuffer Buffer { get; set; } = new CfgBuffer();
 
 		public string LastMediaDirectory { get; set; } = "";
+
+		public string LastPlaylistPath { get; set; } = "";
+		public int LastPlayingIndex { get; set; } = -1;
+		public uint LastPlayingPosition { get; set; } = 0;
 	}
 	public class CfgBuffer
 	{

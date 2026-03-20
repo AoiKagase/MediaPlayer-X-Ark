@@ -61,6 +61,7 @@ namespace MediaPlayer_X_Ark
 		/// </summary>
 		private RECT src1 = new RECT(0, 0, 1, 1);
 
+		public bool SnowBlockEnabled { get; set; } = true;      
 		/// <summary>
 		/// スペクトラム間隔
 		/// </summary>
@@ -313,7 +314,6 @@ namespace MediaPlayer_X_Ark
 										break;
 
 									// SNOW BLOCK / BAR
-									case 3:
 									default:
 										if (mFFT != null)
 										{
@@ -348,11 +348,13 @@ namespace MediaPlayer_X_Ark
 												//	var snowDst = new Rectangle(line3.Left, line3.Top, line3.Right - line3.Left, 1);
 												//	g.DrawImage(_BitmapSnow, snowDst, snowSrc, GraphicsUnit.Pixel);
 												//}
-												g.FillRectangle(snowBrush, line3.Left, line3.Top,
-													line3.Right - line3.Left, 1);
+												// ★SnowBlockはSnowBlockEnabledがtrueの時のみ
+												if (SnowBlockEnabled)
+													g.FillRectangle(snowBrush, line3.Left, line3.Top,
+														line3.Right - line3.Left, 1);
 
 												// Spectrum Bar 描画
-												if (Mode != 3 && _BitmapSpectrum != null)
+												if (_BitmapSpectrum != null)
 												{
 													var barSrc = new Rectangle(line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top);
 													var barDst = new Rectangle(line1.Left, line1.Top, line1.Right - line1.Left, line1.Bottom - line1.Top);

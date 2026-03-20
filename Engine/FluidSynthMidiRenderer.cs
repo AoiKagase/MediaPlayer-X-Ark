@@ -24,9 +24,7 @@ namespace MediaPlayer_X_Ark.Engine
 			settings[ConfigurationKeys.SynthAudioChannels].IntValue = 2;
 			//settings[ConfigurationKeys.PlayerTimingSource].StringValue = "sample";
 			//settings[ConfigurationKeys.SynthLockMemory].IntValue = 0;
-			settings[ConfigurationKeys.SynthGain].DoubleValue = 0.5;
 			settings[ConfigurationKeys.SynthMidiBankSelect].StringValue = "gs";
-			settings["synth.midi-bank-select"].StringValue = "gs";
 			using (var synth = new Synth(settings))
 			using (var player = new Player(synth))
 			{

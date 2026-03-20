@@ -22,10 +22,11 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		private RadioButton _rdoOpenFileAdd;     // 常に追加のみ
 
 		private Button _btnSave;
-
-		public GeneralSettingsControl(IPlayerEngine engine, IConfigService config)
+		private MainForm _mainForm;
+		public GeneralSettingsControl(IPlayerEngine engine, IConfigService config, MainForm mainForm)
 			: base(engine, config)
 		{
+			_mainForm = mainForm;
 			BuildLayout();
 		}
 
@@ -77,6 +78,12 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
 			y += grpStartup.Height + 12;
 
+			_chkRestorePlaylist.CheckedChanged += (s, e) =>
+			{
+				_chkRestorePosition.Enabled = _chkRestorePlaylist.Checked;
+				if (!_chkRestorePlaylist.Checked)
+					_chkRestorePosition.Checked = false;
+			};
 			// ===========================
 			// ファイルを開いた時の動作
 			// ===========================
@@ -137,6 +144,9 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			_chkAutoSavePlaylist.Checked = Config.settings.AutoSavePlaylist;
 			_chkAlwaysOnTop.Checked = Config.settings.AlwaysOnTop;
 
+			// ★RestorePlaylistがOFFの場合はRestorePositionを無効化
+			_chkRestorePosition.Enabled = _chkRestorePlaylist.Checked;
+
 			switch (Config.settings.OpenFileAction)
 			{
 				case 1: _rdoOpenFilePlay.Checked = true; break;
@@ -155,6 +165,9 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			if (_rdoOpenFilePlay.Checked) Config.settings.OpenFileAction = 1;
 			else if (_rdoOpenFileAdd.Checked) Config.settings.OpenFileAction = 2;
 			else Config.settings.OpenFileAction = 0;
+
+			// ★即時反映
+			_mainForm.TopMost = Config.settings.AlwaysOnTop;
 		}
 
 		private void BtnSave_Click(object sender, EventArgs e)

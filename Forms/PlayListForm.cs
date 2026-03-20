@@ -311,6 +311,8 @@ namespace MediaPlayer_X_Ark
 				MainForm.player.PlayList.RemoveAt(i);
                 MainForm.player.UpdateShuffleQueueOnRemove(i);
             }
+
+			mainForm.AutoSavePlaylist();
 		}
 
 		/// <summary>

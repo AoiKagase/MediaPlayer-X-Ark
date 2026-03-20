@@ -33,6 +33,7 @@ namespace MediaPlayer_X_Ark.Forms
 			_engine = engine;
 			_config = config;
 			_mainForm = mainForm;
+			this.Owner = mainForm;
 		}
 		private void OptionsForm_Load(object sender, EventArgs e)
 		{
@@ -116,8 +117,8 @@ namespace MediaPlayer_X_Ark.Forms
 		private void RegisterControls()
 		{
 			// ★順次追加していく
-			_controls["GENERAL"] = new GeneralSettingsControl(_engine, _config);
-			_controls["DISPLAY"] = new DisplaySettingsControl(_engine, _config);
+			_controls["GENERAL"] = new GeneralSettingsControl(_engine, _config, _mainForm);
+			_controls["DISPLAY"] = new DisplaySettingsControl(_engine, _config, _mainForm);
 			_controls["OUTPUT"] = new OutputSettingsControl(_engine, _config, _mainForm);
 			_controls["SKIN"] = new SkinSettingsControl(_engine, _config, _mainForm);
 			_controls["GEQ"] = new GEQControl(_engine, _config);

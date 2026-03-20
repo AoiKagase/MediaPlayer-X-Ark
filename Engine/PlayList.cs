@@ -66,6 +66,11 @@ namespace MediaPlayer_X_Ark.Engine
 				return time1.ToString(@"mm\:ss");
 			}
 		}
+		[Browsable(false)]
+		public uint LengthMs
+		{
+			get { return this._length; }
+		}
 		public void SetLength(uint length)
 		{
 			this._length = length;

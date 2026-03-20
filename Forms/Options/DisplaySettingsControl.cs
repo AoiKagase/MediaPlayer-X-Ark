@@ -10,10 +10,12 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		private ComboBox _cmbSpectrumMode;
 		private CheckBox _chkSnowBlock;
 		private Button _btnSave;
+		private MainForm _mainForm;
 
-		public DisplaySettingsControl(IPlayerEngine engine, IConfigService config)
+		public DisplaySettingsControl(IPlayerEngine engine, IConfigService config, MainForm mainForm)
 			: base(engine, config)
 		{
+			_mainForm = mainForm;
 			BuildLayout();
 		}
 
@@ -47,10 +49,10 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			};
 			_cmbSpectrumMode.Items.AddRange(new object[]
 			{
-				"0: スペクトラム（バー）",
-				"1: スペクトラム（ライン）",
-				"2: スペクトラム（スノー）",
-				"3: スペクトラム（スノーブロック）",
+				"0: スペクトラム（密）",
+				"1: スペクトラム",
+				"2: スペクトラム（中）",
+				"3: スペクトラム（疎）",
 				"4: ウェーブフォーム",
 			});
 
@@ -95,6 +97,9 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		{
 			Config.settings.DefaultSpectrumMode = _cmbSpectrumMode.SelectedIndex;
 			Config.settings.SnowBlockEnabled = _chkSnowBlock.Checked;
+
+			// ★即時反映
+			_mainForm.ApplyDisplaySettings();
 		}
 
 		private void BtnSave_Click(object sender, EventArgs e)
