@@ -90,6 +90,7 @@ namespace MediaPlayer_X_Ark.Forms
 			var nodeCompressor = new TreeNode("Compressor") { Name = "COMPRESSOR" };
 			var nodeReverb = new TreeNode("Reverb") { Name = "REVERB" };
 			var nodeSkin = new TreeNode("スキン") { Name = "SKIN" };
+			var nodeCddb = new TreeNode("CDDB") { Name = "CDDB" };
 			var nodeExtensions = new TreeNode("関連付け") { Name = "EXTENSIONS" };
 			var nodeAbout = new TreeNode("About") { Name = "ABOUT" };
 
@@ -103,7 +104,7 @@ namespace MediaPlayer_X_Ark.Forms
 
 			var nodeOther = new TreeNode("その他", new TreeNode[]
 			{
-				nodeExtensions, nodeAbout
+				nodeCddb, nodeExtensions, nodeAbout
 			})
 			{ Name = "OTHER" };
 
@@ -132,6 +133,7 @@ namespace MediaPlayer_X_Ark.Forms
 			_controls["COMPRESSOR"] = new Options.Effects.CompressorControl(_engine, _config);
 			_controls["REVERB"] = new Options.Effects.ReverbControl(_engine, _config);
 			_controls["PITCH"] = new Options.Effects.PitchControl(_engine, _config);
+			_controls["CDDB"] = new CddbSettingsControl(_engine, _config);
 			_controls["EXTENSIONS"] = new ExtensionsControl(_engine, _config);
 			_controls["ABOUT"] = new AboutControl(_engine, _config);
 			// ...

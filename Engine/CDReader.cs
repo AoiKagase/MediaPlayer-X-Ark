@@ -191,8 +191,10 @@ namespace MediaPlayer_X_Ark.Engine
                     // リードアウトはLastTrack+1番目のエントリ
                     TRACK_DATA leadOut = toc.TrackData[toc.LastTrack - toc.FirstTrack + 1];
                     LeadOutSector = MsfToLba(leadOut.Address) + MSF_OFFSET;
-
-                    _tracks.Add(new CdTrackInfo
+					TRACK_DATA first = toc.TrackData[0];
+					TotalSeconds = (leadOut.Address[1] * 60 + leadOut.Address[2]) 
+						- (first.Address[1]   * 60 + first.Address[2]);
+					_tracks.Add(new CdTrackInfo
 					{
 						TrackNumber = current.TrackNumber,
 						StartSector = startSector,

@@ -375,7 +375,7 @@ namespace MediaPlayer_X_Ark
 			playListForm.Owner = this;
 
 			optionsForm = new OptionsForm(player, config, this);
-			cdForm = new CDForm(this);
+			cdForm = new CDForm(this, config);
 			// ★管理リストに追加
 			_managedForms.Add(playListForm);
 			_managedForms.Add(optionsForm);

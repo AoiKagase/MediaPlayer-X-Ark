@@ -61,6 +61,14 @@ namespace MediaPlayer_X_Ark.Engine
 		public string LastPlaylistPath { get; set; } = "";
 		public int LastPlayingIndex { get; set; } = -1;
 		public uint LastPlayingPosition { get; set; } = 0;
+
+		public List<string> CddbServers { get; set; } = DefaultCddbServers();
+
+		public static List<string> DefaultCddbServers() => new List<string>
+        {
+			"http://freedbtest.dyndns.org:80/~cddb/cddb.cgi",  // 日本優先
+			"http://gnudb.gnudb.org/~cddb/cddb.cgi",        // フォールバック
+        };
 	}
 	public class CfgBuffer
 	{

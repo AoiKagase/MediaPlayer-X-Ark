@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -17,8 +18,9 @@ namespace MediaPlayer_X_Ark.Forms
     {
         private readonly IPlayerEngine _player;
         private int _currentIndex {  get; set; }
+		private CancellationTokenSource _coverArtCts;
 
-        public FileInfoForm(IPlayerEngine player)
+		public FileInfoForm(IPlayerEngine player)
         {
             _player = player;
             InitializeComponent();
@@ -51,40 +53,78 @@ namespace MediaPlayer_X_Ark.Forms
             lblFileNameVal.ContextMenuStrip = fileNameMenu;
         }
 
-        public void LoadInfo(int index)
-        {
-            if (index < 0 || index >= _player.PlayList.Count) return;
-            _currentIndex = index;
-            var item = _player.PlayList[index];
+		// ── LoadInfo() の差し替え ─────────────────────────────────────────
+		public void LoadInfo(int index)
+		{
+			if (index < 0 || index >= _player.PlayList.Count) return;
+			_currentIndex = index;
+			var item = _player.PlayList[index];
 
-            // 基本情報
-            lblTitleVal.Text = item.Title ?? "-";
-            lblArtistVal.Text = item.Artist ?? "-";
-            lblAlbumVal.Text = item.Album ?? "-";
-            lblFileNameVal.Text = item.FileName;
-            lblFormatVal.Text = item.Format.ToString();
-            lblBitVal.Text = item.Bit > 0 ? $"{item.Bit}bit" : "-";
-            lblLengthVal.Text = item.length;
+			// 基本情報
+			lblTitleVal.Text = item.Title ?? "-";
+			lblArtistVal.Text = item.Artist ?? "-";
+			lblAlbumVal.Text = item.Album ?? "-";
+			lblFileNameVal.Text = item.FileName;
+			lblFormatVal.Text = item.Format.ToString();
+			lblBitVal.Text = item.Bit > 0 ? $"{item.Bit}bit" : "-";
+			lblLengthVal.Text = item.length;
 
-            // サンプルレート・チャンネル
-            if (item.IsLoaded)
-            {
-                int freq, channels, bits;
-                FMOD.SOUND_FORMAT fmt;
-                FMOD.SOUND_TYPE type;
-                item.Sound.getFormat(out type, out fmt, out channels, out bits);
-                item.Sound.getDefaults(out float defaultFreq, out _);
-                lblSampleRateVal.Text = $"{(int)defaultFreq}Hz";
-                lblChannelVal.Text = channels == 1 ? "Mono" : "Stereo";
-            }
+			// サンプルレート・チャンネル
+			if (item.IsLoaded)
+			{
+				item.Sound.getFormat(out _, out _, out int channels, out _);
+				item.Sound.getDefaults(out float defaultFreq, out _);
+				lblSampleRateVal.Text = $"{(int)defaultFreq}Hz";
+				lblChannelVal.Text = channels == 1 ? "Mono" : "Stereo";
+			}
 
-			// カバーアート
-			// TODO: プラグインシステム実装後にカバーアート取得に差し替え
+			// ── カバーアート取得（非同期・優先順位付き）──────────────────
+			// 前回の非同期処理をキャンセル
+			_coverArtCts?.Cancel();
+			_coverArtCts = new CancellationTokenSource();
+			var ct = _coverArtCts.Token;
+
+			// まず ATL（埋め込み）を試みる
 			var cover = MainForm.player.GetCoverArt(_currentIndex);
-			picCover.Image = cover ?? SetDummyCoverArt();
+			if (cover != null)
+			{
+				picCover.Image = cover;
+			}
+			else
+			{
+				// ダミーを先に表示しておき、バックグラウンドで MusicBrainz を試みる
+				picCover.Image = SetDummyCoverArt();
+				_ = FetchCoverArtFallbackAsync(item.Artist, item.Album, ct);
+			}
 		}
-        // カバーアートはダミー表示
-        private Image SetDummyCoverArt()
+
+		/// <summary>
+		/// MusicBrainz Cover Art Archive からカバー画像を非同期取得する。
+		/// 取得できたら UI スレッドで picCover に反映する。
+		/// </summary>
+		private async System.Threading.Tasks.Task FetchCoverArtFallbackAsync(
+			string artist, string album, CancellationToken ct)
+		{
+			if (string.IsNullOrEmpty(album)) return;
+
+			System.Drawing.Image img = null;
+			try
+			{
+				img = await Engine.CoverArtClient.FetchByArtistAlbumAsync(artist, album, ct);
+			}
+			catch { return; }
+
+			if (ct.IsCancellationRequested || img == null) return;
+
+			// UI スレッドで更新
+			if (picCover.IsDisposed || IsDisposed) return;
+			if (InvokeRequired)
+				Invoke(new Action(() => { if (!picCover.IsDisposed) picCover.Image = img; }));
+			else
+				picCover.Image = img;
+		}
+		// カバーアートはダミー表示
+		private Image SetDummyCoverArt()
         {
             // グレーの四角をダミーとして表示
             var bmp = new Bitmap(picCover.Width, picCover.Height);

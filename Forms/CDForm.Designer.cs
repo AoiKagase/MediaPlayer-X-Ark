@@ -28,7 +28,9 @@ namespace MediaPlayer_X_Ark
             this.BtnRefresh      = new System.Windows.Forms.Button();
             this.BtnEject        = new System.Windows.Forms.Button();
             this.BtnClose        = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+			this.BtnCddb         = new System.Windows.Forms.Button();
+
+			this.SuspendLayout();
 
             // lblDrive
             this.lblDrive.AutoSize = true;
@@ -70,16 +72,16 @@ namespace MediaPlayer_X_Ark
             this.lstTracks.Location          = new System.Drawing.Point(12, 44);
             this.lstTracks.Name              = "lstTracks";
             this.lstTracks.SelectionMode     = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstTracks.Size              = new System.Drawing.Size(303, 244);
-            this.lstTracks.TabIndex          = 3;
+			this.lstTracks.Size              = new System.Drawing.Size(436, 244);
+			this.lstTracks.TabIndex          = 3;
             this.lstTracks.DoubleClick      += new System.EventHandler(this.lstTracks_DoubleClick);
-
+			
             // lblStatus
-            this.lblStatus.AutoSize  = false;
+			this.lblStatus.AutoSize  = false;
             this.lblStatus.Location  = new System.Drawing.Point(12, 297);
             this.lblStatus.Name      = "lblStatus";
-            this.lblStatus.Size      = new System.Drawing.Size(303, 20);
-            this.lblStatus.Text      = "";
+            this.lblStatus.Size      = new System.Drawing.Size(436, 20);
+			this.lblStatus.Text      = "";
             this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 
             // BtnSelectAll
@@ -112,8 +114,8 @@ namespace MediaPlayer_X_Ark
             // BtnClearPlaylist
             this.BtnClearPlaylist.Location  = new System.Drawing.Point(162, 365);
             this.BtnClearPlaylist.Name      = "BtnClearPlaylist";
-            this.BtnClearPlaylist.Size      = new System.Drawing.Size(153, 30);
-            this.BtnClearPlaylist.TabIndex  = 7;
+ 			this.BtnClearPlaylist.Size      = new System.Drawing.Size(286, 30);
+			this.BtnClearPlaylist.TabIndex  = 7;
             this.BtnClearPlaylist.Text      = "プレイリスト全消去";
             this.BtnClearPlaylist.UseVisualStyleBackColor = true;
             this.BtnClearPlaylist.Click    += new System.EventHandler(this.BtnClearPlaylist_Click);
@@ -127,11 +129,16 @@ namespace MediaPlayer_X_Ark
             this.BtnClose.UseVisualStyleBackColor = true;
             this.BtnClose.Click    += new System.EventHandler(this.BtnClose_Click);
 
+			this.BtnCddb.Text     = "CDDB 問い合わせ";
+			this.BtnCddb.Location = new System.Drawing.Point(325, 9);
+			this.BtnCddb.Size = new System.Drawing.Size(120, 25);
+			this.BtnCddb.Click   += new System.EventHandler(this.BtnCddb_Click);
+			
             // CDForm
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode       = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize          = new System.Drawing.Size(327, 407);
-            this.Controls.Add(this.lblDrive);
+			this.ClientSize          = new System.Drawing.Size(460, 407);
+			this.Controls.Add(this.lblDrive);
             this.Controls.Add(this.cmbDrive);
             this.Controls.Add(this.BtnRefresh);
             this.Controls.Add(this.BtnEject);
@@ -142,7 +149,8 @@ namespace MediaPlayer_X_Ark
             this.Controls.Add(this.BtnAddPlaylist);
             this.Controls.Add(this.BtnClearPlaylist);
             this.Controls.Add(this.BtnClose);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.Controls.Add(this.BtnCddb);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox     = false;
             this.MinimizeBox     = false;
             this.Name            = "CDForm";
@@ -167,5 +175,6 @@ namespace MediaPlayer_X_Ark
         private System.Windows.Forms.Button BtnRefresh;
         private System.Windows.Forms.Button BtnEject;
         private System.Windows.Forms.Button BtnClose;
-    }
+		private System.Windows.Forms.Button BtnCddb;
+	}
 }
