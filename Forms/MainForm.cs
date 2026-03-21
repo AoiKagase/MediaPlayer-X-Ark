@@ -1247,7 +1247,7 @@ namespace MediaPlayer_X_Ark
 
 		private void BtnCD_Click(object sender, EventArgs e)
 		{
-			cdForm.Show();
+			cdForm.Show(this);
 		}
 
 		private void BtnCD_MouseDown(object sender, MouseEventArgs e)
@@ -1310,25 +1310,25 @@ namespace MediaPlayer_X_Ark
 
 		private void InitContextMenu()
 		{
-			var menuOpen = new ToolStripMenuItem("Open(&O)", null, BtnOpenFile_Click, "menuOpen");
-			var menuUrlOpen = new ToolStripMenuItem("URL Open(&R)", null, BtnUrlOpen_Click, "menuUrlOpen");
-			var menuPlay = new ToolStripMenuItem("Play(&P)", null, BtnPlay_Click, "menuPlay");
-			var menuPause = new ToolStripMenuItem("Pause(&H)", null, BtnPause_Click, "menuPause");
-			var menuStop = new ToolStripMenuItem("Stop(&S)", null, BtnStop_Click, "menuStop");
-			var menuBack = new ToolStripMenuItem("Back(&Z)", null, BtnBack_Click, "menuBack");
-			var menuNext = new ToolStripMenuItem("Next(&B)", null, BtnNext_Click, "menuNext");
-			var menuPlayMode = new ToolStripMenuItem("PlayMode", null, null, "menuPlayMode");
-			var menuPlayList = new ToolStripMenuItem("PlayList(&L)", null, BtnPlaylist_Click, "menuPlayList");
-			var menuOption = new ToolStripMenuItem("Option(&T)", null, BtnSetting_Click, "menuOption");
-			var menuEffects = new ToolStripMenuItem("Effects(&E)", null, null, "menuEffects");
-			var menuEqualizer = new ToolStripMenuItem("Equalizer(&Q)", null, null, "menuEqualizer");
-			var menuExtensions = new ToolStripMenuItem("Extensions(&D)", null, null, "menuExtensions");
-			var menuSkinSelect = new ToolStripMenuItem("Skin Select(&A)", null, null, "menuSkinSelect");
-			var menuAutoUpdateCheck = new ToolStripMenuItem("Auto Update Check(&U)", null, null, "menuAutoUpdateCheck");
+			var menuOpen = new ToolStripMenuItem("開く(&O)", null, BtnOpenFile_Click, "menuOpen");
+			var menuUrlOpen = new ToolStripMenuItem("URLを開く(&R)", null, BtnUrlOpen_Click, "menuUrlOpen");
+			var menuPlay = new ToolStripMenuItem("再生(&P)", null, BtnPlay_Click, "menuPlay");
+			var menuPause = new ToolStripMenuItem("一時停止(&H)", null, BtnPause_Click, "menuPause");
+			var menuStop = new ToolStripMenuItem("停止(&S)", null, BtnStop_Click, "menuStop");
+			var menuBack = new ToolStripMenuItem("前へ(&Z)", null, BtnBack_Click, "menuBack");
+			var menuNext = new ToolStripMenuItem("次へ(&B)", null, BtnNext_Click, "menuNext");
+			var menuPlayMode = new ToolStripMenuItem("再生モード", null, null, "menuPlayMode");
+			var menuPlayList = new ToolStripMenuItem("プレイリスト(&L)", null, BtnPlaylist_Click, "menuPlayList");
+			var menuOption = new ToolStripMenuItem("設定(&T)", null, BtnSetting_Click, "menuOption");
+			var menuEffects = new ToolStripMenuItem("エフェクト(&E)", null, null, "menuEffects");
+			var menuEqualizer = new ToolStripMenuItem("イコライザ(&Q)", null, null, "menuEqualizer");
+			var menuExtensions = new ToolStripMenuItem("関連付け(&D)", null, null, "menuExtensions");
+			var menuSkinSelect = new ToolStripMenuItem("スキン設定(&A)", null, null, "menuSkinSelect");
+			var menuAutoUpdateCheck = new ToolStripMenuItem("最新版確認(&U)", null, null, "menuAutoUpdateCheck");
 			var menuAbout = new ToolStripMenuItem("About(&C)", null, null, "menuAbout");
-			var menuHelp = new ToolStripMenuItem("Help(&V)", null, null, "menuHelp");
-			var menuMinimize = new ToolStripMenuItem("Minimize(&X)", null, BtnMinisize_Click, "menuMinimize");
-			var menuExit = new ToolStripMenuItem("Exit(&Z)", null, BtnClose_Click, "menuExit");
+			var menuHelp = new ToolStripMenuItem("ヘルプ(&V)", null, null, "menuHelp");
+			var menuMinimize = new ToolStripMenuItem("最小化(&X)", null, BtnMinisize_Click, "menuMinimize");
+			var menuExit = new ToolStripMenuItem("閉じる(&Z)", null, BtnClose_Click, "menuExit");
 
 			var menuFileInfo = new ToolStripMenuItem("ファイル情報");
 

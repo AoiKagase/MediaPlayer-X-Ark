@@ -17,6 +17,8 @@ namespace MediaPlayer_X_Ark.Engine
 		public TimeSpan Duration => TimeSpan.FromSeconds(SectorCount / 75.0);
         public string Title { get; set; }
         public string DurationText => Duration.ToString(@"mm\:ss");
+
+		public int PlayListIndex { get; set; } = -1;
 	}
 
 	/// <summary>

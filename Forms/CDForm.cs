@@ -21,6 +21,7 @@ namespace MediaPlayer_X_Ark
 			InitializeComponent();
 			_mainForm = mainForm;
 			_config = config;
+			this.Owner = mainForm;
 		}
 
 		private void CDForm_Load(object sender, EventArgs e)
@@ -83,7 +84,11 @@ namespace MediaPlayer_X_Ark
 
 				if (result == FMOD.RESULT.OK)
 				{
-					if (playImmediately)
+					// ★ PlayListIndex を記録
+					_cdReader.Tracks[trackIndex].PlayListIndex = index;
+					// ★ MusicBrainz Disc ID をセット
+					MainForm.player.PlayList[index].MusicBrainzDiscId = _cdReader.MusicBrainzId;
+					if (playImmediately) 
 						_mainForm.PlayLoad(index);
 					lblStatus.Text = $"{title} 完了";
 				}
@@ -144,6 +149,10 @@ namespace MediaPlayer_X_Ark
 					string title = _cdReader.Tracks[trackIndex].Title;
 					int index;
 					MainForm.player.CreateSoundFromPCM(pcmData, title, out index);
+					// ★ PlayListIndex を記録
+					_cdReader.Tracks[trackIndex].PlayListIndex = index;
+
+					MainForm.player.PlayList[index].MusicBrainzDiscId = _cdReader.MusicBrainzId;
 				}
 				catch (Exception ex)
 				{
@@ -366,30 +375,30 @@ namespace MediaPlayer_X_Ark
 		{
 			_appliedResult = result;
 
-			// トラックリストのタイトルを更新
 			lstTracks.Items.Clear();
 			for (int i = 0; i < _cdReader.Tracks.Count; i++)
 			{
-				string title = i < result.Tracks.Count ? result.Tracks[i] : $"Track {i + 1:D2}";
+				string title = i < result.Tracks.Count
+					? result.Tracks[i]
+					: $"Track {i + 1:D2}";
+
+				// CdTrackInfo のタイトルを更新
 				_cdReader.Tracks[i].Title = title;
 				lstTracks.Items.Add($"{title}  [{_cdReader.Tracks[i].DurationText}]");
-			}
-			// ★ PlayList の対応エントリにも Artist / Album を反映する
-			//   CDトラックは CreateSoundFromPCM で追加されるため
-			//   Title でマッチングして更新する
-			foreach (var track in _cdReader.Tracks)
-			{
-				var entry = MainForm.player.PlayList
-					.FirstOrDefault(p => p.Title == track.Title
-									  || p.FileName == track.Title);  // CDはTitleをFileNameに使用
-				if (entry != null)
+
+				// ★ PlayListIndex が有効なエントリに Artist/Album/Title を直接書き込む
+				int plIdx = _cdReader.Tracks[i].PlayListIndex;
+				if (plIdx >= 0 && plIdx < MainForm.player.PlayList.Count)
 				{
+					var entry = MainForm.player.PlayList[plIdx];
+					entry.Title = title;
 					entry.Artist = result.Artist;
 					entry.Album = result.Album;
+					entry.SetLength((uint)_cdReader.Tracks[i].Duration.Milliseconds);
 				}
 			}
-			string info = result.ToString();
-			lblStatus.Text = $"[{result.SourceLabel}] {info}";
+
+			lblStatus.Text = $"[{result.SourceLabel}] {result}";
 		}
 	}
 }

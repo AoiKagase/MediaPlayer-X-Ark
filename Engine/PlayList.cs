@@ -71,6 +71,9 @@ namespace MediaPlayer_X_Ark.Engine
 		{
 			get { return this._length; }
 		}
+		[Browsable(false)]
+		public string MusicBrainzDiscId { get; set; } = null;
+
 		public void SetLength(uint length)
 		{
 			this._length = length;

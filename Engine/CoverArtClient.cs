@@ -8,132 +8,145 @@ using System.Threading.Tasks;
 
 namespace MediaPlayer_X_Ark.Engine
 {
-    /// <summary>
-    /// MusicBrainz Cover Art Archive からカバー画像を取得するクライアント。
-    ///
-    /// 優先順位：
-    ///   1. MusicBrainz Disc ID（CDの場合）→ Cover Art Archive 直引き
-    ///   2. Artist + Album 名 → MusicBrainz 検索 → Cover Art Archive
-    /// </summary>
-    public static class CoverArtClient
-    {
-        private const string MbApiBase  = "https://musicbrainz.org/ws/2";
-        private const string CaaBase    = "https://coverartarchive.org";
-        private const string UserAgent  = "MediaPlayerXArk/1.0 (contact@example.com)";
-        private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(10);
+	/// <summary>
+	/// MusicBrainz Cover Art Archive からカバー画像を取得するクライアント。
+	///
+	/// 優先順位：
+	///   1. MusicBrainz Disc ID（CDの場合）→ Cover Art Archive 直引き
+	///   2. Artist + Album 名 → MusicBrainz 検索 → Cover Art Archive
+	/// </summary>
+	public static class CoverArtClient
+	{
+		private const string MbApiBase = "https://musicbrainz.org/ws/2";
+		private const string CaaBase = "https://coverartarchive.org";
+		private const string UserAgent = "MediaPlayerXArk/1.0 (contact@example.com)";
+		private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(10);
 
-        private static readonly HttpClient _http = new HttpClient
-        {
-            Timeout = Timeout,
-            DefaultRequestHeaders = { { "User-Agent", UserAgent } }
-        };
+		private static readonly HttpClient _http = new HttpClient
+		{
+			Timeout = Timeout,
+			DefaultRequestHeaders = { { "User-Agent", UserAgent } }
+		};
 
-        // ─────────────────────────────────────────
-        //  公開 API
-        // ─────────────────────────────────────────
+		// ─────────────────────────────────────────
+		//  公開 API
+		// ─────────────────────────────────────────
 
-        /// <summary>
-        /// MusicBrainz Disc ID を使ってカバー画像を取得する（CD用）。
-        /// Disc ID から release MBID を解決し Cover Art Archive に問い合わせる。
-        /// </summary>
-        public static async Task<Image> FetchByDiscIdAsync(
-            string discId, CancellationToken ct = default)
-        {
-            if (string.IsNullOrEmpty(discId)) return null;
-            try
-            {
-                // DiscID → 最初の release MBID を取得
-                string mbid = await ResolveReleaseMbidByDiscId(discId, ct);
-                if (mbid == null) return null;
-                return await FetchFromCaa(mbid, ct);
-            }
-            catch { return null; }
-        }
+		/// <summary>
+		/// MusicBrainz Disc ID を使ってカバー画像を取得する（CD用）。
+		/// Disc ID から release MBID を解決し Cover Art Archive に問い合わせる。
+		/// </summary>
+		public static async Task<Image> FetchByDiscIdAsync(
+			string discId, CancellationToken ct = default)
+		{
+			if (string.IsNullOrEmpty(discId)) return null;
+			try
+			{
+				// DiscID → 最初の release MBID を取得
+				string mbid = await ResolveReleaseMbidByDiscId(discId, ct);
+				if (mbid == null) return null;
+				return await FetchFromCaa(mbid, ct);
+			}
+			catch { return null; }
+		}
 
-        /// <summary>
-        /// アーティスト名とアルバム名でカバー画像を取得する（一般ファイル用）。
-        /// MusicBrainz でリリースを検索し Cover Art Archive に問い合わせる。
-        /// </summary>
-        public static async Task<Image> FetchByArtistAlbumAsync(
-            string artist, string album, CancellationToken ct = default)
-        {
-            if (string.IsNullOrEmpty(album)) return null;
-            try
-            {
-                string mbid = await ResolveReleaseMbidBySearch(artist, album, ct);
-                if (mbid == null) return null;
-                return await FetchFromCaa(mbid, ct);
-            }
-            catch { return null; }
-        }
+		/// <summary>
+		/// アーティスト名とアルバム名でカバー画像を取得する（一般ファイル用）。
+		/// MusicBrainz でリリースを検索し Cover Art Archive に問い合わせる。
+		/// </summary>
+		public static async Task<Image> FetchByArtistAlbumAsync(
+			string artist, string album, CancellationToken ct = default)
+		{
+			if (string.IsNullOrEmpty(album)) return null;
+			try
+			{
+				string mbid = await ResolveReleaseMbidBySearch(artist, album, ct);
+				if (mbid == null)
+				{
+					System.Diagnostics.Debug.WriteLine(
+						$"[CoverArt] MBID not found: artist={artist} album={album}");
+					return null;
+				}
 
-        // ─────────────────────────────────────────
-        //  MBID 解決
-        // ─────────────────────────────────────────
+				var img = await FetchFromCaa(mbid, ct);
+				System.Diagnostics.Debug.WriteLine(
+					$"[CoverArt] {(img != null ? "OK" : "No image")} mbid={mbid}");
+				return img;
+			}
+			catch (Exception ex)
+			{
+				System.Diagnostics.Debug.WriteLine($"[CoverArt] Error: {ex.Message}");
+				return null;
+			}
+		}
 
-        private static async Task<string> ResolveReleaseMbidByDiscId(
-            string discId, CancellationToken ct)
-        {
-            string url  = $"{MbApiBase}/discid/{discId}?fmt=json";
-            string json = await _http.GetStringAsync(url);
+		// ─────────────────────────────────────────
+		//  MBID 解決
+		// ─────────────────────────────────────────
 
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
+		private static async Task<string> ResolveReleaseMbidByDiscId(
+			string discId, CancellationToken ct)
+		{
+			string url = $"{MbApiBase}/discid/{discId}?fmt=json";
+			string json = await _http.GetStringAsync(url);
 
-            // releases[0].id
-            if (root.TryGetProperty("releases", out var releases))
-                foreach (var rel in releases.EnumerateArray())
-                    if (rel.TryGetProperty("id", out var id))
-                        return id.GetString();
+			using var doc = JsonDocument.Parse(json);
+			var root = doc.RootElement;
 
-            return null;
-        }
+			// releases[0].id
+			if (root.TryGetProperty("releases", out var releases))
+				foreach (var rel in releases.EnumerateArray())
+					if (rel.TryGetProperty("id", out var id))
+						return id.GetString();
 
-        private static async Task<string> ResolveReleaseMbidBySearch(
-            string artist, string album, CancellationToken ct)
-        {
-            // Lucene クエリ: release:"album" AND artist:"artist"
-            string query = string.IsNullOrEmpty(artist)
-                ? Uri.EscapeDataString($"release:\"{album}\"")
-                : Uri.EscapeDataString($"release:\"{album}\" AND artist:\"{artist}\"");
+			return null;
+		}
 
-            string url  = $"{MbApiBase}/release?query={query}&limit=1&fmt=json";
-            string json = await _http.GetStringAsync(url);
+		private static async Task<string> ResolveReleaseMbidBySearch(
+			string artist, string album, CancellationToken ct)
+		{
+			// Lucene クエリ: release:"album" AND artist:"artist"
+			string query = string.IsNullOrEmpty(artist)
+				? Uri.EscapeDataString($"release:\"{album}\"")
+				: Uri.EscapeDataString($"release:\"{album}\" AND artist:\"{artist}\"");
 
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
+			string url = $"{MbApiBase}/release?query={query}&limit=1&fmt=json";
+			string json = await _http.GetStringAsync(url);
 
-            // releases[0].id
-            if (root.TryGetProperty("releases", out var releases))
-                foreach (var rel in releases.EnumerateArray())
-                    if (rel.TryGetProperty("id", out var id))
-                        return id.GetString();
+			using var doc = JsonDocument.Parse(json);
+			var root = doc.RootElement;
 
-            return null;
-        }
+			// releases[0].id
+			if (root.TryGetProperty("releases", out var releases))
+				foreach (var rel in releases.EnumerateArray())
+					if (rel.TryGetProperty("id", out var id))
+						return id.GetString();
 
-        // ─────────────────────────────────────────
-        //  Cover Art Archive 取得
-        // ─────────────────────────────────────────
+			return null;
+		}
 
-        /// <summary>
-        /// Cover Art Archive から front カバー画像を取得する。
-        /// リダイレクトを自動追従し画像を返す。
-        /// </summary>
-        private static async Task<Image> FetchFromCaa(string releaseMbid, CancellationToken ct)
-        {
-            // CAA は /release/{mbid}/front-500 にリダイレクトを返す
-            string url = $"{CaaBase}/release/{releaseMbid}/front-500";
+		// ─────────────────────────────────────────
+		//  Cover Art Archive 取得
+		// ─────────────────────────────────────────
 
-            var response = await _http.GetAsync(url, HttpCompletionOption.ResponseContentRead);
-            response.EnsureSuccessStatusCode();
+		/// <summary>
+		/// Cover Art Archive から front カバー画像を取得する。
+		/// リダイレクトを自動追従し画像を返す。
+		/// </summary>
+		private static async Task<Image> FetchFromCaa(string releaseMbid, CancellationToken ct)
+		{
+			string url = $"{CaaBase}/release/{releaseMbid}/front-500";
 
-            using var stream = await response.Content.ReadAsStreamAsync();
-            using var ms     = new MemoryStream();
-            await stream.CopyToAsync(ms);
-            ms.Position = 0;
+			var response = await _http.GetAsync(url, HttpCompletionOption.ResponseContentRead);
+			response.EnsureSuccessStatusCode();
 
-            return Image.FromStream(ms, useEmbeddedColorManagement: true, validateImageData: false);
-        }
-    }
+			byte[] bytes = await response.Content.ReadAsByteArrayAsync();
+
+			// new Bitmap(ms) のみだとストリームクローズ後に内部データが失われる実装がある。
+			// 明示的にコピーを作成してストリーム依存を断ち切る。
+			using var ms = new MemoryStream(bytes);
+			using var tmp = new Bitmap(ms);
+			return new Bitmap(tmp);  // ピクセルデータを独立したオブジェクトにコピー
+		}
+	}
 }

@@ -53,7 +53,6 @@ namespace MediaPlayer_X_Ark.Forms
             lblFileNameVal.ContextMenuStrip = fileNameMenu;
         }
 
-		// ── LoadInfo() の差し替え ─────────────────────────────────────────
 		public void LoadInfo(int index)
 		{
 			if (index < 0 || index >= _player.PlayList.Count) return;
@@ -78,51 +77,97 @@ namespace MediaPlayer_X_Ark.Forms
 				lblChannelVal.Text = channels == 1 ? "Mono" : "Stereo";
 			}
 
-			// ── カバーアート取得（非同期・優先順位付き）──────────────────
-			// 前回の非同期処理をキャンセル
+			// ── カバーアート取得（優先順位付き）──────────────────────────
 			_coverArtCts?.Cancel();
-			_coverArtCts = new CancellationTokenSource();
+			_coverArtCts = new System.Threading.CancellationTokenSource();
 			var ct = _coverArtCts.Token;
 
-			// まず ATL（埋め込み）を試みる
+			// ① ATL 埋め込みを最優先で試みる
 			var cover = MainForm.player.GetCoverArt(_currentIndex);
 			if (cover != null)
 			{
 				picCover.Image = cover;
+				return;
 			}
-			else
-			{
-				// ダミーを先に表示しておき、バックグラウンドで MusicBrainz を試みる
-				picCover.Image = SetDummyCoverArt();
-				_ = FetchCoverArtFallbackAsync(item.Artist, item.Album, ct);
-			}
+
+			// ATL で取得できなければダミーを表示してバックグラウンドで取得を試みる
+			picCover.Image = SetDummyCoverArt();
+			_ = FetchCoverArtFallbackAsync(index, ct);
 		}
 
 		/// <summary>
 		/// MusicBrainz Cover Art Archive からカバー画像を非同期取得する。
-		/// 取得できたら UI スレッドで picCover に反映する。
+		/// ATL によるタグ取得が非同期のため、Album が空の間は最大3秒待機してからリトライする。
 		/// </summary>
 		private async System.Threading.Tasks.Task FetchCoverArtFallbackAsync(
-			string artist, string album, CancellationToken ct)
+		int index, System.Threading.CancellationToken ct)
 		{
-			if (string.IsNullOrEmpty(album)) return;
+			if (index < 0 || index >= _player.PlayList.Count) return;
+			var item = _player.PlayList[index];
 
 			System.Drawing.Image img = null;
-			try
+
+			// ② CDトラック：MusicBrainz Disc ID で直接取得（高速・高精度）
+			if (!string.IsNullOrEmpty(item.MusicBrainzDiscId))
 			{
-				img = await Engine.CoverArtClient.FetchByArtistAlbumAsync(artist, album, ct);
+				try
+				{
+					img = await Engine.CoverArtClient.FetchByDiscIdAsync(
+						item.MusicBrainzDiscId, ct);
+					System.Diagnostics.Debug.WriteLine(
+						$"[CoverArt] DiscId={item.MusicBrainzDiscId} → {(img != null ? "OK" : "No image")}");
+				}
+				catch { }
 			}
-			catch { return; }
+
+			// ③ 通常ファイル or Disc ID 取得失敗：Artist + Album で検索
+			//    タグ取得が非同期のため Album が空の間は最大3秒待機する
+			if (img == null)
+			{
+				const int waitMs = 500;
+				const int maxRetries = 6;
+
+				string artist = null;
+				string album = null;
+
+				for (int i = 0; i < maxRetries; i++)
+				{
+					if (ct.IsCancellationRequested) return;
+					if (index >= _player.PlayList.Count) return;
+
+					artist = _player.PlayList[index].Artist;
+					album = _player.PlayList[index].Album;
+
+					if (!string.IsNullOrEmpty(album)) break;
+
+					System.Diagnostics.Debug.WriteLine(
+						$"[CoverArt] Waiting for tags... ({i + 1}/{maxRetries})");
+					await System.Threading.Tasks.Task.Delay(waitMs, ct);
+				}
+
+				if (!string.IsNullOrEmpty(album))
+				{
+					try
+					{
+						img = await Engine.CoverArtClient.FetchByArtistAlbumAsync(
+							artist, album, ct);
+						System.Diagnostics.Debug.WriteLine(
+							$"[CoverArt] Search artist={artist} album={album} → {(img != null ? "OK" : "No image")}");
+					}
+					catch { }
+				}
+			}
 
 			if (ct.IsCancellationRequested || img == null) return;
-
-			// UI スレッドで更新
 			if (picCover.IsDisposed || IsDisposed) return;
+
 			if (InvokeRequired)
 				Invoke(new Action(() => { if (!picCover.IsDisposed) picCover.Image = img; }));
 			else
 				picCover.Image = img;
 		}
+
+
 		// カバーアートはダミー表示
 		private Image SetDummyCoverArt()
         {
