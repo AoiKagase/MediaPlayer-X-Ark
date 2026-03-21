@@ -478,54 +478,178 @@ namespace MediaPlayer_X_Ark
 		{
 			switch (e.KeyCode)
 			{
-				case Keys.Space:
-					BtnPlay_Click(sender, e);
-					break;
-				case Keys.Enter:
-					if (player.PlayingIndex >= 0) PlayLoad(player.PlayingIndex);
-					break;
-				case Keys.S:
-					BtnStop_Click(sender, e);
-					break;
-				case Keys.B:
-					player.PlayNext();
-					UpdateTrackUI();
-					break;
-				case Keys.Z:
-					player.PlayPrevious();
-					UpdateTrackUI();
-					break;
 				case Keys.Right:
-					//                  player.SetPosition((uint)Math.Min(SldTrack.Value + SeekStep, SldTrack.Maximum));
-					e.Handled = true;
 					seeking = 1;
-
+					e.Handled = true;
 					break;
 				case Keys.Left:
-					//                  player.SetPosition((uint)Math.Max(SldTrack.Value - SeekStep, SldTrack.Minimum));
 					seeking = 2;
 					e.Handled = true;
 					break;
+			}
+
+		}
+
+		// ─────────────────────────────────────────────────────────────────
+		//  MainForm.cs へのキーボードショートカット修正
+		//
+		//  【問題】
+		//    MainForm_KeyDown は KeyPreview=true でも以下のキーに届かない：
+		//      - Up/Down/Left/Right … WinForms が ProcessDialogKey で先に消費する
+		//      - Space/Enter        … フォーカスのあるボタンをクリックしてしまう
+		//
+		//  【解決策】
+		//    ProcessCmdKey() をオーバーライドする。
+		//    これはキーイベントの最上流（フォーカスより前）で発火するため
+		//    全キーを確実に捕捉できる。
+		//    MainForm_KeyDown / MainForm_KeyUp はシーク用に残す（後述）。
+		//
+		//  【適用方法】
+		//    1. 以下の ProcessCmdKey メソッドを MainForm クラスに追加する
+		//    2. MainForm_KeyDown の Space/Enter/S/B/Z/L/R/Escape/Up/Down の
+		//       各 case を削除し、Left/Right の seeking フラグ設定だけ残す
+		//       （Left/Right はキーリピートが必要なため KeyDown でも処理する）
+		// ─────────────────────────────────────────────────────────────────
+
+		// ★ MainForm クラスに追加するメソッド
+
+		/// <summary>
+		/// キーボードショートカットの中核処理。
+		/// ProcessCmdKey は WinForms の処理より前に発火するため
+		/// Up/Down/Left/Right/Space などナビゲーションキーも確実に捕捉できる。
+		/// </summary>
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			// テキスト入力中のコントロールがフォーカスを持つ場合は素通し
+			// （将来的に TextBox などを追加した場合の保険）
+			if (ActiveControl is TextBox || ActiveControl is ComboBox)
+				return base.ProcessCmdKey(ref msg, keyData);
+
+			switch (keyData)
+			{
+				// ── 再生制御 ─────────────────────────────────────────────
+
+				case Keys.Space:
+					// Space: 再生/一時停止トグル
+					BtnPlay_Click(this, EventArgs.Empty);
+					return true;
+
+				case Keys.Enter:
+					// Enter: 現在曲を先頭から再生
+					if (player.PlayingIndex >= 0)
+						PlayLoad(player.PlayingIndex);
+					return true;
+
+				case Keys.S:
+					// S: 停止
+					BtnStop_Click(this, EventArgs.Empty);
+					return true;
+
+				case Keys.B:
+					// B: 次の曲
+					player.PlayNext();
+					UpdateTrackUI();
+					return true;
+
+				case Keys.Z:
+					// Z: 前の曲
+					player.PlayPrevious();
+					UpdateTrackUI();
+					return true;
+
+				// ── シーク（キーリピートによる加速は SeekiTimer と seeking フラグで実装）──
+
+				case Keys.Right:
+					// Right: 早送り開始（キーリピートは KeyDown → SeekiTimer で継続）
+					seeking = 1;
+					return true;
+
+				case Keys.Left:
+					// Left: 早戻し開始
+					seeking = 2;
+					return true;
+
+				// ── 音量 ──────────────────────────────────────────────────
+
 				case Keys.Up:
+					// Up: 音量+5
 					SldVolume.Value = Math.Min(SldVolume.Value + 5, SldVolume.Maximum);
 					player.SetVolume(((float)SldVolume.Value) / 100f);
-					e.Handled = true;
-					break;
+					return true;
+
 				case Keys.Down:
+					// Down: 音量-5
 					SldVolume.Value = Math.Max(SldVolume.Value - 5, SldVolume.Minimum);
 					player.SetVolume(((float)SldVolume.Value) / 100f);
-					e.Handled = true;
-					break;
+					return true;
+
+				// ── モード切替 ────────────────────────────────────────────
+
 				case Keys.L:
-					BtnLoop_Click(sender, e);
-					break;
+					// L: ループモード切替
+					BtnLoop_Click(BtnLoop, EventArgs.Empty);
+					return true;
+
 				case Keys.R:
-					SetPlayMode(LOOP_MODE.LOOP_RANDOM);
-					break;
+					// R: ランダムモード切替
+					BtnRandom_Click(BtnRandom, EventArgs.Empty);
+					return true;
+
+				// ── UI ────────────────────────────────────────────────────
+
 				case Keys.Escape:
-					BtnMinisize_Click(sender, e);
+					// Escape: ミニモード（タスクトレイへ）
+					BtnMinisize_Click(this, EventArgs.Empty);
+					return true;
+			}
+
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
+
+		// ─────────────────────────────────────────────────────────────────
+		//  MainForm.cs 修正パッチ
+		//
+		//  問題：BtnLoop_Click が常に DownImage を設定するため、
+		//        キーボードから呼ぶと2回目以降は画像変化なし＝無反応に見える。
+		//        （マウス時は MouseUp が正しい画像に上書きするため問題が出ない）
+		//
+		//  修正：
+		//    1. UpdateLoopButtonVisual()   — ループ状態→画像のヘルパーを追加
+		//    2. UpdateRandomButtonVisual() — ランダム状態→画像のヘルパーを追加
+		//    3. BtnLoop_Click  を修正（DownImage 固定を廃止）
+		//    4. BtnLoop_MouseUp を修正（ヘルパーに委譲）
+		//    5. BtnRandom_Click を修正
+		//    6. BtnRandom_MouseUp を修正
+		//    ProcessCmdKey は変更なし（BtnLoop/BtnRandom を sender に渡す既存実装でOK）
+		// ─────────────────────────────────────────────────────────────────
+		// ── 追加: ループボタン画像更新ヘルパー ─────────────────────────────
+		/// <summary>
+		/// player.loop の現在値に合わせて BtnLoop の背景画像を更新する。
+		/// Click・MouseUp・キーボードショートカットの全経路で使用する。
+		/// </summary>
+		private void UpdateLoopButtonVisual(Button btn)
+		{
+			var bc = _currentSkin.Buttons["BtnLoop"];
+			if (bc == null) 
+				return;
+
+			// LOOP_RANDOM フラグを除いた純粋なループモードで判定する
+			var loopOnly = player.loop & ~LOOP_MODE.LOOP_RANDOM;
+
+			switch (loopOnly)
+			{
+				case LOOP_MODE.LOOP_NONE:
+					btn.BackgroundImage = bc.BackImage;
+					break;
+				case LOOP_MODE.LOOP_ONE_REPEAT:
+					btn.BackgroundImage = bc.DownImage;
+					break;
+				case LOOP_MODE.LOOP_ALL:
+					btn.BackgroundImage = bc.OptionalImage;
 					break;
 			}
+			btn.Refresh();
 		}
 		/// <summary>
 		/// フォーム内のマウス押下処理
@@ -793,37 +917,11 @@ namespace MediaPlayer_X_Ark
 		}
 		private void BtnRandom_MouseUp(object sender, MouseEventArgs e)
 		{
-			var btnRandom = _currentSkin.Buttons["BtnRandom"];
-			if (btnRandom != null)
-			{
-				if ((player.loop & LOOP_MODE.LOOP_RANDOM) != 0x00)
-				{
-					((Button)sender).BackgroundImage = btnRandom.DownImage;
-				}
-				else
-				{
-					((Button)sender).BackgroundImage = btnRandom.BackImage;
-				}
-			}
-			((Button)sender).Refresh();
+			UpdateRandomButtonVisual((Button)sender);
 		}
 		private void BtnLoop_MouseUp(object sender, MouseEventArgs e)
 		{
-			if (!_currentSkin.Buttons.TryGetValue("BtnLoop", out var bc)) return;
-
-			switch (player.loop)
-			{
-				case LOOP_MODE.LOOP_NONE:
-					((Button)sender).BackgroundImage = bc.BackImage;
-					break;
-				case LOOP_MODE.LOOP_ONE_REPEAT:
-					((Button)sender).BackgroundImage = bc.DownImage;
-					break;
-				case LOOP_MODE.LOOP_ALL:
-					((Button)sender).BackgroundImage = bc.OptionalImage;
-					break;
-			}
-			((Button)sender).Refresh();
+			UpdateLoopButtonVisual((Button)sender);
 		}
 		private void BtnSetting_MouseUp(object sender, MouseEventArgs e)
 		{
@@ -941,22 +1039,42 @@ namespace MediaPlayer_X_Ark
 			player.PlayNext();
 			UpdateTrackUI();
 		}
+
+		private void UpdateRandomButtonVisual(Button btn)
+		{
+			var bc = _currentSkin.Buttons["BtnRandom"];
+			if (bc != null)
+			{
+				btn.BackgroundImage = (player.loop & LOOP_MODE.LOOP_RANDOM) != 0
+				? bc.DownImage
+				: bc.BackImage;
+				btn.Refresh();
+			}
+
+		}
+
 		private void BtnRandom_Click(object sender, EventArgs e)
 		{
 			var btnRandom = _currentSkin.Buttons["BtnRandom"];
 			if (btnRandom != null)
 			{
 				SetPlayMode(LOOP_MODE.LOOP_RANDOM);
-				((Button)sender).BackgroundImage = btnRandom.DownImage;
-				((Button)sender).Refresh();
+				UpdateRandomButtonVisual((Button)sender);
 			}
 		}
+
+		// ── 修正: BtnLoop_Click ────────────────────────────────────────────
+		// Before:
+		//   ((Button)sender).BackgroundImage = btnLoop.DownImage; ← 常に DownImage
+		// After:
+		//   UpdateLoopButtonVisual((Button)sender); 
 		private void BtnLoop_Click(object sender, EventArgs e)
 		{
 			var btnLoop = _currentSkin.Buttons["BtnLoop"];
 			if (btnLoop != null)
 			{
-				switch (player.loop)
+				// LOOP_RANDOM フラグを除いた値で switch する
+				switch (player.loop & ~LOOP_MODE.LOOP_RANDOM)
 				{
 					case LOOP_MODE.LOOP_NONE:
 						SetPlayMode(LOOP_MODE.LOOP_ONE_REPEAT);
@@ -968,9 +1086,7 @@ namespace MediaPlayer_X_Ark
 						SetPlayMode(LOOP_MODE.LOOP_NONE);
 						break;
 				}
-
-				((Button)sender).BackgroundImage = btnLoop.DownImage;
-				((Button)sender).Refresh();
+				UpdateLoopButtonVisual((Button)sender);  // ← 新しい状態に合わせて画像更新
 			}
 		}
 		private void BtnSetting_Click(object sender, EventArgs e)
