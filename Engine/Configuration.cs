@@ -69,6 +69,12 @@ namespace MediaPlayer_X_Ark.Engine
 			"http://freedbtest.dyndns.org:80/~cddb/cddb.cgi",  // 日本優先
 			"http://gnudb.gnudb.org/~cddb/cddb.cgi",        // フォールバック
         };
+
+		/// <summary>クロスフェードの有効/無効</summary>
+		public bool CrossfadeEnabled { get; set; } = false;
+
+		/// <summary>クロスフェード時間（ミリ秒）デフォルト3秒</summary>
+		public int CrossfadeDurationMs { get; set; } = 3000;
 	}
 	public class CfgBuffer
 	{

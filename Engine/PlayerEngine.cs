@@ -74,11 +74,21 @@ namespace MediaPlayer_X_Ark.Engine
 
 		protected List<DEVICE_INFO> FmodDeviceList = new List<DEVICE_INFO>();
 
-        private const int channelCount = 1;
+		private const int channelCount = 2;
 
-        private List<int> _shuffleQueue = new List<int>();
+		private List<int> _shuffleQueue = new List<int>();
         private int _shuffleQueueIndex = 0;
         private readonly Random _rng = new Random();
+
+		// クロスフェード用フィールド
+		private FMOD.Channel FmodChannelFading;   // フェードアウト中の旧チャンネル
+		private int _fadingPlayListIndex = -1;  // フェードアウト中のPlayListインデックス
+		private int _crossfadeElapsedMs = 0;    // フェード経過時間
+		private bool _isCrossfading = false;
+		private float _masterVolume = 1.0f; // SetVolume で設定された音量を保持
+		public bool CrossfadeEnabled { get; set; } = false;
+		public int CrossfadeDurationMs { get; set; } = 3000;
+		public bool CrossfadeTriggered { get; set; } = false;
 		// SF2パス
 		private string _soundFontPath = "";
 		public string SoundFontPath
@@ -140,7 +150,8 @@ namespace MediaPlayer_X_Ark.Engine
 				// Relase FMOD handles for Channel.
 				if (FmodChannel.hasHandle())
 					FmodChannel.stop();
-
+				if (FmodChannelFading.hasHandle())
+					FmodChannelFading.stop();
 				// Relase FMOD handles for ChannelGroup.
 				if (FmodChannelGroup.hasHandle())
 					FmodChannelGroup.release();
@@ -424,17 +435,22 @@ namespace MediaPlayer_X_Ark.Engine
 
 		public FMOD.RESULT PlaySound(int index)
 		{
-			if (index >= PlayList.Count) return FMOD.RESULT.OK;
+			if (index >= PlayList.Count) 
+				return FMOD.RESULT.OK;
 
 			// ★チャンネルが有効な場合のみstop（二重発火防止）
-			if (FmodChannel.hasHandle())
-				FmodChannel.stop();
+			StartCrossfadeOrStop();  // ← ここを変更
+			CrossfadeTriggered = false;
+
+			// クロスフェード中は旧チャンネルが使用中のサウンドを解放しないよう保護する
+			int fadingIndex = _fadingPlayListIndex;  // フェードアウト中のインデックスを保持
 
 			// Sound解放
 			for (int i = 0; i < PlayList.Count; i++)
 			{
 				if (i == index) continue;
 				if (i == index + 1) continue;
+				if (i == fadingIndex) continue;  // ← フェードアウト中は解放しない
 				if (PlayList[i].IsLoaded)
 				{
 					PlayList[i].Sound.release();
@@ -447,6 +463,8 @@ namespace MediaPlayer_X_Ark.Engine
 			if (loadResult != FMOD.RESULT.OK) return loadResult;
 
 			PlayingIndex = index;
+			// クロスフェード時は音量0で開始してフェードイン
+			float startVolume = CrossfadeEnabled && _isCrossfading ? 0f : _masterVolume;
 
 			var result = FmodCallFunction(FmodSystem.playSound(
 				PlayList[index].Sound, FmodChannelGroup, false, out FmodChannel));
@@ -784,6 +802,11 @@ namespace MediaPlayer_X_Ark.Engine
 			PlayingIndex = -1;
 			if (FmodChannel.hasHandle())
 				FmodChannel.stop();
+			if (FmodChannelFading.hasHandle())
+				FmodChannelFading.stop();
+			FmodChannelFading = default;
+			_isCrossfading = false;
+			_crossfadeElapsedMs = 0;
 		}
 
 		/// <summary>
@@ -793,7 +816,9 @@ namespace MediaPlayer_X_Ark.Engine
 		/// <param name="vol"></param>
 		public void SetVolume(float vol)
         {
+			_masterVolume = vol;
 			FmodChannel.setVolume(vol);
+			// フェードアウト中のチャンネルには触らない
         }
 
 		public int GetVolume()
@@ -953,6 +978,77 @@ namespace MediaPlayer_X_Ark.Engine
 			}
 			catch { }
 			return null;
+		}
+		private void StartCrossfadeOrStop()
+		{
+			if (!CrossfadeEnabled || !FmodChannel.hasHandle() || !IsPlaying())
+			{
+				// クロスフェード無効または再生中でなければ即停止
+				if (FmodChannel.hasHandle())
+					FmodChannel.stop();
+				_fadingPlayListIndex = -1;
+				return;
+			}
+
+			// 現在のチャンネルをフェードアウト用に退避
+			if (FmodChannelFading.hasHandle())
+			{
+				// 前回のフェードが残っていたら先に止めてサウンドを解放
+				FmodChannelFading.stop();
+				if (_fadingPlayListIndex >= 0 && _fadingPlayListIndex < PlayList.Count
+					&& PlayList[_fadingPlayListIndex].IsLoaded)
+				{
+					PlayList[_fadingPlayListIndex].Sound.release();
+					PlayList[_fadingPlayListIndex].Sound = default;
+				}
+			}
+			_fadingPlayListIndex = PlayingIndex;  // ← 旧曲のインデックスを記録
+			FmodChannelFading = FmodChannel;
+			FmodChannel = default;
+			_crossfadeElapsedMs = 0;
+			_isCrossfading = true;
+		}
+		// ── UpdateCrossfade() 追加 ────────────────────────────────────────
+		// MainForm の PlayerTimer_Tick から毎フレーム呼ぶ。
+		public void UpdateCrossfade(int elapsedMs)
+		{
+			if (!_isCrossfading) return;
+			if (!FmodChannelFading.hasHandle() && !FmodChannel.hasHandle())
+			{
+				_isCrossfading = false;
+				return;
+			}
+
+			_crossfadeElapsedMs += elapsedMs;
+			float t = Math.Min((float)_crossfadeElapsedMs / CrossfadeDurationMs, 1.0f);
+
+			// フェードアウト（旧チャンネル）
+			if (FmodChannelFading.hasHandle())
+				FmodChannelFading.setVolume(_masterVolume * (1.0f - t));
+
+			// フェードイン（新チャンネル）
+			if (FmodChannel.hasHandle())
+				FmodChannel.setVolume(_masterVolume * t);
+
+			// フェード完了
+			if (t >= 1.0f)
+			{
+				if (FmodChannelFading.hasHandle())
+					FmodChannelFading.stop();
+
+				// フェード完了後に旧曲のサウンドを解放する
+				if (_fadingPlayListIndex >= 0 && _fadingPlayListIndex < PlayList.Count
+					&& PlayList[_fadingPlayListIndex].IsLoaded)
+				{
+					PlayList[_fadingPlayListIndex].Sound.release();
+					PlayList[_fadingPlayListIndex].Sound = default;
+				}
+
+				FmodChannelFading = default;
+				_fadingPlayListIndex = -1; 
+				_isCrossfading = false;
+				_crossfadeElapsedMs = 0;
+			}
 		}
 	}
 }

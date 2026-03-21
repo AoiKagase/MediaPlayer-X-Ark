@@ -21,8 +21,19 @@ namespace MediaPlayer_X_Ark.Engine
         Effector.Effectors effector { get; }
         int PlayingIndex { get; }
         bool NowPlaying { get; }
-        // ── 初期化 ───────────────────────────────────
-        void Initialize(CfgBuffer bufferSettings = null);
+		/// <summary>クロスフェード有効フラグ</summary>
+		bool CrossfadeEnabled { get; set; }
+
+		/// <summary>クロスフェード時間（ミリ秒）</summary>
+		int CrossfadeDurationMs { get; set; }
+
+		/// <summary>
+		/// 残り時間検知によるフェード開始済みフラグ。
+		/// PlayNext() 実行後に true になり、PlaySound() 内でリセットされる。
+		/// </summary>
+		bool CrossfadeTriggered { get; set; }
+		// ── 初期化 ───────────────────────────────────
+		void Initialize(CfgBuffer bufferSettings = null);
 
         // ── 再生制御 ─────────────────────────────────
         bool IsPlaying();
@@ -36,8 +47,15 @@ namespace MediaPlayer_X_Ark.Engine
 
 		void BuildShuffleQueue();
         void UpdateShuffleQueueOnRemove(int removedIndex);
-        // ── サウンド管理 ─────────────────────────────
-        FMOD.RESULT CreateSound(string filename, out int index);
+
+		/// <summary>
+		/// クロスフェードの音量を進行させる。
+		/// MainForm の PlayerTimer_Tick から毎フレーム呼ぶ。
+		/// </summary>
+		/// <param name="elapsedMs">前回呼び出しからの経過時間（ms）</param>
+		void UpdateCrossfade(int elapsedMs);
+		// ── サウンド管理 ─────────────────────────────
+		FMOD.RESULT CreateSound(string filename, out int index);
         uint GetLength(int index);
         uint GetPosition();
         void SetPosition(uint position);

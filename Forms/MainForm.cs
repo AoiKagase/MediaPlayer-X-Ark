@@ -367,10 +367,12 @@ namespace MediaPlayer_X_Ark
 			// ③ init() を実行
 			player.Initialize(config.settings.Buffer);
 
+			player.CrossfadeEnabled = config.settings.CrossfadeEnabled;
+			player.CrossfadeDurationMs = config.settings.CrossfadeDurationMs;
+
 			// ④ Device は init() 後でOK
 			player.SetDevice(config.settings.Device);
 			player.SoundFontPath = config.settings.SoundFontPath;
-
 			playListForm = new PlayListForm(this);
 			playListForm.Owner = this;
 
@@ -753,6 +755,9 @@ namespace MediaPlayer_X_Ark
 			// 初期化済みの場合のみ処理する
 			if (!initialize || player == null || player.spectrum == null) return;
 
+			if (player.CrossfadeEnabled)
+				player.UpdateCrossfade(Timer.Interval);
+
 			// スペクトラム画像の反映
 			Spectrum.mFFT = player.spectrum.UpdateSpectrum();
 			Spectrum.mWaveL = player.wave.GetWaveDataByChannel(0);
@@ -783,21 +788,37 @@ namespace MediaPlayer_X_Ark
 				}
 			}
 
-			// 曲終了検知（コールバックが信頼できないため）
-			if (player.NowPlaying && !player.IsPlaying())
+			// ── 曲終了検知（クロスフェード対応版）──────────────────────
+			if (player.NowPlaying && player.IsPlaying())
 			{
+				if (player.CrossfadeEnabled && !player.CrossfadeTriggered)
+				{
+					// 残り時間が CrossfadeDurationMs を下回ったらフェード開始
+					int playingIndex = player.PlayingIndex;
+					if (playingIndex >= 0)
+					{
+						uint remaining = player.GetLength(playingIndex) - player.GetPosition();
+						if ((int)remaining <= player.CrossfadeDurationMs)
+						{
+							player.CrossfadeTriggered = true;
+							if (!_isHandlingTrackEnded)
+							{
+								_isHandlingTrackEnded = true;
+								try { player.PlayNext(); UpdateTrackUI(); }
+								finally { _isHandlingTrackEnded = false; }
+							}
+						}
+					}
+				}
+			}
+			else if (player.NowPlaying && !player.IsPlaying())
+			{
+				// クロスフェード無効時 or フェード未トリガーのまま曲が終わった場合
 				if (!_isHandlingTrackEnded)
 				{
 					_isHandlingTrackEnded = true;
-					try
-					{
-						player.PlayNext();
-						UpdateTrackUI();
-					}
-					finally
-					{
-						_isHandlingTrackEnded = false;
-					}
+					try { player.PlayNext(); UpdateTrackUI(); }
+					finally { _isHandlingTrackEnded = false; }
 				}
 			}
 		}

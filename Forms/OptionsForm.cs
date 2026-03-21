@@ -93,6 +93,7 @@ namespace MediaPlayer_X_Ark.Forms
 			var nodeCddb = new TreeNode("CDDB") { Name = "CDDB" };
 			var nodeExtensions = new TreeNode("関連付け") { Name = "EXTENSIONS" };
 			var nodeAbout = new TreeNode("About") { Name = "ABOUT" };
+			var nodeCrossfade = new TreeNode("再生設定") { Name = "PLAYBACK" };
 
 			var nodeEffects = new TreeNode("エフェクト", new TreeNode[]
 			{
@@ -110,7 +111,7 @@ namespace MediaPlayer_X_Ark.Forms
 
 			_treeMenu.Nodes.AddRange(new TreeNode[]
 			{
-				nodeGeneral, nodeDisplay, nodeOutput,
+				nodeGeneral, nodeCrossfade,  nodeDisplay, nodeOutput,
 				nodeEffects, nodeSkin, nodeOther
 			});
 
@@ -120,6 +121,7 @@ namespace MediaPlayer_X_Ark.Forms
 		{
 			// ★順次追加していく
 			_controls["GENERAL"] = new GeneralSettingsControl(_engine, _config, _mainForm);
+			_controls["PLAYBACK"] = new PlaybackSettingsControl(_engine, _config);
 			_controls["DISPLAY"] = new DisplaySettingsControl(_engine, _config, _mainForm);
 			_controls["OUTPUT"] = new OutputSettingsControl(_engine, _config, _mainForm);
 			_controls["SKIN"] = new SkinSettingsControl(_engine, _config, _mainForm);
