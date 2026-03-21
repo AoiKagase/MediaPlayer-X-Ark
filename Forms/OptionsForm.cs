@@ -90,8 +90,8 @@ namespace MediaPlayer_X_Ark.Forms
 			var nodeCompressor = new TreeNode("Compressor") { Name = "COMPRESSOR" };
 			var nodeReverb = new TreeNode("Reverb") { Name = "REVERB" };
 			var nodeSkin = new TreeNode("スキン") { Name = "SKIN" };
-			var nodeAbout = new TreeNode("関連付け") { Name = "EXTENSIONS" };
-			var nodeExtensions = new TreeNode("About") { Name = "ABOUT" };
+			var nodeExtensions = new TreeNode("関連付け") { Name = "EXTENSIONS" };
+			var nodeAbout = new TreeNode("About") { Name = "ABOUT" };
 
 			var nodeEffects = new TreeNode("エフェクト", new TreeNode[]
 			{
@@ -125,7 +125,6 @@ namespace MediaPlayer_X_Ark.Forms
 			_controls["GEQ"] = new GEQControl(_engine, _config);
 			_controls["DISTORTION"] = new Options.Effects.DistortionControl(_engine, _config);
 			_controls["CHORUS"] = new Options.Effects.ChorusControl(_engine, _config);
-			_controls["DISTORTION"] = new Options.Effects.DistortionControl(_engine, _config);
 			_controls["ECHO"] = new Options.Effects.EchoControl(_engine, _config);
 			_controls["FLANGER"] = new Options.Effects.FlangerControl(_engine, _config);
 			_controls["HIGHPASS"] = new Options.Effects.HighpassControl(_engine, _config);
