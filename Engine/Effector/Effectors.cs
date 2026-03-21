@@ -19,6 +19,7 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		public Highpass Highpass { get; private set; }
 		public Lowpass Lowpass { get; private set; }
 		public SFXReverb SFXReverb { get; private set; }
+		public Normalize Normalize { get; private set; }
 
 		private int _speed;
 		public int Speed
@@ -86,6 +87,7 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 			Highpass = new Highpass(system);
 			Lowpass = new Lowpass(system);
 			SFXReverb = new SFXReverb(system);
+			Normalize = new Normalize(system);
 			GEqualizer = new GEqualizer(system);
 			Initialize();
 		}
@@ -104,6 +106,7 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 			Lowpass.Switch(false);
 			SFXReverb.Switch(false);
 			GEqualizer.Switch(false);
+			Normalize.Switch(false);
 		}
 	}
 }

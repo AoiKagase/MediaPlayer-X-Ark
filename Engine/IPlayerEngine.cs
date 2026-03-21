@@ -32,6 +32,15 @@ namespace MediaPlayer_X_Ark.Engine
 		/// PlayNext() 実行後に true になり、PlaySound() 内でリセットされる。
 		/// </summary>
 		bool CrossfadeTriggered { get; set; }
+
+		/// <summary>ReplayGain有効フラグ</summary>
+		bool ReplayGainEnabled { get; set; }
+
+		/// <summary>ReplayGainモード（0=トラック, 1=アルバム）</summary>
+		int ReplayGainMode { get; set; }
+
+		/// <summary>プリアンプゲイン（dB）</summary>
+		float ReplayGainPreamp { get; set; }
 		// ── 初期化 ───────────────────────────────────
 		void Initialize(CfgBuffer bufferSettings = null);
 

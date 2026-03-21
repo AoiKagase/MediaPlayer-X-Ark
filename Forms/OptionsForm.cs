@@ -89,6 +89,7 @@ namespace MediaPlayer_X_Ark.Forms
 			var nodeLowpass = new TreeNode("Lowpass") { Name = "LOWPASS" };
 			var nodeCompressor = new TreeNode("Compressor") { Name = "COMPRESSOR" };
 			var nodeReverb = new TreeNode("Reverb") { Name = "REVERB" };
+			var nodeNormalize = new TreeNode("Normalize") { Name = "NORMALIZE" };
 			var nodeSkin = new TreeNode("スキン") { Name = "SKIN" };
 			var nodeCddb = new TreeNode("CDDB") { Name = "CDDB" };
 			var nodeExtensions = new TreeNode("関連付け") { Name = "EXTENSIONS" };
@@ -99,7 +100,7 @@ namespace MediaPlayer_X_Ark.Forms
 			{
 				nodeGEQ, nodePitch, nodeDistortion, nodeChorus,
 				nodeEcho, nodeFlanger, nodeHighpass, nodeLowpass,
-				nodeCompressor, nodeReverb
+				nodeCompressor, nodeReverb, nodeNormalize,
 			})
 			{ Name = "EFFECTS" };
 
@@ -134,6 +135,7 @@ namespace MediaPlayer_X_Ark.Forms
 			_controls["LOWPASS"] = new Options.Effects.LowpassControl(_engine, _config);
 			_controls["COMPRESSOR"] = new Options.Effects.CompressorControl(_engine, _config);
 			_controls["REVERB"] = new Options.Effects.ReverbControl(_engine, _config);
+			_controls["NORMALIZE"] = new Options.Effects.NormalizeControl(_engine, _config);
 			_controls["PITCH"] = new Options.Effects.PitchControl(_engine, _config);
 			_controls["CDDB"] = new CddbSettingsControl(_engine, _config);
 			_controls["EXTENSIONS"] = new ExtensionsControl(_engine, _config);

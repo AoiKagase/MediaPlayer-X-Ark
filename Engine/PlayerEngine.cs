@@ -102,6 +102,10 @@ namespace MediaPlayer_X_Ark.Engine
             get { return FmodDeviceList; }
         }
 
+		public bool ReplayGainEnabled { get; set; } = false;
+		public int ReplayGainMode { get; set; } = 0;
+		public float ReplayGainPreamp { get; set; } = 0.0f;
+
 		protected FMOD.RESULT FmodCallFunction(FMOD.RESULT result, [CallerMemberName] string callerMethodName = "")
         {
 			lastError = FMOD.Error.String(result);
@@ -469,8 +473,37 @@ namespace MediaPlayer_X_Ark.Engine
 			var result = FmodCallFunction(FmodSystem.playSound(
 				PlayList[index].Sound, FmodChannelGroup, false, out FmodChannel));
 
+			if (result == FMOD.RESULT.OK && ReplayGainEnabled)
+				ApplyReplayGain(index);
+
 			_nowPlaying = true;
+
 			return result;
+		}
+
+		// ── ApplyReplayGain() 追加 ────────────────────────────────────────
+		private void ApplyReplayGain(int index)
+		{
+			if (!FmodChannel.hasHandle()) return;
+
+			var entry = PlayList[index];
+
+			// モードに応じてゲイン値を選択
+			float? gainDb = ReplayGainMode == 1
+				? (entry.ReplayGainAlbum ?? entry.ReplayGainTrack)  // アルバム優先
+				: (entry.ReplayGainTrack ?? entry.ReplayGainAlbum); // トラック優先
+
+			if (gainDb == null) return;  // タグなし → 適用しない
+
+			// dB → 線形変換（プリアンプ込み）
+			// volume = 10 ^ ((gainDb + preamp) / 20)
+			float totalDb = gainDb.Value + ReplayGainPreamp;
+			float linearGain = (float)Math.Pow(10.0, totalDb / 20.0);
+
+			// マスター音量と合算（クリッピング防止で上限1.0）
+			float finalVolume = Math.Min(_masterVolume * linearGain, 1.0f);
+
+			FmodChannel.setVolume(finalVolume);
 		}
 		public FMOD.RESULT PlaySoundPaused(int index, uint position = 0)
 		{
@@ -558,6 +591,14 @@ namespace MediaPlayer_X_Ark.Engine
 						PlayList[index].Artist = track.Artist;
 						PlayList[index].Album = track.Album;
 						PlayList[index].SetLength((uint)track.DurationMs);
+
+						// ★ ReplayGain タグを取得
+						// ATL では AdditionalFields に "REPLAYGAIN_TRACK_GAIN" などが入っている
+						if (track.AdditionalFields.TryGetValue("REPLAYGAIN_TRACK_GAIN", out string tGain))
+							PlayList[index].ReplayGainTrack = ParseReplayGainDb(tGain);
+
+						if (track.AdditionalFields.TryGetValue("REPLAYGAIN_ALBUM_GAIN", out string aGain))
+							PlayList[index].ReplayGainAlbum = ParseReplayGainDb(aGain);
 					}
 					catch { }
 				});
@@ -568,6 +609,21 @@ namespace MediaPlayer_X_Ark.Engine
 				_tagLoadSemaphore.Release();
 			}
 
+		}
+
+		// ── ParseReplayGainDb() ヘルパー追加 ─────────────────────────────
+		// "-6.54 dB" → -6.54f を返す。解析失敗時は null。
+		private static float? ParseReplayGainDb(string value)
+		{
+			if (string.IsNullOrEmpty(value)) return null;
+			// "dB" や空白を除去して数値部分を取得
+			string num = value.Replace("dB", "").Replace("dB", "").Trim();
+			if (float.TryParse(num,
+				System.Globalization.NumberStyles.Float,
+				System.Globalization.CultureInfo.InvariantCulture,
+				out float result))
+				return result;
+			return null;
 		}
 		/// <summary>
 		/// メモリ上のPCMデータからSoundを生成してプレイリストへ追加する。

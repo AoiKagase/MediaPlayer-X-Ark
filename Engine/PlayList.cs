@@ -51,6 +51,13 @@ namespace MediaPlayer_X_Ark.Engine
 		public string Artist { get; set; }
 		[DisplayName("Album")]
 		public string Album { get; set; }
+		/// <summary>ReplayGain トラックゲイン（dB）。タグがなければ null。</summary>
+		[Browsable(false)]
+		public float? ReplayGainTrack { get; set; } = null;
+
+		/// <summary>ReplayGain アルバムゲイン（dB）。タグがなければ null。</summary>
+		[Browsable(false)]
+		public float? ReplayGainAlbum { get; set; } = null;
 		[Browsable(false)] 
 		public FMOD.SOUND_TYPE SoundType { get; set; }
 		[Browsable(false)] 

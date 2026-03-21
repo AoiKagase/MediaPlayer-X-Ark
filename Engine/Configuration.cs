@@ -75,6 +75,19 @@ namespace MediaPlayer_X_Ark.Engine
 
 		/// <summary>クロスフェード時間（ミリ秒）デフォルト3秒</summary>
 		public int CrossfadeDurationMs { get; set; } = 3000;
+
+		/// <summary>ReplayGainの有効/無効</summary>
+		public bool ReplayGainEnabled { get; set; } = false;
+
+		/// <summary>
+		/// ReplayGainモード
+		///   0 = トラック（曲単位で正規化）
+		///   1 = アルバム（アルバム単位で正規化）
+		/// </summary>
+		public int ReplayGainMode { get; set; } = 0;
+
+		/// <summary>プリアンプゲイン（dB）-6〜+6</summary>
+		public float ReplayGainPreamp { get; set; } = 0.0f;
 	}
 	public class CfgBuffer
 	{
@@ -115,7 +128,8 @@ namespace MediaPlayer_X_Ark.Engine
         public CfgLowpass Lowpass { get; set; } = new CfgLowpass();
         public CfgCompressor Compressor { get; set; } = new CfgCompressor();
         public CfgReverb Reverb { get; set; } = new CfgReverb();
-    }
+        public CfgNormalize Normalize { get; set; } = new CfgNormalize();
+	}
 
     public class CfgGEqualizer
     {
@@ -260,7 +274,22 @@ namespace MediaPlayer_X_Ark.Engine
         public int WetLevel { get; set; }
         public int DryLevel { get; set; }
     }
-    public class Configuration : IConfigService
+
+	public class CfgNormalize
+	{
+		public bool Enable { get; set; } = false;
+
+		/// <summary>フェードタイム（ms） Range: [1, 20000]</summary>
+		public float FadeTime { get; set; } = 5000.0f;
+
+		/// <summary>最大出力振幅 Range: [0, 10]</summary>
+		public float MaxAmp { get; set; } = 1.0f;
+
+		/// <summary>無音閾値 Range: [0, 1]</summary>
+		public float Threshold { get; set; } = 0.0f;
+	}
+
+	public class Configuration : IConfigService
     {
         public ConfigurationData settings { get; set; }
         protected IPlayerEngine engine;

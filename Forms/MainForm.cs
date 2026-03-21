@@ -366,7 +366,9 @@ namespace MediaPlayer_X_Ark
 
 			// ③ init() を実行
 			player.Initialize(config.settings.Buffer);
-
+			player.ReplayGainEnabled = config.settings.ReplayGainEnabled;
+			player.ReplayGainMode = config.settings.ReplayGainMode;
+			player.ReplayGainPreamp = config.settings.ReplayGainPreamp;
 			player.CrossfadeEnabled = config.settings.CrossfadeEnabled;
 			player.CrossfadeDurationMs = config.settings.CrossfadeDurationMs;
 
