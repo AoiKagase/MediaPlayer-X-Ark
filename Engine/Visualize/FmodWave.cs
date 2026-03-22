@@ -2,7 +2,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace MediaPlayer_X_Ark.Engine
+namespace MediaPlayer_X_Ark.Engine.Visualize
 {
 	public class FmodWave : IDisposable
 

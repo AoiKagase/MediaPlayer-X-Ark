@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
-namespace MediaPlayer_X_Ark.Engine
+namespace MediaPlayer_X_Ark.Engine.CD
 {
 	/// <summary>
 	/// CDトラック情報

@@ -1,7 +1,10 @@
 ﻿using ATL.Playlist;
+using MediaPlayer_X_Ark.Engine.Config;
+using MediaPlayer_X_Ark.Engine.Player;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration.Internal;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -16,19 +19,23 @@ namespace MediaPlayer_X_Ark
 		private ContextMenuStrip _gridContextMenu;
 		private ContextMenuStrip _formContextMenu;
 
-		MainForm mainForm;
+		private MainForm _mainForm;
+		private IPlayerEngine _player;
+		private IConfigService _config;
 		// When true, do not forward mouse messages to owner (used while modal dialogs are open)
 		private bool _suppressForwarding = false;
 
-		public PlayListForm(MainForm main)
+		public PlayListForm(MainForm main, IPlayerEngine player, IConfigService config)
 		{
-			mainForm = main;
+			_mainForm = main;
+			_player = player;
+			_config = config;
 			InitializeComponent();
 		}
 
 		private void PlayList_Load(object sender, EventArgs e)
 		{
-			this.PlayListGrid.DataSource = MainForm.player.PlayList;
+			this.PlayListGrid.DataSource = _player.PlayList;
 
 			//        public string FileName { get; set; }
 			//        public FMOD.Sound Sound { get; set; }
@@ -60,7 +67,7 @@ namespace MediaPlayer_X_Ark
 			menuPlay.Click += (s, e) =>
 			{
 				if (PlayListGrid.SelectedRows.Count > 0)
-					mainForm.PlayLoad(PlayListGrid.SelectedRows[0].Index);
+					_mainForm.PlayLoad(PlayListGrid.SelectedRows[0].Index);
 			};
 			menuDelete.Click += (s, e) => PBtnRemove_Click(s, e);
 			menuUp.Click += (s, e) => PBtnUp_Click(s, e);
@@ -114,9 +121,9 @@ namespace MediaPlayer_X_Ark
 			// フォームの右クリックイベント
 			this.MouseDown += PlayListForm_MouseDown_ContextMenu;
 		}
-        private void SortPlayList<T>(Func<Engine.PlayList, T> keySelector)
+        private void SortPlayList<T>(Func<PlayList, T> keySelector)
         {
-            MainForm.player.Sort(keySelector);
+            _player.Sort(keySelector);
         }
         private void PlayListGrid_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -145,18 +152,18 @@ namespace MediaPlayer_X_Ark
 		}
 		private void PBtnOpen_MouseDown(object sender, MouseEventArgs e)
 		{
-			mainForm.BtnDownEvent(ref sender);
+			_mainForm.BtnMouseDown(sender, e);
 		}
 
 		private void PBtnOpen_MouseUp(object sender, MouseEventArgs e)
 		{
-			mainForm.BtnUpEvent(ref sender);
+			_mainForm.BtnMouseUp(sender, e);
 		}
 
 		private void PlayListGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
 		{
 			if (e.RowIndex >= 0)
-				mainForm.PlayLoad(e.RowIndex);
+				_mainForm.PlayLoad(e.RowIndex);
 		}
 
 		private void PlayListForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -167,62 +174,62 @@ namespace MediaPlayer_X_Ark
 
 		private void PBtnClear_MouseUp(object sender, MouseEventArgs e)
 		{
-			mainForm.BtnUpEvent(ref sender);
+			_mainForm.BtnMouseUp(sender, e);
 		}
 
 		private void PBtnClear_MouseDown(object sender, MouseEventArgs e)
 		{
-			mainForm.BtnDownEvent(ref sender);
+			_mainForm.BtnMouseDown(sender, e);
 		}
 
 		private void PBtnClose_MouseDown(object sender, MouseEventArgs e)
 		{
-			mainForm.BtnDownEvent(ref sender);
+			_mainForm.BtnMouseDown(sender, e);
 		}
 
 		private void PBtnClose_MouseUp(object sender, MouseEventArgs e)
 		{
-			mainForm.BtnUpEvent(ref sender);
+			_mainForm.BtnMouseUp(sender, e);
 		}
 
 		private void PBtnDown_MouseDown(object sender, MouseEventArgs e)
 		{
-			mainForm.BtnDownEvent(ref sender);
+			_mainForm.BtnMouseDown(sender, e);
 		}
 
 		private void PBtnDown_MouseUp(object sender, MouseEventArgs e)
 		{
-			mainForm.BtnUpEvent(ref sender);
+			_mainForm.BtnMouseUp(sender, e);
 		}
 
 		private void PBtnRemove_MouseDown(object sender, MouseEventArgs e)
 		{
-			mainForm.BtnDownEvent(ref sender);
+			_mainForm.BtnMouseDown(sender, e);
 		}
 
 		private void PBtnRemove_MouseUp(object sender, MouseEventArgs e)
 		{
-			mainForm.BtnUpEvent(ref sender);
+			_mainForm.BtnMouseUp(sender, e);
 		}
 
 		private void PBtnSave_MouseDown(object sender, MouseEventArgs e)
 		{
-			mainForm.BtnDownEvent(ref sender);
+			_mainForm.BtnMouseDown(sender, e);
 		}
 
 		private void PBtnSave_MouseUp(object sender, MouseEventArgs e)
 		{
-			mainForm.BtnUpEvent(ref sender);
+			_mainForm.BtnMouseUp(sender, e);
 		}
 
 		private void PBtnUp_MouseDown(object sender, MouseEventArgs e)
 		{
-			mainForm.BtnDownEvent(ref sender);
+			_mainForm.BtnMouseDown(sender, e);
 		}
 
 		private void PBtnUp_MouseUp(object sender, MouseEventArgs e)
 		{
-			mainForm.BtnUpEvent(ref sender);
+			_mainForm.BtnMouseUp(sender, e);
 		}
 
 		private void PBtnClose_Click(object sender, EventArgs e)
@@ -263,7 +270,7 @@ namespace MediaPlayer_X_Ark
 						if (System.IO.File.Exists(file))
 						{
 							int idx;
-							MainForm.player.CreateSound(file, out idx);
+							_player.CreateSound(file, out idx);
 							loaded++;
 						}
 					}
@@ -301,18 +308,18 @@ namespace MediaPlayer_X_Ark
 				.ToList();
 
 			// 再生中インデックスが削除対象に含まれる場合は停止
-			if (indices.Contains(MainForm.player.PlayingIndex))
-				MainForm.player.Stop();
+			if (indices.Contains(_player.PlayingIndex))
+				_player.Stop();
 
 			foreach (int i in indices)
 			{
-				if (MainForm.player.PlayList[i].Sound.hasHandle())
-					MainForm.player.PlayList[i].Sound.release();
-				MainForm.player.PlayList.RemoveAt(i);
-                MainForm.player.UpdateShuffleQueueOnRemove(i);
+				if (_player.PlayList[i].Sound.hasHandle())
+					_player.PlayList[i].Sound.release();
+				_player.PlayList.RemoveAt(i);
+                _player.UpdateShuffleQueueOnRemove(i);
             }
 
-			mainForm.AutoSavePlaylist();
+			_mainForm.AutoSavePlaylist();
 		}
 
 		/// <summary>
@@ -328,8 +335,8 @@ namespace MediaPlayer_X_Ark
 
 			if (confirm == DialogResult.Yes)
 			{
-				MainForm.player.Stop();
-				MainForm.player.ClearPlayList();
+				_player.Stop();
+				_player.ClearPlayList();
 			}
 		}
 
@@ -342,9 +349,9 @@ namespace MediaPlayer_X_Ark
 			int idx = PlayListGrid.SelectedRows[0].Index;
 			if (idx <= 0) return;
 
-			var item = MainForm.player.PlayList[idx];
-			MainForm.player.PlayList.RemoveAt(idx);
-			MainForm.player.PlayList.Insert(idx - 1, item);
+			var item = _player.PlayList[idx];
+			_player.PlayList.RemoveAt(idx);
+			_player.PlayList.Insert(idx - 1, item);
 
 			PlayListGrid.ClearSelection();
 			PlayListGrid.Rows[idx - 1].Selected = true;
@@ -357,11 +364,11 @@ namespace MediaPlayer_X_Ark
 		{
 			if (PlayListGrid.SelectedRows.Count == 0) return;
 			int idx = PlayListGrid.SelectedRows[0].Index;
-			if (idx >= MainForm.player.PlayList.Count - 1) return;
+			if (idx >= _player.PlayList.Count - 1) return;
 
-			var item = MainForm.player.PlayList[idx];
-			MainForm.player.PlayList.RemoveAt(idx);
-			MainForm.player.PlayList.Insert(idx + 1, item);
+			var item = _player.PlayList[idx];
+			_player.PlayList.RemoveAt(idx);
+			_player.PlayList.Insert(idx + 1, item);
 
 			PlayListGrid.ClearSelection();
 			PlayListGrid.Rows[idx + 1].Selected = true;
@@ -372,7 +379,7 @@ namespace MediaPlayer_X_Ark
 		/// </summary>
 		private void PBtnSave_Click(object sender, EventArgs e)
 		{
-			if (MainForm.player.PlayList.Count == 0) return;
+			if (_player.PlayList.Count == 0) return;
 
 			using (var dlg = new SaveFileDialog())
 			{
@@ -383,7 +390,7 @@ namespace MediaPlayer_X_Ark
 				using (var writer = new System.IO.StreamWriter(dlg.FileName, false, System.Text.Encoding.UTF8))
 				{
 					writer.WriteLine("#EXTM3U");
-					foreach (var item in MainForm.player.PlayList)
+					foreach (var item in _player.PlayList)
 					{
 						writer.WriteLine($"#EXTINF:-1,{item.Title}");
 						writer.WriteLine(item.FileName);
@@ -486,7 +493,7 @@ namespace MediaPlayer_X_Ark
 			{
 				//位置を記憶する
 				mousePoint = new Point(e.X, e.Y);
-				mainForm.Activate();
+				_mainForm.Activate();
 			}
 		}
 
@@ -498,9 +505,9 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void PlayList_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (mainForm.SuppressNextMouseDown)
+			if (_mainForm.SuppressNextMouseDown)
 			{
-				mainForm.SuppressNextMouseDown = false;
+				_mainForm.SuppressNextMouseDown = false;
 				return;
 			}
 
@@ -508,13 +515,13 @@ namespace MediaPlayer_X_Ark
 			{
 				Left += e.X - mousePoint.X;
 				Top += e.Y - mousePoint.Y;
-				var plForm = mainForm.CurrentSkin?["PlayListForm"];
+				var plForm = _mainForm.CurrentSkin?["PlayListForm"];
 				if (plForm != null)
 				{
 					if (plForm.MagnetMode)
 					{
-						mainForm.Left = Left + plForm.Position.Left;
-						mainForm.Top = Top + plForm.Position.Top;
+						_mainForm.Left = Left + plForm.Position.Left;
+						_mainForm.Top = Top + plForm.Position.Top;
 					}
 				}
 			}
@@ -614,7 +621,7 @@ namespace MediaPlayer_X_Ark
 				return false;
 
 			var pixel = img.GetPixel(pt.X, pt.Y);
-			var plForm = mainForm.CurrentSkin?["PlayListForm"];
+			var plForm = _mainForm.CurrentSkin?["PlayListForm"];
 			if (plForm != null)
 			{
 				return pixel.R == plForm.TransparentKey.R &&

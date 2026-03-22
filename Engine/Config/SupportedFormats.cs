@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MediaPlayer_X_Ark.Engine
+namespace MediaPlayer_X_Ark.Engine.Config
 {
     /// <summary>
     /// アプリケーションが対応するファイル形式のレジストリ。

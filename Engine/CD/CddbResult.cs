@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MediaPlayer_X_Ark.Engine
+namespace MediaPlayer_X_Ark.Engine.CD
 {
 	/// <summary>CDDB/MusicBrainz 問い合わせ結果の1候補。</summary>
 	public class CddbResult

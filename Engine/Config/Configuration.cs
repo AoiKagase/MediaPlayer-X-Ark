@@ -7,7 +7,8 @@ using System.Text.Json;
 using System.IO;
 using System.Text.Json.Serialization;
 using System.Windows.Forms;
-namespace MediaPlayer_X_Ark.Engine
+using MediaPlayer_X_Ark.Engine.Player;
+namespace MediaPlayer_X_Ark.Engine.Config
 {
     public class ConfigurationData
     {

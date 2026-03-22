@@ -1,9 +1,11 @@
-﻿using System;
+﻿using MediaPlayer_X_Ark.Engine.Config;
+using MediaPlayer_X_Ark.Engine.Visualize;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 
-namespace MediaPlayer_X_Ark.Engine
+namespace MediaPlayer_X_Ark.Engine.Player
 {
     public interface IPlayerEngine : IDisposable
     {
@@ -102,6 +104,6 @@ namespace MediaPlayer_X_Ark.Engine
         List<DEVICE_INFO> GetDeviceListForOutputType(FMOD.OUTPUTTYPE outputType);
         List<DEVICE_INFO> GetCurrentDeviceList();
 
-        void Sort<T>(Func<Engine.PlayList, T> keySelector);
+        void Sort<T>(Func<PlayList, T> keySelector);
     }
 }

@@ -1,10 +1,11 @@
 using FMOD;
+using MediaPlayer_X_Ark.Engine.Player;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MediaPlayer_X_Ark.Engine
+namespace MediaPlayer_X_Ark.Engine.Visualize
 {
 	/// <summary>
 	/// FMOD の OPENONLY モードを使って音声ファイルを解析し、

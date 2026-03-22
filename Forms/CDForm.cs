@@ -1,4 +1,6 @@
-﻿using MediaPlayer_X_Ark.Engine;
+﻿using MediaPlayer_X_Ark.Engine.CD;
+using MediaPlayer_X_Ark.Engine.Config;
+using MediaPlayer_X_Ark.Engine.Player;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,15 +14,16 @@ namespace MediaPlayer_X_Ark
 	{
 		private MainForm _mainForm;
 		private IConfigService _config;
-
+		private IPlayerEngine _player;
 		private CdReader _cdReader;
 		private CddbResult _appliedResult;    // 適用中の結果（再適用用）
 		private CancellationTokenSource _cddbCts;
-		public CDForm(MainForm mainForm, IConfigService config)
+		public CDForm(MainForm mainForm, IPlayerEngine player, IConfigService config)
 		{
 			InitializeComponent();
 			_mainForm = mainForm;
 			_config = config;
+			_player = player;
 			this.Owner = mainForm;
 		}
 
@@ -80,14 +83,14 @@ namespace MediaPlayer_X_Ark
 
 				string title = _cdReader.Tracks[trackIndex].Title;
 				int index;
-				var result = MainForm.player.CreateSoundFromPCM(pcmData, title, out index);
+				var result = _player.CreateSoundFromPCM(pcmData, title, out index);
 
 				if (result == FMOD.RESULT.OK)
 				{
 					// ★ PlayListIndex を記録
 					_cdReader.Tracks[trackIndex].PlayListIndex = index;
 					// ★ MusicBrainz Disc ID をセット
-					MainForm.player.PlayList[index].MusicBrainzDiscId = _cdReader.MusicBrainzId;
+					_player.PlayList[index].MusicBrainzDiscId = _cdReader.MusicBrainzId;
 					if (playImmediately) 
 						_mainForm.PlayLoad(index);
 					lblStatus.Text = $"{title} 完了";
@@ -148,11 +151,11 @@ namespace MediaPlayer_X_Ark
 
 					string title = _cdReader.Tracks[trackIndex].Title;
 					int index;
-					MainForm.player.CreateSoundFromPCM(pcmData, title, out index);
+					_player.CreateSoundFromPCM(pcmData, title, out index);
 					// ★ PlayListIndex を記録
 					_cdReader.Tracks[trackIndex].PlayListIndex = index;
 
-					MainForm.player.PlayList[index].MusicBrainzDiscId = _cdReader.MusicBrainzId;
+					_player.PlayList[index].MusicBrainzDiscId = _cdReader.MusicBrainzId;
 				}
 				catch (Exception ex)
 				{
@@ -179,8 +182,8 @@ namespace MediaPlayer_X_Ark
 
 			if (confirm == DialogResult.Yes)
 			{
-				MainForm.player.Stop();
-				MainForm.player.ClearPlayList();
+				_player.Stop();
+				_player.ClearPlayList();
 				lblStatus.Text = "プレイリストを消去しました";
 			}
 		}
@@ -388,9 +391,9 @@ namespace MediaPlayer_X_Ark
 
 				// ★ PlayListIndex が有効なエントリに Artist/Album/Title を直接書き込む
 				int plIdx = _cdReader.Tracks[i].PlayListIndex;
-				if (plIdx >= 0 && plIdx < MainForm.player.PlayList.Count)
+				if (plIdx >= 0 && plIdx < _player.PlayList.Count)
 				{
-					var entry = MainForm.player.PlayList[plIdx];
+					var entry = _player.PlayList[plIdx];
 					entry.Title = title;
 					entry.Artist = result.Artist;
 					entry.Album = result.Album;

@@ -1,4 +1,4 @@
-﻿using MediaPlayer_X_Ark.Engine;
+﻿using MediaPlayer_X_Ark.Engine.Player;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -53,8 +53,9 @@ namespace MediaPlayer_X_Ark.Forms
             lblFileNameVal.ContextMenuStrip = fileNameMenu;
         }
 
-		public void LoadInfo(int index)
+		public void LoadInfo()
 		{
+			var index = _player.PlayingIndex;
 			if (index < 0 || index >= _player.PlayList.Count) return;
 			_currentIndex = index;
 			var item = _player.PlayList[index];
@@ -83,7 +84,7 @@ namespace MediaPlayer_X_Ark.Forms
 			var ct = _coverArtCts.Token;
 
 			// ① ATL 埋め込みを最優先で試みる
-			var cover = MainForm.player.GetCoverArt(_currentIndex);
+			var cover = _player.GetCoverArt(_currentIndex);
 			if (cover != null)
 			{
 				picCover.Image = cover;

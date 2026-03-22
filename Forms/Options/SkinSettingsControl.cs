@@ -1,4 +1,5 @@
-﻿using MediaPlayer_X_Ark.Engine;
+﻿using MediaPlayer_X_Ark.Engine.Config;
+using MediaPlayer_X_Ark.Engine.Player;
 using MediaPlayer_X_Ark.Skin;
 using System;
 using System.Drawing;

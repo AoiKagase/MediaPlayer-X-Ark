@@ -1,4 +1,5 @@
-﻿using MediaPlayer_X_Ark.Engine;
+﻿using MediaPlayer_X_Ark.Engine.Config;
+using MediaPlayer_X_Ark.Engine.Player;
 using MediaPlayer_X_Ark.Forms;
 using MediaPlayer_X_Ark.Skin;
 using System;
@@ -16,23 +17,25 @@ namespace MediaPlayer_X_Ark
 	{
 		bool initialize = false;
 
-		public static IPlayerEngine player;
-		private static IConfigService config;
-		private FileInfoForm _fileInfoForm;
+		private IPlayerEngine _player;
+		private IConfigService _config;
+
 		private ToolTip _toolTip;
 
-		private PlayListForm playListForm;
-		private OptionsForm optionsForm;
-		private CDForm cdForm;
+		private PlayListForm _playListForm;
+		private OptionsForm _optionsForm;
+		private CDForm _cdForm;
+		private FileInfoForm _fileInfoForm;
 
 		private int _sleepTimerRemaining = 0; // 残り秒数（0=無効）
 
 		private ISkinSystem _currentSkin;
+		private SkinApplicator _skinApplicator;
+
 		public ISkinSystem CurrentSkin => _currentSkin;
 
 		// 用途別にOpenFileDialogを分離
 		private OpenFileDialog _openFileDialogMedia;   // 音楽ファイル用
-		private OpenFileDialog _openFileDialogSkin;    // スキン用
 		private Bitmap _waveformBitmap = null;
 		private PictureBox _waveformArea = null;  // target="area" 用
 		private int _waveformRefreshCounter = 0;
@@ -41,10 +44,11 @@ namespace MediaPlayer_X_Ark
 		{
 			InitializeComponent();
 		}
+
 		public void ApplyDisplaySettings()
 		{
-			Spectrum.Mode = config.settings.DefaultSpectrumMode;
-			Spectrum.SnowBlockEnabled = config.settings.SnowBlockEnabled;
+			Spectrum.Mode = _config.settings.DefaultSpectrumMode;
+			Spectrum.SnowBlockEnabled = _config.settings.SnowBlockEnabled;
 		}
 		/// <summary>
 		/// スキンロード
@@ -70,15 +74,21 @@ namespace MediaPlayer_X_Ark
 					skin.Open(pkg.OriginalPath);
 					_currentSkin = skin;
 				}
-				ApplySkin(_currentSkin);
+				_skinApplicator = new SkinApplicator(_currentSkin);
+				_skinApplicator.ApplyToMainForm(this, Spectrum);
+				_skinApplicator.ApplyToPlayListForm(_playListForm);
 				// プレビュー用メイン画像パスを保存
-				config.settings.Skin = skinFile;
+				_config.settings.Skin = skinFile;
 
 				// ボリューム最大値を強制100（旧形式スキンはこの数値を変動出来ていた為、処理簡略化を考慮する）
 				SldVolume.Maximum = 150;
-				SldVolume.Value = config.settings.Volume;
+				SldVolume.Value = _config.settings.Volume;
 			}
 		}
+		public void BtnMouseDown(object sender, MouseEventArgs e)
+	=> _skinApplicator?.SetButtonDown((Button)sender);
+		public void BtnMouseUp(object sender, MouseEventArgs e)
+			=> _skinApplicator?.SetButtonUp((Button)sender);
 		/// <summary>
 		/// スキンデータをフォームに適用する。新旧形式共通。
 		/// </summary>
@@ -202,18 +212,18 @@ namespace MediaPlayer_X_Ark
 			var plForm = _currentSkin["PlayListForm"];
 			if (plForm != null)
 			{
-				playListForm.Left = Left - plForm.Position.Left;
-				playListForm.Top = Top - plForm.Position.Top;
-				playListForm.BackgroundImage = plForm.BackImage;
-				playListForm.Width = plForm.Position.Width;
-				playListForm.Height = plForm.Position.Height;
-				playListForm.TransparencyKey = plForm.TransparentKey;
-				playListForm.Refresh();
+				_playListForm.Left = Left - plForm.Position.Left;
+				_playListForm.Top = Top - plForm.Position.Top;
+				_playListForm.BackgroundImage = plForm.BackImage;
+				_playListForm.Width = plForm.Position.Width;
+				_playListForm.Height = plForm.Position.Height;
+				_playListForm.TransparencyKey = plForm.TransparentKey;
+				_playListForm.Refresh();
 			}
 
 			if (_currentSkin.Grids.TryGetValue("PlayListGrid", out var plGrid))
 			{
-				foreach (Control c in playListForm.Controls)
+				foreach (Control c in _playListForm.Controls)
 				{
 					if (c is DataGridView grid)
 					{
@@ -231,7 +241,7 @@ namespace MediaPlayer_X_Ark
 
 			// PlayListFormのボタン
 			var plButtons = _currentSkin.GetFormButtons("PlayListForm");
-			foreach (Control c in playListForm.Controls)
+			foreach (Control c in _playListForm.Controls)
 			{
 				if (c is Button btn && plButtons.TryGetValue(c.Name, out var bc))
 				{
@@ -267,13 +277,13 @@ namespace MediaPlayer_X_Ark
 			// Waveform セクション未定義 → 解析・描画を無効化して終了
 			if (wDef == null)
 			{
-				player.WaveformEnabled = false;
+				_player.WaveformEnabled = false;
 				SldTrack.BackgroundImage = null;
 				return;
 			}
 
 			// 有効化
-			player.WaveformEnabled = true;
+			_player.WaveformEnabled = true;
 
 			if (wDef.Target == "area" && wDef.Width > 0 && wDef.Height > 0)
 			{
@@ -297,10 +307,10 @@ namespace MediaPlayer_X_Ark
 		{
 			int idx;
 			// Open File
-			if (player.CreateSound(fileName, out idx) != FMOD.RESULT.OK)
+			if (_player.CreateSound(fileName, out idx) != FMOD.RESULT.OK)
 				return;
 
-			switch (config.settings.OpenFileAction)
+			switch (_config.settings.OpenFileAction)
 			{
 				case 1: // 常に再生
 					PlayLoad(idx);
@@ -311,7 +321,7 @@ namespace MediaPlayer_X_Ark
 					break;
 
 				default: // 再生中なら追加・停止中なら再生
-					if (!player.IsPlaying())
+					if (!_player.IsPlaying())
 						PlayLoad(idx);
 					break;
 			}
@@ -325,11 +335,11 @@ namespace MediaPlayer_X_Ark
 		/// <param name="index"></param>
 		public void PlayLoad(int index)
 		{
-			player.SetDevice(config.settings.Device);
-			player.PlaySound(index);
+			_player.SetDevice(_config.settings.Device);
+			_player.PlaySound(index);
 			UpdateTrackUI();
 		}
-		private void PlayLoad() => PlayLoad(player.PlayingIndex);
+		private void PlayLoad() => PlayLoad(_player.PlayingIndex);
 
 		/// <summary>
 		/// ボタンクリック時のイベント（MouseDown時）
@@ -398,57 +408,59 @@ namespace MediaPlayer_X_Ark
 
 			// FMODサウンドエンジン
 			var engine = new PlayerEngine();
-			player = engine;
+			_player = engine;
 			// ① 設定を先に読み込む
-			config = new Configuration(engine);
+			_config = new Configuration(engine);
 
 			// ② OutputType と SoftwareFormat は init() より前に設定
-			player.SetOutputTypeBeforeInit(config.GetOutputType());
+			_player.SetOutputTypeBeforeInit(_config.GetOutputType());
 
 			// ③ init() を実行
-			player.Initialize(config.settings.Buffer);
-			player.ReplayGainEnabled = config.settings.ReplayGainEnabled;
-			player.ReplayGainMode = config.settings.ReplayGainMode;
-			player.ReplayGainPreamp = config.settings.ReplayGainPreamp;
-			player.CrossfadeEnabled = config.settings.CrossfadeEnabled;
-			player.CrossfadeDurationMs = config.settings.CrossfadeDurationMs;
-			player.WaveformReady += OnWaveformReady;
+			_player.Initialize(_config.settings.Buffer);
+			_player.ReplayGainEnabled = _config.settings.ReplayGainEnabled;
+			_player.ReplayGainMode = _config.settings.ReplayGainMode;
+			_player.ReplayGainPreamp = _config.settings.ReplayGainPreamp;
+			_player.CrossfadeEnabled = _config.settings.CrossfadeEnabled;
+			_player.CrossfadeDurationMs = _config.settings.CrossfadeDurationMs;
+			_player.WaveformReady += OnWaveformReady;
 			// ④ Device は init() 後でOK
-			player.SetDevice(config.settings.Device);
-			player.SoundFontPath = config.settings.SoundFontPath;
-			playListForm = new PlayListForm(this);
-			playListForm.Owner = this;
+			_player.SetDevice(_config.settings.Device);
+			_player.SoundFontPath = _config.settings.SoundFontPath;
+			_playListForm = new PlayListForm(this, _player, _config);
+			_playListForm.Owner = this;
 
-			optionsForm = new OptionsForm(player, config, this);
-			cdForm = new CDForm(this, config);
+			_optionsForm = new OptionsForm(_player, _config, this);
+			_cdForm = new CDForm(this, _player, _config);
+			_fileInfoForm = new FileInfoForm(_player);
+
 			// ★管理リストに追加
-			_managedForms.Add(playListForm);
-			_managedForms.Add(optionsForm);
-			_managedForms.Add(cdForm);
+			_managedForms.Add(_playListForm);
+			_managedForms.Add(_optionsForm);
+			_managedForms.Add(_cdForm);
 			// 予定：設定ファイルの読み込み スキンファイルの指定も含む
 			// 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
 			// 新形式（JSON）の場合はNewSkinSystemへインスタンス切替
 			// スキンロード
-			SkinLoad(config.settings.Skin);
+			SkinLoad(_config.settings.Skin);
 			Spectrum.Initialize();
-			Spectrum.Mode = config.settings.DefaultSpectrumMode;
-			Spectrum.SnowBlockEnabled = config.settings.SnowBlockEnabled;
+			Spectrum.Mode = _config.settings.DefaultSpectrumMode;
+			Spectrum.SnowBlockEnabled = _config.settings.SnowBlockEnabled;
 
-			if (config.settings.RestorePlaylist)
+			if (_config.settings.RestorePlaylist)
 			{
 				var playlistPath = Path.Combine(
 					Application.StartupPath, "last_playlist.json");
 				if (File.Exists(playlistPath))
 					RestorePlaylistFromFile(playlistPath);
 			}
-			if (config.settings.RestorePosition
-				&& config.settings.LastPlayingIndex >= 0
-				&& config.settings.LastPlayingIndex < player.PlayList.Count)
+			if (_config.settings.RestorePosition
+				&& _config.settings.LastPlayingIndex >= 0
+				&& _config.settings.LastPlayingIndex < _player.PlayList.Count)
 			{
 				// ★一時停止状態で再生開始
-				player.SetDevice(config.settings.Device);
-				player.PlaySoundPaused(config.settings.LastPlayingIndex,
-					config.settings.LastPlayingPosition);
+				_player.SetDevice(_config.settings.Device);
+				_player.PlaySoundPaused(_config.settings.LastPlayingIndex,
+					_config.settings.LastPlayingPosition);
 				UpdateTrackUI();
 			}
 			InitContextMenu();
@@ -457,7 +469,7 @@ namespace MediaPlayer_X_Ark
 			_openFileDialogMedia.Filter = "音楽ファイル|*.mp3;*.flac;*.ogg;*.wav;*.aac;*.m4a;*.wma;*.mid;*.mod;*.xm;*.it;*.s3m|すべてのファイル|*.*";
 			_openFileDialogMedia.Multiselect = true;
 
-			this.TopMost = config.settings.AlwaysOnTop;
+			this.TopMost = _config.settings.AlwaysOnTop;
 			initialize = true;
 
 			// 起動パラメータを取得し、ファイルパスが取得出来るならばOpen関数へ引き渡す
@@ -470,11 +482,12 @@ namespace MediaPlayer_X_Ark
 				}
 			}
 		}
+
 		private void OnWaveformReady(int index)
 		{
-			if (!player.WaveformEnabled) return;
+			if (!_player.WaveformEnabled) return;
 			// 現在再生中のインデックスの波形のみ更新
-			if (index != player.PlayingIndex) return;
+			if (index != _player.PlayingIndex) return;
 
 			// UIスレッドに切り替えて描画
 			if (InvokeRequired)
@@ -489,9 +502,9 @@ namespace MediaPlayer_X_Ark
 			var wDef = (_currentSkin as MediaPlayer_X_Ark.Skin.NewSkinSystem)?.Waveform;
 			if (wDef == null) return;  // スキン未定義なら何もしない
 
-			if (index < 0 || index >= player.PlayList.Count) return;
+			if (index < 0 || index >= _player.PlayList.Count) return;
 
-			var entry = player.PlayList[index];
+			var entry = _player.PlayList[index];
 			if (!entry.WaveformReady) return;
 
 			var (w, h) = GetWaveformSize(wDef);
@@ -508,7 +521,7 @@ namespace MediaPlayer_X_Ark
 		}
 		public void AutoSavePlaylist()
 		{
-			if (!config.settings.AutoSavePlaylist) return;
+			if (!_config.settings.AutoSavePlaylist) return;
 			SavePlaylistToFile(Path.Combine(
 				Application.StartupPath, "last_playlist.json"));
 		}
@@ -525,30 +538,30 @@ namespace MediaPlayer_X_Ark
 				foreach (var file in list)
 				{
 					if (File.Exists(file))
-						player.CreateSound(file, out _);
+						_player.CreateSound(file, out _);
 				}
 			}
 			catch { }
 		}
 		private void UpdateTrackUI()
 		{
-			int index = player.PlayingIndex;
-			if (index < 0 || index >= player.PlayList.Count) return;
+			int index = _player.PlayingIndex;
+			if (index < 0 || index >= _player.PlayList.Count) return;
 
-			SldTrack.Maximum = (int)player.GetLength(index);
+			SldTrack.Maximum = (int)_player.GetLength(index);
 			float volume = ((float)SldVolume.Value) / 100f;
-			player.SetVolume(volume);
+			_player.SetVolume(volume);
 			float pan = ((float)SldPan.Value) / 10f;
-			player.SetPan(pan);
+			_player.SetPan(pan);
 
-			var item = player.PlayList[index];
+			var item = _player.PlayList[index];
 			LabelTitle.Value.Text = (!string.IsNullOrEmpty(item.Title)) ? item.Title : Path.GetFileName(item.FileName);
 			LabelTitle.Value.Text += (!string.IsNullOrEmpty(item.Artist)) ? (" - " + item.Artist) : "";
 			LabelTitle.Value.Text += (!string.IsNullOrEmpty(item.Album)) ? (" - " + item.Album) : "";
 
 			// ★FileInfoFormが開いている場合は自動更新
 			if (_fileInfoForm != null && _fileInfoForm.Visible)
-				_fileInfoForm.LoadInfo(index);
+				_fileInfoForm.LoadInfo();
 
 			_waveformBitmap?.Dispose();
 			_waveformBitmap = null;
@@ -622,8 +635,8 @@ namespace MediaPlayer_X_Ark
 
 				case Keys.Enter:
 					// Enter: 現在曲を先頭から再生
-					if (player.PlayingIndex >= 0)
-						PlayLoad(player.PlayingIndex);
+					if (_player.PlayingIndex >= 0)
+						PlayLoad(_player.PlayingIndex);
 					return true;
 
 				case Keys.S:
@@ -633,13 +646,13 @@ namespace MediaPlayer_X_Ark
 
 				case Keys.B:
 					// B: 次の曲
-					player.PlayNext();
+					_player.PlayNext();
 					UpdateTrackUI();
 					return true;
 
 				case Keys.Z:
 					// Z: 前の曲
-					player.PlayPrevious();
+					_player.PlayPrevious();
 					UpdateTrackUI();
 					return true;
 
@@ -660,13 +673,13 @@ namespace MediaPlayer_X_Ark
 				case Keys.Up:
 					// Up: 音量+5
 					SldVolume.Value = Math.Min(SldVolume.Value + 5, SldVolume.Maximum);
-					player.SetVolume(((float)SldVolume.Value) / 100f);
+					_player.SetVolume(((float)SldVolume.Value) / 100f);
 					return true;
 
 				case Keys.Down:
 					// Down: 音量-5
 					SldVolume.Value = Math.Max(SldVolume.Value - 5, SldVolume.Minimum);
-					player.SetVolume(((float)SldVolume.Value) / 100f);
+					_player.SetVolume(((float)SldVolume.Value) / 100f);
 					return true;
 
 				// ── モード切替 ────────────────────────────────────────────
@@ -711,7 +724,7 @@ namespace MediaPlayer_X_Ark
 		// ─────────────────────────────────────────────────────────────────
 		// ── 追加: ループボタン画像更新ヘルパー ─────────────────────────────
 		/// <summary>
-		/// player.loop の現在値に合わせて BtnLoop の背景画像を更新する。
+		/// _player.loop の現在値に合わせて BtnLoop の背景画像を更新する。
 		/// Click・MouseUp・キーボードショートカットの全経路で使用する。
 		/// </summary>
 		private void UpdateLoopButtonVisual(Button btn)
@@ -721,7 +734,7 @@ namespace MediaPlayer_X_Ark
 				return;
 
 			// LOOP_RANDOM フラグを除いた純粋なループモードで判定する
-			var loopOnly = player.loop & ~LOOP_MODE.LOOP_RANDOM;
+			var loopOnly = _player.loop & ~LOOP_MODE.LOOP_RANDOM;
 
 			switch (loopOnly)
 			{
@@ -781,8 +794,8 @@ namespace MediaPlayer_X_Ark
 				{
 					if (plForm.MagnetMode)
 					{
-						playListForm.Left = Left - plForm.Position.Left;
-						playListForm.Top = Top - plForm.Position.Top;
+						_playListForm.Left = Left - plForm.Position.Left;
+						_playListForm.Top = Top - plForm.Position.Top;
 					}
 				}
 			}
@@ -796,24 +809,24 @@ namespace MediaPlayer_X_Ark
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			// ★プレイリスト自動保存
-			if (config.settings.RestorePlaylist)
+			if (_config.settings.RestorePlaylist)
 				SavePlaylistToFile(Path.Combine(
 					Application.StartupPath, "last_playlist.json"));
 			// ★再生位置を保存
-			if (config.settings.RestorePosition)
+			if (_config.settings.RestorePosition)
 			{
-				config.settings.LastPlayingIndex = player.PlayingIndex;
-				config.settings.LastPlayingPosition = player.GetPosition();
+				_config.settings.LastPlayingIndex = _player.PlayingIndex;
+				_config.settings.LastPlayingPosition = _player.GetPosition();
 			}
 			else
 			{
-				config.settings.LastPlayingIndex = -1;
-				config.settings.LastPlayingPosition = 0;
+				_config.settings.LastPlayingIndex = -1;
+				_config.settings.LastPlayingPosition = 0;
 			}
-			config.Save();
-			cdForm?.Dispose();   // 追加
-			player.Dispose();  // 明示的に解放
-			player = null;
+			_config.Save();
+			_cdForm?.Dispose();   // 追加
+			_player.Dispose();  // 明示的に解放
+			_player = null;
 			notifyIcon.Visible = false;
 			notifyIcon.Dispose();
 			SkinPackage.CleanupTempDirectory(); // 追加
@@ -821,7 +834,7 @@ namespace MediaPlayer_X_Ark
 		#endregion
 		private void SavePlaylistToFile(string path)
 		{
-			var list = player.PlayList.Select(p => p.FileName).ToList();
+			var list = _player.PlayList.Select(p => p.FileName).ToList();
 			File.WriteAllText(path,
 				System.Text.Json.JsonSerializer.Serialize(list),
 				System.Text.Encoding.UTF8);
@@ -838,27 +851,27 @@ namespace MediaPlayer_X_Ark
 		private void PlayerTimer_Tick(object sender, EventArgs e)
 		{
 			// 初期化済みの場合のみ処理する
-			if (!initialize || player == null || player.spectrum == null) return;
+			if (!initialize || _player == null || _player.spectrum == null) return;
 
-			if (player.CrossfadeEnabled)
-				player.UpdateCrossfade(Timer.Interval);
+			if (_player.CrossfadeEnabled)
+				_player.UpdateCrossfade(Timer.Interval);
 
 			// スペクトラム画像の反映
-			Spectrum.mFFT = player.spectrum.UpdateSpectrum();
-			Spectrum.mWaveL = player.wave.GetWaveDataByChannel(0);
-			Spectrum.mWaveR = player.wave.GetWaveDataByChannel(1);
+			Spectrum.mFFT = _player.spectrum.UpdateSpectrum();
+			Spectrum.mWaveL = _player.wave.GetWaveDataByChannel(0);
+			Spectrum.mWaveR = _player.wave.GetWaveDataByChannel(1);
 
 			// 曲調トラックバーの反映 (シーク中はボタン側で動作する為動かさない)
 			if (this.seekValue == 0)
-				SldTrack.Value = (int)player.GetPosition();
+				SldTrack.Value = (int)_player.GetPosition();
 
 			TimeSpan time1 = TimeSpan.FromMilliseconds(SldTrack.Value);
 			TimeSpan time2 = TimeSpan.FromMilliseconds(SldTrack.Maximum);
 			LabelTime.Value.Text = time1.ToString(@"mm\:ss") + "/" + time2.ToString(@"mm\:ss");
 
-			if (player.lastError != "" && player.lastErrCode != FMOD.RESULT.OK)
+			if (_player.lastError != "" && _player.lastErrCode != FMOD.RESULT.OK)
 			{
-				LabelTitle.Value.Text = player.lastErrFunction + " - " + player.lastError;
+				LabelTitle.Value.Text = _player.lastErrFunction + " - " + _player.lastError;
 			}
 
 
@@ -868,7 +881,7 @@ namespace MediaPlayer_X_Ark
 				if (_sleepTimerRemaining <= 0)
 				{
 					_sleepTimerRemaining = 0;
-					player.Stop();
+					_player.Stop();
 					UpdateSleepTimerMenu(null);
 				}
 			}
@@ -876,40 +889,40 @@ namespace MediaPlayer_X_Ark
 			if (_waveformRefreshCounter >= 60 && _waveformBitmap != null)
 			{
 				_waveformRefreshCounter = 0;
-				float ratio = (float)player.GetPosition()
-							/ Math.Max(1, player.GetLength(player.PlayingIndex));
+				float ratio = (float)_player.GetPosition()
+							/ Math.Max(1, _player.GetLength(_player.PlayingIndex));
 				UpdateWaveformPlayedRatio(ratio);
 			}
 			// ── 曲終了検知（クロスフェード対応版）──────────────────────
-			if (player.NowPlaying && player.IsPlaying())
+			if (_player.NowPlaying && _player.IsPlaying())
 			{
-				if (player.CrossfadeEnabled && !player.CrossfadeTriggered)
+				if (_player.CrossfadeEnabled && !_player.CrossfadeTriggered)
 				{
 					// 残り時間が CrossfadeDurationMs を下回ったらフェード開始
-					int playingIndex = player.PlayingIndex;
+					int playingIndex = _player.PlayingIndex;
 					if (playingIndex >= 0)
 					{
-						uint remaining = player.GetLength(playingIndex) - player.GetPosition();
-						if ((int)remaining <= player.CrossfadeDurationMs)
+						uint remaining = _player.GetLength(playingIndex) - _player.GetPosition();
+						if ((int)remaining <= _player.CrossfadeDurationMs)
 						{
-							player.CrossfadeTriggered = true;
+							_player.CrossfadeTriggered = true;
 							if (!_isHandlingTrackEnded)
 							{
 								_isHandlingTrackEnded = true;
-								try { player.PlayNext(); UpdateTrackUI(); }
+								try { _player.PlayNext(); UpdateTrackUI(); }
 								finally { _isHandlingTrackEnded = false; }
 							}
 						}
 					}
 				}
 			}
-			else if (player.NowPlaying && !player.IsPlaying())
+			else if (_player.NowPlaying && !_player.IsPlaying())
 			{
 				// クロスフェード無効時 or フェード未トリガーのまま曲が終わった場合
 				if (!_isHandlingTrackEnded)
 				{
 					_isHandlingTrackEnded = true;
-					try { player.PlayNext(); UpdateTrackUI(); }
+					try { _player.PlayNext(); UpdateTrackUI(); }
 					finally { _isHandlingTrackEnded = false; }
 				}
 			}
@@ -919,8 +932,8 @@ namespace MediaPlayer_X_Ark
 			var wDef = (_currentSkin as MediaPlayer_X_Ark.Skin.NewSkinSystem)?.Waveform;
 			if (wDef == null) return;  // スキン未定義なら何もしない
 
-			if (player.PlayingIndex < 0) return;
-			var entry = player.PlayList[player.PlayingIndex];
+			if (_player.PlayingIndex < 0) return;
+			var entry = _player.PlayList[_player.PlayingIndex];
 			if (!entry.WaveformReady) return;
 
 			var (w, h) = GetWaveformSize(wDef);
@@ -1163,10 +1176,10 @@ namespace MediaPlayer_X_Ark
 
 			try
 			{
-				_openFileDialogMedia.InitialDirectory = config.settings.LastMediaDirectory;
+				_openFileDialogMedia.InitialDirectory = _config.settings.LastMediaDirectory;
 				if (_openFileDialogMedia.ShowDialog() == DialogResult.OK)
 				{
-					config.settings.LastMediaDirectory = Path.GetDirectoryName(_openFileDialogMedia.FileName);
+					_config.settings.LastMediaDirectory = Path.GetDirectoryName(_openFileDialogMedia.FileName);
 					OpenFile(_openFileDialogMedia.FileName);
 				}
 			}
@@ -1189,10 +1202,10 @@ namespace MediaPlayer_X_Ark
 		private void BtnPlay_Click(object sender, EventArgs e)
 		{
 			// プレイ中の場合はポーズする
-			if (player.IsPlaying())
-				player.Pause();
+			if (_player.IsPlaying())
+				_player.Pause();
 			else
-				if (player.PlayingIndex < player.PlayList.Count)
+				if (_player.PlayingIndex < _player.PlayList.Count)
 					PlayLoad();
 		}
 
@@ -1204,7 +1217,7 @@ namespace MediaPlayer_X_Ark
 		private void BtnStop_Click(object sender, EventArgs e)
 		{
 			// 問答無用の停止
-			player.Stop();
+			_player.Stop();
 		}
 
 
@@ -1215,12 +1228,12 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void BtnClose_Click(object sender, EventArgs e)
 		{
-			playListForm.Close();
-			playListForm.Dispose();
-			optionsForm.Close();
-			optionsForm.Dispose();
-			cdForm.Close();      // 追加
-			cdForm.Dispose();    // 追加
+			_playListForm.Close();
+			_playListForm.Dispose();
+			_optionsForm.Close();
+			_optionsForm.Dispose();
+			_cdForm.Close();      // 追加
+			_cdForm.Dispose();    // 追加
 								 // 終了
 			Close();
 		}
@@ -1229,7 +1242,7 @@ namespace MediaPlayer_X_Ark
 			// ループ無し：最初の曲まで減算
 			// １曲ループ：最初の曲まで減算
 			// 全曲ループ：最初の曲まで減算、最初の曲から最後の曲へ戻る
-			player.PlayPrevious();
+			_player.PlayPrevious();
 			UpdateTrackUI();
 		}
 		private void BtnSeekBack_Click(object sender, EventArgs e)
@@ -1246,7 +1259,7 @@ namespace MediaPlayer_X_Ark
 			// ループ無し：最後の曲まで加算
 			// １曲ループ：最後の曲まで加算
 			// 全曲ループ：最後の曲まで加算、最後の曲から最初の曲へ戻る
-			player.PlayNext();
+			_player.PlayNext();
 			UpdateTrackUI();
 		}
 
@@ -1255,7 +1268,7 @@ namespace MediaPlayer_X_Ark
 			var bc = _currentSkin.Buttons["BtnRandom"];
 			if (bc != null)
 			{
-				btn.BackgroundImage = (player.loop & LOOP_MODE.LOOP_RANDOM) != 0
+				btn.BackgroundImage = (_player.loop & LOOP_MODE.LOOP_RANDOM) != 0
 				? bc.DownImage
 				: bc.BackImage;
 				btn.Refresh();
@@ -1284,7 +1297,7 @@ namespace MediaPlayer_X_Ark
 			if (btnLoop != null)
 			{
 				// LOOP_RANDOM フラグを除いた値で switch する
-				switch (player.loop & ~LOOP_MODE.LOOP_RANDOM)
+				switch (_player.loop & ~LOOP_MODE.LOOP_RANDOM)
 				{
 					case LOOP_MODE.LOOP_NONE:
 						SetPlayMode(LOOP_MODE.LOOP_ONE_REPEAT);
@@ -1301,38 +1314,38 @@ namespace MediaPlayer_X_Ark
 		}
 		private void BtnSetting_Click(object sender, EventArgs e)
 		{
-			optionsForm.Show();
+			_optionsForm.Show();
 		}
 		private void BtnPlaylist_Click(object sender, EventArgs e)
 		{
-			if (playListForm.Visible)
+			if (_playListForm.Visible)
 			{
-				playListForm.Hide();
+				_playListForm.Hide();
 				return;
 			}
 
-			playListForm.Show(this);
+			_playListForm.Show(this);
 			var plForm = _currentSkin?["PlayListForm"];
 
 			if (plForm != null)
 			{
-				playListForm.Left = Left - plForm.Position.Left;
-				playListForm.Top = Top - plForm.Position.Top;
+				_playListForm.Left = Left - plForm.Position.Left;
+				_playListForm.Top = Top - plForm.Position.Top;
 			}
 
 		}
 		private void BtnMinisize_Click(object sender, EventArgs e)
 		{
 			this.Hide();
-			playListForm.Hide();
+			_playListForm.Hide();
 			notifyIcon.Visible = true;
 		}
 		// NotifyIcon ダブルクリックで復元
 		private void NotifyIcon_DoubleClick(object sender, EventArgs e)
 		{
 			this.Show();
-			if (player.PlayingIndex >= 0)
-				playListForm.Show(this);
+			if (_player.PlayingIndex >= 0)
+				_playListForm.Show(this);
 			notifyIcon.Visible = false;
 			this.Activate();
 		}
@@ -1361,7 +1374,7 @@ namespace MediaPlayer_X_Ark
 		{
 			uint time = (uint)SldTrack.Value;
 			_toolTip.Hide(this);
-			player.SetPosition(time);
+			_player.SetPosition(time);
 		}
 
 		/// <summary>
@@ -1374,7 +1387,7 @@ namespace MediaPlayer_X_Ark
 		{
 			_toolTip.Show(SldPan.Value.ToString(), this, ((CustomSlider)(sender)).Left, ((CustomSlider)(sender)).Top);
 			float pan = ((float)SldPan.Value) / 10f;
-			player.SetPan(pan);
+			_player.SetPan(pan);
 		}
 
 		/// <summary>
@@ -1386,8 +1399,8 @@ namespace MediaPlayer_X_Ark
 		private void SldPan_SliderMoved(object sender, MouseEventArgs e)
 		{
 			float pan = ((float)SldPan.Value) / 10f;
-			player.SetPan(pan);
-			config.settings.Pan = SldPan.Value;
+			_player.SetPan(pan);
+			_config.settings.Pan = SldPan.Value;
 			_toolTip.Hide(this);
 		}
 
@@ -1400,7 +1413,7 @@ namespace MediaPlayer_X_Ark
 		private void SldVolume_SliderMoving(object sender, MouseEventArgs e)
 		{
 			float volume = ((float)SldVolume.Value) / 100f;
-			player.SetVolume(volume);
+			_player.SetVolume(volume);
 			_toolTip.Show(SldVolume.Value.ToString("0"), this, ((CustomSlider)(sender)).Left, ((CustomSlider)(sender)).Top);
 		}
 		/// <summary>
@@ -1412,8 +1425,8 @@ namespace MediaPlayer_X_Ark
 		private void SldVolume_SliderMoved(object sender, MouseEventArgs e)
 		{
 			float volume = ((float)SldVolume.Value) / 100f;
-			player.SetVolume(volume);
-			config.settings.Volume = SldVolume.Value;
+			_player.SetVolume(volume);
+			_config.settings.Volume = SldVolume.Value;
 			_toolTip.Hide(this);
 		}
 
@@ -1424,7 +1437,7 @@ namespace MediaPlayer_X_Ark
 				TimeSpan stime = TimeSpan.FromMilliseconds(SldTrack.Value);
 				_toolTip.Show(stime.ToString(@"hh\:mm\:ss"), this, ((CustomSlider)(sender)).Left, ((CustomSlider)(sender)).Top, 1);
 				uint time = (uint)SldTrack.Value;
-				player.SetPosition(time);
+				_player.SetPosition(time);
 			}
 		}
 		#endregion
@@ -1457,7 +1470,7 @@ namespace MediaPlayer_X_Ark
 
 		private void BtnCD_Click(object sender, EventArgs e)
 		{
-			cdForm.Show(this);
+			_cdForm.Show(this);
 		}
 
 		private void BtnCD_MouseDown(object sender, MouseEventArgs e)
@@ -1485,7 +1498,7 @@ namespace MediaPlayer_X_Ark
 				if (idx++ == 0)
 				{
 					// 再生中ではない場合
-					if (!player.IsPlaying())
+					if (!_player.IsPlaying())
 					{
 						// 最初の１つはOpen=>Play処理を行う
 						OpenFile(file);
@@ -1493,7 +1506,7 @@ namespace MediaPlayer_X_Ark
 					}
 				}
 				// 後はOpenのみでプレイリストへ追加
-				player.CreateSound(file, out temp);
+				_player.CreateSound(file, out temp);
 			}
 		}
 
@@ -1605,12 +1618,7 @@ namespace MediaPlayer_X_Ark
 
 			menuFileInfo.Click += (s, e) =>
 			{
-				if (player.PlayingIndex < 0) return;
-				// 既存のフォームを使い回す
-				if (_fileInfoForm == null || _fileInfoForm.IsDisposed)
-					_fileInfoForm = new FileInfoForm(player);
-
-				_fileInfoForm.LoadInfo(player.PlayingIndex);
+				_fileInfoForm.LoadInfo();
 				_fileInfoForm.Show(this);
 				_fileInfoForm.Activate();
 			};
@@ -1693,10 +1701,10 @@ namespace MediaPlayer_X_Ark
 		{
 			// PlayMode チェック状態を更新
 			menuPlayModeRandom.Enabled = false; // 未実装
-			menuPlayModeNormal.Checked = (player.loop & LOOP_MODE.LOOP_NONE) != 0;
-			menuPlayModeRandom.Checked = (player.loop & LOOP_MODE.LOOP_RANDOM) != 0;
-			menuPlayModeRepeat.Checked = (player.loop & LOOP_MODE.LOOP_ONE_REPEAT) != 0;
-			menuPlayModeLoop.Checked = (player.loop & LOOP_MODE.LOOP_ALL) != 0;
+			menuPlayModeNormal.Checked = (_player.loop & LOOP_MODE.LOOP_NONE) != 0;
+			menuPlayModeRandom.Checked = (_player.loop & LOOP_MODE.LOOP_RANDOM) != 0;
+			menuPlayModeRepeat.Checked = (_player.loop & LOOP_MODE.LOOP_ONE_REPEAT) != 0;
+			menuPlayModeLoop.Checked = (_player.loop & LOOP_MODE.LOOP_ALL) != 0;
 		}
 
 		private void SetPlayMode(LOOP_MODE mode)
@@ -1704,23 +1712,23 @@ namespace MediaPlayer_X_Ark
 			if (mode == LOOP_MODE.LOOP_RANDOM)
 			{
 				// ランダムはトグル
-				player.loop ^= LOOP_MODE.LOOP_RANDOM;
-				if ((player.loop & LOOP_MODE.LOOP_RANDOM) != 0)
-					player.BuildShuffleQueue(); // ONになった時点で生成
+				_player.loop ^= LOOP_MODE.LOOP_RANDOM;
+				if ((_player.loop & LOOP_MODE.LOOP_RANDOM) != 0)
+					_player.BuildShuffleQueue(); // ONになった時点で生成
 			}
 			else
 			{
 				// ランダムフラグを保持しつつ他のモードを切り替え
-				bool isRandom = (player.loop & LOOP_MODE.LOOP_RANDOM) != 0;
-				player.loop = mode;
-				if (isRandom) player.loop |= LOOP_MODE.LOOP_RANDOM;
+				bool isRandom = (_player.loop & LOOP_MODE.LOOP_RANDOM) != 0;
+				_player.loop = mode;
+				if (isRandom) _player.loop |= LOOP_MODE.LOOP_RANDOM;
 			}
 		}
 
 		private void OpenOptionsTab(string tabName)
 		{
-			optionsForm.Show();
-			optionsForm.SelectTab(tabName);
+			_optionsForm.Show();
+			_optionsForm.SelectTab(tabName);
 		}
 
 		private void BtnUrlOpen_Click(object sender, EventArgs e)
@@ -1739,10 +1747,10 @@ namespace MediaPlayer_X_Ark
 				return;
 			}
 
-			var result = player.PlayUrl(url);
+			var result = _player.PlayUrl(url);
 			if (result != FMOD.RESULT.OK)
 			{
-				MessageBox.Show($"URLを開けませんでした。\n{player.lastError}",
+				MessageBox.Show($"URLを開けませんでした。\n{_player.lastError}",
 					"URL Open", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
@@ -1785,23 +1793,23 @@ namespace MediaPlayer_X_Ark
 						BtnStop_Click(this, EventArgs.Empty);
 						break;
 					case APPCOMMAND_MEDIA_NEXTTRACK:
-						player.PlayNext();
+						_player.PlayNext();
 						UpdateTrackUI();
 						break;
 					case APPCOMMAND_MEDIA_PREVIOUSTRACK:
-						player.PlayPrevious();
+						_player.PlayPrevious();
 						UpdateTrackUI();
 						break;
 						//case APPCOMMAND_VOLUME_UP:
 						//    SldVolume.Value = Math.Min(SldVolume.Value + 5, SldVolume.Maximum);
-						//    player.SetVolume(((float)SldVolume.Value) / 100f);
+						//    _player.SetVolume(((float)SldVolume.Value) / 100f);
 						//    break;
 						//case APPCOMMAND_VOLUME_DOWN:
 						//    SldVolume.Value = Math.Max(SldVolume.Value - 5, SldVolume.Minimum);
-						//    player.SetVolume(((float)SldVolume.Value) / 100f);
+						//    _player.SetVolume(((float)SldVolume.Value) / 100f);
 						//    break;
 						//case APPCOMMAND_VOLUME_MUTE:
-						//    player.SetVolume(0f);
+						//    _player.SetVolume(0f);
 						//    break;
 				}
 				m.Result = (IntPtr)1; // 処理済みを通知

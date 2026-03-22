@@ -1,4 +1,5 @@
-﻿using MediaPlayer_X_Ark.Engine;
+﻿using MediaPlayer_X_Ark.Engine.Config;
+using MediaPlayer_X_Ark.Engine.Player;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -99,7 +100,8 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			Config.settings.SnowBlockEnabled = _chkSnowBlock.Checked;
 
 			// ★即時反映
-			_mainForm.ApplyDisplaySettings();
+			_mainForm.Spectrum.Mode = Config.settings.DefaultSpectrumMode;
+			_mainForm.Spectrum.SnowBlockEnabled = Config.settings.SnowBlockEnabled;
 		}
 
 		private void BtnSave_Click(object sender, EventArgs e)

@@ -3,7 +3,7 @@ using System;
 using System.Drawing.Drawing2D;
 using System.IO;
 
-namespace MediaPlayer_X_Ark.Engine
+namespace MediaPlayer_X_Ark.Engine.Player
 {
 	public class FluidSynthMidiRenderer : IDisposable
 	{
@@ -26,7 +26,7 @@ namespace MediaPlayer_X_Ark.Engine
 			//settings[ConfigurationKeys.SynthLockMemory].IntValue = 0;
 			settings[ConfigurationKeys.SynthMidiBankSelect].StringValue = "gs";
 			using (var synth = new Synth(settings))
-			using (var player = new Player(synth))
+			using (var player = new NFluidsynth.Player(synth))
 			{
 				synth.LoadSoundFont(soundFontPath, true);
 				// ★GM System On リセット

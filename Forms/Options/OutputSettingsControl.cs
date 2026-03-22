@@ -1,5 +1,6 @@
 ﻿using ATL;
-using MediaPlayer_X_Ark.Engine;
+using MediaPlayer_X_Ark.Engine.Config;
+using MediaPlayer_X_Ark.Engine.Player;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

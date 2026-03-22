@@ -1,4 +1,6 @@
 ﻿
+using MediaPlayer_X_Ark.Controls;
+
 namespace MediaPlayer_X_Ark
 {
     partial class MainForm
@@ -16,7 +18,6 @@ namespace MediaPlayer_X_Ark
         {
             if (disposing && (components != null))
             {
-                player = null;
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -54,7 +55,7 @@ namespace MediaPlayer_X_Ark
 			LabelTitle = new ScrollLabel();
 			LabelTime = new ScrollLabel();
 			SeekiTimer = new System.Windows.Forms.Timer(components);
-			Spectrum = new SpectrumBox();
+			Spectrum = new SpectrumAnalyzer();
 			BtnCD = new System.Windows.Forms.Button();
 			contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
 			notifyIcon = new System.Windows.Forms.NotifyIcon(components);
@@ -464,7 +465,7 @@ namespace MediaPlayer_X_Ark
         private ScrollLabel LabelTitle;
         private ScrollLabel LabelTime;
         private System.Windows.Forms.Timer SeekiTimer;
-        private SpectrumBox Spectrum;
+        public SpectrumAnalyzer Spectrum;
         private System.Windows.Forms.Button BtnCD;
         private System.Windows.Forms.NotifyIcon notifyIcon;
     }

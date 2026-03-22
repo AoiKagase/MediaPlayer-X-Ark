@@ -5,12 +5,12 @@ using System.Drawing.Drawing2D;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace MediaPlayer_X_Ark
+namespace MediaPlayer_X_Ark.Controls
 {
 	/// <summary>
 	/// Spectrum Analyzer Controll
 	/// </summary>
-    public partial class SpectrumBox : PictureBox
+    public partial class SpectrumAnalyzer : PictureBox
 	{
 		private readonly object _bitmapLock = new object();
 
@@ -196,9 +196,9 @@ namespace MediaPlayer_X_Ark
 			get { return _mWaveR; }
 			set { _mWaveR = value; }
 		}
-		public SpectrumBox()
+		public SpectrumAnalyzer()
 		{
-			InitializeComponent();
+			//this.InitializeComponent();
 
 			// スタイルの指定
 			SetStyle(ControlStyles.AllPaintingInWmPaint |// ちらつき抑える

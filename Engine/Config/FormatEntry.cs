@@ -1,4 +1,4 @@
-namespace MediaPlayer_X_Ark.Engine
+namespace MediaPlayer_X_Ark.Engine.Config
 {
     /// <summary>
     /// ファイル形式の定義エントリ。
