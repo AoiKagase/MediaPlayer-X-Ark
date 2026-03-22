@@ -1,6 +1,9 @@
 using MediaPlayer_X_Ark.Engine.Config;
+using NFluidsynth;
 using System;
 using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark.Engine.Player
 {
@@ -95,9 +98,24 @@ namespace MediaPlayer_X_Ark.Engine.Player
         /// </summary>
         public bool OpenAndPlay(string filename)
         {
-            if (_engine.CreateSound(filename, out int index) == FMOD.RESULT.OK)
+			if (_engine.CreateSound(filename, out int index) == FMOD.RESULT.OK)
             {
-                PlayAt(index);
+				switch (_config.settings.OpenFileAction)
+				{
+					case 1: // 常に再生
+						PlayAt(index);
+						break;
+
+					case 2: // 常に追加のみ
+							// 再生しない
+						break;
+
+					default: // 再生中なら追加・停止中なら再生
+						if (!_engine.IsPlaying())
+							PlayAt(index);
+						break;
+				}
+
                 return true;
             }
             return false;
@@ -219,5 +237,39 @@ namespace MediaPlayer_X_Ark.Engine.Player
             if (!string.IsNullOrEmpty(entry.Album))  title += " - " + entry.Album;
             return title;
         }
-    }
+
+		public void AutoSavePlaylist()
+		{
+			if (!_config.settings.AutoSavePlaylist) return;
+			SavePlaylistToFile(Path.Combine(
+				Application.StartupPath, "last_playlist.json"));
+		}
+
+		private void SavePlaylistToFile(string path)
+		{
+			var list = _engine.PlayList.Select(p => p.FileName).ToList();
+			File.WriteAllText(path,
+				System.Text.Json.JsonSerializer.Serialize(list),
+				System.Text.Encoding.UTF8);
+		}
+
+        public void Close()
+        {
+			// ★プレイリスト自動保存
+			if (_config.settings.RestorePlaylist)
+				SavePlaylistToFile(Path.Combine(
+					Application.StartupPath, "last_playlist.json"));
+			// ★再生位置を保存
+			if (_config.settings.RestorePosition)
+			{
+				_config.settings.LastPlayingIndex = _engine.PlayingIndex;
+				_config.settings.LastPlayingPosition = _engine.GetPosition();
+			}
+			else
+			{
+				_config.settings.LastPlayingIndex = -1;
+				_config.settings.LastPlayingPosition = 0;
+			}
+		}
+	}
 }

@@ -75,8 +75,6 @@ namespace MediaPlayer_X_Ark
 			BtnPlay.TabIndex = 0;
 			BtnPlay.UseVisualStyleBackColor = false;
 			BtnPlay.Click += BtnPlay_Click;
-			BtnPlay.MouseDown += BtnPlay_MouseDown;
-			BtnPlay.MouseUp += BtnPlay_MouseUp;
 			// 
 			// BtnStop
 			// 
@@ -90,8 +88,6 @@ namespace MediaPlayer_X_Ark
 			BtnStop.TabIndex = 0;
 			BtnStop.UseVisualStyleBackColor = false;
 			BtnStop.Click += BtnStop_Click;
-			BtnStop.MouseDown += BtnStop_MouseDown;
-			BtnStop.MouseUp += BtnStop_MouseUp;
 			// 
 			// Timer
 			// 
@@ -111,8 +107,6 @@ namespace MediaPlayer_X_Ark
 			BtnOpen.TabIndex = 2;
 			BtnOpen.UseVisualStyleBackColor = false;
 			BtnOpen.Click += BtnOpenFile_Click;
-			BtnOpen.MouseDown += BtnOpen_MouseDown;
-			BtnOpen.MouseUp += BtnOpen_MouseUp;
 			// 
 			// BtnClose
 			// 
@@ -127,8 +121,6 @@ namespace MediaPlayer_X_Ark
 			BtnClose.TabIndex = 3;
 			BtnClose.UseVisualStyleBackColor = false;
 			BtnClose.Click += BtnClose_Click;
-			BtnClose.MouseDown += BtnClose_MouseDown;
-			BtnClose.MouseUp += BtnClose_MouseUp;
 			// 
 			// BtnMinisize
 			// 
@@ -142,8 +134,6 @@ namespace MediaPlayer_X_Ark
 			BtnMinisize.TabIndex = 5;
 			BtnMinisize.UseVisualStyleBackColor = false;
 			BtnMinisize.Click += BtnMinisize_Click;
-			BtnMinisize.MouseDown += BtnMinisize_MouseDown;
-			BtnMinisize.MouseUp += BtnMinisize_MouseUp;
 			// 
 			// BtnPlaylist
 			// 
@@ -157,8 +147,6 @@ namespace MediaPlayer_X_Ark
 			BtnPlaylist.TabIndex = 6;
 			BtnPlaylist.UseVisualStyleBackColor = false;
 			BtnPlaylist.Click += BtnPlaylist_Click;
-			BtnPlaylist.MouseDown += BtnPlaylist_MouseDown;
-			BtnPlaylist.MouseUp += BtnPlaylist_MouseUp;
 			// 
 			// BtnSetting
 			// 
@@ -172,8 +160,6 @@ namespace MediaPlayer_X_Ark
 			BtnSetting.TabIndex = 7;
 			BtnSetting.UseVisualStyleBackColor = false;
 			BtnSetting.Click += BtnSetting_Click;
-			BtnSetting.MouseDown += BtnSetting_MouseDown;
-			BtnSetting.MouseUp += BtnSetting_MouseUp;
 			// 
 			// BtnLoop
 			// 
@@ -187,7 +173,7 @@ namespace MediaPlayer_X_Ark
 			BtnLoop.TabIndex = 8;
 			BtnLoop.UseVisualStyleBackColor = false;
 			BtnLoop.Click += BtnLoop_Click;
-			BtnLoop.MouseDown += BtnLoop_MouseDown;
+			//BtnLoop.MouseDown += BtnLoop_MouseDown;
 			BtnLoop.MouseUp += BtnLoop_MouseUp;
 			// 
 			// BtnRandom
@@ -202,7 +188,7 @@ namespace MediaPlayer_X_Ark
 			BtnRandom.TabIndex = 9;
 			BtnRandom.UseVisualStyleBackColor = false;
 			BtnRandom.Click += BtnRandom_Click;
-			BtnRandom.MouseDown += BtnRandom_MouseDown;
+			//BtnRandom.MouseDown += BtnRandom_MouseDown;
 			BtnRandom.MouseUp += BtnRandom_MouseUp;
 			// 
 			// BtnNext
@@ -217,8 +203,6 @@ namespace MediaPlayer_X_Ark
 			BtnNext.TabIndex = 10;
 			BtnNext.UseVisualStyleBackColor = false;
 			BtnNext.Click += BtnNext_Click;
-			BtnNext.MouseDown += BtnNext_MouseDown;
-			BtnNext.MouseUp += BtnNext_MouseUp;
 			// 
 			// BtnSeekForward
 			// 
@@ -232,8 +216,6 @@ namespace MediaPlayer_X_Ark
 			BtnSeekForward.TabIndex = 11;
 			BtnSeekForward.UseVisualStyleBackColor = false;
 			BtnSeekForward.Click += BtnSeekForward_Click;
-			BtnSeekForward.MouseDown += BtnSeekForward_MouseDown;
-			BtnSeekForward.MouseUp += BtnSeekForward_MouseUp;
 			// 
 			// BtnPause
 			// 
@@ -247,8 +229,6 @@ namespace MediaPlayer_X_Ark
 			BtnPause.TabIndex = 12;
 			BtnPause.UseVisualStyleBackColor = false;
 			BtnPause.Click += BtnPause_Click;
-			BtnPause.MouseDown += BtnPause_MouseDown;
-			BtnPause.MouseUp += BtnPause_MouseUp;
 			// 
 			// BtnSeekBack
 			// 
@@ -262,8 +242,6 @@ namespace MediaPlayer_X_Ark
 			BtnSeekBack.TabIndex = 13;
 			BtnSeekBack.UseVisualStyleBackColor = false;
 			BtnSeekBack.Click += BtnSeekBack_Click;
-			BtnSeekBack.MouseDown += BtnSeekBack_MouseDown;
-			BtnSeekBack.MouseUp += BtnSeekBack_MouseUp;
 			// 
 			// BtnBack
 			// 
@@ -277,8 +255,6 @@ namespace MediaPlayer_X_Ark
 			BtnBack.TabIndex = 14;
 			BtnBack.UseVisualStyleBackColor = false;
 			BtnBack.Click += BtnBack_Click;
-			BtnBack.MouseDown += BtnBack_MouseDown;
-			BtnBack.MouseUp += BtnBack_MouseUp;
 			// 
 			// SldVolume
 			// 
@@ -381,8 +357,6 @@ namespace MediaPlayer_X_Ark
 			BtnCD.TabIndex = 21;
 			BtnCD.UseVisualStyleBackColor = false;
 			BtnCD.Click += BtnCD_Click;
-			BtnCD.MouseDown += BtnCD_MouseDown;
-			BtnCD.MouseUp += BtnCD_MouseUp;
 			// 
 			// contextMenu
 			// 

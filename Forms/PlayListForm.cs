@@ -319,7 +319,7 @@ namespace MediaPlayer_X_Ark
                 _player.UpdateShuffleQueueOnRemove(i);
             }
 
-			_mainForm.AutoSavePlaylist();
+			_mainForm.Controller.AutoSavePlaylist();
 		}
 
 		/// <summary>

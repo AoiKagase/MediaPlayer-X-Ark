@@ -2,6 +2,7 @@
 using MediaPlayer_X_Ark.Engine.Player;
 using MediaPlayer_X_Ark.Forms;
 using MediaPlayer_X_Ark.Skin;
+using NFluidsynth;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -19,7 +20,8 @@ namespace MediaPlayer_X_Ark
 
 		private IPlayerEngine _player;
 		private IConfigService _config;
-
+		private PlayerController _controller;
+		public PlayerController Controller => _controller;
 		private ToolTip _toolTip;
 
 		private PlayListForm _playListForm;
@@ -40,6 +42,12 @@ namespace MediaPlayer_X_Ark
 		private PictureBox _waveformArea = null;  // target="area" 用
 		private int _waveformRefreshCounter = 0;
 		private readonly List<Form> _managedForms = new List<Form>();
+
+		private int seekValue;
+		private int seeking;
+		private const int SeekStep = 1000;       // 1回あたりのシーク量（ミリ秒）
+		private const int SeekMaxValue = 10000;  // 加速の上限（ミリ秒）
+
 		public MainForm()
 		{
 			InitializeComponent();
@@ -86,7 +94,7 @@ namespace MediaPlayer_X_Ark
 			}
 		}
 		public void BtnMouseDown(object sender, MouseEventArgs e)
-	=> _skinApplicator?.SetButtonDown((Button)sender);
+			=> _skinApplicator?.SetButtonDown((Button)sender);
 		public void BtnMouseUp(object sender, MouseEventArgs e)
 			=> _skinApplicator?.SetButtonUp((Button)sender);
 		/// <summary>
@@ -303,31 +311,31 @@ namespace MediaPlayer_X_Ark
 		/// ファイルを開く
 		/// </summary>
 		/// <param name="fileName"></param>
-		public void OpenFile(string fileName)
-		{
-			int idx;
-			// Open File
-			if (_player.CreateSound(fileName, out idx) != FMOD.RESULT.OK)
-				return;
+		//public void OpenFile(string fileName)
+		//{
+		//	int idx;
+		//	// Open File
+		//	if (_player.CreateSound(fileName, out idx) != FMOD.RESULT.OK)
+		//		return;
 
-			switch (_config.settings.OpenFileAction)
-			{
-				case 1: // 常に再生
-					PlayLoad(idx);
-					break;
+		//	switch (_config.settings.OpenFileAction)
+		//	{
+		//		case 1: // 常に再生
+		//			PlayLoad(idx);
+		//			break;
 
-				case 2: // 常に追加のみ
-						// 再生しない
-					break;
+		//		case 2: // 常に追加のみ
+		//				// 再生しない
+		//			break;
 
-				default: // 再生中なら追加・停止中なら再生
-					if (!_player.IsPlaying())
-						PlayLoad(idx);
-					break;
-			}
-			// ★自動保存
-			AutoSavePlaylist();
-		}
+		//		default: // 再生中なら追加・停止中なら再生
+		//			if (!_player.IsPlaying())
+		//				PlayLoad(idx);
+		//			break;
+		//	}
+		//	// ★自動保存
+		//	AutoSavePlaylist();
+		//}
 
 		/// <summary>
 		/// Indexを指定して再生する。(主にプレイリストから直接再生)
@@ -341,41 +349,6 @@ namespace MediaPlayer_X_Ark
 		}
 		private void PlayLoad() => PlayLoad(_player.PlayingIndex);
 
-		/// <summary>
-		/// ボタンクリック時のイベント（MouseDown時）
-		/// </summary>
-		/// <param name="button"></param>
-		public void BtnDownEvent(ref object button)
-		{
-			var btn = (Button)button;
-			if (_currentSkin == null) return;
-			try
-			{
-				// コントロール名からスキンデータを取得
-				var map = GetButtonMap();
-				if (map.TryGetValue(btn.Name, out var bc))
-					btn.BackgroundImage = bc.DownImage;
-			}
-			catch { }
-			btn.Refresh();
-		}
-		/// <summary>
-		/// ボタンクリック時のイベント（MouseUp時）
-		/// </summary>
-		/// <param name="button"></param>
-		public void BtnUpEvent(ref object button)
-		{
-			var btn = (Button)button;
-			if (_currentSkin == null) return;
-			try
-			{
-				var map = GetButtonMap();
-				if (map.TryGetValue(btn.Name, out var bc))
-					btn.BackgroundImage = bc.BackImage;
-			}
-			catch { }
-			btn.Refresh();
-		}
 		private Dictionary<string, ButtonComponents> GetButtonMap()
 		{
 			var map = new Dictionary<string, ButtonComponents>(_currentSkin.Buttons);
@@ -384,7 +357,7 @@ namespace MediaPlayer_X_Ark
 					map[kv.Key] = kv.Value;
 			return map;
 		}
-		private bool _isHandlingTrackEnded = false;
+
 		/// =============================================================
 		/// 各コントロールイベント
 		/// =============================================================
@@ -425,6 +398,12 @@ namespace MediaPlayer_X_Ark
 			_player.WaveformReady += OnWaveformReady;
 			// ④ Device は init() 後でOK
 			_player.SetDevice(_config.settings.Device);
+
+			// コントローラー生成
+			_controller = new PlayerController(_player, _config);
+			_controller.TrackChanged += OnTrackChanged;
+			_controller.PlaybackStateChanged += OnPlaybackStateChanged;
+
 			_player.SoundFontPath = _config.settings.SoundFontPath;
 			_playListForm = new PlayListForm(this, _player, _config);
 			_playListForm.Owner = this;
@@ -445,6 +424,7 @@ namespace MediaPlayer_X_Ark
 			Spectrum.Initialize();
 			Spectrum.Mode = _config.settings.DefaultSpectrumMode;
 			Spectrum.SnowBlockEnabled = _config.settings.SnowBlockEnabled;
+			SetMouseDownEvent();
 
 			if (_config.settings.RestorePlaylist)
 			{
@@ -478,9 +458,21 @@ namespace MediaPlayer_X_Ark
 			{
 				if (File.Exists(parameters[1]))
 				{
-					OpenFile(parameters[1]);
+					_controller.OpenAndPlay(parameters[1]);
 				}
 			}
+		}
+		private void OnPlaybackStateChanged() { }
+		private void OnTrackChanged(int index)
+		{
+			SldTrack.Maximum = (int)_player.GetLength(index);
+			SldTrack.Value = 0;
+			LabelTitle.Value.Text = _controller.BuildTitleText(index);
+
+			_waveformBitmap?.Dispose();
+			_waveformBitmap = null;
+			if (_waveformArea != null) _waveformArea.Image = null;
+			else SldTrack.BackgroundImage = null;
 		}
 
 		private void OnWaveformReady(int index)
@@ -519,12 +511,12 @@ namespace MediaPlayer_X_Ark
 			_waveformBitmap = newBmp;
 			ApplyWaveformBitmap(newBmp, wDef.Target);
 		}
-		public void AutoSavePlaylist()
-		{
-			if (!_config.settings.AutoSavePlaylist) return;
-			SavePlaylistToFile(Path.Combine(
-				Application.StartupPath, "last_playlist.json"));
-		}
+		//public void AutoSavePlaylist()
+		//{
+		//	if (!_config.settings.AutoSavePlaylist) return;
+		//	SavePlaylistToFile(Path.Combine(
+		//		Application.StartupPath, "last_playlist.json"));
+		//}
 		private void RestorePlaylistFromFile(string path)
 		{
 			try
@@ -808,21 +800,7 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			// ★プレイリスト自動保存
-			if (_config.settings.RestorePlaylist)
-				SavePlaylistToFile(Path.Combine(
-					Application.StartupPath, "last_playlist.json"));
-			// ★再生位置を保存
-			if (_config.settings.RestorePosition)
-			{
-				_config.settings.LastPlayingIndex = _player.PlayingIndex;
-				_config.settings.LastPlayingPosition = _player.GetPosition();
-			}
-			else
-			{
-				_config.settings.LastPlayingIndex = -1;
-				_config.settings.LastPlayingPosition = 0;
-			}
+			_controller.Close();
 			_config.Save();
 			_cdForm?.Dispose();   // 追加
 			_player.Dispose();  // 明示的に解放
@@ -832,13 +810,6 @@ namespace MediaPlayer_X_Ark
 			SkinPackage.CleanupTempDirectory(); // 追加
 		}
 		#endregion
-		private void SavePlaylistToFile(string path)
-		{
-			var list = _player.PlayList.Select(p => p.FileName).ToList();
-			File.WriteAllText(path,
-				System.Text.Json.JsonSerializer.Serialize(list),
-				System.Text.Encoding.UTF8);
-		}
 		#region Timer Event
 
 		/// <summary>
@@ -852,9 +823,6 @@ namespace MediaPlayer_X_Ark
 		{
 			// 初期化済みの場合のみ処理する
 			if (!initialize || _player == null || _player.spectrum == null) return;
-
-			if (_player.CrossfadeEnabled)
-				_player.UpdateCrossfade(Timer.Interval);
 
 			// スペクトラム画像の反映
 			Spectrum.mFFT = _player.spectrum.UpdateSpectrum();
@@ -894,38 +862,7 @@ namespace MediaPlayer_X_Ark
 				UpdateWaveformPlayedRatio(ratio);
 			}
 			// ── 曲終了検知（クロスフェード対応版）──────────────────────
-			if (_player.NowPlaying && _player.IsPlaying())
-			{
-				if (_player.CrossfadeEnabled && !_player.CrossfadeTriggered)
-				{
-					// 残り時間が CrossfadeDurationMs を下回ったらフェード開始
-					int playingIndex = _player.PlayingIndex;
-					if (playingIndex >= 0)
-					{
-						uint remaining = _player.GetLength(playingIndex) - _player.GetPosition();
-						if ((int)remaining <= _player.CrossfadeDurationMs)
-						{
-							_player.CrossfadeTriggered = true;
-							if (!_isHandlingTrackEnded)
-							{
-								_isHandlingTrackEnded = true;
-								try { _player.PlayNext(); UpdateTrackUI(); }
-								finally { _isHandlingTrackEnded = false; }
-							}
-						}
-					}
-				}
-			}
-			else if (_player.NowPlaying && !_player.IsPlaying())
-			{
-				// クロスフェード無効時 or フェード未トリガーのまま曲が終わった場合
-				if (!_isHandlingTrackEnded)
-				{
-					_isHandlingTrackEnded = true;
-					try { _player.PlayNext(); UpdateTrackUI(); }
-					finally { _isHandlingTrackEnded = false; }
-				}
-			}
+			_controller.OnTimerTick(Timer.Interval);
 		}
 		private void UpdateWaveformPlayedRatio(float ratio)
 		{
@@ -1031,132 +968,65 @@ namespace MediaPlayer_X_Ark
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void BtnOpen_MouseDown(object sender, MouseEventArgs e)
+		private void SetMouseDownEvent()
 		{
-			BtnDownEvent(ref sender);
+			foreach (Control c in this.Controls)
+			{
+				if (c is Button btn && _currentSkin.Buttons.TryGetValue(c.Name, out var bc))
+				{
+					c.MouseDown -= BtnMouseDown;
+					c.MouseDown += BtnMouseDown;
+					c.MouseUp -= BtnMouseUp;
+					c.MouseUp += BtnMouseUp;
+				}
+				switch (c.Name)
+				{
+					case "BtnSeekBack":
+						c.MouseDown -= BtnSeekBack_MouseDown;
+						c.MouseDown += BtnSeekBack_MouseDown;
+						c.MouseUp -= BtnSeekBack_MouseUp;
+						c.MouseUp += BtnSeekBack_MouseUp;
+						break;
+					case "BtnSeekForward":
+						c.MouseDown -= BtnSeekForward_MouseDown;
+						c.MouseDown += BtnSeekForward_MouseDown;
+						c.MouseUp -= BtnSeekForward_MouseUp;
+						c.MouseUp += BtnSeekForward_MouseUp;
+						break; 
+					case "BtnRandom":
+						c.MouseUp -= BtnRandom_MouseUp;
+						c.MouseUp += BtnRandom_MouseUp;
+						break;
+					case "BtnLoop":
+						c.MouseUp -= BtnLoop_MouseUp;
+						c.MouseUp += BtnLoop_MouseUp;
+						break;
+				}
+			}
 		}
-		private void BtnClose_MouseDown(object sender, MouseEventArgs e)
-		{
-			BtnDownEvent(ref sender);
-		}
-		private void BtnStop_MouseDown(object sender, MouseEventArgs e)
-		{
-			BtnDownEvent(ref sender);
-		}
-		private void BtnBack_MouseDown(object sender, MouseEventArgs e)
-		{
-			BtnDownEvent(ref sender);
-		}
-		private void BtnPlay_MouseDown(object sender, MouseEventArgs e)
-		{
-			BtnDownEvent(ref sender);
-		}
-		private int seekValue;
-		private int seeking;
-		private const int SeekStep = 1000;       // 1回あたりのシーク量（ミリ秒）
-		private const int SeekMaxValue = 10000;  // 加速の上限（ミリ秒）
 
-		private void BtnSeekBack_MouseDown(object sender, MouseEventArgs e)
-		{
-			BtnDownEvent(ref sender);
-			seeking = 2;
-		}
-		private void BtnPause_MouseDown(object sender, MouseEventArgs e)
-		{
-			BtnDownEvent(ref sender);
-		}
-		private void BtnSeekForward_MouseDown(object sender, MouseEventArgs e)
-		{
-			BtnDownEvent(ref sender);
-			seeking = 1;
-		}
-		private void BtnNext_MouseDown(object sender, MouseEventArgs e)
-		{
-			BtnDownEvent(ref sender);
-		}
-		private void BtnRandom_MouseDown(object sender, MouseEventArgs e)
-		{
-			BtnDownEvent(ref sender);
-		}
-		private void BtnLoop_MouseDown(object sender, MouseEventArgs e)
-		{
-			BtnDownEvent(ref sender);
-		}
-		private void BtnSetting_MouseDown(object sender, MouseEventArgs e)
-		{
-			BtnDownEvent(ref sender);
-		}
-		private void BtnPlaylist_MouseDown(object sender, MouseEventArgs e)
-		{
-			BtnDownEvent(ref sender);
-		}
-		private void BtnMinisize_MouseDown(object sender, MouseEventArgs e)
-		{
-			BtnDownEvent(ref sender);
-		}
+		private void BtnSeekBack_MouseDown(object sender, MouseEventArgs e) => seeking = 2;
+		private void BtnSeekForward_MouseDown(object sender, MouseEventArgs e) => seeking = 1;
 		#endregion
 
 		#region Button MouseUp Event
-		private void BtnBack_MouseUp(object sender, MouseEventArgs e)
-		{
-			BtnUpEvent(ref sender);
-		}
-		private void BtnClose_MouseUp(object sender, MouseEventArgs e)
-		{
-			BtnUpEvent(ref sender);
-		}
-		private void BtnOpen_MouseUp(object sender, MouseEventArgs e)
-		{
-			BtnUpEvent(ref sender);
-		}
-		private void BtnPlay_MouseUp(object sender, MouseEventArgs e)
-		{
-			BtnUpEvent(ref sender);
-		}
-
-		private void BtnStop_MouseUp(object sender, MouseEventArgs e)
-		{
-			BtnUpEvent(ref sender);
-		}
 		private void BtnSeekBack_MouseUp(object sender, MouseEventArgs e)
 		{
-			BtnUpEvent(ref sender);
 			this.seekValue = 0;
 			this.seeking = 0;
-		}
-		private void BtnPause_MouseUp(object sender, MouseEventArgs e)
-		{
-			BtnUpEvent(ref sender);
 		}
 		private void BtnSeekForward_MouseUp(object sender, MouseEventArgs e)
 		{
-			BtnUpEvent(ref sender);
 			this.seekValue = 0;
 			this.seeking = 0;
 		}
-		private void BtnNext_MouseUp(object sender, MouseEventArgs e)
-		{
-			BtnUpEvent(ref sender);
-		}
 		private void BtnRandom_MouseUp(object sender, MouseEventArgs e)
 		{
-			UpdateRandomButtonVisual((Button)sender);
+			_skinApplicator?.UpdateRandomButton((Button)sender, _player.loop);
 		}
 		private void BtnLoop_MouseUp(object sender, MouseEventArgs e)
 		{
-			UpdateLoopButtonVisual((Button)sender);
-		}
-		private void BtnSetting_MouseUp(object sender, MouseEventArgs e)
-		{
-			BtnUpEvent(ref sender);
-		}
-		private void BtnPlaylist_MouseUp(object sender, MouseEventArgs e)
-		{
-			BtnUpEvent(ref sender);
-		}
-		private void BtnMinisize_MouseUp(object sender, MouseEventArgs e)
-		{
-			BtnUpEvent(ref sender);
+			_skinApplicator?.UpdateLoopButton((Button)sender, _player.loop);
 		}
 		#endregion
 
@@ -1180,7 +1050,7 @@ namespace MediaPlayer_X_Ark
 				if (_openFileDialogMedia.ShowDialog() == DialogResult.OK)
 				{
 					_config.settings.LastMediaDirectory = Path.GetDirectoryName(_openFileDialogMedia.FileName);
-					OpenFile(_openFileDialogMedia.FileName);
+					_controller.OpenAndPlay(_openFileDialogMedia.FileName);
 				}
 			}
 			catch (Exception ex)
@@ -1470,17 +1340,7 @@ namespace MediaPlayer_X_Ark
 
 		private void BtnCD_Click(object sender, EventArgs e)
 		{
-			_cdForm.Show(this);
-		}
-
-		private void BtnCD_MouseDown(object sender, MouseEventArgs e)
-		{
-			BtnDownEvent(ref sender);
-		}
-
-		private void BtnCD_MouseUp(object sender, MouseEventArgs e)
-		{
-			BtnUpEvent(ref sender);
+			_cdForm.Show();
 		}
 
 		private void MainForm_DragDrop(object sender, DragEventArgs e)
@@ -1501,7 +1361,7 @@ namespace MediaPlayer_X_Ark
 					if (!_player.IsPlaying())
 					{
 						// 最初の１つはOpen=>Play処理を行う
-						OpenFile(file);
+						_controller.OpenAndPlay(file);
 						continue;
 					}
 				}

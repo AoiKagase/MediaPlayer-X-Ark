@@ -51,7 +51,7 @@ namespace MediaPlayer_X_Ark
             string parameters = e.CommandLine[0];
             if (File.Exists(parameters))
             {
-                ((MainForm)this.MainForm).OpenFile(parameters);
+                ((MainForm)this.MainForm).Controller.OpenAndPlay(parameters);
             }
         }
     }
