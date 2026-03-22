@@ -9,6 +9,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 {
 	public class PitchControl : OptionsControlBase
 	{
+		private bool _loading = false;
 		private CheckBox _chkPitch, _chkFrequency, _chkSpeed;
 		private UI.Knob _knobPitch, _knobFFT, _knobFrequency, _knobSpeed;
 		private TextBox _lblPitch, _lblFFT, _lblFrequency, _lblSpeed;
@@ -47,6 +48,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 				(int)(Engine.effector.PitchShift.Pitch * 100), _grpPitch,
 				(s, e) =>
 				{
+					if (_loading) return;
 					Engine.effector.PitchShift.Pitch = ((UI.Knob)s).Value / 100f;
 					_lblPitch.Text = Engine.effector.PitchShift.Pitch.ToString("0.00");
 					Config.settings.Effectors.PitchShift.Pitch = ((UI.Knob)s).Value;
@@ -57,6 +59,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 				Config.settings.Effectors.PitchShift.FFT, _grpPitch,
 				(s, e) =>
 				{
+					if (_loading) return;
 					float[] fftsize = { 256, 512, 1024, 2048, 4096 };
 					Engine.effector.PitchShift.FFTSize = fftsize[((UI.Knob)s).Value];
 					_lblFFT.Text = Engine.effector.PitchShift.FFTSize.ToString("0");
@@ -89,6 +92,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 				Config.settings.Effectors.Frequency.Frequency, _grpFrequency,
 				(s, e) =>
 				{
+					if (_loading) return; 
 					Engine.effector.Frequency.SetFrequency(((UI.Knob)s).Value);
 					_lblFrequency.Text = Engine.effector.Frequency.Hz.ToString("0");
 					Config.settings.Effectors.Frequency.Frequency = ((UI.Knob)s).Value;
@@ -120,6 +124,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 				Config.settings.Effectors.Speed.Speed, _grpSpeed,
 				(s, e) =>
 				{
+					if (_loading) return;
 					Engine.effector.Speed = ((UI.Knob)s).Value;
 					_lblSpeed.Text = Engine.effector.Speed.ToString();
 					Config.settings.Effectors.Speed.Speed = ((UI.Knob)s).Value;
@@ -191,6 +196,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 
 		public override void LoadSettings()
 		{
+			_loading = true;
 			_chkPitch.Checked = Engine.effector.PitchShift.Enabled;
 			_chkFrequency.Checked = Engine.effector.Frequency.Enabled;
 			_chkSpeed.Checked = Engine.effector.SpeedEnabled;
@@ -204,7 +210,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 			_lblFFT.Text = Engine.effector.PitchShift.FFTSize.ToString("0");
 			_lblFrequency.Text = Engine.effector.Frequency.Hz.ToString("0");
 			_lblSpeed.Text = Engine.effector.Speed.ToString();
-
+			_loading = false;
 			UpdateSpeedMode(Engine.effector.SpeedEnabled);
 		}
 
@@ -219,6 +225,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 
 		private void ChkPitch_CheckedChanged(object sender, EventArgs e)
 		{
+			if (_loading) return;
 			Engine.effector.PitchShift.Switch(_chkPitch.Checked);
 			Config.settings.Effectors.PitchShift.Enable = _chkPitch.Checked;
 			if (_chkPitch.Checked)
@@ -227,6 +234,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 
 		private void ChkFrequency_CheckedChanged(object sender, EventArgs e)
 		{
+			if (_loading) return; 
 			Engine.effector.Frequency.Switch(_chkFrequency.Checked);
 			Config.settings.Effectors.Frequency.Enable = _chkFrequency.Checked;
 			if (_chkFrequency.Checked)
@@ -235,6 +243,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 
 		private void ChkSpeed_CheckedChanged(object sender, EventArgs e)
 		{
+			if (_loading) return; 
 			Config.settings.Effectors.Speed.Enable =
 				Engine.effector.SpeedEnabled = _chkSpeed.Checked;
 

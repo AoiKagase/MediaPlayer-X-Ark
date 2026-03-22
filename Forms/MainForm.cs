@@ -86,6 +86,7 @@ namespace MediaPlayer_X_Ark
 				_skinApplicator = new SkinApplicator(_currentSkin);
 				_skinApplicator.ApplyToMainForm(this, Spectrum);
 				_skinApplicator.ApplyToPlayListForm(_playListForm);
+				SetupWaveformTarget(); // TODO: テスト表示
 				// プレビュー用メイン画像パスを保存
 				_config.settings.Skin = skinFile;
 
@@ -94,6 +95,46 @@ namespace MediaPlayer_X_Ark
 				SldVolume.Value = _config.settings.Volume;
 			}
 		}
+		/// <summary>
+		/// TODO: テスト表示用
+		/// </summary>
+		private void SetupWaveformTarget()
+		{
+			if (_waveformArea != null)
+			{
+				Controls.Remove(_waveformArea);
+				_waveformArea.Dispose();
+				_waveformArea = null;
+			}
+
+			// NewSkinSystem 側で null → new WaveformDef() にしたので
+			// ここでは常に non-null が来る（OldSkinSystem は下の else で無効化）
+			var wDef = (_currentSkin as NewSkinSystem)?.Waveform;
+			if (wDef == null)
+			{
+				_controller.Engine.WaveformEnabled = false;
+				SldTrack.BackgroundImage = null;
+				return;
+			}
+
+			_controller.Engine.WaveformEnabled = true;
+
+			if (wDef.Target == "area" && wDef.Width > 0 && wDef.Height > 0)
+			{
+				_waveformArea = new PictureBox
+				{
+					Location = new Point(wDef.X, wDef.Y),
+					Size = new System.Drawing.Size(wDef.Width, wDef.Height),
+					BackColor = Color.Transparent,
+					SizeMode = PictureBoxSizeMode.StretchImage,
+				};
+				Controls.Add(_waveformArea);
+				_waveformArea.BringToFront();
+			}
+			// target="trackbar" の場合は _waveformArea = null のまま
+			// → ApplyWaveformBitmap が SldTrack.BackgroundImage に描画
+		}
+
 		public void BtnMouseDown(object sender, MouseEventArgs e)
 			=> _skinApplicator?.SetButtonDown((Button)sender);
 		public void BtnMouseUp(object sender, MouseEventArgs e)
@@ -137,7 +178,7 @@ namespace MediaPlayer_X_Ark
 			_controller = new PlayerController(_engine, _config);
 			_controller.TrackChanged += OnTrackChanged;
 			_controller.PlaybackStateChanged += OnPlaybackStateChanged;
-
+			_controller.WaveformReady += OnWaveformReady;
 			_playListForm = new PlayListForm(this, _controller, _config);
 			_optionsForm = new OptionsForm(this, _controller, _config);
 			_cdForm = new CDForm(this, _controller, _config);
@@ -193,31 +234,38 @@ namespace MediaPlayer_X_Ark
 			_waveformBitmap = null;
 			if (_waveformArea != null) _waveformArea.Image = null;
 			else SldTrack.BackgroundImage = null;
+			// ── 追加：解析済みなら即再描画 ──
+			var entry = _controller.Engine.PlayList[index];
+			if (_controller.Engine.WaveformEnabled && entry.WaveformReady)
+				UpdateWaveformBitmap(index);
+		}
+		private void OnWaveformReady(int index)
+		{
+			// _controller.WaveformReady は常にUIスレッドで発火するので
+			// InvokeRequired チェック不要
+			if (!_controller.Engine.WaveformEnabled) return;
+			if (index != _controller.Engine.PlayingIndex) return;
+			UpdateWaveformBitmap(index);
 		}
 
+		private void UpdateWaveformBitmap(int index)
+		{
+			var wDef = (_currentSkin as MediaPlayer_X_Ark.Skin.NewSkinSystem)?.Waveform;
+			if (wDef == null) return;  // スキン未定義なら何もしない
 
-		//private void UpdateWaveformBitmap(int index)
-		//{
-		//	var wDef = (_currentSkin as MediaPlayer_X_Ark.Skin.NewSkinSystem)?.Waveform;
-		//	if (wDef == null) return;  // スキン未定義なら何もしない
+			var entry = _controller.Engine.PlayList[index];
+			var (w, h) = GetWaveformSize(wDef);
+			var newBmp = WaveformRenderer.Render(
+				ApplyExponent(entry.WaveformL, wDef.Exponent),
+				ApplyExponent(entry.WaveformR, wDef.Exponent),
+				w, h, playedRatio: 0f,
+				mode: ParseWaveformMode(wDef.Mode),
+				colors: BuildWaveformColors(wDef));
 
-		//	if (index < 0 || index >= _player.PlayList.Count) return;
-
-		//	var entry = _player.PlayList[index];
-		//	if (!entry.WaveformReady) return;
-
-		//	var (w, h) = GetWaveformSize(wDef);
-		//	var newBmp = WaveformRenderer.Render(
-		//		ApplyExponent(entry.WaveformL, wDef.Exponent),
-		//		ApplyExponent(entry.WaveformR, wDef.Exponent),
-		//		w, h, playedRatio: 0f,
-		//		mode: ParseWaveformMode(wDef.Mode),
-		//		colors: BuildWaveformColors(wDef));
-
-		//	_waveformBitmap?.Dispose();
-		//	_waveformBitmap = newBmp;
-		//	ApplyWaveformBitmap(newBmp, wDef.Target);
-		//}
+			_waveformBitmap?.Dispose();
+			_waveformBitmap = newBmp;
+			ApplyWaveformBitmap(newBmp, wDef.Target);
+		}
 
 		/// <summary>
 		/// 本体ドラッグによるウィンドウ移動

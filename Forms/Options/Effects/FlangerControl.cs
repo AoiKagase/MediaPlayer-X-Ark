@@ -52,6 +52,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 
 		public override void LoadSettings()
 		{
+			_loading = true;
 			ChkEnable.Checked = Engine.effector.Flanger.Enabled;
 			_knobMix.Value = (int)Engine.effector.Flanger.Mix;
 			_knobRate.Value = (int)(Engine.effector.Flanger.Rate * 10);
@@ -61,6 +62,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 			_lblDepth.Text = Engine.effector.Flanger.Depth.ToString("0.00");
 			LoadEffectPresets();
 			SetControlsEnabled(ChkEnable.Checked);
+			_loading = false;
 		}
 
 		public override void SaveSettings() { }

@@ -185,12 +185,17 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
 		public override void LoadSettings()
 		{
+			// PropertyChanged の多重購読を防ぐ
+			Engine.effector.GEqualizer.PropertyChanged -= GEqualizer_PropertyChanged;
+			Engine.effector.GEqualizer.PropertyChanged += GEqualizer_PropertyChanged;
+
+			_internalChanged = true;
+
 			_chkEnable.Checked = Config.settings.Effectors.GEqualizer.Enable;
 
 			LoadPresets();
 			_cmbPreset.SelectedIndex = Config.settings.Effectors.GEqualizer.Preset;
 
-			_internalChanged = true;
 			_sliders[0].Value = Config.settings.Effectors.GEqualizer.GEQ_32;
 			_sliders[1].Value = Config.settings.Effectors.GEqualizer.GEQ_60;
 			_sliders[2].Value = Config.settings.Effectors.GEqualizer.GEQ_125;
@@ -207,9 +212,6 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
 			SetControlsEnabled(_chkEnable.Checked);
 			PaintGraph();
-
-			// PropertyChangedイベント登録
-			Engine.effector.GEqualizer.PropertyChanged += GEqualizer_PropertyChanged;
 		}
 
 		public override void SaveSettings() { }
@@ -296,6 +298,8 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
 		private void CmbPreset_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (_internalChanged) return;  // ← 追加
+
 			var name = _cmbPreset.SelectedItem as string;
 			if (string.IsNullOrEmpty(name)) return;
 

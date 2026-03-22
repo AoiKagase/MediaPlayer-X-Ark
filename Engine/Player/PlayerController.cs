@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark.Engine.Player
@@ -16,41 +17,31 @@ namespace MediaPlayer_X_Ark.Engine.Player
     /// </summary>
     public class PlayerController
     {
-        class NowPlayData {
-            public string Title { get; set; }
-			public string Artist { get; set; }
-
-			public string Album { get; set; }
-
-			public string FileName { get; set; }
-
-			public string DisplayText { get; set; }
-            public int Length { get; set; }
-
-
-		}
 		private readonly IPlayerEngine _engine;
         private readonly IConfigService _config;
+		private readonly SynchronizationContext _syncContext;
 
-        // ── イベント ────────────────────────────────────────────────
+		// ── イベント ────────────────────────────────────────────────
 
-        /// <summary>曲が切り替わったときに発火。引数は新しい PlayingIndex。</summary>
-        public event Action<int> TrackChanged;
+		/// <summary>曲が切り替わったときに発火。引数は新しい PlayingIndex。</summary>
+		public event Action<int> TrackChanged;
 
         /// <summary>再生状態が変化したときに発火（再生開始・停止・一時停止）。</summary>
         public event Action PlaybackStateChanged;
-
+		
+        /// <summary>波形解析が完了したときに発火（常にUIスレッドで呼ばれる）。</summary>
+		public event Action<int> WaveformReady;
         // ── プロパティ ───────────────────────────────────────────────
 
-        public IPlayerEngine Engine  => _engine;
+		public IPlayerEngine Engine  => _engine;
         public IConfigService Config => _config;
 
 		public PlayerController(IPlayerEngine engine, IConfigService config)
         {
             _engine = engine;
             _config = config;
-
-            Initialize();
+			_syncContext = SynchronizationContext.Current ?? new SynchronizationContext();
+			Initialize();
 		}
 
         private void Initialize()
@@ -60,7 +51,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			// ③ init() を実行
 			_engine.Initialize(_config.settings.Buffer);
-			//_engine.WaveformReady += OnWaveformReady;
+			_engine.WaveformReady += (index) =>	_syncContext.Post(_ => WaveformReady?.Invoke(index), null);
 			// ④ Device は init() 後でOK
 			_engine.SetDevice(_config.settings.Device);
 

@@ -285,7 +285,9 @@ namespace MediaPlayer_X_Ark.Skin
 				},
 				Enabled = true,
 			};
-			Waveform = skin.Waveform;
+			// WaveForm
+			// TODO: テスト用にデフォルト値を入れているが、正式にはスキン側で定義必須。NULLの場合は非表示
+			Waveform = skin.Waveform ?? new WaveformDef();
 			// PlayListForm
 			var pl = skin.PlayList;
 			_forms = new Dictionary<string, FormComponents>

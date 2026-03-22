@@ -62,6 +62,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 
 		public override void LoadSettings()
 		{
+			_loading = true;
 			ChkEnable.Checked = Engine.effector.Echo.Enabled;
 			_knobDelay.Value = (int)Engine.effector.Echo.Delay;
 			_knobFeedback.Value = (int)Engine.effector.Echo.Feedback;
@@ -73,6 +74,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 			_lblWet.Text = Engine.effector.Echo.WetLevel.ToString("0");
 			LoadEffectPresets();
 			SetControlsEnabled(ChkEnable.Checked);
+			_loading = false;
 		}
 
 		public override void SaveSettings() { }

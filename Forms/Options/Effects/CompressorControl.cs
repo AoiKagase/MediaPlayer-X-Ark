@@ -85,6 +85,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 
 		public override void LoadSettings()
 		{
+			_loading = true;
 			ChkEnable.Checked = Engine.effector.Compressor.Enabled;
 			_knobThreshold.Value = (int)Engine.effector.Compressor.Threshold;
 			_knobRatio.Value = (int)Engine.effector.Compressor.Ratio;
@@ -99,6 +100,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 			_lblGain.Text = Engine.effector.Compressor.Gain.ToString("0");
 			LoadEffectPresets();
 			SetControlsEnabled(ChkEnable.Checked);
+			_loading = false;
 		}
 
 		public override void SaveSettings() { }

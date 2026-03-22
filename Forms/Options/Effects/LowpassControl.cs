@@ -42,6 +42,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 
 		public override void LoadSettings()
 		{
+			_loading = true;
 			ChkEnable.Checked = Engine.effector.Lowpass.Enabled;
 			_knobCutoff.Value = (int)Engine.effector.Lowpass.CutOff;
 			_knobResonance.Value = (int)(Engine.effector.Lowpass.Resonance * 10);
@@ -49,6 +50,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 			_lblResonance.Text = Engine.effector.Lowpass.Resonance.ToString("0.0");
 			LoadEffectPresets();
 			SetControlsEnabled(ChkEnable.Checked);
+			_loading = false;
 		}
 
 		public override void SaveSettings() { }

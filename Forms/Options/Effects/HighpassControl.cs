@@ -42,6 +42,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 
 		public override void LoadSettings()
 		{
+			_loading = true;
 			ChkEnable.Checked = Engine.effector.Highpass.Enabled;
 			_knobCutoff.Value = (int)Engine.effector.Highpass.CutOff;
 			_knobResonance.Value = (int)(Engine.effector.Highpass.Resonance * 10);
@@ -49,6 +50,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 			_lblResonance.Text = Engine.effector.Highpass.Resonance.ToString("0.0");
 			LoadEffectPresets();
 			SetControlsEnabled(ChkEnable.Checked);
+			_loading = false;
 		}
 
 		public override void SaveSettings() { }

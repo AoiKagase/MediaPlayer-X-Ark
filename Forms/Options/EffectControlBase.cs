@@ -20,6 +20,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		protected abstract string EffectName { get; }
 		protected abstract string EnableText { get; }
 
+		protected bool _loading = false;
 		protected EffectControlBase(IPlayerEngine engine, IConfigService config)
 			: base(engine, config) { }
 
@@ -140,6 +141,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		// ===========================
 		protected void LoadEffectPresets()
 		{
+			_loading = true;
 			CmbPreset.Items.Clear();
 			CmbPreset.Items.Add("");
 			foreach (var name in EffectPreset.GetPresetNames(EffectName))
@@ -147,6 +149,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
 			if (Config.settings.EffectPresets.TryGetValue(EffectName, out var current))
 				CmbPreset.SelectedItem = current;
+			_loading = false;
 		}
 
 		protected void SetControlsEnabled(bool enabled)
@@ -171,12 +174,14 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		// ===========================
 		private void ChkEnable_CheckedChanged(object sender, EventArgs e)
 		{
+			if (_loading) return;
 			SwitchEngine(ChkEnable.Checked);
 			SetControlsEnabled(ChkEnable.Checked);
 		}
 
 		private void CmbPreset_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (_loading) return;
 			var name = CmbPreset.SelectedItem as string;
 			if (string.IsNullOrEmpty(name)) return;
 			ApplyPreset(name);

@@ -59,6 +59,8 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 
 		public override void LoadSettings()
 		{
+
+			_loading = true;
 			ChkEnable.Checked = Engine.effector.Normalize.Enabled;
 			_knobFadeTime.Value = (int)(Engine.effector.Normalize.FadeTime / 10f);
 			_knobMaxAmp.Value = (int)(Engine.effector.Normalize.MaxAmp * 10f);
@@ -68,6 +70,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 			_lblThreshold.Text = Engine.effector.Normalize.Threshold.ToString("0.00");
 			LoadEffectPresets();
 			SetControlsEnabled(ChkEnable.Checked);
+			_loading = false;
 		}
 
 		public override void SaveSettings() { }

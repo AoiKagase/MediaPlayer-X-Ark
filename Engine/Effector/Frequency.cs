@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using MediaPlayer_X_Ark.Engine.Player;
 namespace MediaPlayer_X_Ark.Engine.Effector
 {
 	public class Frequency : INotifyPropertyChanged
 	{
 		private float _frequency;
 		private FMOD.System _system;
-		private FMOD.Channel _channel;
+		private FMOD.Channel[] _channel = null;
 
 		/// <summary>
 		/// </summary>
@@ -28,7 +29,10 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 					if (Enabled)
                     {
 						_frequency = value;
-						_channel.setFrequency(_frequency);
+						foreach (var channel in _channel)
+						{
+							channel.setFrequency(_frequency);
+						}
 					}
 					NotifyPropertyChanged("Hz");
 				}
@@ -59,10 +63,14 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		/// CREATE DSP FOR LOWPASS FILTER
 		/// </summary>
 		/// <param name="system"></param>
-		public Frequency(FMOD.System system)
+		public Frequency(FMOD.System system, IPlayerEngine _engine)
 		{
 			_system = system;
-			_system.getChannel(0, out _channel);
+			_channel = new FMOD.Channel[_engine.ChannelCount];
+			for (int i = 0; i < _engine.ChannelCount; i++)
+			{
+				_system.getChannel(i, out _channel[i]);
+			}
 			SetDefault();
 		}
 
@@ -74,16 +82,22 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		{
 			FMOD.RESULT result = FMOD.RESULT.OK;
 			if (sw == true)
-            {
+			{
 				Enabled = true;
-				_channel.setFrequency(Hz);
+				foreach (var channel in _channel)
+				{
+					channel.setFrequency(Hz);
+				}
 			}
 			else
-			if (sw == false)
-            {
-				_channel.setFrequency(44100);
-				Enabled = false;
-			}
+				if (sw == false)
+				{
+					foreach (var channel in _channel)
+					{
+						channel.setFrequency(44100);
+					}
+					Enabled = false;
+				}
 
 			return result;
 		}

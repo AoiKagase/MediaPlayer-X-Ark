@@ -75,7 +75,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		protected List<DEVICE_INFO> FmodDeviceList = new List<DEVICE_INFO>();
 
 		private const int channelCount = 2;
-
+		public int ChannelCount => channelCount;
 		private List<int> _shuffleQueue = new List<int>();
         private int _shuffleQueueIndex = 0;
         private readonly Random _rng = new Random();
@@ -243,7 +243,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 						PlayList = new BindingList<Engine.Player.PlayList>();
 
-						effector = new Engine.Effector.Effectors(FmodSystem);
+						effector = new Engine.Effector.Effectors(FmodSystem, this);
 						_waveformAnalyzer = new WaveformAnalyzer(FmodSystem, _fmodLock);
 						GetDeviceList();
 

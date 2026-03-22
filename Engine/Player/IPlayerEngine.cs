@@ -45,6 +45,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		float ReplayGainPreamp { get; set; }
 		/// <summary>波形解析・表示を有効にするか（スキンに Waveform セクションがある場合のみ true）</summary>
 		bool WaveformEnabled { get; set; }
+        int ChannelCount { get; }
 		/// <summary>
 		/// 波形解析完了時に発火するイベント。
 		/// 引数は PlayList インデックス。UIスレッドへの Invoke が必要。

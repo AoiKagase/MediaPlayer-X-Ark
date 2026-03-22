@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediaPlayer_X_Ark.Engine.Player;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -75,9 +76,9 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 			}
 			return 1 - 1 * (shift / 100);
 		}
-		public Effectors(FMOD.System system)
+		public Effectors(FMOD.System system, IPlayerEngine _engine)
 		{
-			Frequency = new Frequency(system);
+			Frequency = new Frequency(system, _engine);
 			PitchShift = new PitchShift(system);
 			Chorus = new Chorus(system);
 			Compressor = new Compressor(system);

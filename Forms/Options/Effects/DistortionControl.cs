@@ -33,11 +33,13 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 
 		public override void LoadSettings()
 		{
+			_loading = true;
 			ChkEnable.Checked = Engine.effector.Distortion.Enabled;
 			_knobLevel.Value = (int)(Engine.effector.Distortion.Level * 100);
 			_lblLevel.Text = Engine.effector.Distortion.Level.ToString("0.00");
 			LoadEffectPresets();
 			SetControlsEnabled(ChkEnable.Checked);
+			_loading = false;
 		}
 
 		public override void SaveSettings() { }

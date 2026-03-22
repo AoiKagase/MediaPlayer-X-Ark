@@ -52,6 +52,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 
 		public override void LoadSettings()
 		{
+			_loading = true;
 			ChkEnable.Checked = Engine.effector.Chorus.Enabled;
 			_knobMix.Value = (int)Engine.effector.Chorus.Mix;
 			_knobRate.Value = (int)(Engine.effector.Chorus.Rate * 10);
@@ -61,6 +62,7 @@ namespace MediaPlayer_X_Ark.Forms.Options.Effects
 			_lblDepth.Text = Engine.effector.Chorus.Depth.ToString("0");
 			LoadEffectPresets();
 			SetControlsEnabled(ChkEnable.Checked);
+			_loading = false;
 		}
 
 		public override void SaveSettings() { }
