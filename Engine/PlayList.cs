@@ -80,7 +80,17 @@ namespace MediaPlayer_X_Ark.Engine
 		}
 		[Browsable(false)]
 		public string MusicBrainzDiscId { get; set; } = null;
+		/// <summary>波形サマリー Lチャンネル（1000サンプル、0.0〜1.0）</summary>
+		[Browsable(false)]
+		public float[] WaveformL { get; set; } = null;
 
+		/// <summary>波形サマリー Rチャンネル（1000サンプル、0.0〜1.0）</summary>
+		[Browsable(false)]
+		public float[] WaveformR { get; set; } = null;
+
+		/// <summary>波形解析が完了しているか</summary>
+		[Browsable(false)]
+		public bool WaveformReady => WaveformL != null;
 		public void SetLength(uint length)
 		{
 			this._length = length;

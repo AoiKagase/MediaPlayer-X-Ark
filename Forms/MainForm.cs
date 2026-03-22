@@ -33,7 +33,9 @@ namespace MediaPlayer_X_Ark
 		// 用途別にOpenFileDialogを分離
 		private OpenFileDialog _openFileDialogMedia;   // 音楽ファイル用
 		private OpenFileDialog _openFileDialogSkin;    // スキン用
-													   // MainForm.cs フィールド追加
+		private Bitmap _waveformBitmap = null;
+		private PictureBox _waveformArea = null;  // target="area" 用
+		private int _waveformRefreshCounter = 0;
 		private readonly List<Form> _managedForms = new List<Form>();
 		public MainForm()
 		{
@@ -247,6 +249,45 @@ namespace MediaPlayer_X_Ark
 					btn.Refresh();
 				}
 			}
+			SetupWaveformTarget();
+		}
+
+		// ── スキンロード時（ApplySkin() 等）に呼ぶ ───────────────────────
+		private void SetupWaveformTarget()
+		{
+			// 既存の専用エリアを破棄
+			if (_waveformArea != null)
+			{
+				Controls.Remove(_waveformArea);
+				_waveformArea.Dispose();
+				_waveformArea = null;
+			}
+			var wDef = (_currentSkin as MediaPlayer_X_Ark.Skin.NewSkinSystem)?.Waveform;
+
+			// Waveform セクション未定義 → 解析・描画を無効化して終了
+			if (wDef == null)
+			{
+				player.WaveformEnabled = false;
+				SldTrack.BackgroundImage = null;
+				return;
+			}
+
+			// 有効化
+			player.WaveformEnabled = true;
+
+			if (wDef.Target == "area" && wDef.Width > 0 && wDef.Height > 0)
+			{
+				// 波形専用 PictureBox を動的生成
+				_waveformArea = new PictureBox
+				{
+					Location = new System.Drawing.Point(wDef.X, wDef.Y),
+					Size = new System.Drawing.Size(wDef.Width, wDef.Height),
+					BackColor = System.Drawing.Color.Transparent,
+					SizeMode = PictureBoxSizeMode.StretchImage,
+				};
+				Controls.Add(_waveformArea);
+				_waveformArea.BringToFront();
+			}
 		}
 		/// <summary>
 		/// ファイルを開く
@@ -371,7 +412,7 @@ namespace MediaPlayer_X_Ark
 			player.ReplayGainPreamp = config.settings.ReplayGainPreamp;
 			player.CrossfadeEnabled = config.settings.CrossfadeEnabled;
 			player.CrossfadeDurationMs = config.settings.CrossfadeDurationMs;
-
+			player.WaveformReady += OnWaveformReady;
 			// ④ Device は init() 後でOK
 			player.SetDevice(config.settings.Device);
 			player.SoundFontPath = config.settings.SoundFontPath;
@@ -429,6 +470,42 @@ namespace MediaPlayer_X_Ark
 				}
 			}
 		}
+		private void OnWaveformReady(int index)
+		{
+			if (!player.WaveformEnabled) return;
+			// 現在再生中のインデックスの波形のみ更新
+			if (index != player.PlayingIndex) return;
+
+			// UIスレッドに切り替えて描画
+			if (InvokeRequired)
+			{
+				Invoke(new Action(() => UpdateWaveformBitmap(index)));
+				return;
+			}
+			UpdateWaveformBitmap(index);
+		}
+		private void UpdateWaveformBitmap(int index)
+		{
+			var wDef = (_currentSkin as MediaPlayer_X_Ark.Skin.NewSkinSystem)?.Waveform;
+			if (wDef == null) return;  // スキン未定義なら何もしない
+
+			if (index < 0 || index >= player.PlayList.Count) return;
+
+			var entry = player.PlayList[index];
+			if (!entry.WaveformReady) return;
+
+			var (w, h) = GetWaveformSize(wDef);
+			var newBmp = WaveformRenderer.Render(
+				ApplyExponent(entry.WaveformL, wDef.Exponent),
+				ApplyExponent(entry.WaveformR, wDef.Exponent),
+				w, h, playedRatio: 0f,
+				mode: ParseWaveformMode(wDef.Mode),
+				colors: BuildWaveformColors(wDef));
+
+			_waveformBitmap?.Dispose();
+			_waveformBitmap = newBmp;
+			ApplyWaveformBitmap(newBmp, wDef.Target);
+		}
 		public void AutoSavePlaylist()
 		{
 			if (!config.settings.AutoSavePlaylist) return;
@@ -472,6 +549,11 @@ namespace MediaPlayer_X_Ark
 			// ★FileInfoFormが開いている場合は自動更新
 			if (_fileInfoForm != null && _fileInfoForm.Visible)
 				_fileInfoForm.LoadInfo(index);
+
+			_waveformBitmap?.Dispose();
+			_waveformBitmap = null;
+			if (_waveformArea != null) _waveformArea.Image = null;
+			else SldTrack.BackgroundImage = null;
 		}
 
 		/// <summary>
@@ -635,7 +717,7 @@ namespace MediaPlayer_X_Ark
 		private void UpdateLoopButtonVisual(Button btn)
 		{
 			var bc = _currentSkin.Buttons["BtnLoop"];
-			if (bc == null) 
+			if (bc == null)
 				return;
 
 			// LOOP_RANDOM フラグを除いた純粋なループモードで判定する
@@ -745,6 +827,7 @@ namespace MediaPlayer_X_Ark
 				System.Text.Encoding.UTF8);
 		}
 		#region Timer Event
+
 		/// <summary>
 		/// タイマー処理
 		/// リアルタイム処理が必要なものは全てここで処理する
@@ -789,7 +872,14 @@ namespace MediaPlayer_X_Ark
 					UpdateSleepTimerMenu(null);
 				}
 			}
-
+			_waveformRefreshCounter += Timer.Interval;
+			if (_waveformRefreshCounter >= 60 && _waveformBitmap != null)
+			{
+				_waveformRefreshCounter = 0;
+				float ratio = (float)player.GetPosition()
+							/ Math.Max(1, player.GetLength(player.PlayingIndex));
+				UpdateWaveformPlayedRatio(ratio);
+			}
 			// ── 曲終了検知（クロスフェード対応版）──────────────────────
 			if (player.NowPlaying && player.IsPlaying())
 			{
@@ -823,6 +913,103 @@ namespace MediaPlayer_X_Ark
 					finally { _isHandlingTrackEnded = false; }
 				}
 			}
+		}
+		private void UpdateWaveformPlayedRatio(float ratio)
+		{
+			var wDef = (_currentSkin as MediaPlayer_X_Ark.Skin.NewSkinSystem)?.Waveform;
+			if (wDef == null) return;  // スキン未定義なら何もしない
+
+			if (player.PlayingIndex < 0) return;
+			var entry = player.PlayList[player.PlayingIndex];
+			if (!entry.WaveformReady) return;
+
+			var (w, h) = GetWaveformSize(wDef);
+
+			// ABリピート範囲（未実装時は -1）
+			float abStart = -1f, abEnd = -1f;
+			// TODO: ABリピート実装後に設定
+
+			var newBmp = WaveformRenderer.Render(
+				 ApplyExponent(entry.WaveformL, wDef.Exponent),
+				 ApplyExponent(entry.WaveformR, wDef.Exponent),
+				 w, h, ratio,
+				 mode: ParseWaveformMode(wDef.Mode),
+				 colors: BuildWaveformColors(wDef),
+				 abStart: abStart, abEnd: abEnd);
+
+			var old = _waveformBitmap;
+			_waveformBitmap = newBmp;
+			ApplyWaveformBitmap(newBmp, wDef.Target);
+			old?.Dispose();
+		}
+
+		private (int w, int h) GetWaveformSize(
+	MediaPlayer_X_Ark.Skin.NewSkinSystem.WaveformDef wDef)
+		{
+			if (wDef.Target == "area" && _waveformArea != null)
+				return (_waveformArea.Width, _waveformArea.Height);
+			return (SldTrack.Width, SldTrack.Height);
+		}
+
+		private static WaveformRenderer.WaveformMode ParseWaveformMode(string mode)
+	=> mode?.ToLower() switch
+	{
+		"stereo" => WaveformRenderer.WaveformMode.Stereo,
+		"overlay" => WaveformRenderer.WaveformMode.Overlay,
+		_ => WaveformRenderer.WaveformMode.Mix,
+	};
+
+		/// <summary>描画先に応じてビットマップをセット</summary>
+		private void ApplyWaveformBitmap(Bitmap bmp, string target)
+		{
+			if (target == "area" && _waveformArea != null)
+			{
+				_waveformArea.Image = bmp;
+				_waveformArea.Invalidate();
+			}
+			else
+			{
+				SldTrack.BackgroundImage = bmp;
+				SldTrack.Invalidate();
+			}
+		}
+		/// <summary>exponent カーブを適用したコピーを返す（元データを変更しない）</summary>
+		private static float[] ApplyExponent(float[] src, float exponent)
+		{
+			if (src == null) return null;
+			if (Math.Abs(exponent - 1.0f) < 0.001f) return src;  // 1.0なら無変換
+			var dst = new float[src.Length];
+			for (int i = 0; i < src.Length; i++)
+				dst[i] = (float)Math.Pow(src[i], exponent);
+			return dst;
+		}
+		/// <summary>WaveformDef からカラー設定を構築</summary>
+		private WaveformRenderer.WaveformColors BuildWaveformColors(
+			MediaPlayer_X_Ark.Skin.NewSkinSystem.WaveformDef wDef)
+		{
+			return new WaveformRenderer.WaveformColors
+			{
+				ColorL = ParseSkinColor(wDef.ColorL ?? "00CC66"),
+				ColorR = ParseSkinColor(wDef.ColorR ?? "0066CC"),
+				ColorMix = ParseSkinColor(wDef.ColorMix ?? "00AA88"),
+				Played = ParseSkinColor(wDef.ColorPlayed ?? "555555"),
+				Unplayed = ParseSkinColor(wDef.ColorUnplayed ?? "333333"),
+			};
+		}
+		private static System.Drawing.Color ParseSkinColor(string hex)
+		{
+			hex = hex.TrimStart('#');
+			if (int.TryParse(hex,
+				System.Globalization.NumberStyles.HexNumber,
+				null, out int val))
+			{
+				return System.Drawing.Color.FromArgb(
+					255,
+					(val >> 16) & 0xFF,
+					(val >> 8) & 0xFF,
+					 val & 0xFF);
+			}
+			return System.Drawing.Color.Gray;
 		}
 		#endregion
 

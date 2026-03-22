@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static MediaPlayer_X_Ark.Skin.NewSkinSystem;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MediaPlayer_X_Ark.Skin
@@ -120,6 +121,7 @@ namespace MediaPlayer_X_Ark.Skin
 		public Dictionary<string, ButtonComponents> GetFormButtons(string formName) =>
 			FormButtons.TryGetValue(formName, out var b) ? b : _emptyButtons;
 
+		public WaveformDef Waveform { get; private set; } = null;
 		public OldSkinSystem()
 		{
 

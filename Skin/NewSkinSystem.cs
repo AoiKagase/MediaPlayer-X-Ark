@@ -47,6 +47,8 @@ namespace MediaPlayer_X_Ark.Skin
 
 			[JsonPropertyName("PlayList")]
 			public PlayListDef PlayList { get; set; }
+			[JsonPropertyName("Waveform")]
+			public WaveformDef Waveform { get; set; }
 		}
 
 		public class SkinMeta
@@ -147,7 +149,24 @@ namespace MediaPlayer_X_Ark.Skin
 			[JsonPropertyName("magnetMode")] public bool MagnetMode { get; set; }
 			[JsonPropertyName("Buttons")] public Dictionary<string, ButtonDef> Buttons { get; set; }
 		}
+		public class WaveformDef
+		{
+			/// <summary>"trackbar" or "area"</summary>
+			[JsonPropertyName("target")] public string Target { get; set; } = "trackbar";
+			[JsonPropertyName("mode")] public string Mode { get; set; } = "mix";
+			[JsonPropertyName("exponent")] public float Exponent { get; set; } = 2.5f;
+			[JsonPropertyName("colorL")] public string ColorL { get; set; } = "00CC66";
+			[JsonPropertyName("colorR")] public string ColorR { get; set; } = "0066CC";
+			[JsonPropertyName("colorMix")] public string ColorMix { get; set; } = "00AA88";
+			[JsonPropertyName("colorPlayed")] public string ColorPlayed { get; set; } = "555555";
+			[JsonPropertyName("colorUnplayed")] public string ColorUnplayed { get; set; } = "333333";
 
+			// target="area" の場合のみ使用
+			[JsonPropertyName("x")] public int X { get; set; } = 0;
+			[JsonPropertyName("y")] public int Y { get; set; } = 0;
+			[JsonPropertyName("width")] public int Width { get; set; } = 0;
+			[JsonPropertyName("height")] public int Height { get; set; } = 60;
+		}
 		// ===========================
 		// ロード済みスキンデータ
 		// ===========================
@@ -188,17 +207,17 @@ namespace MediaPlayer_X_Ark.Skin
 			= new Dictionary<string, Bitmap>();
 
 		private string _skinDir;
-
-		// ===========================
-		// Open
-		// ===========================
+		public WaveformDef Waveform { get; private set; } // null = 未定義（スキン非対応）
+														  // ===========================
+														  // Open
+														  // ===========================
 		public void Open(string jsonPath)
 		{
 			_skinDir = Path.GetDirectoryName(jsonPath);
 			// 古いキャッシュを破棄
 			foreach (var bmp in _imageCache.Values)
 				bmp?.Dispose();
-			_imageCache.Clear(); 
+			_imageCache.Clear();
 
 			var json = File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
 			var skin = JsonSerializer.Deserialize<SkinJson>(json);
@@ -210,7 +229,7 @@ namespace MediaPlayer_X_Ark.Skin
 				{
 					// / と \ 両方対応
 					var relativePath = kv.Value.Replace('/', Path.DirectorySeparatorChar);
-					var imgPath = Path.Combine(_skinDir, relativePath); 
+					var imgPath = Path.Combine(_skinDir, relativePath);
 					if (File.Exists(imgPath))
 					{
 						// ファイルロックを避けるためメモリストリーム経由でロード
@@ -266,7 +285,7 @@ namespace MediaPlayer_X_Ark.Skin
 				},
 				Enabled = true,
 			};
-
+			Waveform = skin.Waveform;
 			// PlayListForm
 			var pl = skin.PlayList;
 			_forms = new Dictionary<string, FormComponents>

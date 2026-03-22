@@ -91,6 +91,12 @@ namespace MediaPlayer_X_Ark.Engine
 		public bool CrossfadeTriggered { get; set; } = false;
 		// SF2パス
 		private string _soundFontPath = "";
+		private readonly object _fmodLock = new object();
+		private WaveformAnalyzer _waveformAnalyzer;
+		// キャンセル管理（曲が切り替わったら前の解析を中断）
+		private System.Threading.CancellationTokenSource _waveformCts;
+		public bool WaveformEnabled { get; set; } = false;
+		public event Action<int> WaveformReady;
 		public string SoundFontPath
 		{
 			get => _soundFontPath;
@@ -154,6 +160,8 @@ namespace MediaPlayer_X_Ark.Engine
 				// Relase FMOD handles for Channel.
 				if (FmodChannel.hasHandle())
 					FmodChannel.stop();
+				_waveformCts?.Cancel();
+				_waveformCts?.Dispose();
 				if (FmodChannelFading.hasHandle())
 					FmodChannelFading.stop();
 				// Relase FMOD handles for ChannelGroup.
@@ -236,7 +244,7 @@ namespace MediaPlayer_X_Ark.Engine
 						PlayList = new BindingList<Engine.PlayList>();
 
 						effector = new Engine.Effector.Effectors(FmodSystem);
-
+						_waveformAnalyzer = new WaveformAnalyzer(FmodSystem, _fmodLock);
 						GetDeviceList();
 
 						loop = LOOP_MODE.LOOP_NONE;
@@ -756,9 +764,31 @@ namespace MediaPlayer_X_Ark.Engine
 			if (result == FMOD.RESULT.OK)
 			{
 				PlayList[index].Sound = sound;
+				_ = StartWaveformAnalysisAsync(filename, index);
 			}
-
 			return result;
+		}
+
+		private async System.Threading.Tasks.Task StartWaveformAnalysisAsync(
+			string filename, int index)
+		{
+			// 前回の解析をキャンセル
+			_waveformCts?.Cancel();
+			_waveformCts?.Dispose();
+			_waveformCts = new System.Threading.CancellationTokenSource();
+			var ct = _waveformCts.Token;
+
+			await _waveformAnalyzer.AnalyzeAsync(
+				filename,
+				PlayList[index],
+				entry =>
+				{
+					// 解析完了 → インデックスを特定してイベント発火
+					int idx = PlayList.IndexOf(entry);
+					if (idx >= 0)
+						WaveformReady?.Invoke(idx);
+				},
+				ct);
 		}
 		/// <summary>
 		/// プレイリストを全消去する。

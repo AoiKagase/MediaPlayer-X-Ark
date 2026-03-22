@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using static MediaPlayer_X_Ark.Skin.NewSkinSystem;
 
 namespace MediaPlayer_X_Ark.Skin
 {
@@ -6,6 +7,7 @@ namespace MediaPlayer_X_Ark.Skin
 	{
 		FormComponents MainForm { get; }
 		SpectrumComponents ImgSpectrum { get; }
+		WaveformDef Waveform { get; }
 		Dictionary<string, ButtonComponents> Buttons { get; }
 		Dictionary<string, SliderComponents> Sliders { get; }
 		Dictionary<string, GraphicComponents> Labels { get; }
