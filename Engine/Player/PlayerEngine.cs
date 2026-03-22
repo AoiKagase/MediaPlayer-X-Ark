@@ -1,5 +1,6 @@
 ﻿using FMOD;
 using MediaPlayer_X_Ark.Engine.Config;
+using MediaPlayer_X_Ark.Engine.Player;
 using MediaPlayer_X_Ark.Engine.Visualize;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace MediaPlayer_X_Ark.Engine.Player
 {
@@ -62,7 +61,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
         private bool _nowPlaying = false;
         public bool NowPlaying => _nowPlaying;
         // FMOD SYSTEM.
-        public BindingList<PlayList> PlayList { get; set; } = new BindingList<PlayList>();
+        public BindingList<Engine.Player.PlayList> PlayList { get; set; } = new BindingList<Engine.Player.PlayList>();
         protected FMOD.System FmodSystem;
 		protected FMOD.ChannelGroup FmodChannelGroup;
 		protected FMOD.Channel FmodChannel;
@@ -242,9 +241,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 //						FmodCallFunction(FmodSystem.getChannel(0, out FmodChannel));
 
-						PlayList = new BindingList<PlayList>();
+						PlayList = new BindingList<Engine.Player.PlayList>();
 
-						effector = new Effector.Effectors(FmodSystem);
+						effector = new Engine.Effector.Effectors(FmodSystem);
 						_waveformAnalyzer = new WaveformAnalyzer(FmodSystem, _fmodLock);
 						GetDeviceList();
 
@@ -571,7 +570,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					return FMOD.RESULT.OK;
                 }
 
-				var plist = new PlayList(filename);
+				var plist = new Engine.Player.PlayList(filename);
 				PlayList.Add(plist);
 				index = PlayList.Count - 1;
 
@@ -657,7 +656,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			if (result == FMOD.RESULT.OK)
 			{
-				var plist = new PlayList(title, sound);
+				var plist = new Engine.Player.PlayList(title, sound);
 				PlayList.Add(plist);
 				index = PlayList.Count - 1;
 			}
@@ -838,7 +837,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
             }
 			PlaySound(next);
 		}
-        public void Sort<T>(Func<PlayList, T> keySelector)
+        public void Sort<T>(Func<Engine.Player.PlayList, T> keySelector)
         {
             var playingItem = (PlayingIndex >= 0 && PlayingIndex < PlayList.Count)
                 ? PlayList[PlayingIndex]

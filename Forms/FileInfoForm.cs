@@ -21,9 +21,9 @@ namespace MediaPlayer_X_Ark.Forms
         private int _currentIndex {  get; set; }
 		private CancellationTokenSource _coverArtCts;
 
-		public FileInfoForm(MainForm mainform, IPlayerEngine player)
+		public FileInfoForm(MainForm mainform, PlayerController player)
         {
-            _player = player;
+            _player = player.Engine;
 			_mainForm = mainform;
 			this.Owner = mainform;
 			InitializeComponent();

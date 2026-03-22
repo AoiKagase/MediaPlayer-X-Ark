@@ -16,7 +16,20 @@ namespace MediaPlayer_X_Ark.Engine.Player
     /// </summary>
     public class PlayerController
     {
-        private readonly IPlayerEngine _engine;
+        class NowPlayData {
+            public string Title { get; set; }
+			public string Artist { get; set; }
+
+			public string Album { get; set; }
+
+			public string FileName { get; set; }
+
+			public string DisplayText { get; set; }
+            public int Length { get; set; }
+
+
+		}
+		private readonly IPlayerEngine _engine;
         private readonly IConfigService _config;
 
         // ── イベント ────────────────────────────────────────────────
@@ -32,7 +45,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
         public IPlayerEngine Engine  => _engine;
         public IConfigService Config => _config;
 
-        public PlayerController(IPlayerEngine engine, IConfigService config)
+		public PlayerController(IPlayerEngine engine, IConfigService config)
         {
             _engine = engine;
             _config = config;
@@ -42,6 +55,15 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
         private void Initialize()
         {
+			// ② OutputType と SoftwareFormat は init() より前に設定
+			_engine.SetOutputTypeBeforeInit(_config.GetOutputType());
+
+			// ③ init() を実行
+			_engine.Initialize(_config.settings.Buffer);
+			//_engine.WaveformReady += OnWaveformReady;
+			// ④ Device は init() 後でOK
+			_engine.SetDevice(_config.settings.Device);
+
 			_engine.ReplayGainEnabled = _config.settings.ReplayGainEnabled;
 			_engine.ReplayGainMode = _config.settings.ReplayGainMode;
 			_engine.ReplayGainPreamp = _config.settings.ReplayGainPreamp;
@@ -69,6 +91,22 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				PlaybackStateChanged?.Invoke();
 			}
 		}
+
+		//private void OnWaveformReady(int index)
+		//{
+		//	if (!_engine.WaveformEnabled) return;
+		//	// 現在再生中のインデックスの波形のみ更新
+		//	if (index != _engine.PlayingIndex) return;
+
+		//	// UIスレッドに切り替えて描画
+		//	if (InvokeRequired)
+		//	{
+		//		Invoke(new Action(() => UpdateWaveformBitmap(index)));
+		//		return;
+		//	}
+		//	UpdateWaveformBitmap(index);
+		//}
+
 		private void RestorePlaylistFromFile(string path)
 		{
 			try
@@ -88,7 +126,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			catch { }
 		}
 		// ── 再生制御 ─────────────────────────────────────────────────
-
+        public bool IsPlaying => _engine.IsPlaying();
+        public int PlayingIndex => _engine.PlayingIndex;
 		/// <summary>
 		/// 指定インデックスを再生する。
 		/// 音量・パン・タグ取得・ReplayGain適用を一括で行う。
@@ -131,7 +170,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
         /// <summary>次の曲へ（ループモードを考慮）</summary>
         public void PlayNext()
         {
-            _engine.PlayNext();
+			_engine.SetDevice(_config.settings.Device);
+			_engine.PlayNext();
             TrackChanged?.Invoke(_engine.PlayingIndex);
             PlaybackStateChanged?.Invoke();
         }
@@ -139,9 +179,47 @@ namespace MediaPlayer_X_Ark.Engine.Player
         /// <summary>前の曲へ（ループモードを考慮）</summary>
         public void PlayPrevious()
         {
-            _engine.PlayPrevious();
+			_engine.SetDevice(_config.settings.Device);
+			_engine.PlayPrevious();
             TrackChanged?.Invoke(_engine.PlayingIndex);
             PlaybackStateChanged?.Invoke();
+        }
+
+		public void SetPosition(uint ms)
+        {
+            _engine.SetPosition(ms);
+        }
+        public uint GetPosition()
+        {
+            return _engine.GetPosition();
+        }
+
+		public uint GetLength()
+        {
+            return _engine.GetLength(_engine.PlayingIndex);
+		}
+		public bool OpenFiles(string[] filenames)
+        {
+			int idx = 0;
+
+			bool anyAdded = false;
+            foreach (var file in filenames)
+            {
+				// 最初の1曲目
+				if (idx++ == 0)
+				{
+					// 最初の１つはOpen=>Play処理を行う
+					OpenAndPlay(file);
+				}
+				else
+				{
+					// 後はOpenのみでプレイリストへ追加
+					_engine.CreateSound(file, out _);
+				}
+                anyAdded = true;
+            }
+
+            return anyAdded;
         }
 
         /// <summary>
@@ -184,9 +262,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
         }
 
         // ── ループモード制御 ─────────────────────────────────────────
-
-        /// <summary>ループモードを設定する（ランダムフラグは保持）</summary>
-        public void SetLoopMode(LOOP_MODE mode)
+        public LOOP_MODE GetLoopMode()
+        {
+            return _engine.loop;
+		}
+		/// <summary>ループモードを設定する（ランダムフラグは保持）</summary>
+		public void SetLoopMode(LOOP_MODE mode)
         {
             bool isRandom = (_engine.loop & LOOP_MODE.LOOP_RANDOM) != 0;
             _engine.loop = mode;
@@ -277,9 +358,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
         }
 
         /// <summary>再生中の曲のタイトル文字列を生成する</summary>
-        public string BuildTitleText(int index)
+        public string BuildTitleText()
         {
-            if (index < 0 || index >= _engine.PlayList.Count) return "";
+            int index = _engine.PlayingIndex;
             var entry = _engine.PlayList[index];
             string title = !string.IsNullOrEmpty(entry.Title)
                 ? entry.Title

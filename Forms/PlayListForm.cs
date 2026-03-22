@@ -25,10 +25,10 @@ namespace MediaPlayer_X_Ark
 		// When true, do not forward mouse messages to owner (used while modal dialogs are open)
 		private bool _suppressForwarding = false;
 
-		public PlayListForm(MainForm main, IPlayerEngine player, IConfigService config)
+		public PlayListForm(MainForm main, PlayerController player, IConfigService config)
 		{
 			_mainForm = main;
-			_player = player;
+			_player = player.Engine;
 			_config = config;
 
 			this.Owner = main;
@@ -69,7 +69,7 @@ namespace MediaPlayer_X_Ark
 			menuPlay.Click += (s, e) =>
 			{
 				if (PlayListGrid.SelectedRows.Count > 0)
-					_mainForm.PlayLoad(PlayListGrid.SelectedRows[0].Index);
+					_mainForm.Controller.PlayAt(PlayListGrid.SelectedRows[0].Index);
 			};
 			menuDelete.Click += (s, e) => PBtnRemove_Click(s, e);
 			menuUp.Click += (s, e) => PBtnUp_Click(s, e);
@@ -165,7 +165,7 @@ namespace MediaPlayer_X_Ark
 		private void PlayListGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
 		{
 			if (e.RowIndex >= 0)
-				_mainForm.PlayLoad(e.RowIndex);
+				_mainForm.Controller.PlayAt(e.RowIndex);
 		}
 
 		private void PlayListForm_FormClosing(object sender, FormClosingEventArgs e)

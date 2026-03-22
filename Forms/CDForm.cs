@@ -18,12 +18,12 @@ namespace MediaPlayer_X_Ark
 		private CdReader _cdReader;
 		private CddbResult _appliedResult;    // 適用中の結果（再適用用）
 		private CancellationTokenSource _cddbCts;
-		public CDForm(MainForm mainForm, IPlayerEngine player, IConfigService config)
+		public CDForm(MainForm mainForm, PlayerController player, IConfigService config)
 		{
 			InitializeComponent();
 			_mainForm = mainForm;
 			_config = config;
-			_player = player;
+			_player = player.Engine;
 			this.Owner = mainForm;
 		}
 
@@ -92,7 +92,7 @@ namespace MediaPlayer_X_Ark
 					// ★ MusicBrainz Disc ID をセット
 					_player.PlayList[index].MusicBrainzDiscId = _cdReader.MusicBrainzId;
 					if (playImmediately) 
-						_mainForm.PlayLoad(index);
+						_mainForm.Controller.PlayAt(index);
 					lblStatus.Text = $"{title} 完了";
 				}
 				else
