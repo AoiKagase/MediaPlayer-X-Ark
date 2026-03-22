@@ -1,8 +1,10 @@
 using MediaPlayer_X_Ark.Engine.Config;
 using NFluidsynth;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark.Engine.Player
@@ -34,15 +36,64 @@ namespace MediaPlayer_X_Ark.Engine.Player
         {
             _engine = engine;
             _config = config;
-        }
 
-        // ── 再生制御 ─────────────────────────────────────────────────
+            Initialize();
+		}
 
-        /// <summary>
-        /// 指定インデックスを再生する。
-        /// 音量・パン・タグ取得・ReplayGain適用を一括で行う。
-        /// </summary>
-        public void PlayAt(int index)
+        private void Initialize()
+        {
+			_engine.ReplayGainEnabled = _config.settings.ReplayGainEnabled;
+			_engine.ReplayGainMode = _config.settings.ReplayGainMode;
+			_engine.ReplayGainPreamp = _config.settings.ReplayGainPreamp;
+			_engine.CrossfadeEnabled = _config.settings.CrossfadeEnabled;
+			_engine.CrossfadeDurationMs = _config.settings.CrossfadeDurationMs;
+			_engine.SoundFontPath = _config.settings.SoundFontPath;
+
+			if (_config.settings.RestorePlaylist)
+			{
+				var playlistPath = Path.Combine(
+					Application.StartupPath, "last_playlist.json");
+				if (File.Exists(playlistPath))
+					RestorePlaylistFromFile(playlistPath);
+			}
+			if (_config.settings.RestorePosition
+				&& _config.settings.LastPlayingIndex >= 0
+				&& _config.settings.LastPlayingIndex < _engine.PlayList.Count)
+			{
+				// ★一時停止状態で再生開始
+				_engine.SetDevice(_config.settings.Device);
+				_engine.PlaySoundPaused(_config.settings.LastPlayingIndex,
+					_config.settings.LastPlayingPosition);
+
+				TrackChanged?.Invoke(_config.settings.LastPlayingIndex);
+				PlaybackStateChanged?.Invoke();
+			}
+		}
+		private void RestorePlaylistFromFile(string path)
+		{
+			try
+			{
+				var list = System.Text.Json.JsonSerializer
+					.Deserialize<List<string>>(
+						File.ReadAllText(path, System.Text.Encoding.UTF8));
+
+				if (list == null) return;
+
+				foreach (var file in list)
+				{
+					if (File.Exists(file))
+						_engine.CreateSound(file, out _);
+				}
+			}
+			catch { }
+		}
+		// ── 再生制御 ─────────────────────────────────────────────────
+
+		/// <summary>
+		/// 指定インデックスを再生する。
+		/// 音量・パン・タグ取得・ReplayGain適用を一括で行う。
+		/// </summary>
+		public void PlayAt(int index)
         {
             if (index < 0 || index >= _engine.PlayList.Count) return;
 

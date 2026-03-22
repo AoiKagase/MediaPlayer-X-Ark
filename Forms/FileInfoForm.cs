@@ -17,13 +17,16 @@ namespace MediaPlayer_X_Ark.Forms
     public partial class FileInfoForm : Form
     {
         private readonly IPlayerEngine _player;
+		private readonly MainForm _mainForm;
         private int _currentIndex {  get; set; }
 		private CancellationTokenSource _coverArtCts;
 
-		public FileInfoForm(IPlayerEngine player)
+		public FileInfoForm(MainForm mainform, IPlayerEngine player)
         {
             _player = player;
-            InitializeComponent();
+			_mainForm = mainform;
+			this.Owner = mainform;
+			InitializeComponent();
 
             InitFileNameContextMenu();
         }

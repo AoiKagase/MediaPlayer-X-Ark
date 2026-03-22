@@ -97,245 +97,7 @@ namespace MediaPlayer_X_Ark
 			=> _skinApplicator?.SetButtonDown((Button)sender);
 		public void BtnMouseUp(object sender, MouseEventArgs e)
 			=> _skinApplicator?.SetButtonUp((Button)sender);
-		/// <summary>
-		/// スキンデータをフォームに適用する。新旧形式共通。
-		/// </summary>
-		private void ApplySkin(ISkinSystem skin)
-		{
-			// メインフォーム
-			BackgroundImage = skin.MainForm.BackImage;
-			TransparencyKey = skin.MainForm.TransparentKey;
-			Width = skin.MainForm.Position.Width;
-			Height = skin.MainForm.Position.Height;
 
-			// スペクトラム
-			// AutoScaleModeの影響を排除するためSuspendLayout/ResumeLayoutで囲む
-			SuspendLayout();
-			Spectrum.Left = skin.ImgSpectrum.Position.Left;
-			Spectrum.Top = skin.ImgSpectrum.Position.Top;
-			Spectrum.Width = skin.ImgSpectrum.Position.Width;
-			Spectrum.Height = skin.ImgSpectrum.Position.Height;
-			ResumeLayout(false);
-
-			// サイズ変更後にビットマップを新サイズで再作成
-			Spectrum.BitmapSnow = new Bitmap(skin.ImgSpectrum.Position.Width, skin.ImgSpectrum.Position.Height);
-			Spectrum.BitmapWave = new Bitmap(skin.ImgSpectrum.Position.Width, skin.ImgSpectrum.Position.Height);
-			Spectrum.BitmapBackground = new Bitmap(skin.ImgSpectrum.Position.Width, skin.ImgSpectrum.Position.Height);
-
-			if (skin.ImgSpectrum.Image != null)
-			{
-				Spectrum.BitmapSpectrum = new Bitmap(skin.ImgSpectrum.Image);
-			}
-			else
-			{
-				Spectrum.BitmapSpectrum = new Bitmap(skin.ImgSpectrum.Position.Width, skin.ImgSpectrum.Position.Height);
-				using (var g = Graphics.FromImage(Spectrum.BitmapSpectrum))
-					g.Clear(skin.ImgSpectrum.Color);
-				using (var g = Graphics.FromImage(Spectrum.BitmapSnow))
-					g.Clear(skin.ImgSpectrum.Color);
-				using (var g = Graphics.FromImage(Spectrum.BitmapWave))
-					g.Clear(skin.ImgSpectrum.Color);
-			}
-			// スペクトラム背景画像の設定
-			// メインフォームの背景画像からスペクトラム領域を切り出す
-			if (skin.MainForm.BackImage != null)
-			{
-				var rect = new Rectangle(
-					skin.ImgSpectrum.Position.Left,
-					skin.ImgSpectrum.Position.Top,
-					skin.ImgSpectrum.Position.Width,
-					skin.ImgSpectrum.Position.Height);
-
-				var bmp = new Bitmap(rect.Width, rect.Height);
-				using (var g = Graphics.FromImage(bmp))
-					g.DrawImage(skin.MainForm.BackImage,
-						new Rectangle(0, 0, rect.Width, rect.Height),
-						rect,
-						GraphicsUnit.Pixel);
-
-				Spectrum.BitmapBackground = bmp;
-			}
-			else
-			{
-				Spectrum.BitmapBackground = null;
-			}
-
-			// MainFormコントロール
-			foreach (Control c in Controls)
-			{
-				string cName = c.Name;
-
-				if (c is Button btn && skin.Buttons.TryGetValue(cName, out var bc))
-				{
-					if (bc.BackImage == null || !bc.Enabled)
-					{ btn.Visible = false; btn.Enabled = false; continue; }
-					btn.AutoSize = false;
-					btn.BackgroundImage = bc.BackImage;
-					btn.BackgroundImageLayout = ImageLayout.None;
-					btn.Top = bc.Position.Top;
-					btn.Left = bc.Position.Left;
-					btn.Width = bc.Position.Width;
-					btn.Height = bc.Position.Height;
-					btn.Enabled = bc.Enabled;
-					btn.Visible = bc.Enabled;
-					btn.Refresh();
-				}
-				else if (c is CustomSlider slider && skin.Sliders.TryGetValue(cName, out var sc))
-				{
-					if (sc.SliderImage == null) continue;
-					slider.SliderImage = sc.SliderImage;
-					slider.Orientation = sc.Orientation;
-					slider.Minimum = sc.Minimum;
-					slider.Maximum = sc.Maximum;
-					slider.Top = sc.Position.Top;
-					slider.Left = sc.Position.Left;
-					slider.Width = sc.Position.Width;
-					slider.Height = sc.Position.Height;
-					slider.Enabled = sc.Enabled;
-					slider.Visible = sc.Enabled;
-					slider.Value = 0;
-					slider.Refresh();
-				}
-				else if (c is ScrollLabel lbl && skin.Labels.TryGetValue(cName, out var gc))
-				{
-					lbl.BackColor = Color.Transparent;
-					lbl.Value.Font = gc.Font;
-					lbl.Value.ForeColor = gc.FontColor;
-					lbl.Top = gc.Position.Top;
-					lbl.Left = gc.Position.Left;
-					lbl.Width = gc.Position.Width;
-					lbl.Height = gc.Position.Height;
-					lbl.Enabled = gc.Enabled;
-					lbl.Visible = gc.Enabled;
-					lbl.Value.Left = 0;
-					lbl.Value.Width = gc.Position.Width;
-					lbl.Value.Height = gc.Position.Height;
-					lbl.ScrollEnable = gc.ScrollEnable;
-					lbl.Timer.Interval = gc.Interval > 0 ? gc.Interval : 100;
-					lbl.Timer.Enabled = gc.Interval > 0;
-				}
-			}
-
-			this.Refresh();
-			var plForm = _currentSkin["PlayListForm"];
-			if (plForm != null)
-			{
-				_playListForm.Left = Left - plForm.Position.Left;
-				_playListForm.Top = Top - plForm.Position.Top;
-				_playListForm.BackgroundImage = plForm.BackImage;
-				_playListForm.Width = plForm.Position.Width;
-				_playListForm.Height = plForm.Position.Height;
-				_playListForm.TransparencyKey = plForm.TransparentKey;
-				_playListForm.Refresh();
-			}
-
-			if (_currentSkin.Grids.TryGetValue("PlayListGrid", out var plGrid))
-			{
-				foreach (Control c in _playListForm.Controls)
-				{
-					if (c is DataGridView grid)
-					{
-						grid.BackgroundColor = plGrid.ListBackColor;
-						grid.RowsDefaultCellStyle.BackColor = plGrid.ListBackColor;
-						grid.RowsDefaultCellStyle.ForeColor = plGrid.ListForeColor;
-						grid.ForeColor = plGrid.ListForeColor;
-						grid.Left = plGrid.ListPosition.Left;
-						grid.Top = plGrid.ListPosition.Top;
-						grid.Width = plGrid.ListPosition.Width;
-						grid.Height = plGrid.ListPosition.Height;
-					}
-				}
-			}
-
-			// PlayListFormのボタン
-			var plButtons = _currentSkin.GetFormButtons("PlayListForm");
-			foreach (Control c in _playListForm.Controls)
-			{
-				if (c is Button btn && plButtons.TryGetValue(c.Name, out var bc))
-				{
-					if (bc.BackImage == null || !bc.Enabled)
-					{ btn.Visible = false; btn.Enabled = false; continue; }
-					btn.AutoSize = false;
-					btn.BackgroundImage = bc.BackImage;
-					btn.BackgroundImageLayout = ImageLayout.None;
-					btn.Top = bc.Position.Top;
-					btn.Left = bc.Position.Left;
-					btn.Width = bc.Position.Width;
-					btn.Height = bc.Position.Height;
-					btn.Enabled = bc.Enabled;
-					btn.Visible = bc.Enabled;
-					btn.Refresh();
-				}
-			}
-			SetupWaveformTarget();
-		}
-
-		// ── スキンロード時（ApplySkin() 等）に呼ぶ ───────────────────────
-		private void SetupWaveformTarget()
-		{
-			// 既存の専用エリアを破棄
-			if (_waveformArea != null)
-			{
-				Controls.Remove(_waveformArea);
-				_waveformArea.Dispose();
-				_waveformArea = null;
-			}
-			var wDef = (_currentSkin as MediaPlayer_X_Ark.Skin.NewSkinSystem)?.Waveform;
-
-			// Waveform セクション未定義 → 解析・描画を無効化して終了
-			if (wDef == null)
-			{
-				_player.WaveformEnabled = false;
-				SldTrack.BackgroundImage = null;
-				return;
-			}
-
-			// 有効化
-			_player.WaveformEnabled = true;
-
-			if (wDef.Target == "area" && wDef.Width > 0 && wDef.Height > 0)
-			{
-				// 波形専用 PictureBox を動的生成
-				_waveformArea = new PictureBox
-				{
-					Location = new System.Drawing.Point(wDef.X, wDef.Y),
-					Size = new System.Drawing.Size(wDef.Width, wDef.Height),
-					BackColor = System.Drawing.Color.Transparent,
-					SizeMode = PictureBoxSizeMode.StretchImage,
-				};
-				Controls.Add(_waveformArea);
-				_waveformArea.BringToFront();
-			}
-		}
-		/// <summary>
-		/// ファイルを開く
-		/// </summary>
-		/// <param name="fileName"></param>
-		//public void OpenFile(string fileName)
-		//{
-		//	int idx;
-		//	// Open File
-		//	if (_player.CreateSound(fileName, out idx) != FMOD.RESULT.OK)
-		//		return;
-
-		//	switch (_config.settings.OpenFileAction)
-		//	{
-		//		case 1: // 常に再生
-		//			PlayLoad(idx);
-		//			break;
-
-		//		case 2: // 常に追加のみ
-		//				// 再生しない
-		//			break;
-
-		//		default: // 再生中なら追加・停止中なら再生
-		//			if (!_player.IsPlaying())
-		//				PlayLoad(idx);
-		//			break;
-		//	}
-		//	// ★自動保存
-		//	AutoSavePlaylist();
-		//}
 
 		/// <summary>
 		/// Indexを指定して再生する。(主にプレイリストから直接再生)
@@ -344,8 +106,7 @@ namespace MediaPlayer_X_Ark
 		public void PlayLoad(int index)
 		{
 			_player.SetDevice(_config.settings.Device);
-			_player.PlaySound(index);
-			UpdateTrackUI();
+			_controller.PlayAt(index);
 		}
 		private void PlayLoad() => PlayLoad(_player.PlayingIndex);
 
@@ -390,27 +151,14 @@ namespace MediaPlayer_X_Ark
 
 			// ③ init() を実行
 			_player.Initialize(_config.settings.Buffer);
-			_player.ReplayGainEnabled = _config.settings.ReplayGainEnabled;
-			_player.ReplayGainMode = _config.settings.ReplayGainMode;
-			_player.ReplayGainPreamp = _config.settings.ReplayGainPreamp;
-			_player.CrossfadeEnabled = _config.settings.CrossfadeEnabled;
-			_player.CrossfadeDurationMs = _config.settings.CrossfadeDurationMs;
 			_player.WaveformReady += OnWaveformReady;
 			// ④ Device は init() 後でOK
 			_player.SetDevice(_config.settings.Device);
 
-			// コントローラー生成
-			_controller = new PlayerController(_player, _config);
-			_controller.TrackChanged += OnTrackChanged;
-			_controller.PlaybackStateChanged += OnPlaybackStateChanged;
-
-			_player.SoundFontPath = _config.settings.SoundFontPath;
 			_playListForm = new PlayListForm(this, _player, _config);
-			_playListForm.Owner = this;
-
-			_optionsForm = new OptionsForm(_player, _config, this);
+			_optionsForm = new OptionsForm(this, _player, _config);
 			_cdForm = new CDForm(this, _player, _config);
-			_fileInfoForm = new FileInfoForm(_player);
+			_fileInfoForm = new FileInfoForm(this, _player);
 
 			// ★管理リストに追加
 			_managedForms.Add(_playListForm);
@@ -426,23 +174,11 @@ namespace MediaPlayer_X_Ark
 			Spectrum.SnowBlockEnabled = _config.settings.SnowBlockEnabled;
 			SetMouseDownEvent();
 
-			if (_config.settings.RestorePlaylist)
-			{
-				var playlistPath = Path.Combine(
-					Application.StartupPath, "last_playlist.json");
-				if (File.Exists(playlistPath))
-					RestorePlaylistFromFile(playlistPath);
-			}
-			if (_config.settings.RestorePosition
-				&& _config.settings.LastPlayingIndex >= 0
-				&& _config.settings.LastPlayingIndex < _player.PlayList.Count)
-			{
-				// ★一時停止状態で再生開始
-				_player.SetDevice(_config.settings.Device);
-				_player.PlaySoundPaused(_config.settings.LastPlayingIndex,
-					_config.settings.LastPlayingPosition);
-				UpdateTrackUI();
-			}
+			// コントローラー生成
+			_controller = new PlayerController(_player, _config);
+			_controller.TrackChanged += OnTrackChanged;
+			_controller.PlaybackStateChanged += OnPlaybackStateChanged;
+
 			InitContextMenu();
 
 			_openFileDialogMedia = new OpenFileDialog();
@@ -465,8 +201,17 @@ namespace MediaPlayer_X_Ark
 		private void OnPlaybackStateChanged() { }
 		private void OnTrackChanged(int index)
 		{
+			if (index < 0 || index >= _player.PlayList.Count) 
+				return;
+
 			SldTrack.Maximum = (int)_player.GetLength(index);
 			SldTrack.Value = 0;
+			_player.SetVolume(SldVolume.Value / 100f);
+			_player.SetPan(SldPan.Value / 10f);
+
+			if (_fileInfoForm != null && _fileInfoForm.Visible)
+				_fileInfoForm.LoadInfo();
+
 			LabelTitle.Value.Text = _controller.BuildTitleText(index);
 
 			_waveformBitmap?.Dispose();
@@ -510,55 +255,6 @@ namespace MediaPlayer_X_Ark
 			_waveformBitmap?.Dispose();
 			_waveformBitmap = newBmp;
 			ApplyWaveformBitmap(newBmp, wDef.Target);
-		}
-		//public void AutoSavePlaylist()
-		//{
-		//	if (!_config.settings.AutoSavePlaylist) return;
-		//	SavePlaylistToFile(Path.Combine(
-		//		Application.StartupPath, "last_playlist.json"));
-		//}
-		private void RestorePlaylistFromFile(string path)
-		{
-			try
-			{
-				var list = System.Text.Json.JsonSerializer
-					.Deserialize<List<string>>(
-						File.ReadAllText(path, System.Text.Encoding.UTF8));
-
-				if (list == null) return;
-
-				foreach (var file in list)
-				{
-					if (File.Exists(file))
-						_player.CreateSound(file, out _);
-				}
-			}
-			catch { }
-		}
-		private void UpdateTrackUI()
-		{
-			int index = _player.PlayingIndex;
-			if (index < 0 || index >= _player.PlayList.Count) return;
-
-			SldTrack.Maximum = (int)_player.GetLength(index);
-			float volume = ((float)SldVolume.Value) / 100f;
-			_player.SetVolume(volume);
-			float pan = ((float)SldPan.Value) / 10f;
-			_player.SetPan(pan);
-
-			var item = _player.PlayList[index];
-			LabelTitle.Value.Text = (!string.IsNullOrEmpty(item.Title)) ? item.Title : Path.GetFileName(item.FileName);
-			LabelTitle.Value.Text += (!string.IsNullOrEmpty(item.Artist)) ? (" - " + item.Artist) : "";
-			LabelTitle.Value.Text += (!string.IsNullOrEmpty(item.Album)) ? (" - " + item.Album) : "";
-
-			// ★FileInfoFormが開いている場合は自動更新
-			if (_fileInfoForm != null && _fileInfoForm.Visible)
-				_fileInfoForm.LoadInfo();
-
-			_waveformBitmap?.Dispose();
-			_waveformBitmap = null;
-			if (_waveformArea != null) _waveformArea.Image = null;
-			else SldTrack.BackgroundImage = null;
 		}
 
 		/// <summary>
@@ -628,7 +324,7 @@ namespace MediaPlayer_X_Ark
 				case Keys.Enter:
 					// Enter: 現在曲を先頭から再生
 					if (_player.PlayingIndex >= 0)
-						PlayLoad(_player.PlayingIndex);
+						_controller.PlayAt(_player.PlayingIndex);
 					return true;
 
 				case Keys.S:
@@ -638,14 +334,12 @@ namespace MediaPlayer_X_Ark
 
 				case Keys.B:
 					// B: 次の曲
-					_player.PlayNext();
-					UpdateTrackUI();
+					_controller.PlayNext();
 					return true;
 
 				case Keys.Z:
 					// Z: 前の曲
-					_player.PlayPrevious();
-					UpdateTrackUI();
+					_controller.PlayPrevious();
 					return true;
 
 				// ── シーク（キーリピートによる加速は SeekiTimer と seeking フラグで実装）──
@@ -697,51 +391,6 @@ namespace MediaPlayer_X_Ark
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
-
-		// ─────────────────────────────────────────────────────────────────
-		//  MainForm.cs 修正パッチ
-		//
-		//  問題：BtnLoop_Click が常に DownImage を設定するため、
-		//        キーボードから呼ぶと2回目以降は画像変化なし＝無反応に見える。
-		//        （マウス時は MouseUp が正しい画像に上書きするため問題が出ない）
-		//
-		//  修正：
-		//    1. UpdateLoopButtonVisual()   — ループ状態→画像のヘルパーを追加
-		//    2. UpdateRandomButtonVisual() — ランダム状態→画像のヘルパーを追加
-		//    3. BtnLoop_Click  を修正（DownImage 固定を廃止）
-		//    4. BtnLoop_MouseUp を修正（ヘルパーに委譲）
-		//    5. BtnRandom_Click を修正
-		//    6. BtnRandom_MouseUp を修正
-		//    ProcessCmdKey は変更なし（BtnLoop/BtnRandom を sender に渡す既存実装でOK）
-		// ─────────────────────────────────────────────────────────────────
-		// ── 追加: ループボタン画像更新ヘルパー ─────────────────────────────
-		/// <summary>
-		/// _player.loop の現在値に合わせて BtnLoop の背景画像を更新する。
-		/// Click・MouseUp・キーボードショートカットの全経路で使用する。
-		/// </summary>
-		private void UpdateLoopButtonVisual(Button btn)
-		{
-			var bc = _currentSkin.Buttons["BtnLoop"];
-			if (bc == null)
-				return;
-
-			// LOOP_RANDOM フラグを除いた純粋なループモードで判定する
-			var loopOnly = _player.loop & ~LOOP_MODE.LOOP_RANDOM;
-
-			switch (loopOnly)
-			{
-				case LOOP_MODE.LOOP_NONE:
-					btn.BackgroundImage = bc.BackImage;
-					break;
-				case LOOP_MODE.LOOP_ONE_REPEAT:
-					btn.BackgroundImage = bc.DownImage;
-					break;
-				case LOOP_MODE.LOOP_ALL:
-					btn.BackgroundImage = bc.OptionalImage;
-					break;
-			}
-			btn.Refresh();
-		}
 		/// <summary>
 		/// フォーム内のマウス押下処理
 		/// 位置の記憶
@@ -1113,7 +762,6 @@ namespace MediaPlayer_X_Ark
 			// １曲ループ：最初の曲まで減算
 			// 全曲ループ：最初の曲まで減算、最初の曲から最後の曲へ戻る
 			_player.PlayPrevious();
-			UpdateTrackUI();
 		}
 		private void BtnSeekBack_Click(object sender, EventArgs e)
 		{
@@ -1129,58 +777,24 @@ namespace MediaPlayer_X_Ark
 			// ループ無し：最後の曲まで加算
 			// １曲ループ：最後の曲まで加算
 			// 全曲ループ：最後の曲まで加算、最後の曲から最初の曲へ戻る
-			_player.PlayNext();
-			UpdateTrackUI();
-		}
-
-		private void UpdateRandomButtonVisual(Button btn)
-		{
-			var bc = _currentSkin.Buttons["BtnRandom"];
-			if (bc != null)
-			{
-				btn.BackgroundImage = (_player.loop & LOOP_MODE.LOOP_RANDOM) != 0
-				? bc.DownImage
-				: bc.BackImage;
-				btn.Refresh();
-			}
-
+			_controller.PlayNext();
 		}
 
 		private void BtnRandom_Click(object sender, EventArgs e)
 		{
-			var btnRandom = _currentSkin.Buttons["BtnRandom"];
-			if (btnRandom != null)
-			{
-				SetPlayMode(LOOP_MODE.LOOP_RANDOM);
-				UpdateRandomButtonVisual((Button)sender);
-			}
+			SetPlayMode(LOOP_MODE.LOOP_RANDOM);
+			_skinApplicator?.UpdateRandomButton((Button)sender, _player.loop);
 		}
 
-		// ── 修正: BtnLoop_Click ────────────────────────────────────────────
-		// Before:
-		//   ((Button)sender).BackgroundImage = btnLoop.DownImage; ← 常に DownImage
-		// After:
-		//   UpdateLoopButtonVisual((Button)sender); 
 		private void BtnLoop_Click(object sender, EventArgs e)
 		{
-			var btnLoop = _currentSkin.Buttons["BtnLoop"];
-			if (btnLoop != null)
+			switch (_player.loop & ~LOOP_MODE.LOOP_RANDOM)
 			{
-				// LOOP_RANDOM フラグを除いた値で switch する
-				switch (_player.loop & ~LOOP_MODE.LOOP_RANDOM)
-				{
-					case LOOP_MODE.LOOP_NONE:
-						SetPlayMode(LOOP_MODE.LOOP_ONE_REPEAT);
-						break;
-					case LOOP_MODE.LOOP_ONE_REPEAT:
-						SetPlayMode(LOOP_MODE.LOOP_ALL);
-						break;
-					case LOOP_MODE.LOOP_ALL:
-						SetPlayMode(LOOP_MODE.LOOP_NONE);
-						break;
-				}
-				UpdateLoopButtonVisual((Button)sender);  // ← 新しい状態に合わせて画像更新
+				case LOOP_MODE.LOOP_NONE: SetPlayMode(LOOP_MODE.LOOP_ONE_REPEAT); break;
+				case LOOP_MODE.LOOP_ONE_REPEAT: SetPlayMode(LOOP_MODE.LOOP_ALL); break;
+				case LOOP_MODE.LOOP_ALL: SetPlayMode(LOOP_MODE.LOOP_NONE); break;
 			}
+			_skinApplicator?.UpdateLoopButton((Button)sender, _player.loop);
 		}
 		private void BtnSetting_Click(object sender, EventArgs e)
 		{
@@ -1215,7 +829,7 @@ namespace MediaPlayer_X_Ark
 		{
 			this.Show();
 			if (_player.PlayingIndex >= 0)
-				_playListForm.Show(this);
+				_playListForm.Show();
 			notifyIcon.Visible = false;
 			this.Activate();
 		}
@@ -1479,7 +1093,7 @@ namespace MediaPlayer_X_Ark
 			menuFileInfo.Click += (s, e) =>
 			{
 				_fileInfoForm.LoadInfo();
-				_fileInfoForm.Show(this);
+				_fileInfoForm.Show();
 				_fileInfoForm.Activate();
 			};
 			// Effects / Equalizer / Extensions / SkinSelect は
@@ -1653,12 +1267,10 @@ namespace MediaPlayer_X_Ark
 						BtnStop_Click(this, EventArgs.Empty);
 						break;
 					case APPCOMMAND_MEDIA_NEXTTRACK:
-						_player.PlayNext();
-						UpdateTrackUI();
+						_controller.PlayNext();
 						break;
 					case APPCOMMAND_MEDIA_PREVIOUSTRACK:
-						_player.PlayPrevious();
-						UpdateTrackUI();
+						_controller.PlayPrevious();
 						break;
 						//case APPCOMMAND_VOLUME_UP:
 						//    SldVolume.Value = Math.Min(SldVolume.Value + 5, SldVolume.Maximum);

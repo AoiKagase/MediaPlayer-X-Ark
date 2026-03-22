@@ -30,6 +30,8 @@ namespace MediaPlayer_X_Ark
 			_mainForm = main;
 			_player = player;
 			_config = config;
+
+			this.Owner = main;
 			InitializeComponent();
 		}
 

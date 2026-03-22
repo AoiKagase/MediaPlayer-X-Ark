@@ -27,7 +27,7 @@ namespace MediaPlayer_X_Ark.Forms
 		private Dictionary<string, OptionsControlBase> _controls
 			= new Dictionary<string, OptionsControlBase>();
 
-		public OptionsForm(IPlayerEngine engine, IConfigService config, MainForm mainForm)
+		public OptionsForm(MainForm mainForm, IPlayerEngine engine, IConfigService config)
 		{
 			InitializeComponent();
 
