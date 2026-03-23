@@ -62,7 +62,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			_engine.CrossfadeDurationMs = _config.settings.CrossfadeDurationMs;
 			_engine.SoundFontPath = _config.settings.SoundFontPath;
 
-			if (_config.settings.RestorePlaylist)
+            _engine.effector.ApplySettings(_config.settings.Effectors);
+
+            if (_config.settings.RestorePlaylist)
 			{
 				var playlistPath = Path.Combine(
 					Application.StartupPath, "last_playlist.json");
