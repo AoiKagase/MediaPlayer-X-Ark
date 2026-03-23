@@ -266,6 +266,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		// ===========================
 		private void ChkEnable_CheckedChanged(object sender, EventArgs e)
 		{
+			if (_internalChanged) return;
 			Engine.effector.GEqualizer.Switch(_chkEnable.Checked);
 			Config.settings.Effectors.GEqualizer.Enable = _chkEnable.Checked;
 			SetControlsEnabled(_chkEnable.Checked);
