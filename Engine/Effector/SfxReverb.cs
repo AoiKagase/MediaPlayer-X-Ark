@@ -66,7 +66,7 @@ namespace MediaPlayer_X_Ark.Engine.Effector
             set
             {
 				_EarlyDelay = Math.Clamp(value, 0.0F, 300.0F);
-				SetParameterFloat((int)FMOD.DSP_SFXREVERB.EARLYLATEMIX, _EarlyDelay);
+				SetParameterFloat((int)FMOD.DSP_SFXREVERB.EARLYDELAY, _EarlyDelay);
 			}
 		}
 

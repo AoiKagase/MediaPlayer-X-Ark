@@ -132,30 +132,66 @@ namespace MediaPlayer_X_Ark.Engine.Effector
             }
 
             // Distortion
+			Distortion.Level = s.Distortion.Level;
             if (s.Distortion.Enable) Distortion.Switch(true);
 
             // Chorus
+            Chorus.Mix = s.Chorus.Mix;
+            Chorus.Rate = s.Chorus.Rate;
+            Chorus.Depth = s.Chorus.Depth;
             if (s.Chorus.Enable) Chorus.Switch(true);
 
             // Echo
-            if (s.Echo.Enable) Echo.Switch(true);
+            Echo.Delay = s.Echo.Delay;
+            Echo.Feedback = s.Echo.Feedback;
+            Echo.DryLevel = s.Echo.Dry;
+            Echo.WetLevel = s.Echo.Wet;
+			if (s.Echo.Enable) Echo.Switch(true);
 
             // Flanger
+            Flanger.Mix = s.Flanger.Mix;
+            Flanger.Rate = s.Flanger.Rate;
+            Flanger.Depth = s.Flanger.Depth;
             if (s.Flanger.Enable) Flanger.Switch(true);
 
             // Highpass
+            Highpass.CutOff = s.Highpass.Cutoff;
+            Highpass.Resonance = s.Highpass.Resonance;
             if (s.Highpass.Enable) Highpass.Switch(true);
 
             // Lowpass
+            Lowpass.CutOff = s.Lowpass.Cutoff;
+            Lowpass.Resonance = s.Lowpass.Resonance;
             if (s.Lowpass.Enable) Lowpass.Switch(true);
 
             // Compressor
+            Compressor.Threshold = s.Compressor.Threshold;
+            Compressor.Ratio = s.Compressor.Ratio;
+            Compressor.Attack = s.Compressor.Attack;
+            Compressor.Release = s.Compressor.Release;
+            Compressor.Gain = s.Compressor.Gain;
             if (s.Compressor.Enable) Compressor.Switch(true);
 
             // Reverb
+            SFXReverb.DecayTime = s.Reverb.DecayTime;
+            SFXReverb.EarlyDelay = s.Reverb.EarlyDelay;
+            SFXReverb.LateDelay = s.Reverb.LateDelay;
+            SFXReverb.HFReference = s.Reverb.HFRef;
+            SFXReverb.HFDecayRatio = s.Reverb.HFDecayRatio;
+            SFXReverb.Diffusion = s.Reverb.Diffusion;
+            SFXReverb.Density = s.Reverb.Density;
+            SFXReverb.LowShelfFrequency = s.Reverb.LowShelfFrequency;
+            SFXReverb.LowShelfGain = s.Reverb.LowShelfGain;
+            SFXReverb.HighCut = s.Reverb.HighCut;
+            SFXReverb.EarlyLateMix = s.Reverb.EarlyLate;
+            SFXReverb.WetLevel = s.Reverb.WetLevel;
+            SFXReverb.DryLevel = s.Reverb.DryLevel;
             if (s.Reverb.Enable) SFXReverb.Switch(true);
 
             // Normalize
+			Normalize.MaxAmp = s.Normalize.MaxAmp;
+			Normalize.FadeTime = s.Normalize.FadeTime;
+			Normalize.Threshold = s.Normalize.Threshold;
             if (s.Normalize.Enable) Normalize.Switch(true);
         }
         private static decimal GetGEQByIndex(CfgGEqualizer geq, int index) => index switch
