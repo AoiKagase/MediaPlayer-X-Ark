@@ -14,47 +14,47 @@ using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark.Forms
 {
-    public partial class FileInfoForm : Form
-    {
-        private readonly IPlayerEngine _player;
+	public partial class FileInfoForm : Form
+	{
+		private readonly IPlayerEngine _player;
 		private readonly MainForm _mainForm;
-        private int _currentIndex {  get; set; }
+		private int _currentIndex { get; set; }
 		private CancellationTokenSource _coverArtCts;
 
 		public FileInfoForm(MainForm mainform, PlayerController player)
-        {
-            _player = player.Engine;
+		{
+			_player = player.Engine;
 			_mainForm = mainform;
 			this.Owner = mainform;
 			InitializeComponent();
 
-            InitFileNameContextMenu();
-        }
-        private void InitFileNameContextMenu()
-        {
-            var fileNameMenu = new ContextMenuStrip();
-            var menuCopyFileName = new ToolStripMenuItem("ファイル名をコピー");
-            var menuCopyFullPath = new ToolStripMenuItem("フルパスをコピー");
+			InitFileNameContextMenu();
+		}
+		private void InitFileNameContextMenu()
+		{
+			var fileNameMenu = new ContextMenuStrip();
+			var menuCopyFileName = new ToolStripMenuItem("ファイル名をコピー");
+			var menuCopyFullPath = new ToolStripMenuItem("フルパスをコピー");
 
-            menuCopyFileName.Click += (s, e) =>
-            {
-                if (_currentIndex < 0) return;
-                Clipboard.SetText(Path.GetFileName(_player.PlayList[_currentIndex].FileName));
-            };
-            menuCopyFullPath.Click += (s, e) =>
-            {
-                if (_currentIndex < 0) return;
-                Clipboard.SetText(_player.PlayList[_currentIndex].FileName);
-            };
+			menuCopyFileName.Click += (s, e) =>
+			{
+				if (_currentIndex < 0) return;
+				Clipboard.SetText(Path.GetFileName(_player.PlayList[_currentIndex].FileName));
+			};
+			menuCopyFullPath.Click += (s, e) =>
+			{
+				if (_currentIndex < 0) return;
+				Clipboard.SetText(_player.PlayList[_currentIndex].FileName);
+			};
 
-            fileNameMenu.Items.AddRange(new ToolStripItem[]
-            {
-        menuCopyFileName,
-        menuCopyFullPath,
-            });
+			fileNameMenu.Items.AddRange(new ToolStripItem[]
+			{
+		menuCopyFileName,
+		menuCopyFullPath,
+			});
 
-            lblFileNameVal.ContextMenuStrip = fileNameMenu;
-        }
+			lblFileNameVal.ContextMenuStrip = fileNameMenu;
+		}
 
 		public void LoadInfo()
 		{
@@ -174,22 +174,28 @@ namespace MediaPlayer_X_Ark.Forms
 
 		// カバーアートはダミー表示
 		private Image SetDummyCoverArt()
-        {
-            // グレーの四角をダミーとして表示
-            var bmp = new Bitmap(picCover.Width, picCover.Height);
-            using (var g = Graphics.FromImage(bmp))
-            {
-                g.Clear(Color.DimGray);
-                g.DrawString("No Image",
-                    new Font("Arial", 10),
-                    Brushes.White,
-                    new PointF(picCover.Width / 2 - 30, picCover.Height / 2 - 8));
-            }
-            return bmp;
-        }
-        private void FileInfoForm_Load(object sender, EventArgs e)
-        {
+		{
+			// グレーの四角をダミーとして表示
+			var bmp = new Bitmap(picCover.Width, picCover.Height);
+			using (var g = Graphics.FromImage(bmp))
+			{
+				g.Clear(Color.DimGray);
+				g.DrawString("No Image",
+					new Font("Arial", 10),
+					Brushes.White,
+					new PointF(picCover.Width / 2 - 30, picCover.Height / 2 - 8));
+			}
+			return bmp;
+		}
+		private void FileInfoForm_Load(object sender, EventArgs e)
+		{
 
-        }
-    }
+		}
+
+		private void FileInfoForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			e.Cancel = true;
+			this.Visible = false;
+		}
+	}
 }

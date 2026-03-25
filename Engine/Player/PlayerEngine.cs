@@ -538,7 +538,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		public uint GetLength(int index)
         {
 			uint length = 0;
-            if (index >= PlayList.Count)
+            if (index >= PlayList.Count || index < 0)
                 return 0;
 
             FmodCallFunction(PlayList[index].Sound.getLength(out length, TIMEUNIT.MS));
