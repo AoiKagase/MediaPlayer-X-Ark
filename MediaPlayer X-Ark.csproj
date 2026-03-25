@@ -69,5 +69,7 @@
 		<Move SourceFiles="$(OutputPath)fmod.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)fmod.dll')" />
 		<Move SourceFiles="$(OutputPath)ATL.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)ATL.dll')" />
 		<Move SourceFiles="$(OutputPath)Ude.NetStandard.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)Ude.NetStandard.dll')" />
+		<Move SourceFiles="$(OutputPath)NFluidsynth.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)NFluidsynth.dll')" />
+		<Move SourceFiles="$(OutputPath)NFluidsynth.MidiAccess.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)NFluidsynth.MidiAccess.dll')" />
 	</Target>
 </Project>
