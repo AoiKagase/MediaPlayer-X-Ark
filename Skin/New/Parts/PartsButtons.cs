@@ -50,10 +50,5 @@ namespace MediaPlayer_X_Ark.Skin.New.Parts
 		/// 例えば、特定の機能が有効なときの画像と位置を定義するために使用される。
 		/// </summary>
 		[JsonPropertyName("optional")] public SpriteRect Optional { get; set; } = null;
-		/// <summary>
-		/// IsDisabled: ボタンが無効な状態であるかどうかを示すプロパティ。
-		/// 無効の場合は上記のパラメータを無視して、非表示にする。
-		/// </summary>
-		[JsonPropertyName("isDisabled")] public bool IsDisabled { get; set; } = false;
 	}
 }

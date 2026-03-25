@@ -66,12 +66,12 @@ namespace MediaPlayer_X_Ark.Skin.New
         public Dictionary<string, Dictionary<string, ButtonComponents>> Buttons { get; private set; }
 		public Dictionary<string, Dictionary<string, LabelComponents>> Labels { get; private set; }
 		public Dictionary<string, Dictionary<string, GridComponents>> Grids { get; private set; }
+		public Dictionary<string, Dictionary<string, PictureComponents>> Pictures { get; private set; }
 
-
-        // ===========================
-        // ロード済み画像キャッシュ
-        // ===========================
-        private Dictionary<string, Bitmap> _imageCache
+		// ===========================
+		// ロード済み画像キャッシュ
+		// ===========================
+		private Dictionary<string, Bitmap> _imageCache
 			= new Dictionary<string, Bitmap>();
 
 		private string _skinDir;
@@ -146,6 +146,12 @@ namespace MediaPlayer_X_Ark.Skin.New
             Labels["MainForm"] = new Dictionary<string, LabelComponents>();
             foreach (var kv in skin.MainForm.Labels ?? new Dictionary<string, PartsTextArea>())
 				Labels["MainForm"][kv.Key] = LoadText(skin.MainForm.Labels, kv.Key);
+
+			// MainForm: Pictures
+			Pictures = new Dictionary<string, Dictionary<string, PictureComponents>>();
+			Pictures["MainForm"] = new Dictionary<string, PictureComponents>();
+			foreach (var kv in skin.MainForm.Pictures ?? new Dictionary<string, PartsPictureArea>())
+				Pictures["MainForm"][kv.Key] = LoadPictures(skin.MainForm.Pictures, kv.Key);
 
 			// MainForm: Spectrum
 			var sp = mf.Spectrum;
@@ -239,7 +245,15 @@ namespace MediaPlayer_X_Ark.Skin.New
                         }
                     };
                 }
-            }
+
+				// Pictures
+				foreach (var picKv in kv.Value.Pictures ?? new Dictionary<string, PartsPictureArea>())
+				{
+					if (!Pictures.ContainsKey(kv.Key))
+						Pictures[kv.Key] = new Dictionary<string, PictureComponents>();
+					Pictures[kv.Key][picKv.Key] = LoadPictures(kv.Value.Pictures, picKv.Key);
+				}
+			}
 		}
 
 		// ===========================
@@ -347,7 +361,31 @@ namespace MediaPlayer_X_Ark.Skin.New
 			result.Enabled = true;
 			return result;
 		}
+		private PictureComponents LoadPictures(Dictionary<string, PartsPictureArea> picts, string key)
+		{
+			var result = new PictureComponents { Enabled = false };
+			if (picts == null || !picts.TryGetValue(key, out var def))
+				return result;
 
+			if (def.Src != null)
+			{
+				result.Image = CropImage(def.Src.ImageKey, def.Src);
+				if (result.Image == null) return result;
+			}
+			result.BorderColor = ParseColor(def.BorderColor ?? "000000");
+			result.BorderWidth = def.BorderWidth;
+
+			result.Position = new RECT
+			{
+				Left = def.Location.X,
+				Top = def.Location.Y,
+				Width = def.Location.W,
+				Height = def.Location.H,
+			};
+
+			result.Enabled = !def.IsDisabled;
+			return result;
+		}
 		private Color ParseColor(string hex)
 		{
 			if (string.IsNullOrEmpty(hex)) return Color.Black;

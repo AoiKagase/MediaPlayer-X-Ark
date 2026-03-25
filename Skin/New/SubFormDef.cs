@@ -32,6 +32,7 @@ namespace MediaPlayer_X_Ark.Skin.New
 		/// Grids: グリッドを表すプロパティ。
 		/// </summary>
 		[JsonPropertyName("grids")] public Dictionary<string, PartsGrids> Grids { get; set; }
+		[JsonPropertyName("pictures")] public Dictionary<string, PartsPictureArea> Pictures { get; set; }
 		/// <summary>
 		/// Magnetic: 磁石のようにサブフォームがメインフォームに吸着するかどうかを定義するプロパティ。
 		/// </summary>

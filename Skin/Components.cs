@@ -48,6 +48,8 @@ namespace MediaPlayer_X_Ark.Skin
         public Font Font;
         public Color BackColor;
         public Color FontColor;
+        public Color BorderColor;
+        public int BorderWidth;
     }
 
     public class SpectrumComponents
@@ -80,4 +82,14 @@ namespace MediaPlayer_X_Ark.Skin
         // target="area" の場合のみ使用
         public Location Location;
     }
+    public class PictureComponents
+	{
+		public string ImageFile;
+		public Image Image;
+		public Color Color;
+		public RECT Position;
+		public Color BorderColor;
+		public int BorderWidth;
+		public bool Enabled;
+	}
 }

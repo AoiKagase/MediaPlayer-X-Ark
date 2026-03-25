@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MediaPlayer_X_Ark.Skin.New.Parts
 {
-	public class PartsSpectrum : AbstractParts
+	public class PartsPictureArea : AbstractParts
 	{
 		/// <summary>
 		/// 色を表すプロパティ。スペクトラムの色を定義するために使用される。
@@ -16,5 +15,7 @@ namespace MediaPlayer_X_Ark.Skin.New.Parts
 		/// SRCが指定されている場合は、この項目は未使用で、スペクトラムの色は画像に従う。
 		/// </summary>
 		[JsonPropertyName("color")] public string Color { get; set; }
+		[JsonPropertyName("borderColor")] public string BorderColor { get; set; }
+		[JsonPropertyName("borderWidth")] public int BorderWidth { get; set; }
 	}
 }

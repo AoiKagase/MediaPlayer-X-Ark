@@ -17,5 +17,9 @@ namespace MediaPlayer_X_Ark.Skin.New.Parts
 		/// 位置とサイズを表すプロパティ。X座標、Y座標、幅、高さを表すプロパティ。
 		/// </summary>
 		[JsonPropertyName("location")] public Location Location { get; set; }
+		/// <summary>
+		/// 
+		/// </summary>
+		[JsonPropertyName("isDisabled")] public bool IsDisabled { get; set; }
 	}
 }

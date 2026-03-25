@@ -38,5 +38,7 @@ namespace MediaPlayer_X_Ark.Skin.New
 		/// FormKey, GridName, GridComponentsのペアを格納するDictionary。
 		/// </summary>
 		Dictionary<string, Dictionary<string, GridComponents>> Grids { get; }
+		Dictionary<string, Dictionary<string, PictureComponents>> Pictures { get; }
+
 	}
 }
