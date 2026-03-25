@@ -94,6 +94,8 @@ namespace MediaPlayer_X_Ark.Skin.New
                 skin = JsonSerializer.Deserialize<SkinJson>(json);
             } catch (Exception ex)
 			{
+				MessageBox.Show($"スキンの読み込みに失敗しました。\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
 				return;
 			}
 
@@ -130,6 +132,7 @@ namespace MediaPlayer_X_Ark.Skin.New
 			};
             // MainForm: ボタン類
             Buttons = new Dictionary<string, Dictionary<string, ButtonComponents>>();
+            Buttons["MainForm"] = new Dictionary<string, ButtonComponents>();
             foreach (var kv in skin.MainForm.Buttons ?? new Dictionary<string, PartsButtons>())
 				Buttons["MainForm"][kv.Key] = LoadButton(skin.MainForm.Buttons, kv.Key);
 
@@ -140,7 +143,8 @@ namespace MediaPlayer_X_Ark.Skin.New
 
 			// MainForm: Labels
 			Labels = new Dictionary<string, Dictionary<string, LabelComponents>>();
-			foreach (var kv in skin.MainForm.Labels ?? new Dictionary<string, PartsTextArea>())
+            Labels["MainForm"] = new Dictionary<string, LabelComponents>();
+            foreach (var kv in skin.MainForm.Labels ?? new Dictionary<string, PartsTextArea>())
 				Labels["MainForm"][kv.Key] = LoadText(skin.MainForm.Labels, kv.Key);
 
 			// MainForm: Spectrum
@@ -182,24 +186,23 @@ namespace MediaPlayer_X_Ark.Skin.New
             };
 
             // SubForms
-			foreach (var kv in skin.SubForms ?? new Dictionary<string, SubFormDef>())
+            SubForms = new Dictionary<string, FormComponents>();
+            Grids = new Dictionary<string, Dictionary<string, GridComponents>>();
+            foreach (var kv in skin.SubForms ?? new Dictionary<string, SubFormDef>())
 			{
-				// Form
-				SubForms = new Dictionary<string, FormComponents>
+                // Form
+                SubForms[kv.Key] = new FormComponents
 				{
-					[kv.Key] = new FormComponents
+					BackImage = CropImage(kv.Value.Src.ImageKey, kv.Value.Src),
+					TransparentKey = ParseColor(skin.Settings?.TransparentKey ?? "202030"),
+					Position = new RECT
 					{
-						BackImage = CropImage(kv.Value.Src.ImageKey, kv.Value.Src),
-						TransparentKey = ParseColor(skin.Settings?.TransparentKey ?? "202030"),
-						Position = new RECT
-						{
-							Left = kv.Value.Offset.X,
-							Top = kv.Value.Offset.Y,
-							Width = kv.Value.Src.W,
-							Height = kv.Value.Src.H,
-						},
-						MagnetMode = kv.Value.Magnetic,
-                    }
+						Left = kv.Value.Offset.X,
+						Top = kv.Value.Offset.Y,
+                        Width = kv.Value.Location?.W ?? 0,
+                        Height = kv.Value.Location?.H ?? 0,
+                    },
+					MagnetMode = kv.Value.Magnetic,
                 };
 
                 // Buttons
@@ -271,24 +274,17 @@ namespace MediaPlayer_X_Ark.Skin.New
 
 			result.BackImage = CropImage(def.Up.ImageKey, def.Up);
 
-			// downImage キーが指定されていれば別画像から、なければ同画像からクロップ
-			result.DownImage = def.Down.ImageKey != null
-				? CropImage(def.Down.ImageKey, new SpriteRect())
-				: CropImage(def.Down.ImageKey, def.Down);
+            // downImage キーが指定されていれば別画像から、なければ同画像からクロップ
+            result.DownImage = CropImage(def.Down?.ImageKey, def.Down);
 
 			result.Enabled = !def.IsDisabled && result.BackImage != null;
 
-			// optional
-			if (def.Optional.ImageKey != null)
-			{
-				result.OptionalImage = CropImage(def.Optional.ImageKey, new SpriteRect());
-				result.Toggle = result.OptionalImage != null;
-			}
-			else if (def.Optional != null)
-			{
-				result.OptionalImage = CropImage(def.Optional.ImageKey, def.Optional);
-				result.Toggle = result.OptionalImage != null;
-			}
+            // optional
+            if (def.Optional != null)
+            {
+                result.OptionalImage = CropImage(def.Optional.ImageKey, def.Optional);
+                result.Toggle = result.OptionalImage != null;
+            }
 
 			result.Position = new RECT
 			{
@@ -318,13 +314,9 @@ namespace MediaPlayer_X_Ark.Skin.New
 			{
 				Left = def.Location.X,
 				Top = def.Location.Y,
-				Width = result.Orientation == Orientation.Horizontal
-					? def.Location.W - def.Location.X + result.SliderImage.Width
-					: result.SliderImage.Width,
-				Height = result.Orientation == Orientation.Vertical
-					? def.Location.H - def.Location.Y + result.SliderImage.Height
-					: result.SliderImage.Height,
-			};
+                Width = def.Location.W,
+                Height = def.Location.H,
+            };
 			result.Enabled = true;
 			return result;
 		}
