@@ -10,10 +10,6 @@ namespace MediaPlayer_X_Ark.Skin.New
         /// </summary>
         FormComponents MainForm { get; }
         /// <summary>
-        /// SliderName, SliderComponentsのペアを格納するDictionary。
-        /// </summary>
-        Dictionary<string, SliderComponents> Sliders { get; }
-        /// <summary>
         /// FormKey, SpectrumComponentsのペアを格納するDictionary。
         /// </summary>
         SpectrumComponents Spectrum { get; }
@@ -21,6 +17,10 @@ namespace MediaPlayer_X_Ark.Skin.New
         /// FormKey, WaveformComponentsのペアを格納するDictionary。
         /// </summary>
         WaveformComponents WaveForm { get; }
+        /// <summary>
+        /// SliderName, SliderComponentsのペアを格納するDictionary。
+        /// </summary>
+        Dictionary<string, SliderComponents> Sliders { get; }
         /// <summary>
         /// FormKey, FormComponentsのペアを格納するDictionary。
         /// サブフォームの定義を保持するために使用される。

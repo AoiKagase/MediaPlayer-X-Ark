@@ -153,16 +153,13 @@ namespace MediaPlayer_X_Ark.Skin
 
         private void ApplyControls(System.Windows.Forms.Control.ControlCollection controls)
         {
-            //var sliderMap = BuildSliderMap();
-            //var labelMap  = BuildLabelMap();
-            //var gridMap   = BuildGridMap();
 			foreach (Control c in controls)
             {
                 var parentName = c.Parent?.Name ?? "";
-                var btnMap = _skin.Buttons[parentName];
                 var sliderMap = _skin.Sliders;
-                var labelMap = _skin.Labels[parentName];
-                var gridMap = _skin.Grids[parentName];
+                _skin.Buttons.TryGetValue(parentName, out var btnMap);
+                _skin.Labels.TryGetValue(parentName, out var labelMap);
+                _skin.Grids.TryGetValue(parentName, out var gridMap);
                 if (c is Button btn && btnMap.TryGetValue(c.Name, out var bc))
                 {
                     if (bc.BackImage == null || !bc.Enabled)
