@@ -9,65 +9,10 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static MediaPlayer_X_Ark.Skin.NewSkinSystem.NewSkinSystem;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MediaPlayer_X_Ark.Skin
 {
-	public class FormComponents
-	{
-		public Image BackImage;
-		public RECT Position;
-		public Color TransparentKey;
-		public bool MagnetMode;
-	}
 
-	public class ButtonComponents
-	{
-		public Image BackImage;
-		public Image DownImage;
-		public Image OptionalImage;
-
-		public RECT Position;
-		public bool Toggle;
-		public bool Enabled;
-	}
-	public class SliderComponents
-	{
-		public bool Enabled;
-		public Image SliderImage;
-		public Orientation Orientation;
-		public RECT Position;
-		public int Maximum;
-		public int Minimum;
-	}
-
-	public class LabelComponents
-	{
-		public bool Enabled;
-		public int Interval;
-		public bool ScrollEnable;
-		public RECT Position;
-		public Font Font;
-		public Color BackColor;
-		public Color FontColor;
-	}
-
-	public class SpectrumComponents
-	{
-		public string ImageFile;
-		public Image Image;
-		public Color Color;
-		public RECT Position;
-		public bool Enabled;
-	}
-
-	public class GridComponents
-	{
-		public Color ListBackColor;
-		public Color ListForeColor;
-		public RECT ListPosition;
-	}
 
 	class OldSkinSystem : ISkinSystem
 	{
@@ -121,7 +66,7 @@ namespace MediaPlayer_X_Ark.Skin
 		public Dictionary<string, ButtonComponents> GetFormButtons(string formName) =>
 			FormButtons.TryGetValue(formName, out var b) ? b : _emptyButtons;
 
-		public WaveformDef Waveform { get; private set; } = null;
+		public WaveformComponents Waveform { get; private set; } = null;
 		public OldSkinSystem()
 		{
 

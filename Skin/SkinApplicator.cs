@@ -1,5 +1,6 @@
 using MediaPlayer_X_Ark.Engine;
 using MediaPlayer_X_Ark.Engine.Player;
+using MediaPlayer_X_Ark.Skin.New;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -13,9 +14,9 @@ namespace MediaPlayer_X_Ark.Skin
     /// </summary>
     public class SkinApplicator
     {
-        private readonly ISkinSystem _skin;
+        private readonly INewSkinSystem _skin;
 
-        public SkinApplicator(ISkinSystem skin)
+        public SkinApplicator(INewSkinSystem skin)
         {
             _skin = skin;
         }
@@ -30,40 +31,40 @@ namespace MediaPlayer_X_Ark.Skin
 
             // スペクトラム配置
             form.SuspendLayout();
-            spectrum.Left   = _skin.ImgSpectrum.Position.Left;
-            spectrum.Top    = _skin.ImgSpectrum.Position.Top;
-            spectrum.Width  = _skin.ImgSpectrum.Position.Width;
-            spectrum.Height = _skin.ImgSpectrum.Position.Height;
+            spectrum.Left   = _skin.Spectrum.Position.Left;
+            spectrum.Top    = _skin.Spectrum.Position.Top;
+            spectrum.Width  = _skin.Spectrum.Position.Width;
+            spectrum.Height = _skin.Spectrum.Position.Height;
             form.ResumeLayout(false);
 
             // スペクトラムビットマップ再生成
-            int sw = _skin.ImgSpectrum.Position.Width;
-            int sh = _skin.ImgSpectrum.Position.Height;
+            int sw = _skin.Spectrum.Position.Width;
+            int sh = _skin.Spectrum.Position.Height;
             spectrum.BitmapSnow       = new Bitmap(sw, sh);
             spectrum.BitmapWave       = new Bitmap(sw, sh);
             spectrum.BitmapBackground = new Bitmap(sw, sh);
 
-            if (_skin.ImgSpectrum.Image != null)
+            if (_skin.Spectrum.Image != null)
             {
-                spectrum.BitmapSpectrum = new Bitmap(_skin.ImgSpectrum.Image);
+                spectrum.BitmapSpectrum = new Bitmap(_skin.Spectrum.Image);
             }
             else
             {
                 spectrum.BitmapSpectrum = new Bitmap(sw, sh);
                 using (var g = Graphics.FromImage(spectrum.BitmapSpectrum))
-                    g.Clear(_skin.ImgSpectrum.Color);
+                    g.Clear(_skin.Spectrum.Color);
                 using (var g = Graphics.FromImage(spectrum.BitmapSnow))
-                    g.Clear(_skin.ImgSpectrum.Color);
+                    g.Clear(_skin.Spectrum.Color);
                 using (var g = Graphics.FromImage(spectrum.BitmapWave))
-                    g.Clear(_skin.ImgSpectrum.Color);
+                    g.Clear(_skin.Spectrum.Color);
             }
 
             // 背景からスペクトラム領域を切り出し
             if (_skin.MainForm.BackImage != null)
             {
                 var rect = new Rectangle(
-                    _skin.ImgSpectrum.Position.Left,
-                    _skin.ImgSpectrum.Position.Top,
+                    _skin.Spectrum.Position.Left,
+                    _skin.Spectrum.Position.Top,
                     sw, sh);
                 var bmp = new Bitmap(sw, sh);
                 using (var g = Graphics.FromImage(bmp))
@@ -84,10 +85,10 @@ namespace MediaPlayer_X_Ark.Skin
         /// <summary>プレイリストフォームにスキンを適用する</summary>
         public void ApplyToPlayListForm(Form playListForm)
         {
-            playListForm.BackgroundImage = _skin["PlayListForm"].BackImage;
-            playListForm.Width           = _skin["PlayListForm"].Position.Width;
-            playListForm.Height          = _skin["PlayListForm"].Position.Height;
-            playListForm.TransparencyKey = _skin["PlayListForm"].TransparentKey;
+            playListForm.BackgroundImage = _skin.SubForms["PlayListForm"].BackImage;
+            playListForm.Width           = _skin.SubForms["PlayListForm"].Position.Width;
+            playListForm.Height          = _skin.SubForms["PlayListForm"].Position.Height;
+            playListForm.TransparencyKey = _skin.SubForms["PlayListForm"].TransparentKey;
             playListForm.Refresh();
 
             ApplyControls(playListForm.Controls);
@@ -96,15 +97,16 @@ namespace MediaPlayer_X_Ark.Skin
         /// <summary>プレイリストフォームの位置をマグネットモードに合わせて更新する</summary>
         public void UpdatePlayListPosition(Form mainForm, Form playListForm)
         {
-            playListForm.Left = mainForm.Left - _skin["PlayListForm"].Position.Left;
-            playListForm.Top  = mainForm.Top  - _skin["PlayListForm"].Position.Top;
+            playListForm.Left = mainForm.Left - _skin.SubForms["PlayListForm"].Position.Left;
+            playListForm.Top  = mainForm.Top  - _skin.SubForms["PlayListForm"].Position.Top;
         }
 
         /// <summary>ボタンの押下画像をセットする</summary>
         public void SetButtonDown(Button btn)
         {
-            var map = BuildButtonMap();
-            if (map.TryGetValue(btn.Name, out var bc))
+            var parent = btn.Parent.Name;
+            var btnMap = _skin.Buttons[parent];
+            if (btnMap.TryGetValue(btn.Name, out var bc))
             {
                 btn.BackgroundImage = bc.DownImage;
                 btn.Refresh();
@@ -114,8 +116,9 @@ namespace MediaPlayer_X_Ark.Skin
         /// <summary>ボタンの通常画像をセットする</summary>
         public void SetButtonUp(Button btn)
         {
-            var map = BuildButtonMap();
-            if (map.TryGetValue(btn.Name, out var bc))
+            var parent = btn.Parent.Name;
+            var btnMap = _skin.Buttons[parent];
+            if (btnMap.TryGetValue(btn.Name, out var bc))
             {
                 btn.BackgroundImage = bc.BackImage;
                 btn.Refresh();
@@ -128,9 +131,9 @@ namespace MediaPlayer_X_Ark.Skin
             var loopOnly = loop & ~LOOP_MODE.LOOP_RANDOM;
             btn.BackgroundImage = loopOnly switch
             {
-                LOOP_MODE.LOOP_ONE_REPEAT => _skin.Buttons["BtnLoop"].DownImage,
-                LOOP_MODE.LOOP_ALL        => _skin.Buttons["BtnLoop"].OptionalImage,
-				_                         => _skin.Buttons["BtnLoop"].BackImage,
+                LOOP_MODE.LOOP_ONE_REPEAT => _skin.Buttons["MainForm"]["BtnLoop"].DownImage,
+                LOOP_MODE.LOOP_ALL        => _skin.Buttons["MainForm"]["BtnLoop"].OptionalImage,
+				_                         => _skin.Buttons["MainForm"]["BtnLoop"].BackImage,
 
 			};
             btn.Refresh();
@@ -141,8 +144,8 @@ namespace MediaPlayer_X_Ark.Skin
         {
             bool isRandom = (loop & LOOP_MODE.LOOP_RANDOM) != 0;
             btn.BackgroundImage = isRandom
-                ? _skin.Buttons["BtnRandom"].DownImage
-                : _skin.Buttons["BtnRandom"].BackImage;
+                ? _skin.Buttons["MainForm"]["BtnRandom"].DownImage
+                : _skin.Buttons["MainForm"]["BtnRandom"].BackImage;
             btn.Refresh();
         }
 
@@ -150,12 +153,16 @@ namespace MediaPlayer_X_Ark.Skin
 
         private void ApplyControls(System.Windows.Forms.Control.ControlCollection controls)
         {
-            var btnMap    = BuildButtonMap();
-            var sliderMap = BuildSliderMap();
-            var labelMap  = BuildLabelMap();
-            var gridMap   = BuildGridMap();
+            //var sliderMap = BuildSliderMap();
+            //var labelMap  = BuildLabelMap();
+            //var gridMap   = BuildGridMap();
 			foreach (Control c in controls)
             {
+                var parentName = c.Parent?.Name ?? "";
+                var btnMap = _skin.Buttons[parentName];
+                var sliderMap = _skin.Sliders;
+                var labelMap = _skin.Labels[parentName];
+                var gridMap = _skin.Grids[parentName];
                 if (c is Button btn && btnMap.TryGetValue(c.Name, out var bc))
                 {
                     if (bc.BackImage == null || !bc.Enabled)
@@ -219,17 +226,5 @@ namespace MediaPlayer_X_Ark.Skin
 				}
             }
         }
-
-        private Dictionary<string, ButtonComponents> BuildButtonMap()
-        {
-            var result = new Dictionary<string, ButtonComponents>(_skin.Buttons);
-			return result
-			 .Concat(_skin.GetFormButtons("PlayListForm"))
-			 .ToDictionary(c => c.Key, c => c.Value);
-		}
-
-        private Dictionary<string, SliderComponents> BuildSliderMap() => _skin.Sliders;
-        private Dictionary<string, LabelComponents> BuildLabelMap() => _skin.Labels;
-		private Dictionary<string, PListGrid> BuildGridMap() => _skin.Grids;
 	}
 }

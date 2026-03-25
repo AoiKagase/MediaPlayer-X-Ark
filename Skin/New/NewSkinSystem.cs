@@ -1,4 +1,5 @@
-﻿using MediaPlayer_X_Ark.Skin.NewSkinSystem.NewSkinSystem;
+﻿using MediaPlayer_X_Ark.Skin.New;
+using MediaPlayer_X_Ark.Skin.New.Parts;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -47,66 +48,57 @@ namespace MediaPlayer_X_Ark.Skin.New
 			public MainFormDef MainForm { get; set; }
 
 			[JsonPropertyName("SubForms")]
-			public SubFormDef SubForms { get; set; }
+			public Dictionary<string, SubFormDef> SubForms { get; set; }
 		}
 
 		// ===========================
 		// ロード済みスキンデータ
 		// ===========================
+		/// <summary>
+		/// MainForm
+		/// </summary>
 		public FormComponents MainForm { get; private set; }
-		public SpectrumComponents ImgSpectrum { get; private set; }
-		// 追加（辞書プロパティ）
-		public Dictionary<string, ButtonComponents> Buttons { get; private set; }
-		public Dictionary<string, SliderComponents> Sliders { get; private set; }
-		public Dictionary<string, LabelComponents> Labels { get; private set; }
+        public Dictionary<string, SliderComponents> Sliders { get; private set; }
+        public SpectrumComponents Spectrum { get; private set; }
+        public WaveformComponents WaveForm { get; private set; }
 
-		private static readonly Dictionary<string, ButtonComponents> _emptyButtons = new Dictionary<string, ButtonComponents>();
+        public Dictionary<string, FormComponents> SubForms { get; private set; }
+        public Dictionary<string, Dictionary<string, ButtonComponents>> Buttons { get; private set; }
+		public Dictionary<string, Dictionary<string, LabelComponents>> Labels { get; private set; }
+		public Dictionary<string, Dictionary<string, GridComponents>> Grids { get; private set; }
 
-		private Dictionary<string, FormComponents> _forms;
-		private Dictionary<string, PListGrid> _grids;
-		private Dictionary<string, Dictionary<string, ButtonComponents>> _formButtons;
 
-		public Dictionary<string, FormComponents> Forms => _forms;
-		public Dictionary<string, PListGrid> Grids => _grids;
-		public Dictionary<string, Dictionary<string, ButtonComponents>> FormButtons => _formButtons;
-		public FormComponents this[string formName] =>
-			_forms.TryGetValue(formName, out var f) ? f : null;
-
-		public Dictionary<string, ButtonComponents> GetFormButtons(string formName) =>
-			_formButtons.TryGetValue(formName, out var b) ? b : _emptyButtons;
-
-		// ===========================
-		// インデクサ（OldSkinSystemとの互換）
-		// ===========================
-		//public object this[string propertyName]
-		//{
-		//	get { return typeof(NewSkinSystem).GetProperty(propertyName).GetValue(this); }
-		//}
-
-		// ===========================
-		// ロード済み画像キャッシュ
-		// ===========================
-		private Dictionary<string, Bitmap> _imageCache
+        // ===========================
+        // ロード済み画像キャッシュ
+        // ===========================
+        private Dictionary<string, Bitmap> _imageCache
 			= new Dictionary<string, Bitmap>();
 
 		private string _skinDir;
-		public WaveformDef Waveform { get; private set; } // null = 未定義（スキン非対応）
-														  // ===========================
-														  // Open
-														  // ===========================
-		public void Open(string jsonPath)
+
+        // ===========================
+        // Open
+        // ===========================
+        public void Open(string jsonPath)
 		{
 			_skinDir = Path.GetDirectoryName(jsonPath);
 			// 古いキャッシュを破棄
 			foreach (var bmp in _imageCache.Values)
 				bmp?.Dispose();
 			_imageCache.Clear();
+			string json;
+            SkinJson skin;
+            try
+			{
+                json = File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
+                skin = JsonSerializer.Deserialize<SkinJson>(json);
+            } catch (Exception ex)
+			{
+				return;
+			}
 
-			var json = File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
-			var skin = JsonSerializer.Deserialize<SkinJson>(json);
-
-			// 画像をキャッシュにロード
-			if (skin.Images != null)
+            // 画像をキャッシュにロード
+            if (skin.Images != null)
 			{
 				foreach (var kv in skin.Images)
 				{
@@ -128,89 +120,123 @@ namespace MediaPlayer_X_Ark.Skin.New
 			var mf = skin.MainForm;
 			MainForm = new FormComponents
 			{
-				BackImage = CropImage(mf.Image, mf.Src),
+				BackImage = CropImage(mf.Src.ImageKey, mf.Src),
 				TransparentKey = ParseColor(skin.Settings?.TransparentKey ?? "202030"),
 				Position = new RECT
 				{
-					Width = mf.Width,
-					Height = mf.Height,
+					Width = mf.Location.W,
+					Height = mf.Location.H,
 				}
 			};
+            // MainForm: ボタン類
+            Buttons = new Dictionary<string, Dictionary<string, ButtonComponents>>();
+            foreach (var kv in skin.MainForm.Buttons ?? new Dictionary<string, PartsButtons>())
+				Buttons["MainForm"][kv.Key] = LoadButton(skin.MainForm.Buttons, kv.Key);
 
-			// Buttons
-			Buttons = new Dictionary<string, ButtonComponents>();
-			foreach (var kv in skin.Buttons ?? new Dictionary<string, ButtonDef>())
-				Buttons[kv.Key] = LoadButton(skin.Buttons, kv.Key);
-
-			// Sliders
+			// MainForm: Sliders
 			Sliders = new Dictionary<string, SliderComponents>();
-			foreach (var kv in skin.Sliders ?? new Dictionary<string, SliderDef>())
-				Sliders[kv.Key] = LoadSlider(skin.Sliders, kv.Key);
+			foreach (var kv in skin.MainForm.Sliders ?? new Dictionary<string, PartsSliders>())
+				Sliders[kv.Key] = LoadSlider(skin.MainForm.Sliders, kv.Key);
 
-			// Labels
-			Labels = new Dictionary<string, LabelComponents>();
-			foreach (var kv in skin.Text ?? new Dictionary<string, TextDef>())
-				Labels[kv.Key] = LoadText(skin.Text, kv.Key);
+			// MainForm: Labels
+			Labels = new Dictionary<string, Dictionary<string, LabelComponents>>();
+			foreach (var kv in skin.MainForm.Labels ?? new Dictionary<string, PartsTextArea>())
+				Labels["MainForm"][kv.Key] = LoadText(skin.MainForm.Labels, kv.Key);
 
-
-			// Spectrum
-			var sp = skin.Spectrum;
-			ImgSpectrum = new SpectrumComponents
+			// MainForm: Spectrum
+			var sp = skin.MainForm.Spectrum;
+            Spectrum = new SpectrumComponents
 			{
-				Image = CropImage(sp.Image, sp.Src),
+				Image = CropImage(sp.Src.ImageKey, sp.Src),
 				Color = ParseColor(sp.Color ?? "000000"),
 				Position = new RECT
 				{
-					Left = sp.X,
-					Top = sp.Y,
-					Width = sp.Width,
-					Height = sp.Height,
+					Left = sp.Location.X,
+					Top = sp.Location.Y,
+					Width = sp.Location.W,
+					Height = sp.Location.H,
 				},
 				Enabled = true,
 			};
+
 			// WaveForm
 			// TODO: テスト用にデフォルト値を入れているが、正式にはスキン側で定義必須。NULLの場合は非表示
-			Waveform = skin.Waveform ?? new WaveformDef();
-			// PlayListForm
-			var pl = skin.PlayList;
-			_forms = new Dictionary<string, FormComponents>
+			WaveForm = new WaveformComponents
 			{
-				["PlayListForm"] = new FormComponents
+				Target = skin.MainForm.WaveArea?.Target ?? "trackbar",
+				Mode = skin.MainForm.WaveArea?.Mode ?? "normal",
+                Exponent = skin.MainForm.WaveArea?.Exponent ?? 1.0f,
+                ColorL = ParseColor(skin.MainForm.WaveArea?.ColorL ?? "FF0000"),
+                ColorR = ParseColor(skin.MainForm.WaveArea?.ColorR ?? "0000FF"),
+                ColorMix = ParseColor(skin.MainForm.WaveArea?.ColorMix ?? "FF00FF"),
+                ColorPlayed = ParseColor(skin.MainForm.WaveArea?.ColorPlayed ?? "00FF00"),
+                ColorUnplayed = ParseColor(skin.MainForm.WaveArea?.ColorUnplayed ?? "202020"),
+                // target="area" の場合のみ使用
+                Location = new Location
 				{
-					BackImage = CropImage(pl.Image, pl.Src),
-					TransparentKey = ParseColor(skin.Settings?.TransparentKey ?? "202030"),
-					Position = new RECT
-					{
-						Left = pl.OffsetX,
-						Top = pl.OffsetY,
-						Width = pl.Width,
-						Height = pl.Height,
-					},
-					MagnetMode = pl.MagnetMode,
-				}
-			};
-			_grids = new Dictionary<string, PListGrid>
-			{
-				["PlayListGrid"] = new PListGrid
-				{
-					ListBackColor = ParseColor(pl.ListBackColor ?? "000001"),
-					ListForeColor = ParseColor(pl.ListForeColor ?? "FFFFFF"),
-					ListPosition = new RECT
-					{
-						Left = pl.ListX,
-						Top = pl.ListY,
-						Width = pl.ListWidth,
-						Height = pl.ListHeight,
-					},
-				}
-			};
+					X = skin.MainForm.WaveArea?.Location.X ?? 0,
+					Y = skin.MainForm.WaveArea?.Location.Y ?? 0,
+					W = skin.MainForm.WaveArea?.Location.W ?? 0,
+					H = skin.MainForm.WaveArea?.Location.H ?? 0,
+                }
+            };
 
-			// FormButtons
-			_formButtons = new Dictionary<string, Dictionary<string, ButtonComponents>>();
-			var plButtons = new Dictionary<string, ButtonComponents>();
-			foreach (var kv in pl.Buttons ?? new Dictionary<string, ButtonDef>())
-				plButtons[kv.Key] = LoadButton(pl.Buttons, kv.Key);
-			_formButtons["PlayListForm"] = plButtons;
+            // SubForms
+			foreach (var kv in skin.SubForms ?? new Dictionary<string, SubFormDef>())
+			{
+				// Form
+				SubForms = new Dictionary<string, FormComponents>
+				{
+					[kv.Key] = new FormComponents
+					{
+						BackImage = CropImage(kv.Value.Src.ImageKey, kv.Value.Src),
+						TransparentKey = ParseColor(skin.Settings?.TransparentKey ?? "202030"),
+						Position = new RECT
+						{
+							Left = kv.Value.Offset.X,
+							Top = kv.Value.Offset.Y,
+							Width = kv.Value.Src.W,
+							Height = kv.Value.Src.H,
+						},
+						MagnetMode = kv.Value.Magnetic,
+                    }
+                };
+
+                // Buttons
+                foreach (var btnKv in kv.Value.Buttons ?? new Dictionary<string, PartsButtons>())
+				{
+					if (!Buttons.ContainsKey(kv.Key))
+						Buttons[kv.Key] = new Dictionary<string, ButtonComponents>();
+					Buttons[kv.Key][btnKv.Key] = LoadButton(kv.Value.Buttons, btnKv.Key);
+                }
+
+				// Labels
+				foreach (var labelKv in kv.Value.Labels ?? new Dictionary<string, PartsTextArea>())
+				{
+					if (!Labels.ContainsKey(kv.Key))
+						Labels[kv.Key] = new Dictionary<string, LabelComponents>();
+					Labels[kv.Key][labelKv.Key] = LoadText(kv.Value.Labels, labelKv.Key);
+                }
+
+				// Grids
+				foreach (var gridKv in kv.Value.Grids ?? new Dictionary<string, PartsGrids>())
+				{
+					if (!Grids.ContainsKey(kv.Key))
+						Grids[kv.Key] = new Dictionary<string, GridComponents>();
+					Grids[kv.Key][gridKv.Key] = new GridComponents()
+					{
+						ListBackColor = ParseColor(gridKv.Value.BackColor ?? "000001"),
+						ListForeColor = ParseColor(gridKv.Value.ForeColor ?? "FFFFFF"),
+						ListPosition = new RECT
+						{
+							Left = gridKv.Value.Location.X,
+							Top = gridKv.Value.Location.Y,
+							Width = gridKv.Value.Location.W,
+							Height = gridKv.Value.Location.H,
+                        }
+                    };
+                }
+            }
 		}
 
 		// ===========================
@@ -236,39 +262,38 @@ namespace MediaPlayer_X_Ark.Skin.New
 			return bmp;
 		}
 
-		private ButtonComponents LoadButton(
-			Dictionary<string, ButtonDef> buttons, string key)
+		private ButtonComponents LoadButton(Dictionary<string, PartsButtons> buttons, string key)
 		{
 			var result = new ButtonComponents { Enabled = false };
 
 			if (buttons == null || !buttons.TryGetValue(key, out var def))
 				return result;
 
-			result.BackImage = CropImage(def.Image, def.Normal);
+			result.BackImage = CropImage(def.Up.ImageKey, def.Up);
 
 			// downImage キーが指定されていれば別画像から、なければ同画像からクロップ
-			result.DownImage = def.DownImage != null
-				? CropImage(def.DownImage, new SpriteRect())
-				: CropImage(def.Image, def.Down);
+			result.DownImage = def.Down.ImageKey != null
+				? CropImage(def.Down.ImageKey, new SpriteRect())
+				: CropImage(def.Down.ImageKey, def.Down);
 
-			result.Enabled = def.Enabled && result.BackImage != null;
+			result.Enabled = !def.IsDisabled && result.BackImage != null;
 
 			// optional
-			if (def.OptionalImage != null)
+			if (def.Optional.ImageKey != null)
 			{
-				result.OptionalImage = CropImage(def.OptionalImage, new SpriteRect());
+				result.OptionalImage = CropImage(def.Optional.ImageKey, new SpriteRect());
 				result.Toggle = result.OptionalImage != null;
 			}
 			else if (def.Optional != null)
 			{
-				result.OptionalImage = CropImage(def.Image, def.Optional);
+				result.OptionalImage = CropImage(def.Optional.ImageKey, def.Optional);
 				result.Toggle = result.OptionalImage != null;
 			}
 
 			result.Position = new RECT
 			{
-				Left = def.X,
-				Top = def.Y,
+				Left = def.Location.X,
+				Top = def.Location.Y,
 				Width = result.BackImage?.Width ?? 0,
 				Height = result.BackImage?.Height ?? 0,
 			};
@@ -276,14 +301,13 @@ namespace MediaPlayer_X_Ark.Skin.New
 			return result;
 		}
 
-		private SliderComponents LoadSlider(
-			Dictionary<string, SliderDef> sliders, string key)
+		private SliderComponents LoadSlider(Dictionary<string, PartsSliders> sliders, string key)
 		{
 			var result = new SliderComponents { Enabled = false };
 			if (sliders == null || !sliders.TryGetValue(key, out var def))
 				return result;
 
-			result.SliderImage = CropImage(def.Image, def.Src);
+			result.SliderImage = CropImage(def.Src.ImageKey, def.Src);
 			if (result.SliderImage == null) return result;
 
 			result.Orientation = def.Orientation?.ToLower() == "vertical"
@@ -292,21 +316,20 @@ namespace MediaPlayer_X_Ark.Skin.New
 			result.Maximum = def.Max;
 			result.Position = new RECT
 			{
-				Left = def.X,
-				Top = def.Y,
+				Left = def.Location.X,
+				Top = def.Location.Y,
 				Width = result.Orientation == Orientation.Horizontal
-					? def.AreaX2 - def.X + result.SliderImage.Width
+					? def.Location.W - def.Location.X + result.SliderImage.Width
 					: result.SliderImage.Width,
 				Height = result.Orientation == Orientation.Vertical
-					? def.AreaY2 - def.Y + result.SliderImage.Height
+					? def.Location.H - def.Location.Y + result.SliderImage.Height
 					: result.SliderImage.Height,
 			};
 			result.Enabled = true;
 			return result;
 		}
 
-		private LabelComponents LoadText(
-			Dictionary<string, TextDef> texts, string key)
+		private LabelComponents LoadText(Dictionary<string, PartsTextArea> texts, string key)
 		{
 			var result = new LabelComponents { Enabled = false };
 			if (texts == null || !texts.TryGetValue(key, out var def))
@@ -319,13 +342,13 @@ namespace MediaPlayer_X_Ark.Skin.New
 			result.Font = new Font(def.Font ?? "Yu Gothic UI",
 								def.Size > 0 ? def.Size : 9, style,
 								GraphicsUnit.Point);
-			result.FontColor = ParseColor(def.Color ?? "FFFFFF");
+			result.FontColor = ParseColor(def.ForeColor ?? "FFFFFF");
 			result.Position = new RECT
 			{
-				Left = def.X,
-				Top = def.Y,
-				Width = def.Width,
-				Height = def.Height,
+				Left = def.Location.X,
+				Top = def.Location.Y,
+				Width = def.Location.W,
+				Height = def.Location.H,
 			};
 			result.Interval = def.Interval;
 			result.ScrollEnable = def.ScrollEnable;

@@ -28,9 +28,6 @@ namespace MediaPlayer_X_Ark.Skin.New.Parts
 		///		"enabled": true/false
 		/// }
 		/// 
-		/// 位置とサイズを表すプロパティ。X座標、Y座標、幅、高さを表すプロパティ。
-		/// </summary>
-		[JsonPropertyName("location")] public Location Location { get; set; }
 		/// <summary>
 		/// ボタンの状態を表すプロパティ。通常は、"up"、"down"、"hover"、"disabled"などの状態が定義される。
 		/// UP: ボタンが通常の状態で表示されるときの画像と位置を定義するために使用される。

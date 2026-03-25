@@ -3,6 +3,7 @@ using MediaPlayer_X_Ark.Engine.Config;
 using MediaPlayer_X_Ark.Engine.Player;
 using MediaPlayer_X_Ark.Forms;
 using MediaPlayer_X_Ark.Skin;
+using MediaPlayer_X_Ark.Skin.New;
 using NFluidsynth;
 using System;
 using System.Collections.Generic;
@@ -32,10 +33,10 @@ namespace MediaPlayer_X_Ark
 
 		private int _sleepTimerRemaining = 0; // 残り秒数（0=無効）
 
-		private ISkinSystem _currentSkin;
+		private INewSkinSystem _currentSkin;
 		private SkinApplicator _skinApplicator;
 
-		public ISkinSystem CurrentSkin => _currentSkin;
+		public INewSkinSystem CurrentSkin => _currentSkin;
 
 		// 用途別にOpenFileDialogを分離
 		private OpenFileDialog _openFileDialogMedia;   // 音楽ファイル用
@@ -75,14 +76,14 @@ namespace MediaPlayer_X_Ark
 					skin.Open(pkg.DefinitionPath);
 					_currentSkin = skin;
 				}
-				else
-				{
-					// 旧形式はOldSkinSystem自身がパス解決するため
-					// 元のパス（相対パス）をそのまま渡す
-					var skin = new OldSkinSystem();
-					skin.Open(pkg.OriginalPath);
-					_currentSkin = skin;
-				}
+				//else
+				//{
+				//	// 旧形式はOldSkinSystem自身がパス解決するため
+				//	// 元のパス（相対パス）をそのまま渡す
+				//	var skin = new OldSkinSystem();
+				//	skin.Open(pkg.OriginalPath);
+				//	_currentSkin = skin;
+				//}
 				_skinApplicator = new SkinApplicator(_currentSkin);
 				_skinApplicator.ApplyToMainForm(this, Spectrum);
 				_skinApplicator.ApplyToPlayListForm(_playListForm);
@@ -109,7 +110,7 @@ namespace MediaPlayer_X_Ark
 
 			// NewSkinSystem 側で null → new WaveformDef() にしたので
 			// ここでは常に non-null が来る（OldSkinSystem は下の else で無効化）
-			var wDef = (_currentSkin as NewSkinSystem)?.Waveform;
+			var wDef = (_currentSkin as NewSkinSystem)?.WaveForm;
 			if (wDef == null)
 			{
 				_controller.Engine.WaveformEnabled = false;
@@ -119,12 +120,12 @@ namespace MediaPlayer_X_Ark
 
 			_controller.Engine.WaveformEnabled = true;
 
-			if (wDef.Target == "area" && wDef.Width > 0 && wDef.Height > 0)
+			if (wDef.Target == "area" && wDef.Location.W > 0 && wDef.Location.H > 0)
 			{
 				_waveformArea = new PictureBox
 				{
-					Location = new Point(wDef.X, wDef.Y),
-					Size = new System.Drawing.Size(wDef.Width, wDef.Height),
+					Location = new Point(wDef.Location.X, wDef.Location.Y),
+					Size = new System.Drawing.Size(wDef.Location.W, wDef.Location.H),
 					BackColor = Color.Transparent,
 					SizeMode = PictureBoxSizeMode.StretchImage,
 				};
@@ -139,15 +140,6 @@ namespace MediaPlayer_X_Ark
 			=> _skinApplicator?.SetButtonDown((Button)sender);
 		public void BtnMouseUp(object sender, MouseEventArgs e)
 			=> _skinApplicator?.SetButtonUp((Button)sender);
-
-		private Dictionary<string, ButtonComponents> GetButtonMap()
-		{
-			var map = new Dictionary<string, ButtonComponents>(_currentSkin.Buttons);
-			foreach (var formButtons in _currentSkin.FormButtons.Values)
-				foreach (var kv in formButtons)
-					map[kv.Key] = kv.Value;
-			return map;
-		}
 
 		/// =============================================================
 		/// 各コントロールイベント
@@ -250,7 +242,7 @@ namespace MediaPlayer_X_Ark
 
 		private void UpdateWaveformBitmap(int index)
 		{
-			var wDef = (_currentSkin as MediaPlayer_X_Ark.Skin.NewSkinSystem)?.Waveform;
+			var wDef = (_currentSkin)?.WaveForm;
 			if (wDef == null) return;  // スキン未定義なら何もしない
 
 			var entry = _controller.Engine.PlayList[index];
@@ -419,7 +411,7 @@ namespace MediaPlayer_X_Ark
 				Left += e.X - mousePoint.X;
 				Top += e.Y - mousePoint.Y;
 
-				var plForm = _currentSkin?["PlayListForm"];
+				var plForm = _currentSkin?.SubForms["PlayListForm"];
 				if (plForm != null)
 				{
 					if (plForm.MagnetMode)
@@ -504,7 +496,7 @@ namespace MediaPlayer_X_Ark
 		}
 		private void UpdateWaveformPlayedRatio(float ratio)
 		{
-			var wDef = (_currentSkin as MediaPlayer_X_Ark.Skin.NewSkinSystem)?.Waveform;
+			var wDef = (_currentSkin)?.WaveForm;
 			if (wDef == null) return;  // スキン未定義なら何もしない
 
 			if (_controller.PlayingIndex < 0) return;
@@ -531,7 +523,7 @@ namespace MediaPlayer_X_Ark
 			old?.Dispose();
 		}
 
-		private (int w, int h) GetWaveformSize(MediaPlayer_X_Ark.Skin.NewSkinSystem.WaveformDef wDef)
+		private (int w, int h) GetWaveformSize(WaveformComponents wDef)
 		{
 			if (wDef.Target == "area" && _waveformArea != null)
 				return (_waveformArea.Width, _waveformArea.Height);
@@ -572,15 +564,15 @@ namespace MediaPlayer_X_Ark
 		}
 		/// <summary>WaveformDef からカラー設定を構築</summary>
 		private WaveformRenderer.WaveformColors BuildWaveformColors(
-			MediaPlayer_X_Ark.Skin.NewSkinSystem.WaveformDef wDef)
+			WaveformComponents wDef)
 		{
 			return new WaveformRenderer.WaveformColors
 			{
-				ColorL = ParseSkinColor(wDef.ColorL ?? "00CC66"),
-				ColorR = ParseSkinColor(wDef.ColorR ?? "0066CC"),
-				ColorMix = ParseSkinColor(wDef.ColorMix ?? "00AA88"),
-				Played = ParseSkinColor(wDef.ColorPlayed ?? "555555"),
-				Unplayed = ParseSkinColor(wDef.ColorUnplayed ?? "333333"),
+				ColorL = wDef.ColorL,// ?? "00CC66",
+				ColorR = wDef.ColorR,// ?? "0066CC",
+				ColorMix = wDef.ColorMix,// ?? "00AA88",
+				Played = wDef.ColorPlayed,// ?? "555555",
+				Unplayed = wDef.ColorUnplayed,// ?? "333333",
 			};
 		}
 		private static System.Drawing.Color ParseSkinColor(string hex)
@@ -787,7 +779,7 @@ namespace MediaPlayer_X_Ark
 			}
 
 			_playListForm.Show(this);
-			var plForm = _currentSkin?["PlayListForm"];
+			var plForm = _currentSkin?.SubForms["PlayListForm"];
 
 			if (plForm != null)
 			{

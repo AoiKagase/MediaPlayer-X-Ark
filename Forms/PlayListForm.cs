@@ -517,7 +517,7 @@ namespace MediaPlayer_X_Ark
 			{
 				Left += e.X - mousePoint.X;
 				Top += e.Y - mousePoint.Y;
-				var plForm = _mainForm.CurrentSkin?["PlayListForm"];
+				var plForm = _mainForm.CurrentSkin?.SubForms["PlayListForm"];
 				if (plForm != null)
 				{
 					if (plForm.MagnetMode)
@@ -623,7 +623,7 @@ namespace MediaPlayer_X_Ark
 				return false;
 
 			var pixel = img.GetPixel(pt.X, pt.Y);
-			var plForm = _mainForm.CurrentSkin?["PlayListForm"];
+			var plForm = _mainForm.CurrentSkin?.SubForms["PlayListForm"];
 			if (plForm != null)
 			{
 				return pixel.R == plForm.TransparentKey.R &&

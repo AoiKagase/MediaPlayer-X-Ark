@@ -214,7 +214,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 							var json = File.ReadAllText(pkg.DefinitionPath,
 								System.Text.Encoding.UTF8);
 							var skin = System.Text.Json.JsonSerializer
-								.Deserialize<NewSkinSystem.SkinJson>(json);
+								.Deserialize<MediaPlayer_X_Ark.Skin.New.NewSkinSystem.SkinJson>(json);
 							name = skin?.Meta?.Name ?? "";
 							author = skin?.Meta?.Author ?? "";
 							desc = skin?.Meta?.Description ?? "";
