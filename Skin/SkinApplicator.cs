@@ -116,13 +116,16 @@ namespace MediaPlayer_X_Ark.Skin
         /// <summary>ボタンの通常画像をセットする</summary>
         public void SetButtonUp(Button btn)
         {
-            var parent = btn.Parent?.Name;
-            var btnMap = _skin.Buttons[parent];
-            if (btnMap.TryGetValue(btn.Name, out var bc))
+            try
             {
-                btn.BackgroundImage = bc.BackImage;
-                btn.Refresh();
-            }
+                var parent = btn.Parent?.Name;
+                var btnMap = _skin.Buttons[parent];
+                if (btnMap.TryGetValue(btn.Name, out var bc))
+                {
+                    btn.BackgroundImage = bc.BackImage;
+                    btn.Refresh();
+                }
+            } catch { }
         }
 
         /// <summary>ループボタンの状態画像をセットする</summary>
