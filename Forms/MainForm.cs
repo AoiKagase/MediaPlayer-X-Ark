@@ -601,7 +601,9 @@ namespace MediaPlayer_X_Ark
 		{
 			foreach (Control c in this.Controls)
 			{
-				if (c is Button btn && _currentSkin.Buttons.TryGetValue(c.Name, out var bc))
+				var parentName = c.Parent?.Name;
+				var btnMap = _currentSkin.Buttons.TryGetValue(parentName, out var bm) ? bm : null;
+                if (c is Button btn && bm.TryGetValue(c.Name, out var bc))
 				{
 					c.MouseDown -= BtnMouseDown;
 					c.MouseDown += BtnMouseDown;

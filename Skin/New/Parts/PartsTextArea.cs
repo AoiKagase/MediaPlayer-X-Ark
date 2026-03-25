@@ -28,11 +28,11 @@ namespace MediaPlayer_X_Ark.Skin.New.Parts
 		/// <summary>
 		/// テキストの前景色を表すプロパティ。テキストの色を定義するために使用される。
 		/// </summary>
-		[JsonPropertyName("forecolor")] public string ForeColor { get; set; }
+		[JsonPropertyName("foreColor")] public string ForeColor { get; set; }
 		/// <summary>
 		/// テキストの背景色を表すプロパティ。テキストエリアの背景色を定義するために使用される。
 		/// </summary>
-		[JsonPropertyName("backcolor")] public string BackColor { get; set; }
+		[JsonPropertyName("backColor")] public string BackColor { get; set; }
 		/// <summary>
 		/// テキストエリアがスクロール可能かどうかを表すプロパティ。
 		/// テキストがエリアのサイズを超える場合に、自動スクロールするかどうかを指定するために使用される。

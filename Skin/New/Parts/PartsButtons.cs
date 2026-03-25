@@ -54,6 +54,6 @@ namespace MediaPlayer_X_Ark.Skin.New.Parts
 		/// IsDisabled: ボタンが無効な状態であるかどうかを示すプロパティ。
 		/// 無効の場合は上記のパラメータを無視して、非表示にする。
 		/// </summary>
-		[JsonPropertyName("isDisabled")] public bool IsDisabled { get; set; }
+		[JsonPropertyName("isDisabled")] public bool IsDisabled { get; set; } = false;
 	}
 }

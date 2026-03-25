@@ -44,10 +44,10 @@ namespace MediaPlayer_X_Ark.Skin.New
 			[JsonPropertyName("images")]
 			public Dictionary<string, string> Images { get; set; }
 
-			[JsonPropertyName("MainForm")]
+			[JsonPropertyName("mainForm")]
 			public MainFormDef MainForm { get; set; }
 
-			[JsonPropertyName("SubForms")]
+			[JsonPropertyName("subForms")]
 			public Dictionary<string, SubFormDef> SubForms { get; set; }
 		}
 
@@ -148,7 +148,7 @@ namespace MediaPlayer_X_Ark.Skin.New
 				Labels["MainForm"][kv.Key] = LoadText(skin.MainForm.Labels, kv.Key);
 
 			// MainForm: Spectrum
-			var sp = skin.MainForm.Spectrum;
+			var sp = mf.Spectrum;
             Spectrum = new SpectrumComponents
 			{
 				Image = CropImage(sp.Src.ImageKey, sp.Src),
@@ -167,21 +167,21 @@ namespace MediaPlayer_X_Ark.Skin.New
 			// TODO: テスト用にデフォルト値を入れているが、正式にはスキン側で定義必須。NULLの場合は非表示
 			WaveForm = new WaveformComponents
 			{
-				Target = skin.MainForm.WaveArea?.Target ?? "trackbar",
-				Mode = skin.MainForm.WaveArea?.Mode ?? "normal",
-                Exponent = skin.MainForm.WaveArea?.Exponent ?? 1.0f,
-                ColorL = ParseColor(skin.MainForm.WaveArea?.ColorL ?? "FF0000"),
-                ColorR = ParseColor(skin.MainForm.WaveArea?.ColorR ?? "0000FF"),
-                ColorMix = ParseColor(skin.MainForm.WaveArea?.ColorMix ?? "FF00FF"),
-                ColorPlayed = ParseColor(skin.MainForm.WaveArea?.ColorPlayed ?? "00FF00"),
-                ColorUnplayed = ParseColor(skin.MainForm.WaveArea?.ColorUnplayed ?? "202020"),
+				Target = mf.WaveArea?.Target ?? "trackbar",
+				Mode = mf.WaveArea?.Mode ?? "normal",
+                Exponent = mf.WaveArea?.Exponent ?? 1.0f,
+                ColorL = ParseColor(mf.WaveArea?.ColorL ?? "FF0000"),
+                ColorR = ParseColor(mf.WaveArea?.ColorR ?? "0000FF"),
+                ColorMix = ParseColor(mf.WaveArea?.ColorMix ?? "FF00FF"),
+                ColorPlayed = ParseColor(mf.WaveArea?.ColorPlayed ?? "00FF00"),
+                ColorUnplayed = ParseColor(mf.WaveArea?.ColorUnplayed ?? "202020"),
                 // target="area" の場合のみ使用
                 Location = new Location
 				{
-					X = skin.MainForm.WaveArea?.Location.X ?? 0,
-					Y = skin.MainForm.WaveArea?.Location.Y ?? 0,
-					W = skin.MainForm.WaveArea?.Location.W ?? 0,
-					H = skin.MainForm.WaveArea?.Location.H ?? 0,
+					X = mf.WaveArea?.Location?.X ?? 0,
+					Y = mf.WaveArea?.Location?.Y ?? 0,
+					W = mf.WaveArea?.Location?.W ?? 0,
+					H = mf.WaveArea?.Location?.H ?? 0,
                 }
             };
 

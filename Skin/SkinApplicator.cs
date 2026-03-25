@@ -116,7 +116,7 @@ namespace MediaPlayer_X_Ark.Skin
         /// <summary>ボタンの通常画像をセットする</summary>
         public void SetButtonUp(Button btn)
         {
-            var parent = btn.Parent.Name;
+            var parent = btn.Parent?.Name;
             var btnMap = _skin.Buttons[parent];
             if (btnMap.TryGetValue(btn.Name, out var bc))
             {
@@ -153,10 +153,10 @@ namespace MediaPlayer_X_Ark.Skin
 
         private void ApplyControls(System.Windows.Forms.Control.ControlCollection controls)
         {
-			foreach (Control c in controls)
+            var sliderMap = _skin.Sliders;
+            foreach (Control c in controls)
             {
                 var parentName = c.Parent?.Name ?? "";
-                var sliderMap = _skin.Sliders;
                 _skin.Buttons.TryGetValue(parentName, out var btnMap);
                 _skin.Labels.TryGetValue(parentName, out var labelMap);
                 _skin.Grids.TryGetValue(parentName, out var gridMap);

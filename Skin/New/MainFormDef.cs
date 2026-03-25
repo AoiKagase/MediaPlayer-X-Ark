@@ -33,6 +33,6 @@ namespace MediaPlayer_X_Ark.Skin.New
 		/// <summary>
 		/// WaveArea: メインフォームに配置される波形エリアを定義するために使用されるプロパティ。
 		/// </summary>
-		[JsonPropertyName("wavearea")] public PartsWaveArea WaveArea { get; set; } = null;
+		[JsonPropertyName("waveArea")] public PartsWaveArea WaveArea { get; set; } = null;
 	}
 }
