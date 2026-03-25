@@ -229,7 +229,7 @@ namespace MediaPlayer_X_Ark.Skin
 		}
 
         private Dictionary<string, SliderComponents> BuildSliderMap() => _skin.Sliders;
-        private Dictionary<string, GraphicComponents> BuildLabelMap() => _skin.Labels;
+        private Dictionary<string, LabelComponents> BuildLabelMap() => _skin.Labels;
 		private Dictionary<string, PListGrid> BuildGridMap() => _skin.Grids;
 	}
 }

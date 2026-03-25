@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediaPlayer_X_Ark.Skin.NewSkinSystem.NewSkinSystem;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -6,16 +7,28 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows.Forms;
 
-namespace MediaPlayer_X_Ark.Skin
+namespace MediaPlayer_X_Ark.Skin.New
 {
 	/// <summary>
 	/// 新形式スキンシステム（JSON定義 + スプライトシート）
 	/// </summary>
-	public class NewSkinSystem : ISkinSystem
+	public class NewSkinSystem : INewSkinSystem
 	{
 		// ===========================
 		// JSON デシリアライズ用クラス
 		// ===========================
+		public class SkinMeta
+		{
+			[JsonPropertyName("name")] public string Name { get; set; }
+			[JsonPropertyName("author")] public string Author { get; set; }
+			[JsonPropertyName("description")] public string Description { get; set; }
+		}
+
+		public class SkinSettings
+		{
+			[JsonPropertyName("transparentKey")] public string TransparentKey { get; set; }
+		}
+
 		public class SkinJson
 		{
 			[JsonPropertyName("version")]
@@ -33,140 +46,10 @@ namespace MediaPlayer_X_Ark.Skin
 			[JsonPropertyName("MainForm")]
 			public MainFormDef MainForm { get; set; }
 
-			[JsonPropertyName("Buttons")]
-			public Dictionary<string, ButtonDef> Buttons { get; set; }
-
-			[JsonPropertyName("Sliders")]
-			public Dictionary<string, SliderDef> Sliders { get; set; }
-
-			[JsonPropertyName("Spectrum")]
-			public SpectrumDef Spectrum { get; set; }
-
-			[JsonPropertyName("Text")]
-			public Dictionary<string, TextDef> Text { get; set; }
-
-			[JsonPropertyName("PlayList")]
-			public PlayListDef PlayList { get; set; }
-			[JsonPropertyName("Waveform")]
-			public WaveformDef Waveform { get; set; }
+			[JsonPropertyName("SubForms")]
+			public SubFormDef SubForms { get; set; }
 		}
 
-		public class SkinMeta
-		{
-			[JsonPropertyName("name")] public string Name { get; set; }
-			[JsonPropertyName("author")] public string Author { get; set; }
-			[JsonPropertyName("description")] public string Description { get; set; }
-		}
-
-		public class SkinSettings
-		{
-			[JsonPropertyName("transparentKey")] public string TransparentKey { get; set; }
-		}
-
-		public class SpriteRect
-		{
-			[JsonPropertyName("x")] public int X { get; set; }
-			[JsonPropertyName("y")] public int Y { get; set; }
-			[JsonPropertyName("w")] public int W { get; set; }
-			[JsonPropertyName("h")] public int H { get; set; }
-			public Rectangle ToRectangle() => new Rectangle(X, Y, W, H);
-		}
-
-		public class MainFormDef
-		{
-			[JsonPropertyName("image")] public string Image { get; set; }
-			[JsonPropertyName("src")] public SpriteRect Src { get; set; }
-			[JsonPropertyName("width")] public int Width { get; set; }
-			[JsonPropertyName("height")] public int Height { get; set; }
-		}
-
-		public class ButtonDef
-		{
-			[JsonPropertyName("image")] public string Image { get; set; }
-			[JsonPropertyName("normal")] public SpriteRect Normal { get; set; }
-			[JsonPropertyName("down")] public SpriteRect Down { get; set; }
-			[JsonPropertyName("optional")] public SpriteRect Optional { get; set; }
-			[JsonPropertyName("downImage")] public string DownImage { get; set; }     // 追加
-			[JsonPropertyName("optionalImage")] public string OptionalImage { get; set; } // 追加
-			[JsonPropertyName("x")] public int X { get; set; }
-			[JsonPropertyName("y")] public int Y { get; set; }
-			[JsonPropertyName("enabled")] public bool Enabled { get; set; }
-		}
-
-		public class SliderDef
-		{
-			[JsonPropertyName("image")] public string Image { get; set; }
-			[JsonPropertyName("src")] public SpriteRect Src { get; set; }
-			[JsonPropertyName("orientation")] public string Orientation { get; set; }
-			[JsonPropertyName("x")] public int X { get; set; }
-			[JsonPropertyName("y")] public int Y { get; set; }
-			[JsonPropertyName("areaX2")] public int AreaX2 { get; set; }
-			[JsonPropertyName("areaY2")] public int AreaY2 { get; set; }
-			[JsonPropertyName("min")] public int Min { get; set; }
-			[JsonPropertyName("max")] public int Max { get; set; }
-		}
-
-		public class SpectrumDef
-		{
-			[JsonPropertyName("image")] public string Image { get; set; }
-			[JsonPropertyName("src")] public SpriteRect Src { get; set; }
-			[JsonPropertyName("x")] public int X { get; set; }
-			[JsonPropertyName("y")] public int Y { get; set; }
-			[JsonPropertyName("width")] public int Width { get; set; }
-			[JsonPropertyName("height")] public int Height { get; set; }
-			[JsonPropertyName("color")] public string Color { get; set; }
-		}
-
-		public class TextDef
-		{
-			[JsonPropertyName("x")] public int X { get; set; }
-			[JsonPropertyName("y")] public int Y { get; set; }
-			[JsonPropertyName("width")] public int Width { get; set; }
-			[JsonPropertyName("height")] public int Height { get; set; }
-			[JsonPropertyName("font")] public string Font { get; set; }
-			[JsonPropertyName("size")] public int Size { get; set; }
-			[JsonPropertyName("bold")] public bool Bold { get; set; }
-			[JsonPropertyName("italic")] public bool Italic { get; set; }
-			[JsonPropertyName("color")] public string Color { get; set; }
-			[JsonPropertyName("interval")] public int Interval { get; set; }
-			[JsonPropertyName("scrollEnable")] public bool ScrollEnable { get; set; }
-		}
-
-		public class PlayListDef
-		{
-			[JsonPropertyName("image")] public string Image { get; set; }
-			[JsonPropertyName("src")] public SpriteRect Src { get; set; }
-			[JsonPropertyName("width")] public int Width { get; set; }
-			[JsonPropertyName("height")] public int Height { get; set; }
-			[JsonPropertyName("offsetX")] public int OffsetX { get; set; }
-			[JsonPropertyName("offsetY")] public int OffsetY { get; set; }
-			[JsonPropertyName("listX")] public int ListX { get; set; }
-			[JsonPropertyName("listY")] public int ListY { get; set; }
-			[JsonPropertyName("listWidth")] public int ListWidth { get; set; }
-			[JsonPropertyName("listHeight")] public int ListHeight { get; set; }
-			[JsonPropertyName("listBackColor")] public string ListBackColor { get; set; }
-			[JsonPropertyName("listForeColor")] public string ListForeColor { get; set; }
-			[JsonPropertyName("magnetMode")] public bool MagnetMode { get; set; }
-			[JsonPropertyName("Buttons")] public Dictionary<string, ButtonDef> Buttons { get; set; }
-		}
-		public class WaveformDef
-		{
-			/// <summary>"trackbar" or "area"</summary>
-			[JsonPropertyName("target")] public string Target { get; set; } = "trackbar";
-			[JsonPropertyName("mode")] public string Mode { get; set; } = "mix";
-			[JsonPropertyName("exponent")] public float Exponent { get; set; } = 2.5f;
-			[JsonPropertyName("colorL")] public string ColorL { get; set; } = "00CC66";
-			[JsonPropertyName("colorR")] public string ColorR { get; set; } = "0066CC";
-			[JsonPropertyName("colorMix")] public string ColorMix { get; set; } = "00AA88";
-			[JsonPropertyName("colorPlayed")] public string ColorPlayed { get; set; } = "555555";
-			[JsonPropertyName("colorUnplayed")] public string ColorUnplayed { get; set; } = "333333";
-
-			// target="area" の場合のみ使用
-			[JsonPropertyName("x")] public int X { get; set; } = 0;
-			[JsonPropertyName("y")] public int Y { get; set; } = 0;
-			[JsonPropertyName("width")] public int Width { get; set; } = 0;
-			[JsonPropertyName("height")] public int Height { get; set; } = 60;
-		}
 		// ===========================
 		// ロード済みスキンデータ
 		// ===========================
@@ -175,7 +58,7 @@ namespace MediaPlayer_X_Ark.Skin
 		// 追加（辞書プロパティ）
 		public Dictionary<string, ButtonComponents> Buttons { get; private set; }
 		public Dictionary<string, SliderComponents> Sliders { get; private set; }
-		public Dictionary<string, GraphicComponents> Labels { get; private set; }
+		public Dictionary<string, LabelComponents> Labels { get; private set; }
 
 		private static readonly Dictionary<string, ButtonComponents> _emptyButtons = new Dictionary<string, ButtonComponents>();
 
@@ -265,7 +148,7 @@ namespace MediaPlayer_X_Ark.Skin
 				Sliders[kv.Key] = LoadSlider(skin.Sliders, kv.Key);
 
 			// Labels
-			Labels = new Dictionary<string, GraphicComponents>();
+			Labels = new Dictionary<string, LabelComponents>();
 			foreach (var kv in skin.Text ?? new Dictionary<string, TextDef>())
 				Labels[kv.Key] = LoadText(skin.Text, kv.Key);
 
@@ -422,10 +305,10 @@ namespace MediaPlayer_X_Ark.Skin
 			return result;
 		}
 
-		private GraphicComponents LoadText(
+		private LabelComponents LoadText(
 			Dictionary<string, TextDef> texts, string key)
 		{
-			var result = new GraphicComponents { Enabled = false };
+			var result = new LabelComponents { Enabled = false };
 			if (texts == null || !texts.TryGetValue(key, out var def))
 				return result;
 

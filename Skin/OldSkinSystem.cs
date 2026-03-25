@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static MediaPlayer_X_Ark.Skin.NewSkinSystem;
+using static MediaPlayer_X_Ark.Skin.NewSkinSystem.NewSkinSystem;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MediaPlayer_X_Ark.Skin
@@ -42,7 +42,7 @@ namespace MediaPlayer_X_Ark.Skin
 		public int Minimum;
 	}
 
-	public class GraphicComponents
+	public class LabelComponents
 	{
 		public bool Enabled;
 		public int Interval;
@@ -62,7 +62,7 @@ namespace MediaPlayer_X_Ark.Skin
 		public bool Enabled;
 	}
 
-	public class PListGrid
+	public class GridComponents
 	{
 		public Color ListBackColor;
 		public Color ListForeColor;
@@ -94,10 +94,10 @@ namespace MediaPlayer_X_Ark.Skin
 		public SliderComponents SldVolume { get; private set; }
 		public SliderComponents SldPan { get; private set; }
 		public SliderComponents SldTrack { get; private set; }
-		public GraphicComponents LabelTitle { get; private set; }
-		public GraphicComponents LabelTime { get; private set; }
+		public LabelComponents LabelTitle { get; private set; }
+		public LabelComponents LabelTime { get; private set; }
 		public FormComponents PlayListForm { get; private set; }
-		public PListGrid PlayListGrid { get; private set; }
+		public GridComponents PlayListGrid { get; private set; }
 		public ButtonComponents PBtnOpen { get; private set; }
 		public ButtonComponents PBtnSave { get; private set; }
 		public ButtonComponents PBtnRemove { get; private set; }
@@ -107,9 +107,9 @@ namespace MediaPlayer_X_Ark.Skin
 		public ButtonComponents PBtnClear { get; private set; }
 		public Dictionary<string, ButtonComponents> Buttons { get; private set; }
 		public Dictionary<string, SliderComponents> Sliders { get; private set; }
-		public Dictionary<string, GraphicComponents> Labels { get; private set; }
+		public Dictionary<string, LabelComponents> Labels { get; private set; }
 		public Dictionary<string, FormComponents> Forms { get; private set; }
-		public Dictionary<string, PListGrid> Grids { get; private set; }
+		public Dictionary<string, GridComponents> Grids { get; private set; }
 		public Dictionary<string, Dictionary<string, ButtonComponents>> FormButtons { get; private set; }
 
 		private static readonly Dictionary<string, ButtonComponents> _emptyButtons
@@ -239,7 +239,7 @@ namespace MediaPlayer_X_Ark.Skin
 			int size = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TitleFontSize", 9, skinFile);
 			string fontName = nValue.ToString();
 			result = Win32API.GetPrivateProfileString("GraphicArea", "-TitleFontColor", "", nValue, capacity, skinFile);
-			LabelTitle = new GraphicComponents();
+			LabelTitle = new LabelComponents();
 			LabelTitle.FontColor = LoadColor(nValue.ToString());
 			LabelTitle.Font = new Font(fontName, size, ((bold > 0) ? FontStyle.Bold : FontStyle.Regular) | ((italic > 0) ? FontStyle.Italic : FontStyle.Regular), GraphicsUnit.Point);
 			LabelTitle.Position.Left = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaX", 0, skinFile);
@@ -256,7 +256,7 @@ namespace MediaPlayer_X_Ark.Skin
 			size = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtFontSize", 9, skinFile);
 			fontName = nValue.ToString();
 			result = Win32API.GetPrivateProfileString("GraphicArea", "-TimeTxtColor", "", nValue, capacity, skinFile);
-			LabelTime = new GraphicComponents();
+			LabelTime = new LabelComponents();
 			LabelTime.FontColor = LoadColor(nValue.ToString());
 			LabelTime.Font = new Font(fontName, size, ((bold > 0) ? FontStyle.Bold : FontStyle.Regular) | ((italic > 0) ? FontStyle.Italic : FontStyle.Regular), GraphicsUnit.Point);
 			LabelTime.Position.Left = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtAreaX", 0, skinFile);
@@ -270,7 +270,7 @@ namespace MediaPlayer_X_Ark.Skin
 			// Playlist
 			result = Win32API.GetPrivateProfileString("PlayListMain", "-BackPic", "playlist\\playlists.bmp", nValue, capacity, skinFile);
 			PlayListForm = new FormComponents();
-			PlayListGrid = new PListGrid();
+			PlayListGrid = new GridComponents();
 
 			PlayListForm.BackImage = LoadImage(skinDir + "\\" + nValue.ToString());
 			result = Win32API.GetPrivateProfileString("PlayListMain", "-ListBackColor", "000001", nValue, capacity, skinFile);
@@ -325,7 +325,7 @@ namespace MediaPlayer_X_Ark.Skin
 				{ "SldTrack",  SldTrack  },
 			};
 
-			Labels = new Dictionary<string, GraphicComponents>
+			Labels = new Dictionary<string, LabelComponents>
 			{
 				{ "LabelTitle", LabelTitle },
 				{ "LabelTime",  LabelTime  },
@@ -336,7 +336,7 @@ namespace MediaPlayer_X_Ark.Skin
 				{ "PlayListForm", PlayListForm },
 			};
 
-			Grids = new Dictionary<string, PListGrid>
+			Grids = new Dictionary<string, GridComponents>
 			{
 				{ "PlayListGrid", PlayListGrid },
 			};
