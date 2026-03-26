@@ -50,7 +50,9 @@ namespace MediaPlayer_X_Ark
 		private const int SeekStep = 1000;       // 1回あたりのシーク量（ミリ秒）
 		private const int SeekMaxValue = 10000;  // 加速の上限（ミリ秒）
 
-		public MainForm()
+        private float _abStart = -1f;
+        private float _abEnd = -1f;
+        public MainForm()
 		{
 			InitializeComponent();
 		}
@@ -215,7 +217,11 @@ namespace MediaPlayer_X_Ark
 		private void OnPlaybackStateChanged() { }
 		private void OnTrackChanged(int index)
 		{
-			SldTrack.Maximum = (int)_controller.GetLength();
+            _abStart = -1f;
+            _abEnd = -1f;
+            _controller.ClearAbRepeat();
+
+            SldTrack.Maximum = (int)_controller.GetLength();
 			SldTrack.Value = 0;
 			_controller.SetVolume(SldVolume.Value);
 			_controller.SetPan(SldPan.Value);
@@ -316,7 +322,7 @@ namespace MediaPlayer_X_Ark
 					BtnStop_Click(this, EventArgs.Empty);
 					return true;
 
-				case Keys.B:
+				case Keys.X:
 					// B: 次の曲
 					_controller.PlayNext();
 					return true;
@@ -370,7 +376,32 @@ namespace MediaPlayer_X_Ark
 					// Escape: ミニモード（タスクトレイへ）
 					BtnMinisize_Click(this, EventArgs.Empty);
 					return true;
-			}
+
+                case Keys.A:
+                    // A点セット
+                    _abStart = (float)_controller.GetPosition()
+                             / Math.Max(1f, _controller.GetLength());
+                    _controller.SetAbStart((uint)_controller.GetPosition());
+                    return true;
+
+                case Keys.B:
+                    // B点セット（A点より後のみ有効）
+                    if (_controller.AbRepeatEnabled == false
+                        || (uint)_controller.GetPosition() > _controller.AbStart)
+                    {
+                        _abEnd = (float)_controller.GetPosition()
+                               / Math.Max(1f, _controller.GetLength());
+                        _controller.SetAbEnd((uint)_controller.GetPosition());
+                    }
+                    return true;
+
+                case Keys.C:
+                    // AB リピートクリア
+                    _abStart = -1f;
+                    _abEnd = -1f;
+                    _controller.ClearAbRepeat();
+                    return true;
+            }
 
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
@@ -511,10 +542,10 @@ namespace MediaPlayer_X_Ark
 			var (w, h) = GetWaveformSize(wDef);
 
 			// ABリピート範囲（未実装時は -1）
-			float abStart = -1f, abEnd = -1f;
-			// TODO: ABリピート実装後に設定
+            float abStart = _abStart;
+            float abEnd = _abEnd;
 
-			var newBmp = WaveformRenderer.Render(
+            var newBmp = WaveformRenderer.Render(
 				 ApplyExponent(entry.WaveformL, wDef.Exponent),
 				 ApplyExponent(entry.WaveformR, wDef.Exponent),
 				 w, h, ratio,

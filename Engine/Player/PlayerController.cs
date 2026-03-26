@@ -30,11 +30,21 @@ namespace MediaPlayer_X_Ark.Engine.Player
         /// <summary>波形解析が完了したときに発火（常にUIスレッドで呼ばれる）。</summary>
 		public event Action<int> WaveformReady;
         // ── プロパティ ───────────────────────────────────────────────
+        // ── AB リピート ───────────────────────────────────────────────
+        public uint AbStart { get; private set; } = uint.MaxValue;
+        public uint AbEnd { get; private set; } = uint.MaxValue;
+        public bool AbRepeatEnabled => AbStart != uint.MaxValue && AbEnd != uint.MaxValue;
 
-		public IPlayerEngine Engine  => _engine;
+        public IPlayerEngine Engine  => _engine;
         public IConfigService Config => _config;
-
-		public PlayerController(IPlayerEngine engine, IConfigService config)
+        public void SetAbStart(uint ms) => AbStart = ms;
+        public void SetAbEnd(uint ms) => AbEnd = ms;
+        public void ClearAbRepeat()
+        {
+            AbStart = uint.MaxValue;
+            AbEnd = uint.MaxValue;
+        }
+        public PlayerController(IPlayerEngine engine, IConfigService config)
         {
             _engine = engine;
             _config = config;
@@ -317,6 +327,14 @@ namespace MediaPlayer_X_Ark.Engine.Player
             {
                 // 通常の曲終了 → 次曲へ
                 PlayNext();
+            }
+
+            // AB リピート処理
+            if (AbRepeatEnabled && IsPlaying)
+            {
+                var pos = (uint)Engine.GetPosition();
+                if (pos >= AbEnd)
+                    Engine.SetPosition(AbStart);
             }
         }
 
