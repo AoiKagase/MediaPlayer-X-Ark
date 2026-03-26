@@ -10,10 +10,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
     public interface IPlayerEngine : IDisposable
     {
         // ── 状態・プロパティ ──────────────────────────
-        string lastError { get; }
-        string lastErrFunction { get; }
-        FMOD.RESULT lastErrCode { get; }
-		bool FluidSynthAvailable { get; }
+        event EventHandler<PlayerErrorEventArgs> ErrorOccurred;
+        bool FluidSynthAvailable { get; }
 		string SoundFontPath { get; set; }
 		BindingList<PlayList> PlayList { get; }
         List<DEVICE_INFO> DeviceList { get; }

@@ -53,9 +53,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
         public FmodWave wave { get; private set; }
         public Effector.Effectors effector { get; private set; }
         public LOOP_MODE loop { get; set; }
-        public string lastError { get; protected set; } = "";
-        public string lastErrFunction { get; protected set; } = "";
-        public FMOD.RESULT lastErrCode { get; protected set; }
+        public event EventHandler<PlayerErrorEventArgs> ErrorOccurred;
         public int PlayingIndex { get; private set; } = -1;
         protected bool initialized = false;
         private bool _nowPlaying = false;
@@ -114,10 +112,14 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 		protected FMOD.RESULT FmodCallFunction(FMOD.RESULT result, [CallerMemberName] string callerMethodName = "")
         {
-			lastError = FMOD.Error.String(result);
-			lastErrCode = result;
-			lastErrFunction = callerMethodName;
-			return result;
+            if (result != FMOD.RESULT.OK)
+            {
+                ErrorOccurred?.Invoke(this, new PlayerErrorEventArgs(
+                    callerMethodName,
+                    FMOD.Error.String(result),
+                    (int)result));
+            }
+            return result;
         }
 
 		/// <summary>
@@ -209,11 +211,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					// Version Check.
 					if (FmodVersion != FMOD.VERSION.number)
 					{
-						lastError = "Error!  You are using an old version of FMOD "
-								+ FmodVersion.ToString("X")
-								+ ". This program requires "
-								+ FMOD.VERSION.number.ToString("X");
-						return;
+                        ErrorOccurred?.Invoke(this, new PlayerErrorEventArgs(
+                            nameof(Initialize),
+                            $"FMOD version mismatch. Found: {FmodVersion:X}, Required: {FMOD.VERSION.number:X}",
+                            -1));
+                        return;
 					}
 				}
 
@@ -724,9 +726,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					}
 					catch (Exception ex)
 					{
-						lastError = $"FluidSynth error: {ex.Message}";
-						// フォールバック：FMODのDLSで再生
-					}
+                        ErrorOccurred?.Invoke(this, new PlayerErrorEventArgs(
+							nameof(LoadSound),
+							$"FluidSynth error: {ex.Message}",
+					    -1));
+                        // フォールバック：FMODのDLSで再生
+                    }
 				}
 
 				info.suggestedsoundtype = FMOD.SOUND_TYPE.MIDI;

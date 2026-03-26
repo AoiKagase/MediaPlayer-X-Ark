@@ -199,7 +199,13 @@ namespace MediaPlayer_X_Ark
 			Spectrum.SnowBlockEnabled = _config.settings.SnowBlockEnabled;
 			SetMouseDownEvent();
 
-			InitContextMenu();
+            _controller.ErrorOccurred += (s, e) =>
+            {
+                if (!e.IsOk)
+                    LabelTitle.Value.Text = e.ToString();
+            };
+
+            InitContextMenu();
 
 			_openFileDialogMedia = new OpenFileDialog();
 			_openFileDialogMedia.Filter = "音楽ファイル|*.mp3;*.flac;*.ogg;*.wav;*.aac;*.m4a;*.wma;*.mid;*.mod;*.xm;*.it;*.s3m|すべてのファイル|*.*";
@@ -507,12 +513,6 @@ namespace MediaPlayer_X_Ark
 			TimeSpan time1 = TimeSpan.FromMilliseconds(SldTrack.Value);
 			TimeSpan time2 = TimeSpan.FromMilliseconds(SldTrack.Maximum);
 			LabelTime.Value.Text = time1.ToString(@"mm\:ss") + "/" + time2.ToString(@"mm\:ss");
-
-			if (_engine.lastError != "" && _engine.lastErrCode != FMOD.RESULT.OK)
-			{
-				LabelTitle.Value.Text = _engine.lastErrFunction + " - " + _engine.lastError;
-			}
-
 
 			if (_sleepTimerRemaining > 0)
 			{
@@ -1224,13 +1224,13 @@ namespace MediaPlayer_X_Ark
 				return;
 			}
 
-			var result = _controller.Engine.PlayUrl(url);
-			if (result != FMOD.RESULT.OK)
+            if (!_controller.OpenUrl(url))
 			{
-				MessageBox.Show($"URLを開けませんでした。\n{_engine.lastError}",
-					"URL Open", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
+                MessageBox.Show("URLを開けませんでした。",
+                    "URL Open", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // 詳細メッセージは ErrorOccurred イベントで LabelTitle に表示される
+            }
+        }
 
 		private void MainForm_KeyUp(object sender, KeyEventArgs e)
 		{

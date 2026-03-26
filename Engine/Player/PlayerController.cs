@@ -29,6 +29,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		
         /// <summary>波形解析が完了したときに発火（常にUIスレッドで呼ばれる）。</summary>
 		public event Action<int> WaveformReady;
+        public event EventHandler<PlayerErrorEventArgs> ErrorOccurred;
         // ── プロパティ ───────────────────────────────────────────────
         // ── AB リピート ───────────────────────────────────────────────
         public uint AbStart { get; private set; } = uint.MaxValue;
@@ -54,8 +55,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
         private void Initialize()
         {
-			// ② OutputType と SoftwareFormat は init() より前に設定
-			_engine.SetOutputTypeBeforeInit(_config.GetOutputType());
+            _engine.ErrorOccurred += (s, e) => _syncContext.Post(_ => ErrorOccurred?.Invoke(s, e), null);
+            // ② OutputType と SoftwareFormat は init() より前に設定
+            _engine.SetOutputTypeBeforeInit(_config.GetOutputType());
 
 			// ③ init() を実行
 			_engine.Initialize(_config.settings.Buffer);
@@ -251,12 +253,13 @@ namespace MediaPlayer_X_Ark.Engine.Player
             return false;
         }
 
-        /// <summary>URLをストリーミング再生する</summary>
-        public bool OpenUrl(string url)
+        // PlayerController.cs に追加
+        public bool OpenUrl(string url)  // すでに存在するが戻り値をboolに
         {
-            if (_engine.CreateSound(url, out int index) == FMOD.RESULT.OK)
+            if (_engine.PlayUrl(url) == FMOD.RESULT.OK)
             {
-                PlayAt(index);
+                TrackChanged?.Invoke(_engine.PlayingIndex);
+                PlaybackStateChanged?.Invoke();
                 return true;
             }
             return false;
