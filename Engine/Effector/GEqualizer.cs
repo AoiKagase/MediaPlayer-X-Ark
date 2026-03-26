@@ -9,8 +9,8 @@ using System.Runtime.CompilerServices;
 
 namespace MediaPlayer_X_Ark.Engine.Effector
 {
-	public class GEqualizer : INotifyPropertyChanged
-	{
+	public class GEqualizer : IEffector
+    {
 		/// <summary>
 		/// EQ CENTER BAND
 		/// </summary>
@@ -171,8 +171,8 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		{
 			return _dsp[index].setParameterFloat(type, value);
 		}
-
-		public void SetPreset(int index)
+        public void SetDefault() { }
+        public void SetPreset(int index)
         {
 			switch(index)
             {

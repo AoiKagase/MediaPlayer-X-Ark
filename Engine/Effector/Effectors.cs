@@ -90,21 +90,15 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 			Initialize();
 		}
 
-		public void Initialize()
+        private IEffector[] AllEffectors() => new IEffector[]
+        {
+            GEqualizer, Frequency, PitchShift, Chorus, Compressor,
+            Distortion, Echo, Flanger, Highpass, Lowpass, SFXReverb, Normalize
+        };
+        public void Initialize()
 		{
-			GEqualizer.Switch(false);
-			Frequency.Switch(false);
-			PitchShift.Switch(false);
-			Chorus.Switch(false);
-			Compressor.Switch(false);
-			Distortion.Switch(false);
-			Echo.Switch(false);
-			Flanger.Switch(false);
-			Highpass.Switch(false);
-			Lowpass.Switch(false);
-			SFXReverb.Switch(false);
-			GEqualizer.Switch(false);
-			Normalize.Switch(false);
+            foreach (var e in AllEffectors())
+                e.Switch(false);
 		}
 
         public void ApplySettings(CfgEffectors s)

@@ -8,8 +8,8 @@ using System.Runtime.CompilerServices;
 using MediaPlayer_X_Ark.Engine.Player;
 namespace MediaPlayer_X_Ark.Engine.Effector
 {
-	public class Frequency : INotifyPropertyChanged
-	{
+	public class Frequency : IEffector
+    {
 		private float _frequency;
 		private FMOD.System _system;
 		private FMOD.Channel[] _channel = null;

@@ -8,8 +8,8 @@ using System.Runtime.CompilerServices;
 
 namespace MediaPlayer_X_Ark.Engine.Effector
 {
-	public class AbstractEffectorBase : INotifyPropertyChanged
-	{
+	public class AbstractEffectorBase : IEffector
+    {
         protected IEffectorDsp _dsp;
 		private bool _enabled;
 

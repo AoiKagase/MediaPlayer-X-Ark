@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MediaPlayer_X_Ark.Engine.Effector
+namespace MediaPlayer_X_Ark.Engine.Effector.Presets
 {
     public abstract class EffectPreset
     {
