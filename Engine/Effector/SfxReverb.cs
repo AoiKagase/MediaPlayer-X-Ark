@@ -259,9 +259,10 @@ namespace MediaPlayer_X_Ark.Engine.Effector
         /// CREATE DSP FOR LOWPASS FILTER
         /// </summary>
         /// <param name="system"></param>
-        public SFXReverb(FMOD.System system) : base(system, FMOD.DSP_TYPE.SFXREVERB)
+        public SFXReverb(FMOD.System system)
 		{
-		}
+			Initialize(system, FMOD.DSP_TYPE.SFXREVERB);
+        }
 
 		public override void SetDefault()
 		{

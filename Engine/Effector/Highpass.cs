@@ -55,9 +55,10 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		/// CREATE DSP FOR LOWPASS FILTER
 		/// </summary>
 		/// <param name="system"></param>
-		public Highpass(FMOD.System system) : base(system, FMOD.DSP_TYPE.HIGHPASS)
+		public Highpass(FMOD.System system)
 		{
-		}
+			Initialize(system, FMOD.DSP_TYPE.HIGHPASS);
+        }
         public override void SetDefault()
         {
 			CutOff = 5000;

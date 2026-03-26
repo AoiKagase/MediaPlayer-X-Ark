@@ -10,10 +10,7 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 {
 	public class AbstractEffectorBase : INotifyPropertyChanged
 	{
-		protected FMOD.System _system;
-		protected FMOD.DSP _dsp;
-		protected FMOD.ChannelGroup _channelGroup;
-
+        protected IEffectorDsp _dsp;
 		private bool _enabled;
 
 		public bool Enabled
@@ -39,64 +36,52 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 			}
 		}
 
-		public AbstractEffectorBase(FMOD.System system, FMOD.DSP_TYPE dspType)
-		{
-			if (system.createDSPByType(dspType, out _dsp) == FMOD.RESULT.OK)
-			{
-				_system = system;
-				_system.getMasterChannelGroup(out _channelGroup);
-				_channelGroup.addDSP(0, _dsp);
-				SetDefault();
-			}
-		}
-
-		~AbstractEffectorBase()
-		{
-			if (_dsp.hasHandle())
-				_channelGroup.removeDSP(_dsp);
-
-			_dsp.release();
-			//_channelGroup.release();
-		}
-
-		public FMOD.RESULT Switch(bool sw)
-		{
-			FMOD.RESULT result = FMOD.RESULT.OK;
-			bool active;
-			_dsp.getBypass(out active);
-			if (active)
-            {
-				if (sw == true)
-					_dsp.setBypass(false);
-			}
-			else
-            {
-				if (sw == false)
-					_dsp.setBypass(true);
-			}
-			Enabled = sw;
-			return result;
-		}
-		public FMOD.RESULT GetParameterFloat(int type, out float value)
-		{
-			return _dsp.getParameterFloat(type, out value);
-		}
-
-		public FMOD.RESULT SetParameterFloat(int type, float value)
-		{
-			return _dsp.setParameterFloat(type, value);
-		}
-		public FMOD.RESULT SetParameterBool(int type, bool value)
-		{
-			return _dsp.setParameterBool(type, value);
-		}
-		public FMOD.RESULT SetParameterData(int type, byte[] value)
-		{
-			return _dsp.setParameterData(type, value);
-		}
-		public virtual void SetDefault()
+        /// <summary>
+        /// FMODブリッジ経由でDSPを初期化する。
+        /// 各エフェクタークラスのコンストラクタから呼ぶ。
+        /// </summary>
+        protected void Initialize(FMOD.System system, FMOD.DSP_TYPE dspType)
         {
-
+            _dsp = new FmodDspBridge(system, dspType);
+            if (_dsp.IsValid)
+                SetDefault();
         }
+        ~AbstractEffectorBase()
+        {
+            _dsp?.Release();
+        }
+
+        public FMOD.RESULT Switch(bool sw)
+        {
+            if (_dsp == null || !_dsp.IsValid) return FMOD.RESULT.ERR_INVALID_HANDLE;
+            _dsp.Bypass = !sw;
+            Enabled = sw;
+            return FMOD.RESULT.OK;
+        }
+        public FMOD.RESULT GetParameterFloat(int type, out float value)
+        {
+            if (_dsp == null || !_dsp.IsValid) { value = 0f; return FMOD.RESULT.ERR_INVALID_HANDLE; }
+            return _dsp.GetParameterFloat(type, out value);
+        }
+
+        public FMOD.RESULT SetParameterFloat(int type, float value)
+        {
+            if (_dsp == null || !_dsp.IsValid) return FMOD.RESULT.ERR_INVALID_HANDLE;
+            return _dsp.SetParameterFloat(type, value);
+        }
+
+        public FMOD.RESULT SetParameterBool(int type, bool value)
+        {
+            if (_dsp == null || !_dsp.IsValid) return FMOD.RESULT.ERR_INVALID_HANDLE;
+            return _dsp.SetParameterBool(type, value);
+        }
+
+        public FMOD.RESULT SetParameterData(int type, byte[] value)
+        {
+            if (_dsp == null || !_dsp.IsValid) return FMOD.RESULT.ERR_INVALID_HANDLE;
+            return _dsp.SetParameterData(type, value);
+        }
+
+        public virtual void SetDefault() { }
 	}
 }

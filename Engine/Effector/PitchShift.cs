@@ -76,9 +76,10 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		/// CREATE DSP FOR LOWPASS FILTER
 		/// </summary>
 		/// <param name="system"></param>
-		public PitchShift(FMOD.System system) : base(system, FMOD.DSP_TYPE.PITCHSHIFT)
+		public PitchShift(FMOD.System system)
 		{
-		}
+			Initialize(system, FMOD.DSP_TYPE.PITCHSHIFT);
+        }
 
 		/// <summary>
 		/// Set default parameters.

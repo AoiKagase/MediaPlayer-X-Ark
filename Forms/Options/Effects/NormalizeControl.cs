@@ -1,5 +1,4 @@
 using MediaPlayer_X_Ark.Engine.Config;
-using MediaPlayer_X_Ark.Engine.Effector;
 using MediaPlayer_X_Ark.Engine.Effector.Presets;
 using MediaPlayer_X_Ark.Engine.Player;
 using System.Windows.Forms;

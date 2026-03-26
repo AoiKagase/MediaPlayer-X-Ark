@@ -36,9 +36,10 @@ namespace MediaPlayer_X_Ark.Engine.Effector
 		/// CREATE DSP FOR LOWPASS FILTER
 		/// </summary>
 		/// <param name="system"></param>
-		public Distortion(FMOD.System system) : base(system, FMOD.DSP_TYPE.DISTORTION)
+		public Distortion(FMOD.System system)
 		{
-		}
+			Initialize(system, FMOD.DSP_TYPE.DISTORTION);
+        }
 
         public override void SetDefault()
         {

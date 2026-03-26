@@ -69,7 +69,10 @@ namespace MediaPlayer_X_Ark.Engine.Effector
             }
         }
 
-        public Normalize(FMOD.System system) : base(system, FMOD.DSP_TYPE.NORMALIZE) { }
+        public Normalize(FMOD.System system)
+        {
+            Initialize(system, FMOD.DSP_TYPE.NORMALIZE);
+        }
 
         public override void SetDefault()
         {
