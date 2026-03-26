@@ -195,7 +195,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
             return _engine.GetPosition();
         }
 
-		public uint GetLength()
+        public uint GetLength()
         {
             return _engine.GetLength(_engine.PlayingIndex);
 		}
@@ -346,6 +346,10 @@ namespace MediaPlayer_X_Ark.Engine.Player
             _engine.SetVolume(vol);
             _config.settings.Volume = sliderValue;
         }
+        public int GetVolume()
+        {
+            return _engine.GetVolume();
+        }
 
         public void SetPan(int sliderValue)
         {
@@ -370,6 +374,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
         public string BuildTitleText()
         {
             int index = _engine.PlayingIndex;
+            if (index < 0 || index >= _engine.PlayList.Count) return string.Empty;
             var entry = _engine.PlayList[index];
             string title = !string.IsNullOrEmpty(entry.Title)
                 ? entry.Title

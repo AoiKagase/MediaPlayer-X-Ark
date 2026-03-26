@@ -30,8 +30,9 @@ namespace MediaPlayer_X_Ark
 		private OptionsForm _optionsForm;
 		private CDForm _cdForm;
 		private FileInfoForm _fileInfoForm;
+        private MiniPlayerForm _miniPlayerForm;
 
-		private int _sleepTimerRemaining = 0; // 残り秒数（0=無効）
+        private int _sleepTimerRemaining = 0; // 残り秒数（0=無効）
 
 		private INewSkinSystem _currentSkin;
 		private SkinApplicator _skinApplicator;
@@ -90,6 +91,7 @@ namespace MediaPlayer_X_Ark
 				_skinApplicator.ApplyToMainForm(this, Spectrum);
 				_skinApplicator.ApplyToPlayListForm(_playListForm);
                 _skinApplicator.ApplyToFileInfoForm(_fileInfoForm);
+                _skinApplicator.ApplyToMiniPlayerForm(_miniPlayerForm);
 
                 SetupWaveformTarget(); // TODO: テスト表示
 				// プレビュー用メイン画像パスを保存
@@ -179,17 +181,19 @@ namespace MediaPlayer_X_Ark
 			_optionsForm = new OptionsForm(this, _controller, _config);
 			_cdForm = new CDForm(this, _controller, _config);
 			_fileInfoForm = new FileInfoForm(this, _controller);
-
-            // ★管理リストに追加
+            _miniPlayerForm = new MiniPlayerForm(this, _controller);
+            
+			// ★管理リストに追加
             _managedForms.Add(_fileInfoForm);
             _managedForms.Add(_playListForm);
 			_managedForms.Add(_optionsForm);
 			_managedForms.Add(_cdForm);
-			// 予定：設定ファイルの読み込み スキンファイルの指定も含む
-			// 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
-			// 新形式（JSON）の場合はNewSkinSystemへインスタンス切替
-			// スキンロード
-			SkinLoad(_config.settings.Skin);
+            _managedForms.Add(_miniPlayerForm);
+            // 予定：設定ファイルの読み込み スキンファイルの指定も含む
+            // 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
+            // 新形式（JSON）の場合はNewSkinSystemへインスタンス切替
+            // スキンロード
+            SkinLoad(_config.settings.Skin);
 			Spectrum.Initialize();
 			Spectrum.Mode = _config.settings.DefaultSpectrumMode;
 			Spectrum.SnowBlockEnabled = _config.settings.SnowBlockEnabled;
@@ -469,7 +473,8 @@ namespace MediaPlayer_X_Ark
 			_config.Save();
 			_fileInfoForm?.Dispose();
 			_cdForm?.Dispose();   // 追加
-			_engine.Dispose();  // 明示的に解放
+            _miniPlayerForm?.Dispose();
+            _engine.Dispose();  // 明示的に解放
 			_engine = null;
 			notifyIcon.Visible = false;
 			notifyIcon.Dispose();
@@ -768,8 +773,10 @@ namespace MediaPlayer_X_Ark
 			_optionsForm.Dispose();
 			_cdForm.Close();      // 追加
 			_cdForm.Dispose();    // 追加
-								 // 終了
-			Close();
+            _miniPlayerForm?.Hide();
+            _miniPlayerForm?.Dispose();                              
+			// 終了
+            Close();
 		}
 		private void BtnBack_Click(object sender, EventArgs e)
 		{
@@ -833,13 +840,22 @@ namespace MediaPlayer_X_Ark
 		{
 			this.Hide();
 			_playListForm.Hide();
-			notifyIcon.Visible = true;
+            // スキンがミニプレイヤーフォームに対応しているならそちらを表示、そうでないならタスクトレイアイコンを表示
+            if (_currentSkin.SubForms.TryGetValue("MiniPlayerForm", out var miniForm))
+			{
+                _miniPlayerForm.Show(this);
+				_miniPlayerForm.Activate();
+            }
+            else
+			{
+                notifyIcon.Visible = true;
+            }
 		}
 		// NotifyIcon ダブルクリックで復元
 		private void NotifyIcon_DoubleClick(object sender, EventArgs e)
 		{
 			this.Show();
-			_playListForm.Show();
+//			_playListForm.Show();
 			notifyIcon.Visible = false;
 			this.Activate();
 		}
@@ -1276,5 +1292,13 @@ namespace MediaPlayer_X_Ark
 			}
 			base.WndProc(ref m);
 		}
-	}
+        public void RestoreFromMini()
+        {
+            _miniPlayerForm.Hide();
+            this.Show();
+            this.Activate();
+            // PlayListForm が表示中だった場合は復元
+            // （必要に応じて状態を保持して復元）
+        }
+    }
 }

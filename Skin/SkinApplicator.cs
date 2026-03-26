@@ -129,6 +129,24 @@ namespace MediaPlayer_X_Ark.Skin
                     ApplyLabelsRecursive(c.Controls, def);
             }
         }
+
+        /// <summary>ミニプレイヤーフォームにスキンを適用する</summary>
+        public void ApplyToMiniPlayerForm(Form miniPlayerForm)
+        {
+            if (!_skin.SubForms.TryGetValue("MiniPlayerForm", out var def)) return;
+
+            if (def.BackImage != null)
+                miniPlayerForm.BackgroundImage = def.BackImage;
+            else if (def.BackColor != Color.Empty)
+                miniPlayerForm.BackColor = def.BackColor;
+
+            if (def.Position.Width > 0) miniPlayerForm.Width = def.Position.Width;
+            if (def.Position.Height > 0) miniPlayerForm.Height = def.Position.Height;
+            miniPlayerForm.TransparencyKey = def.TransparentKey;
+
+            ApplyControls(miniPlayerForm.Controls);
+            miniPlayerForm.Refresh();
+        }
         /// <summary>プレイリストフォームの位置をマグネットモードに合わせて更新する</summary>
         public void UpdatePlayListPosition(Form mainForm, Form playListForm)
         {
