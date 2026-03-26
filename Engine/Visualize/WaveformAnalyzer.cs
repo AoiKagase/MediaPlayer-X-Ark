@@ -152,7 +152,25 @@ namespace MediaPlayer_X_Ark.Engine.Visualize
 
 				entry.WaveformL = rmsL;
 				entry.WaveformR = rmsR;
-			}
+
+                // ── 末尾無音開始インデックスを計算（正規化前のRMSで判定）────────
+                // 閾値：正規化前の最大値の 1% 未満を無音とみなす
+                float silenceThreshold = maxVal * 0.01f;
+                int audioEndIndex = SampleCount - 1;
+
+                for (int i = SampleCount - 1; i >= 0; i--)
+                {
+                    if (rmsL[i] > silenceThreshold || rmsR[i] > silenceThreshold)
+                    {
+                        audioEndIndex = i;
+                        break;
+                    }
+                }
+
+                entry.AudioEndMs = entry.LengthMs > 0
+                    ? (int)((long)audioEndIndex * entry.LengthMs / SampleCount)
+                    : -1;
+            }
 			finally
 			{
 				if (sound.hasHandle())

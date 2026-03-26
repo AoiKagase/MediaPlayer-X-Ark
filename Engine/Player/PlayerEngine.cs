@@ -87,8 +87,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		public bool CrossfadeEnabled { get; set; } = false;
 		public int CrossfadeDurationMs { get; set; } = 3000;
 		public bool CrossfadeTriggered { get; set; } = false;
-		// SF2パス
-		private string _soundFontPath = "";
+        public bool NonStopMixEnabled { get; set; } = false;
+        // SF2パス
+        private string _soundFontPath = "";
 		private readonly object _fmodLock = new object();
 		private WaveformAnalyzer _waveformAnalyzer;
 		// キャンセル管理（曲が切り替わったら前の解析を中断）
@@ -1072,7 +1073,15 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		}
 		private void StartCrossfadeOrStop()
 		{
-			if (!CrossfadeEnabled || !FmodChannel.hasHandle() || !IsPlaying())
+            // NonStopMix：フェードなし即切り替え
+            if (NonStopMixEnabled)
+            {
+                if (FmodChannel.hasHandle())
+                    FmodChannel.stop();
+                _fadingPlayListIndex = -1;
+                return;
+            }
+            if (!CrossfadeEnabled || !FmodChannel.hasHandle() || !IsPlaying())
 			{
 				// クロスフェード無効または再生中でなければ即停止
 				if (FmodChannel.hasHandle())

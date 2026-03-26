@@ -32,9 +32,10 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		/// PlayNext() 実行後に true になり、PlaySound() 内でリセットされる。
 		/// </summary>
 		bool CrossfadeTriggered { get; set; }
-
-		/// <summary>ReplayGain有効フラグ</summary>
-		bool ReplayGainEnabled { get; set; }
+        /// <summary>NonStopMix有効フラグ（クロスフェードと排他）</summary>
+        bool NonStopMixEnabled { get; set; }
+        /// <summary>ReplayGain有効フラグ</summary>
+        bool ReplayGainEnabled { get; set; }
 
 		/// <summary>ReplayGainモード（0=トラック, 1=アルバム）</summary>
 		int ReplayGainMode { get; set; }

@@ -70,7 +70,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			_engine.ReplayGainPreamp = _config.settings.ReplayGainPreamp;
 			_engine.CrossfadeEnabled = _config.settings.CrossfadeEnabled;
 			_engine.CrossfadeDurationMs = _config.settings.CrossfadeDurationMs;
-			_engine.SoundFontPath = _config.settings.SoundFontPath;
+            _engine.NonStopMixEnabled = _config.settings.NonStopMixEnabled;
+            _engine.SoundFontPath = _config.settings.SoundFontPath;
 
             _engine.effector.ApplySettings(_config.settings.Effectors);
 
@@ -338,6 +339,25 @@ namespace MediaPlayer_X_Ark.Engine.Player
                 var pos = (uint)Engine.GetPosition();
                 if (pos >= AbEnd)
                     Engine.SetPosition(AbStart);
+            }
+
+            // NonStopMix：波形解析済みの実音終了位置 + オフセットで次曲へ
+            if (_config.settings.NonStopMixEnabled && IsPlaying)
+            {
+                int idx = _engine.PlayingIndex;
+                if (idx >= 0 && idx < _engine.PlayList.Count)
+                {
+                    var entry = _engine.PlayList[idx];
+                    if (entry.WaveformReady && entry.AudioEndMs > 0)
+                    {
+                        int triggerMs = entry.AudioEndMs
+                            + (int)(_config.settings.NonStopMixOffsetSec * 1000);
+                        triggerMs = Math.Max(0, triggerMs);
+
+                        if ((int)_engine.GetPosition() >= triggerMs)
+                            PlayNext();
+                    }
+                }
             }
         }
 

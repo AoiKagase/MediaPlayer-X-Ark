@@ -91,7 +91,17 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		/// <summary>波形解析が完了しているか</summary>
 		[Browsable(false)]
 		public bool WaveformReady => WaveformL != null;
-		public void SetLength(uint length)
+
+        /// <summary>
+        /// NonStopMix用：実音終了位置（ms）。
+        /// WaveformAnalyzer が解析後に設定する。
+        /// -1 = 未解析または全域有音。
+        /// </summary>
+        [Browsable(false)]
+        public int AudioEndMs { get; set; } = -1;
+
+
+        public void SetLength(uint length)
 		{
 			this._length = length;
 			OnPropertyChanged(nameof(length));
