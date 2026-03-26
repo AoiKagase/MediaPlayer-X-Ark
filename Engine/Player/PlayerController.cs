@@ -15,7 +15,10 @@ namespace MediaPlayer_X_Ark.Engine.Player
     /// </summary>
     public class PlayerController
     {
-		private readonly IPlayerEngine _engine;
+        private const int TimerIntervalNormal = 100;
+        private const int TimerIntervalPrecise = 10;
+
+        private readonly IPlayerEngine _engine;
         private readonly IConfigService _config;
 		private readonly SynchronizationContext _syncContext;
 
@@ -35,7 +38,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
         public uint AbStart { get; private set; } = uint.MaxValue;
         public uint AbEnd { get; private set; } = uint.MaxValue;
         public bool AbRepeatEnabled => AbStart != uint.MaxValue && AbEnd != uint.MaxValue;
-
+        /// <summary>
+        /// NonStopMix切替直前に true になる。
+        /// MainForm の Timer.Interval をこのフラグで切り替える。
+        /// </summary>
+        public bool TimerPrecisionRequested { get; private set; } = false;
         public IPlayerEngine Engine  => _engine;
         public IConfigService Config => _config;
         public void SetAbStart(uint ms) => AbStart = ms;
@@ -354,10 +361,27 @@ namespace MediaPlayer_X_Ark.Engine.Player
                             + (int)(_config.settings.NonStopMixOffsetSec * 1000);
                         triggerMs = Math.Max(0, triggerMs);
 
-                        if ((int)_engine.GetPosition() >= triggerMs)
+                        uint pos = _engine.GetPosition();
+
+                        // 切替直前（5秒前）になったらタイマー高精度モードを要求
+                        if ((int)pos >= triggerMs - 5000)
+                            TimerPrecisionRequested = true;
+
+                        if ((int)pos >= triggerMs)
+                        {
+                            TimerPrecisionRequested = false;
                             PlayNext();
+                        }
+                    }
+                    else
+                    {
+                        TimerPrecisionRequested = false;
                     }
                 }
+            }
+            else
+            {
+                TimerPrecisionRequested = false;
             }
         }
 

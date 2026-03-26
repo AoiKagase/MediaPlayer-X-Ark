@@ -167,9 +167,8 @@ namespace MediaPlayer_X_Ark.Engine.Visualize
                     }
                 }
 
-                entry.AudioEndMs = entry.LengthMs > 0
-                    ? (int)((long)audioEndIndex * entry.LengthMs / SampleCount)
-                    : -1;
+                // ── 末尾高精度解析で AudioEndMs を確定 ────────────────────
+                entry.AudioEndMs = AnalyzeTailPrecise(sound, entry.LengthMs, silenceThreshold);
             }
 			finally
 			{
@@ -197,5 +196,83 @@ namespace MediaPlayer_X_Ark.Engine.Visualize
 			if ((value & 0x800000) != 0) value |= unchecked((int)0xFF000000);
 			return value;
 		}
-	}
+
+        /// <summary>
+        /// 末尾5秒間を高密度（1ms精度）で再解析し、実音終了位置(ms)を返す。
+        /// </summary>
+        private int AnalyzeTailPrecise(
+            FMOD.Sound sound, uint lengthMs, float silenceThreshold)
+        {
+            if (lengthMs == 0) return -1;
+
+            // 末尾何秒を高精度解析するか
+            const int tailSec = 5;
+            uint tailStartMs = lengthMs > tailSec * 1000
+                ? lengthMs - (uint)(tailSec * 1000)
+                : 0;
+
+            // フォーマット情報取得
+            sound.getFormat(out _, out _, out int channels, out int bits);
+            sound.getLength(out uint lengthPcm, FMOD.TIMEUNIT.PCM);
+            if (lengthPcm == 0 || channels == 0) return -1;
+
+            int bytesPerSample = Math.Max(bits / 8, 1);
+
+            // 1ms あたりの PCM フレーム数（44100Hz ≒ 44フレーム/ms）
+            // FMOD の getDefaults で周波数取得
+            sound.getDefaults(out float freq, out _);
+            int framesPerMs = Math.Max(1, (int)(freq / 1000f));
+
+            int blockFrames = framesPerMs;  // 1msブロック
+            int blockBytes = blockFrames * channels * bytesPerSample;
+            blockBytes = Math.Min(blockBytes, 65536);
+            var buffer = new byte[blockBytes];
+
+            // 末尾から先頭方向に1msずつスキャン
+            uint tailStartPcm = (uint)((long)tailStartMs * lengthPcm / lengthMs);
+
+            int lastAudioMs = (int)tailStartMs;  // 初期値：解析範囲先頭
+
+            int scanMs = (int)(lengthMs - tailStartMs);
+            for (int i = 0; i < scanMs; i++)
+            {
+                uint seekPcm = tailStartPcm + (uint)(i * framesPerMs);
+                if (seekPcm >= lengthPcm) break;
+
+                sound.seekData(seekPcm);
+                sound.readData(buffer, out uint read);
+                if (read == 0) break;
+
+                int frames = (int)(read / (uint)(channels * bytesPerSample));
+                double sumL = 0.0, sumR = 0.0;
+
+                for (int f = 0; f < frames; f++)
+                {
+                    int baseIdx = f * channels * bytesPerSample;
+                    if (baseIdx + bytesPerSample > (int)read) break;
+
+                    float sL = ReadSample(buffer, baseIdx, bits);
+                    sumL += sL * sL;
+
+                    if (channels >= 2)
+                    {
+                        float sR = ReadSample(buffer, baseIdx + bytesPerSample, bits);
+                        sumR += sR * sR;
+                    }
+                    else
+                    {
+                        sumR += sL * sL;
+                    }
+                }
+
+                float rmsL = frames > 0 ? (float)Math.Sqrt(sumL / frames) : 0f;
+                float rmsR = frames > 0 ? (float)Math.Sqrt(sumR / frames) : 0f;
+
+                if (rmsL > silenceThreshold || rmsR > silenceThreshold)
+                    lastAudioMs = (int)tailStartMs + i;
+            }
+
+            return lastAudioMs;
+        }
+    }
 }

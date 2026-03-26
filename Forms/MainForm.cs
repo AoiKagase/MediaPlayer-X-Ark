@@ -501,8 +501,13 @@ namespace MediaPlayer_X_Ark
 			// 初期化済みの場合のみ処理する
 			if (!initialize || _engine == null || _engine.spectrum == null) return;
 
-			// スペクトラム画像の反映
-			Spectrum.mFFT = _engine.spectrum.UpdateSpectrum();
+            // NonStopMix 切替直前は高精度タイマーに切り替え
+            int desiredInterval = _controller.TimerPrecisionRequested ? 10 : 100;
+            if (Timer.Interval != desiredInterval)
+                Timer.Interval = desiredInterval;
+
+            // スペクトラム画像の反映
+            Spectrum.mFFT = _engine.spectrum.UpdateSpectrum();
 			Spectrum.mWaveL = _engine.wave.GetWaveDataByChannel(0);
 			Spectrum.mWaveR = _engine.wave.GetWaveDataByChannel(1);
 
