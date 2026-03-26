@@ -37,5 +37,10 @@ namespace MediaPlayer_X_Ark.Skin.New
 		/// Magnetic: 磁石のようにサブフォームがメインフォームに吸着するかどうかを定義するプロパティ。
 		/// </summary>
 		[JsonPropertyName("magnetic")] public bool Magnetic { get; set; }
-	}
+
+        [JsonPropertyName("backColor")] public string BackColor { get; set; }
+        [JsonPropertyName("foreColor")] public string ForeColor { get; set; }
+        [JsonPropertyName("font")] public string Font { get; set; }
+        [JsonPropertyName("fontSize")] public int FontSize { get; set; }
+    }
 }

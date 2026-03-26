@@ -16,6 +16,10 @@ namespace MediaPlayer_X_Ark.Skin
         public RECT Position;
         public Color TransparentKey;
         public bool MagnetMode;
+
+        public Color BackColor;
+        public Color ForeColor;
+        public Font Font;
     }
 
     public class ButtonComponents

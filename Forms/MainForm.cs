@@ -87,7 +87,9 @@ namespace MediaPlayer_X_Ark
 				_skinApplicator = new SkinApplicator(_currentSkin);
 				_skinApplicator.ApplyToMainForm(this, Spectrum);
 				_skinApplicator.ApplyToPlayListForm(_playListForm);
-				SetupWaveformTarget(); // TODO: テスト表示
+                _skinApplicator.ApplyToFileInfoForm(_fileInfoForm);
+
+                SetupWaveformTarget(); // TODO: テスト表示
 				// プレビュー用メイン画像パスを保存
 				_config.settings.Skin = skinFile;
 
@@ -176,8 +178,9 @@ namespace MediaPlayer_X_Ark
 			_cdForm = new CDForm(this, _controller, _config);
 			_fileInfoForm = new FileInfoForm(this, _controller);
 
-			// ★管理リストに追加
-			_managedForms.Add(_playListForm);
+            // ★管理リストに追加
+            _managedForms.Add(_fileInfoForm);
+            _managedForms.Add(_playListForm);
 			_managedForms.Add(_optionsForm);
 			_managedForms.Add(_cdForm);
 			// 予定：設定ファイルの読み込み スキンファイルの指定も含む
@@ -416,8 +419,9 @@ namespace MediaPlayer_X_Ark
 				{
 					if (plForm.MagnetMode)
 					{
-						_playListForm.Left = Left - plForm.Position.Left;
-						_playListForm.Top = Top - plForm.Position.Top;
+						// Main + Offset
+						_playListForm.Left = Left + plForm.Position.Left;
+						_playListForm.Top = Top + plForm.Position.Top;
 					}
 				}
 			}
@@ -432,6 +436,7 @@ namespace MediaPlayer_X_Ark
 		{
 			_controller.Close();
 			_config.Save();
+			_fileInfoForm?.Dispose();
 			_cdForm?.Dispose();   // 追加
 			_engine.Dispose();  // 明示的に解放
 			_engine = null;
@@ -724,7 +729,9 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void BtnClose_Click(object sender, EventArgs e)
 		{
-			_playListForm.Close();
+			_fileInfoForm.Close();
+			_fileInfoForm.Dispose();
+            _playListForm.Close();
 			_playListForm.Dispose();
 			_optionsForm.Close();
 			_optionsForm.Dispose();
@@ -785,8 +792,9 @@ namespace MediaPlayer_X_Ark
 
 			if (plForm != null)
 			{
-				_playListForm.Left = Left - plForm.Position.Left;
-				_playListForm.Top = Top - plForm.Position.Top;
+				// Main + Offset
+				_playListForm.Left = Left + plForm.Position.Left;
+				_playListForm.Top = Top + plForm.Position.Top;
 			}
 
 		}

@@ -1,4 +1,5 @@
 ﻿using MediaPlayer_X_Ark.Engine.Player;
+using MediaPlayer_X_Ark.Skin;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,7 +30,7 @@ namespace MediaPlayer_X_Ark.Forms
 			InitializeComponent();
 
 			InitFileNameContextMenu();
-		}
+        }
 		private void InitFileNameContextMenu()
 		{
 			var fileNameMenu = new ContextMenuStrip();
@@ -195,7 +196,7 @@ namespace MediaPlayer_X_Ark.Forms
 		private void FileInfoForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			e.Cancel = true;
-			this.Visible = false;
+			Hide();
 		}
 	}
 }

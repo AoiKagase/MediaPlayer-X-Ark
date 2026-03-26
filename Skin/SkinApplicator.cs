@@ -93,24 +93,63 @@ namespace MediaPlayer_X_Ark.Skin
 
             ApplyControls(playListForm.Controls);
         }
+        /// <summary>ファイル情報フォームにスキンを適用する</summary>
+        public void ApplyToFileInfoForm(Form form)
+        {
+            if (!_skin.SubForms.TryGetValue("FileInfoForm", out var def)) return;
 
+            if (def.BackImage != null)
+                form.BackgroundImage = def.BackImage;
+            else if (def.BackColor != Color.Empty)
+                form.BackColor = def.BackColor;
+
+            if (def.ForeColor != Color.Empty)
+                form.ForeColor = def.ForeColor;
+
+            if (def.Position.Width > 0) form.Width = def.Position.Width;
+            if (def.Position.Height > 0) form.Height = def.Position.Height;
+
+            ApplyLabelsRecursive(form.Controls, def);
+            form.Refresh();
+        }
+
+        private void ApplyLabelsRecursive(
+            System.Windows.Forms.Control.ControlCollection controls,
+            FormComponents def)
+        {
+            foreach (Control c in controls)
+            {
+                if (c is Label lbl)
+                {
+                    lbl.BackColor = Color.Transparent;
+                    if (def.ForeColor != Color.Empty) lbl.ForeColor = def.ForeColor;
+                    if (def.Font != null) lbl.Font = def.Font;
+                }
+                if (c.Controls.Count > 0)
+                    ApplyLabelsRecursive(c.Controls, def);
+            }
+        }
         /// <summary>プレイリストフォームの位置をマグネットモードに合わせて更新する</summary>
         public void UpdatePlayListPosition(Form mainForm, Form playListForm)
         {
-            playListForm.Left = mainForm.Left - _skin.SubForms["PlayListForm"].Position.Left;
-            playListForm.Top  = mainForm.Top  - _skin.SubForms["PlayListForm"].Position.Top;
+            playListForm.Left = mainForm.Left + _skin.SubForms["PlayListForm"].Position.Left;
+            playListForm.Top  = mainForm.Top  + _skin.SubForms["PlayListForm"].Position.Top;
         }
 
         /// <summary>ボタンの押下画像をセットする</summary>
         public void SetButtonDown(Button btn)
         {
-            var parent = btn.Parent.Name;
-            var btnMap = _skin.Buttons[parent];
-            if (btnMap.TryGetValue(btn.Name, out var bc))
+            try
             {
-                btn.BackgroundImage = bc.DownImage;
-                btn.Refresh();
+                var parent = btn.Parent.Name;
+                if (!_skin.Buttons.TryGetValue(parent, out var btnMap)) return;
+                if (btnMap.TryGetValue(btn.Name, out var bc))
+                {
+                    btn.BackgroundImage = bc.DownImage;
+                    btn.Refresh();
+                }
             }
+            catch { }
         }
 
         /// <summary>ボタンの通常画像をセットする</summary>
@@ -119,13 +158,14 @@ namespace MediaPlayer_X_Ark.Skin
             try
             {
                 var parent = btn.Parent?.Name;
-                var btnMap = _skin.Buttons[parent];
+                if (!_skin.Buttons.TryGetValue(parent, out var btnMap)) return;
                 if (btnMap.TryGetValue(btn.Name, out var bc))
                 {
                     btn.BackgroundImage = bc.BackImage;
                     btn.Refresh();
                 }
-            } catch { }
+            }
+            catch { }
         }
 
         /// <summary>ループボタンの状態画像をセットする</summary>
@@ -163,7 +203,7 @@ namespace MediaPlayer_X_Ark.Skin
                 _skin.Buttons.TryGetValue(parentName, out var btnMap);
                 _skin.Labels.TryGetValue(parentName, out var labelMap);
                 _skin.Grids.TryGetValue(parentName, out var gridMap);
-                if (c is Button btn && btnMap.TryGetValue(c.Name, out var bc))
+                if (c is Button btn && (btnMap?.TryGetValue(c.Name, out var bc) ?? false))
                 {
                     if (bc.BackImage == null || !bc.Enabled)
                     {
@@ -196,7 +236,7 @@ namespace MediaPlayer_X_Ark.Skin
                     slider.Value = 0;
                     slider.Refresh();
                 }
-                else if (c is ScrollLabel lbl && labelMap.TryGetValue(c.Name, out var gc))
+                else if (c is ScrollLabel lbl && (labelMap?.TryGetValue(c.Name, out var gc) ?? false))
                 {
                     lbl.BackColor = Color.Transparent;
                     lbl.Value.Font = gc.Font;
@@ -213,7 +253,7 @@ namespace MediaPlayer_X_Ark.Skin
                     lbl.Timer.Interval = gc.Interval > 0 ? gc.Interval : 100;
                     lbl.Timer.Enabled = gc.Interval > 0;
                 }
-                else if (c is DataGridView dgv && gridMap.TryGetValue(c.Name, out var plGrid))
+                else if (c is DataGridView dgv && (gridMap?.TryGetValue(c.Name, out var plGrid) ?? false))
                 {
 					dgv.BackgroundColor = plGrid.ListBackColor;
 					dgv.RowsDefaultCellStyle.BackColor = plGrid.ListBackColor;
@@ -226,5 +266,7 @@ namespace MediaPlayer_X_Ark.Skin
 				}
             }
         }
+
+
 	}
 }

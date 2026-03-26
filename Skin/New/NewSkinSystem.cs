@@ -91,7 +91,7 @@ namespace MediaPlayer_X_Ark.Skin.New
             try
 			{
                 json = File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
-                skin = JsonSerializer.Deserialize<SkinJson>(json);
+                skin = JsonSerializer.Deserialize<SkinJson>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             } catch (Exception ex)
 			{
 				MessageBox.Show($"スキンの読み込みに失敗しました。\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -199,12 +199,19 @@ namespace MediaPlayer_X_Ark.Skin.New
                 // Form
                 SubForms[kv.Key] = new FormComponents
 				{
-					BackImage = CropImage(kv.Value.Src.ImageKey, kv.Value.Src),
-					TransparentKey = ParseColor(skin.Settings?.TransparentKey ?? "202030"),
+					BackImage = CropImage(kv.Value.Src?.ImageKey, kv.Value.Src),
+                    BackColor = ParseColorOrEmpty(kv.Value.BackColor), 
+                    ForeColor = ParseColorOrEmpty(kv.Value.ForeColor), 
+                    Font = kv.Value.Font != null             
+				        ? new Font(kv.Value.Font,
+		               kv.Value.FontSize > 0 ? kv.Value.FontSize : 9,
+			           FontStyle.Regular, GraphicsUnit.Point)
+						: null,
+                    TransparentKey = ParseColor(skin.Settings?.TransparentKey ?? "202030"),
 					Position = new RECT
 					{
-						Left = kv.Value.Offset.X,
-						Top = kv.Value.Offset.Y,
+						Left = kv.Value.Offset?.X ?? 0,
+						Top = kv.Value.Offset?.Y ?? 0,
                         Width = kv.Value.Location?.W ?? 0,
                         Height = kv.Value.Location?.H ?? 0,
                     },
@@ -261,7 +268,7 @@ namespace MediaPlayer_X_Ark.Skin.New
 		// ===========================
 
 		/// <summary>スプライトシートから指定矩形を切り出す</summary>
-		private Image CropImage(string imageKey, SpriteRect rect)
+		private Image CropImage(string imageKey = null, SpriteRect rect = null)
 		{
 			if (imageKey == null || rect == null) return null;
 			if (!_imageCache.TryGetValue(imageKey, out var src)) return null;
@@ -395,5 +402,10 @@ namespace MediaPlayer_X_Ark.Skin.New
 				return ColorTranslator.FromWin32(val);
 			return Color.Black;
 		}
-	}
+        private Color ParseColorOrEmpty(string hex)
+        {
+            if (string.IsNullOrEmpty(hex)) return Color.Empty;
+            return ParseColor(hex);
+        }
+    }
 }
