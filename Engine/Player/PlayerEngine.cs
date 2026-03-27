@@ -48,6 +48,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 	{
 		private bool _disposed = false;  // 二重解放防止フラグ
 		private readonly SemaphoreSlim _tagLoadSemaphore = new SemaphoreSlim(3, 3);
+        public IReadOnlyList<PluginLoadResult> LoadedPlugins => _loadedPlugins;
+        private readonly List<PluginLoadResult> _loadedPlugins = new List<PluginLoadResult>();
 
         public FmodSpectrum spectrum { get; private set; }
         public FmodWave wave { get; private set; }
@@ -261,15 +263,55 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 		public void LoadPlugins()
         {
-			uint handle;
-			PLUGINTYPE plugintype;
-			uint version;
+            _loadedPlugins.Clear();
 
-			FmodCallFunction(FmodSystem.setPluginPath(".\\Plugins"));
-			FmodCallFunction(FmodSystem.loadPlugin("codec_mp4.dll", out handle, 100));
-			FmodSystem.getPluginInfo(handle, out plugintype, out version);
-//			MessageBox.Show(lastError); 
-			return;
+            string pluginDir = Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+
+            if (!Directory.Exists(pluginDir)) return;
+
+            // ★末尾にセパレータを付けてパスを確定させる
+            string pluginPath = pluginDir.TrimEnd(
+                Path.DirectorySeparatorChar,
+                Path.AltDirectorySeparatorChar)
+                + Path.DirectorySeparatorChar;
+			var result = FmodSystem.setPluginPath(pluginPath);
+
+            foreach (string dllPath in Directory.GetFiles(pluginDir, "*.dll"))
+            {
+                string filename = Path.GetFileName(dllPath);
+                // ★loadPlugin にはファイル名のみ渡す（setPluginPath との相対）
+                result = FmodSystem.loadPlugin(filename, out uint handle, 10);
+
+                if (result != FMOD.RESULT.OK)
+                {
+                    _loadedPlugins.Add(new PluginLoadResult
+                    {
+                        FileName = filename,
+                        Success = false,
+                        Type = FMOD.PLUGINTYPE.MAX,
+                        Version = 0,
+                    });
+                    continue;
+                }
+
+                FmodSystem.getPluginInfo(
+                    handle,
+                    out FMOD.PLUGINTYPE pluginType,
+                    out string pluginName,
+                    256,
+                    out uint version);
+
+                _loadedPlugins.Add(new PluginLoadResult
+                {
+                    FileName = filename,
+                    PluginName = pluginName,
+                    Success = true,
+                    Type = pluginType,
+                    Version = version,
+                });
+            }
+            return;
         }
 
 		/// <summary>

@@ -16,13 +16,17 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		private CheckBox _chkRestorePosition;
 		private CheckBox _chkAlwaysOnTop;
 		private CheckBox _chkAutoSavePlaylist;
+        private CheckBox _chkDiscordRichPresence;
 
-		private GroupBox _grpOpenFileAction;
+        private GroupBox _grpOpenFileAction;
 		private RadioButton _rdoOpenFileAuto;    // 再生中なら追加・停止中なら再生
 		private RadioButton _rdoOpenFilePlay;    // 常に再生
 		private RadioButton _rdoOpenFileAdd;     // 常に追加のみ
 
-		private Button _btnSave;
+        private Label _lblDiscordAppId;
+        private TextBox _txtDiscordAppId;
+
+        private Button _btnSave;
 		private MainForm _mainForm;
 		public GeneralSettingsControl(IPlayerEngine engine, IConfigService config, MainForm mainForm)
 			: base(engine, config)
@@ -71,13 +75,12 @@ namespace MediaPlayer_X_Ark.Forms.Options
 				AutoSize = true,
 			};
 
-			grpStartup.Controls.AddRange(new Control[]
+            grpStartup.Controls.AddRange(new Control[]
 			{
 				_chkRestorePlaylist, _chkRestorePosition,
 				_chkAutoSavePlaylist, _chkAlwaysOnTop
 			});
-
-			y += grpStartup.Height + 12;
+            y += grpStartup.Height + 12;
 
 			_chkRestorePlaylist.CheckedChanged += (s, e) =>
 			{
@@ -120,11 +123,51 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			});
 
 			y += _grpOpenFileAction.Height + 12;
+            // ===========================
+            // Discord Rich Presence
+            // ===========================
+            var grpDiscord = new GroupBox
+            {
+                Text = "Discord Rich Presence",
+                Location = new Point(16, y),
+                Size = new Size(400, 88),
+            };
 
-			// ===========================
-			// 保存ボタン
-			// ===========================
-			_btnSave = new Button
+            _chkDiscordRichPresence = new CheckBox
+            {
+                Text = "Discord Rich Presence を有効にする",
+                Location = new Point(12, 24),
+                AutoSize = true,
+            };
+            _chkDiscordRichPresence.CheckedChanged += (s, e) =>
+            {
+                _txtDiscordAppId.Enabled = _chkDiscordRichPresence.Checked;
+            };
+
+            _lblDiscordAppId = new Label
+            {
+                Text = "アプリケーションID：",
+                Location = new Point(12, 52),
+                AutoSize = true,
+            };
+            _txtDiscordAppId = new TextBox
+            {
+                Location = new Point(130, 49),
+                Size = new Size(250, 23),
+                MaxLength = 64,
+                PlaceholderText = "000000000000000000",
+            };
+
+            grpDiscord.Controls.AddRange(new Control[]
+            {
+    _chkDiscordRichPresence, _lblDiscordAppId, _txtDiscordAppId,
+            });
+
+            y += grpDiscord.Height + 12;
+            // ===========================
+            // 保存ボタン
+            // ===========================
+            _btnSave = new Button
 			{
 				Text = "適用",
 				Location = new Point(16, y),
@@ -134,7 +177,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
 			Controls.AddRange(new Control[]
 			{
-				grpStartup, _grpOpenFileAction, _btnSave
+				grpStartup, _grpOpenFileAction, grpDiscord, _btnSave
 			});
 		}
 
@@ -144,9 +187,12 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			_chkRestorePosition.Checked = Config.settings.RestorePosition;
 			_chkAutoSavePlaylist.Checked = Config.settings.AutoSavePlaylist;
 			_chkAlwaysOnTop.Checked = Config.settings.AlwaysOnTop;
+            _chkDiscordRichPresence.Checked = Config.settings.DiscordRichPresenceEnabled;
+            _txtDiscordAppId.Text = Config.settings.DiscordApplicationId ?? "";
+            _txtDiscordAppId.Enabled = _chkDiscordRichPresence.Checked;
 
-			// ★RestorePlaylistがOFFの場合はRestorePositionを無効化
-			_chkRestorePosition.Enabled = _chkRestorePlaylist.Checked;
+            // ★RestorePlaylistがOFFの場合はRestorePositionを無効化
+            _chkRestorePosition.Enabled = _chkRestorePlaylist.Checked;
 
 			switch (Config.settings.OpenFileAction)
 			{
@@ -166,9 +212,17 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			if (_rdoOpenFilePlay.Checked) Config.settings.OpenFileAction = 1;
 			else if (_rdoOpenFileAdd.Checked) Config.settings.OpenFileAction = 2;
 			else Config.settings.OpenFileAction = 0;
+            Config.settings.DiscordRichPresenceEnabled = _chkDiscordRichPresence.Checked;
 
-			// ★即時反映
-			_mainForm.TopMost = Config.settings.AlwaysOnTop;
+            Config.settings.DiscordRichPresenceEnabled = _chkDiscordRichPresence.Checked;
+            Config.settings.DiscordApplicationId = _txtDiscordAppId.Text.Trim();
+
+            _mainForm.SetDiscordPresenceEnabled(
+                Config.settings.DiscordRichPresenceEnabled,
+                Config.settings.DiscordApplicationId);
+
+            // ★即時反映
+            _mainForm.TopMost = Config.settings.AlwaysOnTop;
 		}
 
 		private void BtnSave_Click(object sender, EventArgs e)

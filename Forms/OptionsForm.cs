@@ -104,8 +104,8 @@ namespace MediaPlayer_X_Ark.Forms
 				nodeCompressor, nodeReverb, nodeNormalize,
 			})
 			{ Name = "EFFECTS" };
-
-			var nodeOther = new TreeNode("その他", new TreeNode[]
+            var nodePlugins = new TreeNode("プラグイン") { Name = "PLUGINS" };
+            var nodeOther = new TreeNode("その他", new TreeNode[]
 			{
 				nodeCddb, nodeExtensions, nodeAbout
 			})
@@ -114,8 +114,8 @@ namespace MediaPlayer_X_Ark.Forms
 			_treeMenu.Nodes.AddRange(new TreeNode[]
 			{
 				nodeGeneral, nodeCrossfade,  nodeDisplay, nodeOutput,
-				nodeEffects, nodeSkin, nodeOther
-			});
+				nodeEffects, nodeSkin, nodePlugins, nodeOther
+            });
 
 			_treeMenu.ExpandAll();
 		}
@@ -140,7 +140,8 @@ namespace MediaPlayer_X_Ark.Forms
 			_controls["PITCH"] = new Options.Effects.PitchControl(_engine, _config);
 			_controls["CDDB"] = new CddbSettingsControl(_engine, _config);
 			_controls["EXTENSIONS"] = new ExtensionsControl(_engine, _config);
-			_controls["ABOUT"] = new AboutControl(_engine, _config);
+            _controls["PLUGINS"] = new PluginsControl(_engine, _config);
+            _controls["ABOUT"] = new AboutControl(_engine, _config);
 			// ...
 		}
 

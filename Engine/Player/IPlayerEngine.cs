@@ -10,6 +10,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
     public interface IPlayerEngine : IDisposable
     {
         // ── 状態・プロパティ ──────────────────────────
+        IReadOnlyList<PluginLoadResult> LoadedPlugins { get; }
         event EventHandler<PlayerErrorEventArgs> ErrorOccurred;
         bool FluidSynthAvailable { get; }
 		string SoundFontPath { get; set; }
@@ -105,5 +106,6 @@ namespace MediaPlayer_X_Ark.Engine.Player
         List<DEVICE_INFO> GetCurrentDeviceList();
 
         void Sort<T>(Func<PlayList, T> keySelector);
+        void LoadPlugins();
     }
 }

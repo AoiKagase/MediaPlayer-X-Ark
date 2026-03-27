@@ -90,7 +90,10 @@ namespace MediaPlayer_X_Ark.Engine.Config
 
 		/// <summary>プリアンプゲイン（dB）-6〜+6</summary>
 		public float ReplayGainPreamp { get; set; } = 0.0f;
-	}
+        /// <summary>Discord Rich Presence の有効/無効</summary>
+        public bool DiscordRichPresenceEnabled { get; set; } = false;
+        public string DiscordApplicationId { get; set; } = "";
+    }
 	public class CfgBuffer
 	{
 		/// <summary>

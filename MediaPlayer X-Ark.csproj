@@ -35,6 +35,7 @@
 		<PackageReference Include="nfluidsynth" Version="0.3.1" />
 		<PackageReference Include="System.Data.DataSetExtensions" Version="4.6.0-preview3.19128.7" />
 		<PackageReference Include="z440.atl.core" Version="7.11.0" />
+		<PackageReference Include="DiscordRichPresence" Version="1.2.1.24" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="Mathf.cs" />
@@ -71,5 +72,6 @@
 		<Move SourceFiles="$(OutputPath)Ude.NetStandard.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)Ude.NetStandard.dll')" />
 		<Move SourceFiles="$(OutputPath)NFluidsynth.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)NFluidsynth.dll')" />
 		<Move SourceFiles="$(OutputPath)NFluidsynth.MidiAccess.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)NFluidsynth.MidiAccess.dll')" />
+		<Move SourceFiles="$(OutputPath)DiscordRPC.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)DiscordRPC.dll')" />		
 	</Target>
 </Project>

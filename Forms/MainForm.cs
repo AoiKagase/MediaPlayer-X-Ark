@@ -31,7 +31,7 @@ namespace MediaPlayer_X_Ark
 		private CDForm _cdForm;
 		private FileInfoForm _fileInfoForm;
         private MiniPlayerForm _miniPlayerForm;
-
+        private Engine.Discord.DiscordPresenceService _discordPresence;
         private int _sleepTimerRemaining = 0; // 残り秒数（0=無効）
 
 		private INewSkinSystem _currentSkin;
@@ -212,7 +212,16 @@ namespace MediaPlayer_X_Ark
 			_openFileDialogMedia.Multiselect = true;
 
 			this.TopMost = _config.settings.AlwaysOnTop;
-			initialize = true;
+
+            if (_config.settings.DiscordRichPresenceEnabled
+				    && !string.IsNullOrWhiteSpace(_config.settings.DiscordApplicationId))
+            {
+                _discordPresence = new Engine.Discord.DiscordPresenceService(
+                    _controller, _config.settings.DiscordApplicationId);
+                _discordPresence.Enabled = true;
+            }
+
+            initialize = true;
 
 			// 起動パラメータを取得し、ファイルパスが取得出来るならばOpen関数へ引き渡す
 			string[] parameters = System.Environment.GetCommandLineArgs();
@@ -479,7 +488,8 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			_controller.Close();
+            _discordPresence?.Dispose();
+            _controller.Close();
 			_config.Save();
 			_fileInfoForm?.Dispose();
 			_cdForm?.Dispose();   // 追加
@@ -1186,26 +1196,39 @@ namespace MediaPlayer_X_Ark
 			menuPlayModeRepeat.Checked = (_controller.GetLoopMode() & LOOP_MODE.LOOP_ONE_REPEAT) != 0;
 			menuPlayModeLoop.Checked = (_controller.GetLoopMode() & LOOP_MODE.LOOP_ALL) != 0;
 		}
+        public void SetDiscordPresenceEnabled(bool enabled, string applicationId)
+        {
+            if (_discordPresence != null)
+            {
+                _discordPresence.Dispose();
+                _discordPresence = null;
+            }
+            if (enabled && !string.IsNullOrWhiteSpace(applicationId))
+            {
+                _discordPresence = new Engine.Discord.DiscordPresenceService(
+                    _controller, applicationId);
+                _discordPresence.Enabled = true;
+            }
+        }
+        //private void SetPlayMode(LOOP_MODE mode)
+        //{
+        //	if (mode == LOOP_MODE.LOOP_RANDOM)
+        //	{
+        //		// ランダムはトグル
+        //		_player.loop ^= LOOP_MODE.LOOP_RANDOM;
+        //		if ((_player.loop & LOOP_MODE.LOOP_RANDOM) != 0)
+        //			_player.BuildShuffleQueue(); // ONになった時点で生成
+        //	}
+        //	else
+        //	{
+        //		// ランダムフラグを保持しつつ他のモードを切り替え
+        //		bool isRandom = (_player.loop & LOOP_MODE.LOOP_RANDOM) != 0;
+        //		_player.loop = mode;
+        //		if (isRandom) _player.loop |= LOOP_MODE.LOOP_RANDOM;
+        //	}
+        //}
 
-		//private void SetPlayMode(LOOP_MODE mode)
-		//{
-		//	if (mode == LOOP_MODE.LOOP_RANDOM)
-		//	{
-		//		// ランダムはトグル
-		//		_player.loop ^= LOOP_MODE.LOOP_RANDOM;
-		//		if ((_player.loop & LOOP_MODE.LOOP_RANDOM) != 0)
-		//			_player.BuildShuffleQueue(); // ONになった時点で生成
-		//	}
-		//	else
-		//	{
-		//		// ランダムフラグを保持しつつ他のモードを切り替え
-		//		bool isRandom = (_player.loop & LOOP_MODE.LOOP_RANDOM) != 0;
-		//		_player.loop = mode;
-		//		if (isRandom) _player.loop |= LOOP_MODE.LOOP_RANDOM;
-		//	}
-		//}
-
-		private void OpenOptionsTab(string tabName)
+        private void OpenOptionsTab(string tabName)
 		{
 			_optionsForm.Show();
 			_optionsForm.SelectTab(tabName);
