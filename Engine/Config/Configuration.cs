@@ -78,11 +78,6 @@ namespace MediaPlayer_X_Ark.Engine.Config
 		public int CrossfadeDurationMs { get; set; } = 3000;
         /// <summary>NonStopMixの有効/無効（クロスフェードと排他）</summary>
         public bool NonStopMixEnabled { get; set; } = false;
-		/// <summary>
-		/// NonStopMix並走時間（秒）。0.1〜3.0秒。
-		/// この時間だけ旧チャンネルと新チャンネルが同音量で並走し、その後旧チャンネルを停止。
-		/// </summary>
-		public float NonStopMixCrossDurationSec { get; set; } = 0.1f;
 		/// <summary>ReplayGainの有効/無効</summary>
 		public bool ReplayGainEnabled { get; set; } = false;
 
