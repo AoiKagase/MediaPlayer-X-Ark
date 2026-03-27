@@ -106,7 +106,7 @@ namespace MediaPlayer_X_Ark.Engine.Discord
                     : null,
                 Assets = new Assets
                 {
-                    LargeImageKey = "app_icon",   // Developer Portal で設定した画像キー
+                    LargeImageKey = "x-ark",   // Developer Portal で設定した画像キー
                     LargeImageText = "MediaPlayer X-Ark",
                 },
             });
