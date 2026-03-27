@@ -206,9 +206,9 @@ namespace MediaPlayer_X_Ark.Engine.Visualize
             if (lengthMs == 0) return -1;
 
             // 末尾何秒を高精度解析するか
-            const int tailSec = 5;
-            uint tailStartMs = lengthMs > tailSec * 1000
-                ? lengthMs - (uint)(tailSec * 1000)
+            const int tailSec = 3;
+            uint tailStartMs = lengthMs > tailSec * 2000
+                ? lengthMs - (uint)(tailSec * 2000)
                 : 0;
 
             // フォーマット情報取得

@@ -522,8 +522,8 @@ namespace MediaPlayer_X_Ark
 				{
 					if (plForm.MagnetMode)
 					{
-						_mainForm.Left = Left + plForm.Position.Left;
-						_mainForm.Top = Top + plForm.Position.Top;
+						_mainForm.Left = Left - plForm.Position.Left;
+						_mainForm.Top = Top - plForm.Position.Top;
 					}
 				}
 			}

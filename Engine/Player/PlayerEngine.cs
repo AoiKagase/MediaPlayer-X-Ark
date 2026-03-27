@@ -83,6 +83,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		private int _fadingPlayListIndex = -1;  // フェードアウト中のPlayListインデックス
 		private int _crossfadeElapsedMs = 0;    // フェード経過時間
 		private bool _isCrossfading = false;
+		private bool _isCrossfadeVolumeFixed = false; // 音量固定クロスフェード（NonStopMix用）
 		private float _masterVolume = 1.0f; // SetVolume で設定された音量を保持
 		public bool CrossfadeEnabled { get; set; } = false;
 		public int CrossfadeDurationMs { get; set; } = 3000;
@@ -454,6 +455,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				return FMOD.RESULT.OK;
 
 			// ★チャンネルが有効な場合のみstop（二重発火防止）
+			ReleaseNonStopFadingIfDone();
 			StartCrossfadeOrStop();  // ← ここを変更
 			CrossfadeTriggered = false;
 
@@ -896,8 +898,15 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				FmodChannel.stop();
 			if (FmodChannelFading.hasHandle())
 				FmodChannelFading.stop();
+			if (_fadingPlayListIndex >= 0 && _fadingPlayListIndex < PlayList.Count
+				&& PlayList[_fadingPlayListIndex].IsLoaded)
+			{
+				PlayList[_fadingPlayListIndex].Sound.release();
+				PlayList[_fadingPlayListIndex].Sound = default;
+			}
 			FmodChannelFading = default;
 			_isCrossfading = false;
+			_isCrossfadeVolumeFixed = false;
 			_crossfadeElapsedMs = 0;
 		}
 
@@ -1073,15 +1082,38 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		}
 		private void StartCrossfadeOrStop()
 		{
-            // NonStopMix：フェードなし即切り替え
-            if (NonStopMixEnabled)
-            {
-                if (FmodChannel.hasHandle())
-                    FmodChannel.stop();
-                _fadingPlayListIndex = -1;
-                return;
-            }
-            if (!CrossfadeEnabled || !FmodChannel.hasHandle() || !IsPlaying())
+			// NonStopMix：フェードなし即切り替え
+			if (NonStopMixEnabled)
+			{
+				// 前回の退避チャンネルが残っていたら強制解放（新曲開始時は必ず）
+				if (FmodChannelFading.hasHandle())
+				{
+					FmodChannelFading.stop();
+					if (_fadingPlayListIndex >= 0 && _fadingPlayListIndex < PlayList.Count
+						&& PlayList[_fadingPlayListIndex].IsLoaded)
+					{
+						PlayList[_fadingPlayListIndex].Sound.release();
+						PlayList[_fadingPlayListIndex].Sound = default;
+					}
+					FmodChannelFading = default;
+					_fadingPlayListIndex = -1;
+				}
+
+				// 現在の再生チャンネルを退避（stop()しない・自然終了に任せる）
+				if (FmodChannel.hasHandle() && IsPlaying())
+				{
+					_fadingPlayListIndex = PlayingIndex;
+					FmodChannelFading = FmodChannel;
+					FmodChannel = default;
+				}
+				else
+				{
+					if (FmodChannel.hasHandle()) FmodChannel.stop();
+					_fadingPlayListIndex = -1;
+				}
+				return;
+			}
+			if (!CrossfadeEnabled || !FmodChannel.hasHandle() || !IsPlaying())
 			{
 				// クロスフェード無効または再生中でなければ即停止
 				if (FmodChannel.hasHandle())
@@ -1108,6 +1140,34 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			_crossfadeElapsedMs = 0;
 			_isCrossfading = true;
 		}
+		/// <summary>
+		/// NonStopMix用：退避チャンネルが自然終了していたら解放する。
+		/// PreciseTimerCallback から毎ティック呼ぶ。
+		/// </summary>
+		public void ReleaseNonStopFadingIfDone()
+		{
+			if (!NonStopMixEnabled) return;
+			if (!FmodChannelFading.hasHandle()) return;
+
+			bool isPlaying = false;
+			FmodChannelFading.isPlaying(out isPlaying);
+			if (!isPlaying)
+			{
+				FmodChannelFading.stop();
+				if (_fadingPlayListIndex >= 0 && _fadingPlayListIndex < PlayList.Count
+					&& PlayList[_fadingPlayListIndex].IsLoaded)
+				{
+					try
+					{
+						PlayList[_fadingPlayListIndex].Sound.release();
+						PlayList[_fadingPlayListIndex].Sound = default;
+					}
+					catch { }
+				}
+				FmodChannelFading = default;
+				_fadingPlayListIndex = -1;
+			}
+		}
 		// ── UpdateCrossfade() 追加 ────────────────────────────────────────
 		// MainForm の PlayerTimer_Tick から毎フレーム呼ぶ。
 		public void UpdateCrossfade(int elapsedMs)
@@ -1121,15 +1181,24 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			_crossfadeElapsedMs += elapsedMs;
 			float t = Math.Min((float)_crossfadeElapsedMs / CrossfadeDurationMs, 1.0f);
+			if (_isCrossfadeVolumeFixed)
+			{
+				// NonStopMix：音量固定で並走、時間経過で旧チャンネル停止のみ
+				if (FmodChannelFading.hasHandle())
+					FmodChannelFading.setVolume(_masterVolume);
+				if (FmodChannel.hasHandle())
+					FmodChannel.setVolume(_masterVolume);
+			}
+			else
+			{
+				// フェードアウト（旧チャンネル）
+				if (FmodChannelFading.hasHandle())
+					FmodChannelFading.setVolume(_masterVolume * (1.0f - t));
 
-			// フェードアウト（旧チャンネル）
-			if (FmodChannelFading.hasHandle())
-				FmodChannelFading.setVolume(_masterVolume * (1.0f - t));
-
-			// フェードイン（新チャンネル）
-			if (FmodChannel.hasHandle())
-				FmodChannel.setVolume(_masterVolume * t);
-
+				// フェードイン（新チャンネル）
+				if (FmodChannel.hasHandle())
+					FmodChannel.setVolume(_masterVolume * t);
+			}
 			// フェード完了
 			if (t >= 1.0f)
 			{

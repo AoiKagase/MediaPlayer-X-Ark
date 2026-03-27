@@ -62,7 +62,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
         void Pause();
 		void PlayNext();
 		void PlayPrevious();
-
+		void ReleaseNonStopFadingIfDone();
 		void BuildShuffleQueue();
         void UpdateShuffleQueueOnRemove(int removedIndex);
 

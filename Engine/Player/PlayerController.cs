@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -15,10 +16,25 @@ namespace MediaPlayer_X_Ark.Engine.Player
     /// </summary>
     public class PlayerController
     {
-        private const int TimerIntervalNormal = 100;
-        private const int TimerIntervalPrecise = 10;
+		// ── Win32 高精度タイマー ─────────────────────────────────────
+		[DllImport("winmm.dll")] private static extern uint timeBeginPeriod(uint uPeriod);
+		[DllImport("winmm.dll")] private static extern uint timeEndPeriod(uint uPeriod);
 
-        private readonly IPlayerEngine _engine;
+		/// <summary>
+		/// NonStopMix切替監視専用の高精度タイマー（1ms精度）。
+		/// 切替5秒前に起動し、切替後に停止する。
+		/// </summary>
+		private const int PreciseIntervalMs = 5; // 5ms精度
+		private System.Threading.Timer _preciseTimer;
+		private volatile bool _preciseTimerRunning = false;
+		private long _lastTickMs = 0;
+
+		// NonStopMix 二重発火防止
+		private volatile bool _nextTriggered = false;
+		// クロスフェード開始済みフラグ（残り時間検知の二重発火防止）
+		private volatile bool _crossfadeTriggered = false;
+
+		private readonly IPlayerEngine _engine;
         private readonly IConfigService _config;
 		private readonly SynchronizationContext _syncContext;
 
@@ -38,12 +54,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
         public uint AbStart { get; private set; } = uint.MaxValue;
         public uint AbEnd { get; private set; } = uint.MaxValue;
         public bool AbRepeatEnabled => AbStart != uint.MaxValue && AbEnd != uint.MaxValue;
-        /// <summary>
-        /// NonStopMix切替直前に true になる。
-        /// MainForm の Timer.Interval をこのフラグで切り替える。
-        /// </summary>
-        public bool TimerPrecisionRequested { get; private set; } = false;
-        public IPlayerEngine Engine  => _engine;
+
+		public IPlayerEngine Engine  => _engine;
         public IConfigService Config => _config;
         public void SetAbStart(uint ms) => AbStart = ms;
         public void SetAbEnd(uint ms) => AbEnd = ms;
@@ -103,21 +115,6 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			}
 		}
 
-		//private void OnWaveformReady(int index)
-		//{
-		//	if (!_engine.WaveformEnabled) return;
-		//	// 現在再生中のインデックスの波形のみ更新
-		//	if (index != _engine.PlayingIndex) return;
-
-		//	// UIスレッドに切り替えて描画
-		//	if (InvokeRequired)
-		//	{
-		//		Invoke(new Action(() => UpdateWaveformBitmap(index)));
-		//		return;
-		//	}
-		//	UpdateWaveformBitmap(index);
-		//}
-
 		private void RestorePlaylistFromFile(string path)
 		{
 			try
@@ -145,9 +142,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		/// </summary>
 		public void PlayAt(int index)
         {
-            if (index < 0 || index >= _engine.PlayList.Count) return;
+			if (index < 0 || index >= _engine.PlayList.Count) return;
 
-            _engine.SetDevice(_config.settings.Device);
+			_nextTriggered = false;
+			_crossfadeTriggered = false;
+
+			_engine.SetDevice(_config.settings.Device);
             _engine.PlaySound(index);
 
             // タイトル等はエンジンが GetTags() で取得済み
@@ -158,7 +158,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
             TrackChanged?.Invoke(index);
             PlaybackStateChanged?.Invoke();
-        }
+			UpdatePreciseTimer();
+		}
 
         /// <summary>再生／一時停止をトグルする</summary>
         public void TogglePlayPause()
@@ -169,46 +170,50 @@ namespace MediaPlayer_X_Ark.Engine.Player
                 PlayAt(_engine.PlayingIndex);
 
             PlaybackStateChanged?.Invoke();
-        }
+			UpdatePreciseTimer();
+		}
 
         /// <summary>停止する</summary>
         public void Stop()
         {
-            _engine.Stop();
+			_nextTriggered = false;
+			_crossfadeTriggered = false;
+			StopPreciseTimer();
+			_engine.Stop();
             PlaybackStateChanged?.Invoke();
         }
 
         /// <summary>次の曲へ（ループモードを考慮）</summary>
         public void PlayNext()
         {
+			_nextTriggered = false;
+			_crossfadeTriggered = false;
 			_engine.SetDevice(_config.settings.Device);
 			_engine.PlayNext();
             TrackChanged?.Invoke(_engine.PlayingIndex);
             PlaybackStateChanged?.Invoke();
-        }
+			UpdatePreciseTimer();
+		}
 
         /// <summary>前の曲へ（ループモードを考慮）</summary>
         public void PlayPrevious()
         {
+			Stop();
+			_nextTriggered = false;
+			_crossfadeTriggered = false;
 			_engine.SetDevice(_config.settings.Device);
 			_engine.PlayPrevious();
             TrackChanged?.Invoke(_engine.PlayingIndex);
             PlaybackStateChanged?.Invoke();
-        }
+			UpdatePreciseTimer();
+		}
 
 		public void SetPosition(uint ms)
         {
             _engine.SetPosition(ms);
         }
-        public uint GetPosition()
-        {
-            return _engine.GetPosition();
-        }
-
-        public uint GetLength()
-        {
-            return _engine.GetLength(_engine.PlayingIndex);
-		}
+		public uint GetPosition() => _engine.GetPosition();
+		public uint GetLength() => _engine.GetLength(_engine.PlayingIndex);
 		public bool OpenFiles(string[] filenames)
         {
 			int idx = 0;
@@ -286,14 +291,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
             if (isRandom) _engine.loop |= LOOP_MODE.LOOP_RANDOM;
         }
 
-        /// <summary>ランダム再生をトグルする</summary>
-        public void ToggleRandom()
-        {
-            _engine.loop ^= LOOP_MODE.LOOP_RANDOM;
-        }
+		/// <summary>ランダム再生をトグルする</summary>
+		public void ToggleRandom() => _engine.loop ^= LOOP_MODE.LOOP_RANDOM;
 
-        /// <summary>ループボタン押下時のサイクル（NONE → ONE_REPEAT → ALL → NONE）</summary>
-        public void CycleLoop()
+		/// <summary>ループボタン押下時のサイクル（NONE → ONE_REPEAT → ALL → NONE）</summary>
+		public void CycleLoop()
         {
             var loopOnly = _engine.loop & ~LOOP_MODE.LOOP_RANDOM;
             var next = loopOnly switch
@@ -305,89 +307,144 @@ namespace MediaPlayer_X_Ark.Engine.Player
             SetLoopMode(next);
         }
 
-        // ── タイマーティックから呼ぶ更新処理 ────────────────────────
+		/// <summary>
+		/// 再生状態・設定に応じて高精度タイマーを起動または停止する。
+		/// PlayAt / PlayNext / PlayPrevious / Stop / TogglePlayPause から呼ぶ。
+		/// </summary>
+		public void UpdatePreciseTimer()
+		{
+			bool needed = _engine.NowPlaying && _engine.IsPlaying()
+				&& (_engine.CrossfadeEnabled
+					|| _config.settings.NonStopMixEnabled
+					|| AbRepeatEnabled);
 
-        /// <summary>
-        /// PlayerTimer_Tick から毎フレーム呼ぶ。
-        /// 曲終了検知・クロスフェード更新を行い、必要に応じてイベントを発火する。
-        /// </summary>
-        /// <param name="timerIntervalMs">タイマーのインターバル（ms）</param>
-        public void OnTimerTick(int timerIntervalMs)
-        {
-            // クロスフェード更新
-            if (_engine.CrossfadeEnabled)
-                _engine.UpdateCrossfade(timerIntervalMs);
+			if (needed && !_preciseTimerRunning)
+				StartPreciseTimer();
+			else if (!needed && _preciseTimerRunning)
+				StopPreciseTimer();
+		}
+		private void StartPreciseTimer()
+		{
+			if (_preciseTimerRunning) return;
+			_lastTickMs = Environment.TickCount64;
+			_preciseTimerRunning = true;
+			timeBeginPeriod(1);
+			_preciseTimer = new System.Threading.Timer(
+				PreciseTimerCallback, null,
+				PreciseIntervalMs, PreciseIntervalMs);
+		}
 
-            if (!_engine.NowPlaying) return;
+		private void StopPreciseTimer()
+		{
+			if (!_preciseTimerRunning) return;
+			_preciseTimerRunning = false;
+			_preciseTimer?.Dispose();
+			_preciseTimer = null;
+			timeEndPeriod(1);
+		}
 
-            if (_engine.CrossfadeEnabled && !_engine.CrossfadeTriggered && _engine.IsPlaying())
-            {
-                // 残り時間検知によるクロスフェード開始
-                int playingIndex = _engine.PlayingIndex;
-                if (playingIndex >= 0)
-                {
-                    uint remaining = _engine.GetLength(playingIndex) - _engine.GetPosition();
-                    if ((int)remaining <= _engine.CrossfadeDurationMs)
-                    {
-                        _engine.CrossfadeTriggered = true;
-                        PlayNext();
-                    }
-                }
-            }
-            else if (!_engine.IsPlaying())
-            {
-                // 通常の曲終了 → 次曲へ
-                PlayNext();
-            }
+		private void PreciseTimerCallback(object state)
+		{
+			if (!_preciseTimerRunning) return;
 
-            // AB リピート処理
-            if (AbRepeatEnabled && IsPlaying)
-            {
-                var pos = (uint)Engine.GetPosition();
-                if (pos >= AbEnd)
-                    Engine.SetPosition(AbStart);
-            }
+			// 経過時間計算
+			long now = Environment.TickCount64;
+			int elapsedMs = (int)(now - _lastTickMs);
+			_lastTickMs = now;
 
-            // NonStopMix：波形解析済みの実音終了位置 + オフセットで次曲へ
-            if (_config.settings.NonStopMixEnabled && IsPlaying)
-            {
-                int idx = _engine.PlayingIndex;
-                if (idx >= 0 && idx < _engine.PlayList.Count)
-                {
-                    var entry = _engine.PlayList[idx];
-                    if (entry.WaveformReady && entry.AudioEndMs > 0)
-                    {
-                        int triggerMs = entry.AudioEndMs
-                            + (int)(_config.settings.NonStopMixOffsetSec * 1000);
-                        triggerMs = Math.Max(0, triggerMs);
+			if (!_engine.NowPlaying)
+			{
+				StopPreciseTimer();
+				_syncContext.Post(_ => PlayNext(), null);
+				return;
+			}
 
-                        uint pos = _engine.GetPosition();
+			// ── クロスフェード音量更新 ────────────────────────────────
+			if (_engine.CrossfadeEnabled)
+				_engine.UpdateCrossfade(elapsedMs);
 
-                        // 切替直前（5秒前）になったらタイマー高精度モードを要求
-                        if ((int)pos >= triggerMs - 5000)
-                            TimerPrecisionRequested = true;
+			// ── クロスフェード開始検知 ────────────────────────────────
+			if (_engine.CrossfadeEnabled
+				&& !_engine.NonStopMixEnabled
+				&& !_crossfadeTriggered
+				&& !_engine.CrossfadeTriggered)
+			{
+				int pidx = _engine.PlayingIndex;
+				if (pidx >= 0)
+				{
+					uint remaining = _engine.GetLength(pidx) - _engine.GetPosition();
+					if ((int)remaining <= _engine.CrossfadeDurationMs)
+					{
+						_crossfadeTriggered = true;
+						_engine.CrossfadeTriggered = true;
+						_syncContext.Post(_ => PlayNext(), null);
+					}
+				}
+			}
 
-                        if ((int)pos >= triggerMs)
-                        {
-                            TimerPrecisionRequested = false;
-                            PlayNext();
-                        }
-                    }
-                    else
-                    {
-                        TimerPrecisionRequested = false;
-                    }
-                }
-            }
-            else
-            {
-                TimerPrecisionRequested = false;
-            }
-        }
+			// ── ABリピート ────────────────────────────────────────────
+			if (AbRepeatEnabled)
+			{
+				uint pos = _engine.GetPosition();
+				if (pos >= AbEnd)
+					_engine.SetPosition(AbStart);
+			}
 
-        // ── 音量・パン ───────────────────────────────────────────────
+			// ── NonStopMix ────────────────────────────────────────────────
+			if (_config.settings.NonStopMixEnabled)
+			{
+				// 退避チャンネル（旧曲）の自然終了を監視して解放
+				_engine.ReleaseNonStopFadingIfDone();
 
-        public void SetVolume(int sliderValue)
+				if (!_nextTriggered)
+				{
+					int idx = _engine.PlayingIndex;
+					if (idx >= 0 && idx < _engine.PlayList.Count)
+					{
+						var entry = _engine.PlayList[idx];
+						if (entry.WaveformReady && entry.AudioEndMs > 0)
+						{
+							uint pos = _engine.GetPosition();
+							if ((int)pos > entry.AudioEndMs)
+							{
+								_nextTriggered = true;
+								_syncContext.Post(_ => PlayNext(), null);
+							}
+						}
+					}
+				}
+			}
+
+
+			if (!_engine.IsPlaying())
+			{
+				// 再生が自然終了 → UIスレッドで次曲
+				StopPreciseTimer();
+				_syncContext.Post(_ => PlayNext(), null);
+				return;
+			}
+		}
+
+		// ── UIタイマーから呼ぶ（後方互換・現在は何もしない） ─────────
+		/// <summary>
+		/// 以前は曲終了検知・クロスフェード更新をここで行っていたが、
+		/// 高精度タイマーに移管済み。MainForm側の呼び出しは残しても問題なし。
+		/// </summary>
+		public void OnTimerTick(int timerIntervalMs) 
+		{
+			if (!_config.settings.NonStopMixEnabled && !_config.settings.CrossfadeEnabled)
+			{
+				if (_engine.NowPlaying && !_engine.IsPlaying() && _engine.PlayingIndex < _engine.PlayList.Count - 1)
+				{
+					StopPreciseTimer();
+					_syncContext.Post(_ => PlayNext(), null);
+					return;
+				}
+			}
+		}
+		// ── 音量・パン ───────────────────────────────────────────────
+
+		public void SetVolume(int sliderValue)
         {
             float vol = sliderValue / 100f;
             _engine.SetVolume(vol);
@@ -448,6 +505,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
         public void Close()
         {
+			StopPreciseTimer();
 			// ★プレイリスト自動保存
 			if (_config.settings.RestorePlaylist)
 				SavePlaylistToFile(Path.Combine(

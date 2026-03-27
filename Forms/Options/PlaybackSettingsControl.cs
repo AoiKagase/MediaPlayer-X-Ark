@@ -16,12 +16,9 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
         // NonStopMix
         private CheckBox _chkNonStopMix;
-        private Label _lblOffset;
-        private TrackBar _trkOffset;
-        private Label _lblOffsetVal;
 
 		// ReplayGain
-        private CheckBox _chkReplayGain;
+		private CheckBox _chkReplayGain;
 		private RadioButton _rdoTrack;
 		private RadioButton _rdoAlbum;
 		private Label _lblPreamp;
@@ -41,17 +38,12 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		{
 			// クロスフェード
 			_chkEnabled.Checked = Config.settings.CrossfadeEnabled;
-            _chkNonStopMix.Checked = Config.settings.NonStopMixEnabled;
             _trkDuration.Value = Math.Max(1, Math.Min(15,
 				Config.settings.CrossfadeDurationMs / 1000));
 			UpdateDurationLabel();
 
             // NonStopMix
             _chkNonStopMix.Checked = Config.settings.NonStopMixEnabled;
-            _trkOffset.Value = (int)Math.Round(
-                Math.Max(-30, Math.Min(30,
-                    Config.settings.NonStopMixOffsetSec * 10)));
-            UpdateOffsetLabel();
 
 			// ReplayGain
             _chkReplayGain.Checked = Config.settings.ReplayGainEnabled;
@@ -75,8 +67,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
             // NonStopMix
             Config.settings.NonStopMixEnabled = _chkNonStopMix.Checked;
-            Config.settings.NonStopMixOffsetSec = _trkOffset.Value * 0.1f;
-            Engine.NonStopMixEnabled = _chkNonStopMix.Checked;
+			Engine.NonStopMixEnabled = _chkNonStopMix.Checked;
 
             // ReplayGain
             Config.settings.ReplayGainEnabled = _chkReplayGain.Checked;
@@ -143,98 +134,75 @@ namespace MediaPlayer_X_Ark.Forms.Options
                 AutoSize = true,
             };
 
-            // ── NonStopMix ────────────────────────────────────────
-            var lblNsmSection = new Label
-            {
-                Text = "NonStopMix",
-                Location = new Point(0, 112),
-                AutoSize = true,
-                Font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold),
-            };
-            var pnlNsmLine = new Panel
-            {
-                Location = new Point(0, 132),
-                Size = new Size(480, 1),
-                BackColor = Color.Gray,
-            };
-            _chkNonStopMix = new CheckBox
-            {
-                Text = "NonStopMix を有効にする（クロスフェードと排他）",
-                Location = new Point(0, 140),
-                AutoSize = true,
-            };
-            _chkNonStopMix.CheckedChanged += (s, e) =>
-            {
-                if (_chkNonStopMix.Checked) _chkEnabled.Checked = false;
-                UpdateNonStopMixEnabled();
-            };
-            _lblOffset = new Label
-            {
-                Text = "切替オフセット：",
-                Location = new Point(0, 176),
-                AutoSize = true,
-            };
-            _trkOffset = new TrackBar
-            {
-                Location = new Point(110, 170),
-                Size = new Size(220, 40),
-                Minimum = -30,  // -3.0秒
-                Maximum = 30,  //  3.0秒
-                TickFrequency = 5,
-                SmallChange = 1,
-                Value = 0,
-            };
-            _trkOffset.ValueChanged += (s, e) => UpdateOffsetLabel();
-            _lblOffsetVal = new Label
-            {
-                Text = "±0.0 秒",
-                Location = new Point(338, 176),
-                AutoSize = true,
-            };
+			// ── NonStopMix ────────────────────────────────────────
+			var lblNsmSection = new Label
+			{
+				Text = "NonStopMix",
+				Location = new Point(0, 112),
+				AutoSize = true,
+				Font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold),
+			};
+			var pnlNsmLine = new Panel
+			{
+				Location = new Point(0, 132),
+				Size = new Size(480, 1),
+				BackColor = Color.Gray,
+			};
+			_chkNonStopMix = new CheckBox
+			{
+				Text = "NonStopMix を有効にする（クロスフェードと排他）",
+				Location = new Point(0, 140),
+				AutoSize = true,
+			};
+			_chkNonStopMix.CheckedChanged += (s, e) =>
+			{
+				if (_chkNonStopMix.Checked) _chkEnabled.Checked = false;
+				UpdateNonStopMixEnabled();
+			};
 
-            // ── ReplayGain ────────────────────────────────────────
-            var lblRgSection = new Label
+			// ── ReplayGain ────────────────────────────────────────
+			var lblRgSection = new Label
             {
                 Text = "音量の正規化（ReplayGain）",
-                Location = new Point(0, 224),
+                Location = new Point(0, 176),
                 AutoSize = true,
                 Font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold),
             };
             var pnlRgLine = new Panel
             {
-                Location = new Point(0, 244),
+                Location = new Point(0, 196),
                 Size = new Size(480, 1),
                 BackColor = Color.Gray,
             };
             _chkReplayGain = new CheckBox
             {
                 Text = "ReplayGainを有効にする",
-                Location = new Point(0, 252),
+                Location = new Point(0, 204),
                 AutoSize = true,
             };
             _chkReplayGain.CheckedChanged += (s, e) => UpdateReplayGainEnabled();
             _rdoTrack = new RadioButton
             {
                 Text = "トラック",
-                Location = new Point(16, 280),
+                Location = new Point(16, 232),
                 AutoSize = true,
                 Checked = true,
             };
             _rdoAlbum = new RadioButton
             {
                 Text = "アルバム",
-                Location = new Point(100, 280),
+                Location = new Point(100, 232),
                 AutoSize = true,
             };
             _lblPreamp = new Label
             {
                 Text = "プリアンプ：",
-                Location = new Point(0, 312),
+                Location = new Point(0, 264),
                 AutoSize = true,
             };
             _trkPreamp = new TrackBar
             {
-                Location = new Point(90, 306),
+                Location = new Point(90, 258),
                 Size = new Size(240, 40),
                 Minimum = -12,
                 Maximum = 12,
@@ -247,7 +215,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
             _lblPreampVal = new Label
             {
                 Text = "0 dB",
-                Location = new Point(338, 312),
+                Location = new Point(338, 264),
                 AutoSize = true,
             };
 
@@ -255,7 +223,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
             _btnSave = new Button
             {
                 Text = "保存",
-                Location = new Point(0, 364),
+                Location = new Point(0, 316),
                 Size = new Size(80, lineH),
                 BackColor = Color.FromArgb(0, 120, 215),
                 ForeColor = Color.White,
@@ -268,8 +236,8 @@ namespace MediaPlayer_X_Ark.Forms.Options
                 lblCfSection, pnlCfLine,
                 _chkEnabled, _lblDuration, _trkDuration, _lblDurationVal,
                 lblNsmSection, pnlNsmLine,
-                _chkNonStopMix, _lblOffset, _trkOffset, _lblOffsetVal,
-                lblRgSection, pnlRgLine,
+                _chkNonStopMix,
+        		lblRgSection, pnlRgLine,
                 _chkReplayGain, _rdoTrack, _rdoAlbum,
                 _lblPreamp, _trkPreamp, _lblPreampVal,
                 _btnSave,
@@ -278,14 +246,8 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
 		private void UpdateDurationLabel()
 			=> _lblDurationVal.Text = $"{_trkDuration.Value} 秒";
-        private void UpdateOffsetLabel()
-        {
-            float v = _trkOffset.Value * 0.1f;
-            _lblOffsetVal.Text = v == 0f ? "±0.0 秒"
-                               : v > 0f ? $"+{v:F1} 秒"
-                               : $"{v:F1} 秒";
-        }
-        private void UpdateControlsEnabled()
+
+		private void UpdateControlsEnabled()
 		{
 			_trkDuration.Enabled = _chkEnabled.Checked;
 			_lblDuration.Enabled = _chkEnabled.Checked;
@@ -293,10 +255,8 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		}
         private void UpdateNonStopMixEnabled()
         {
-            _trkOffset.Enabled = _chkNonStopMix.Checked;
-            _lblOffset.Enabled = _chkNonStopMix.Checked;
-            _lblOffsetVal.Enabled = _chkNonStopMix.Checked;
-        }
+			bool on = _chkNonStopMix.Checked;
+		}
         private void UpdateReplayGainEnabled()
 		{
 			bool on = _chkReplayGain.Checked;

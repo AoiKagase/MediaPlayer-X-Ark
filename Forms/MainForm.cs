@@ -227,6 +227,7 @@ namespace MediaPlayer_X_Ark
 		private void OnPlaybackStateChanged() { }
 		private void OnTrackChanged(int index)
 		{
+			if (index < 0 || index >= _controller.Engine.PlayList.Count) return; // 曲無し
             _abStart = -1f;
             _abEnd = -1f;
             _controller.ClearAbRepeat();
@@ -388,30 +389,33 @@ namespace MediaPlayer_X_Ark
 					return true;
 
                 case Keys.A:
-                    // A点セット
-                    _abStart = (float)_controller.GetPosition()
-                             / Math.Max(1f, _controller.GetLength());
-                    _controller.SetAbStart((uint)_controller.GetPosition());
-                    return true;
+					// A点セット
+					_abStart = (float)_controller.GetPosition()
+							 / Math.Max(1f, _controller.GetLength());
+					_controller.SetAbStart((uint)_controller.GetPosition());
+					_controller.UpdatePreciseTimer(); // AB有効化でタイマー起動
+					return true;
 
-                case Keys.B:
-                    // B点セット（A点より後のみ有効）
-                    if (_controller.AbRepeatEnabled == false
-                        || (uint)_controller.GetPosition() > _controller.AbStart)
-                    {
-                        _abEnd = (float)_controller.GetPosition()
-                               / Math.Max(1f, _controller.GetLength());
-                        _controller.SetAbEnd((uint)_controller.GetPosition());
-                    }
-                    return true;
+				case Keys.B:
+					// B点セット（A点より後のみ有効）
+					if (_controller.AbRepeatEnabled == false
+						|| (uint)_controller.GetPosition() > _controller.AbStart)
+					{
+						_abEnd = (float)_controller.GetPosition()
+							   / Math.Max(1f, _controller.GetLength());
+						_controller.SetAbEnd((uint)_controller.GetPosition());
+						_controller.UpdatePreciseTimer(); // AB有効化でタイマー起動
+					}
+					return true;
 
-                case Keys.C:
-                    // AB リピートクリア
-                    _abStart = -1f;
-                    _abEnd = -1f;
-                    _controller.ClearAbRepeat();
-                    return true;
-            }
+				case Keys.C:
+					// AB リピートクリア
+					_abStart = -1f;
+					_abEnd = -1f;
+					_controller.ClearAbRepeat();
+					_controller.UpdatePreciseTimer(); // AB無効化でタイマー停止判定
+					return true;
+			}
 
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
@@ -501,11 +505,6 @@ namespace MediaPlayer_X_Ark
 			// 初期化済みの場合のみ処理する
 			if (!initialize || _engine == null || _engine.spectrum == null) return;
 
-            // NonStopMix 切替直前は高精度タイマーに切り替え
-            int desiredInterval = _controller.TimerPrecisionRequested ? 10 : 100;
-            if (Timer.Interval != desiredInterval)
-                Timer.Interval = desiredInterval;
-
             // スペクトラム画像の反映
             Spectrum.mFFT = _engine.spectrum.UpdateSpectrum();
 			Spectrum.mWaveL = _engine.wave.GetWaveDataByChannel(0);
@@ -537,7 +536,6 @@ namespace MediaPlayer_X_Ark
 							/ Math.Max(1, _controller.GetLength());
 				UpdateWaveformPlayedRatio(ratio);
 			}
-			// ── 曲終了検知（クロスフェード対応版）──────────────────────
 			_controller.OnTimerTick(Timer.Interval);
 		}
 		private void UpdateWaveformPlayedRatio(float ratio)
