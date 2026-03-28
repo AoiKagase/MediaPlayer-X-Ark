@@ -1,4 +1,5 @@
-﻿using MediaPlayer_X_Ark.Engine.Player;
+﻿using MediaPlayer_X_Ark.Engine.Config;
+using MediaPlayer_X_Ark.Engine.Player;
 using MediaPlayer_X_Ark.Skin;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace MediaPlayer_X_Ark.Forms
 	public partial class FileInfoForm : Form
 	{
 		private readonly IPlayerEngine _player;
+		private readonly IConfigService _config;
 		private readonly MainForm _mainForm;
 		private int _currentIndex { get; set; }
 		private CancellationTokenSource _coverArtCts;
@@ -25,6 +27,7 @@ namespace MediaPlayer_X_Ark.Forms
 		public FileInfoForm(MainForm mainform, PlayerController player)
 		{
 			_player = player.Engine;
+			_config = player.Config;
 			_mainForm = mainform;
 			this.Owner = mainform;
 			InitializeComponent();
@@ -125,7 +128,64 @@ namespace MediaPlayer_X_Ark.Forms
 				catch { }
 			}
 
-			// ③ 通常ファイル or Disc ID 取得失敗：Artist + Album で検索
+			// ② CUEトラック：REM DISCIDでCDDB問い合わせ（Artist/Albumが未設定の場合）
+		if (img == null && item.IsCueTrack && item.CueSheetRef != null
+			&& !string.IsNullOrEmpty(item.CueSheetRef.DiscId)
+			&& (string.IsNullOrEmpty(item.Artist) || string.IsNullOrEmpty(item.Album)))
+		{
+			try
+			{
+				var cddbResults = await Engine.CD.CddbClient.QueryByCueAsync(
+					item.CueSheetRef,
+					_config.settings.CddbServers,
+					ct);
+
+				if (cddbResults.Count > 0)
+				{
+					var best = cddbResults[0];
+					// 同じCUEシートの全トラックにタグを適用
+					for (int i = 0; i < _player.PlayList.Count; i++)
+					{
+						var e = _player.PlayList[i];
+						if (!e.IsCueTrack || e.CueSheetRef != item.CueSheetRef) continue;
+
+						int trackIdx = i - _player.PlayList.IndexOf(
+							_player.PlayList.First(p =>
+								p.IsCueTrack && p.CueSheetRef == item.CueSheetRef));
+
+						if (string.IsNullOrEmpty(e.Artist))
+							e.Artist = best.Artist ?? "";
+						if (string.IsNullOrEmpty(e.Album))
+							e.Album = best.Album ?? "";
+						if (trackIdx >= 0 && trackIdx < best.Tracks.Count
+							&& e.Title.StartsWith("Track "))
+							e.Title = best.Tracks[trackIdx];
+					}
+
+					// 現在表示中のエントリのラベルを更新
+					if (index == _currentIndex)
+					{
+						var updated = _player.PlayList[index];
+						if (InvokeRequired)
+							Invoke(new Action(() =>
+							{
+								lblTitleVal.Text = updated.Title ?? "-";
+								lblArtistVal.Text = updated.Artist ?? "-";
+								lblAlbumVal.Text = updated.Album ?? "-";
+							}));
+						else
+						{
+							lblTitleVal.Text = updated.Title ?? "-";
+							lblArtistVal.Text = updated.Artist ?? "-";
+							lblAlbumVal.Text = updated.Album ?? "-";
+						}
+					}
+				}
+			}
+			catch { }
+		}
+
+		// ③ 通常ファイル or Disc ID 取得失敗：Artist + Album で検索
 			//    タグ取得が非同期のため Album が空の間は最大3秒待機する
 			if (img == null)
 			{

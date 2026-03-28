@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -314,10 +315,20 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		/// <summary>一時停止をトグルする</summary>
 		public void SwitchPause()
         {
-			bool paused;
-			if (FmodCallFunction(FmodChannel.getPaused(out paused)) == RESULT.OK)
-            {
-				FmodCallFunction(FmodChannel.setPaused(!paused));
+			if (FmodChannel.hasHandle())
+			{
+				FmodChannel.isPlaying(out bool isplaying);
+				if (isplaying)
+				{
+					bool paused;
+					if (FmodCallFunction(FmodChannel.getPaused(out paused)) == RESULT.OK)
+					{
+						FmodCallFunction(FmodChannel.setPaused(!paused));
+					}
+				} else
+				{
+					FmodCallFunction(FmodSystem.playSound(PlayList[PlayingIndex].Sound, FmodChannelGroup, false, out FmodChannel));
+				}
 			}
 		}
 
@@ -426,11 +437,27 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			uint position = 0;
 			if (FmodChannel.hasHandle() && IsPlaying())
 				FmodCallFunction(FmodChannel.getPosition(out position, TIMEUNIT.MS));
+
+			// CUEトラック: 絶対位置→トラック相対位置に変換
+			if (PlayingIndex >= 0 && PlayingIndex < PlayList.Count)
+			{
+				var entry = PlayList[PlayingIndex];
+				if (entry.IsCueTrack && entry.CueStartMs.HasValue
+					&& position >= (uint)entry.CueStartMs.Value)
+					position -= (uint)entry.CueStartMs.Value;
+			}
 			return position;
         }
 		public void SetPosition(uint position)
         {
-			FmodCallFunction(FmodChannel.setPosition(position, TIMEUNIT.MS));
+			uint absPos = position;
+			if (PlayingIndex >= 0 && PlayingIndex < PlayList.Count)
+			{
+				var entry = PlayList[PlayingIndex];
+				if (entry.IsCueTrack && entry.CueStartMs.HasValue)
+					absPos = (uint)entry.CueStartMs.Value + position;
+			}
+			FmodCallFunction(FmodChannel.setPosition(absPos, TIMEUNIT.MS));
         }
 		/// <summary>
 		/// Retrieves the state a sound is in after being opened with the non blocking flag, or the current state of the streaming buffer.
@@ -484,6 +511,10 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			var result = FmodCallFunction(FmodSystem.playSound(
 				PlayList[index].Sound, FmodChannelGroup, false, out FmodChannel));
 
+			// CUEトラック: 開始位置にシーク
+			if (result == FMOD.RESULT.OK && PlayList[index].IsCueTrack)
+				FmodChannel.setPosition((uint)PlayList[index].CueStartMs.Value, FMOD.TIMEUNIT.MS);
+
 			if (result == FMOD.RESULT.OK && ReplayGainEnabled)
 				ApplyReplayGain(index);
 
@@ -530,8 +561,15 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			var result = FmodCallFunction(FmodSystem.playSound(
 				PlayList[index].Sound, FmodChannelGroup, true, out FmodChannel));
 
-			if (result == FMOD.RESULT.OK && position > 0)
-				FmodChannel.setPosition(position, FMOD.TIMEUNIT.MS);
+			if (result == FMOD.RESULT.OK)
+			{
+				uint seekPos = position;
+				// CUEトラック: 相対位置を絶対位置に変換
+				if (PlayList[index].IsCueTrack && PlayList[index].CueStartMs.HasValue)
+					seekPos = (uint)PlayList[index].CueStartMs.Value + position;
+				if (seekPos > 0)
+					FmodChannel.setPosition(seekPos, FMOD.TIMEUNIT.MS);
+			}
 
 			_nowPlaying = true;
 			return result;
@@ -559,6 +597,10 @@ namespace MediaPlayer_X_Ark.Engine.Player
         {
 			index = 0;
 
+			// CUEシートは専用メソッドで処理する
+			if (Path.GetExtension(filename).Equals(".cue", StringComparison.OrdinalIgnoreCase))
+				return CreateCueSounds(filename, out index);
+
 			if (!filename.StartsWith("http://") && !filename.StartsWith("https://"))
 			{
                 var existing = PlayList.FirstOrDefault(p => p.FileName == filename);
@@ -580,7 +622,93 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			return FMOD.RESULT.OK;
         }
-		private async Task LoadTagsOnlyAsync(int index)
+		/// <summary>
+	/// CUEシートを解析してプレイリストにトラックを追加する。
+	/// タグはCUEから直接設定し、タグ取得・波形解析は行わない。
+	/// </summary>
+	private FMOD.RESULT CreateCueSounds(string cuePath, out int firstIndex)
+	{
+		firstIndex = 0;
+
+		// 既に同じCUEファイルが追加済みなら最初のトラックを返す
+		var existing = PlayList.FirstOrDefault(
+			p => p.IsCueTrack && string.Equals(
+				p.CueSheetRef?.CuePath, cuePath, StringComparison.OrdinalIgnoreCase));
+		if (existing != null)
+		{
+			firstIndex = PlayList.IndexOf(existing);
+			return FMOD.RESULT.OK;
+		}
+
+		CUE.CueSheet sheet;
+		try { sheet = CUE.CueParser.Parse(cuePath); }
+		catch { return FMOD.RESULT.ERR_FILE_BAD; }
+
+		if (sheet.Tracks.Count == 0) return FMOD.RESULT.ERR_FILE_BAD;
+
+		// 音声ファイルの総再生時間を取得（最終トラックの長さ計算に使用）
+		string lastAudioFile = sheet.IsMultiFile
+			? (sheet.Tracks[sheet.Tracks.Count - 1].AudioFile ?? sheet.AudioPath)
+			: sheet.AudioPath;
+
+		int fileDurationMs = 0;
+		if (!string.IsNullOrEmpty(lastAudioFile) && File.Exists(lastAudioFile))
+		{
+			try { fileDurationMs = (int)new ATL.Track(lastAudioFile).DurationMs; }
+			catch { }
+		}
+		sheet.TotalDurationMs = fileDurationMs;
+
+		bool first = true;
+		foreach (var track in sheet.Tracks)
+		{
+			string audioFile = sheet.IsMultiFile
+				? (track.AudioFile ?? sheet.AudioPath)
+				: sheet.AudioPath;
+
+			if (string.IsNullOrEmpty(audioFile) || !File.Exists(audioFile)) continue;
+
+			uint lengthMs;
+			int? cueEnd;
+			if (track.EndMs >= 0)
+			{
+				lengthMs = (uint)(track.EndMs - track.StartMs);
+				cueEnd = track.EndMs;
+			}
+			else if (fileDurationMs > 0)
+			{
+				lengthMs = (uint)(fileDurationMs - track.StartMs);
+				cueEnd = null; // ファイル末尾はFMODに任せる
+			}
+			else
+			{
+				lengthMs = 0;
+				cueEnd = null;
+			}
+
+			var plist = new PlayList(audioFile);
+			plist.Title = !string.IsNullOrEmpty(track.Title)
+				? track.Title
+				: $"Track {track.Number:D2}";
+			plist.Artist = track.Performer ?? sheet.Performer ?? "";
+			plist.Album = sheet.Title ?? "";
+			plist.SetLength(lengthMs);
+			plist.CueStartMs = track.StartMs;
+			plist.CueEndMs = cueEnd;
+			plist.CueSheetRef = sheet;
+
+			PlayList.Add(plist);
+			if (first)
+			{
+				firstIndex = PlayList.Count - 1;
+				first = false;
+			}
+		}
+
+		return first ? FMOD.RESULT.ERR_FILE_BAD : FMOD.RESULT.OK;
+	}
+
+	private async Task LoadTagsOnlyAsync(int index)
 		{
 			await _tagLoadSemaphore.WaitAsync();
 			try
@@ -764,7 +892,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			if (result == FMOD.RESULT.OK)
 			{
 				PlayList[index].Sound = sound;
-				_ = StartWaveformAnalysisAsync(filename, index);
+				// CUEトラックは全体ファイルの解析は不要
+				if (!PlayList[index].IsCueTrack)
+					_ = StartWaveformAnalysisAsync(filename, index);
 			}
 			return result;
 		}
@@ -828,9 +958,15 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		public void CreateSoundForMidi(string filename)
         {
 		}
-		public void PlayNext()
+		public void PlayNext(int fromIndex, bool manual = false)
 		{
             if (PlayList.Count == 0) return;
+
+			if (fromIndex < 0) 
+				fromIndex = PlayingIndex;
+
+			if (manual)
+				Stop();
 
             if ((loop & LOOP_MODE.LOOP_RANDOM) != 0)
             {
@@ -845,14 +981,14 @@ namespace MediaPlayer_X_Ark.Engine.Player
             switch (loop)
             {
                 case LOOP_MODE.LOOP_ONE_REPEAT:
-                    next = PlayingIndex;
+                    next = fromIndex;
                     break;
                 case LOOP_MODE.LOOP_ALL:
-                    next = (PlayingIndex < PlayList.Count - 1) ? PlayingIndex + 1 : 0;
+                    next = (fromIndex < PlayList.Count - 1) ? fromIndex + 1 : 0;
                     break;
                 default: // LOOP_NONE
-                    if (PlayingIndex >= PlayList.Count - 1) { _nowPlaying = false; return; }
-                    next = PlayingIndex + 1;
+                    if (fromIndex >= PlayList.Count - 1) { _nowPlaying = false; return; }
+                    next = fromIndex + 1;
                     break;
             }
 			PlaySound(next);
@@ -873,12 +1009,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
                 PlayingIndex = PlayList.IndexOf(playingItem);
         }
 
-        public void PlayPrevious(int fromIndex = -1)
+        public void PlayPrevious(int fromIndex = -1, bool manual = false)
         {
             if (PlayList.Count == 0) return;
             if (fromIndex < 0) fromIndex = PlayingIndex;
-
-            if ((loop & LOOP_MODE.LOOP_RANDOM) != 0)
+			if (manual) Stop();
+			if ((loop & LOOP_MODE.LOOP_RANDOM) != 0)
             {
                 // シャッフルキューを 1 つ戻る（最低 0 まで）
                 _shuffleQueueIndex = Math.Max(0, _shuffleQueueIndex - 2);
@@ -903,11 +1039,13 @@ namespace MediaPlayer_X_Ark.Engine.Player
         public void Stop()
         {
 			_nowPlaying = false;
-			PlayingIndex = -1;
+//			PlayingIndex = -1;
 			if (FmodChannel.hasHandle())
 				FmodChannel.stop();
+
 			if (FmodChannelFading.hasHandle())
 				FmodChannelFading.stop();
+
 			if (_fadingPlayListIndex >= 0 && _fadingPlayListIndex < PlayList.Count
 				&& PlayList[_fadingPlayListIndex].IsLoaded
 				&& !PlayList[_fadingPlayListIndex].IsPcm)
@@ -915,6 +1053,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				PlayList[_fadingPlayListIndex].Sound.release();
 				PlayList[_fadingPlayListIndex].Sound = default;
 			}
+
 			FmodChannelFading = default;
 			_isCrossfading = false;
 			_isCrossfadeVolumeFixed = false;

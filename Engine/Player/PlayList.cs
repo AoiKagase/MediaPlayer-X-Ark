@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using MediaPlayer_X_Ark.Engine.CUE;
 namespace MediaPlayer_X_Ark.Engine.Player
 {
     public class PlayList : INotifyPropertyChanged
@@ -104,6 +105,22 @@ namespace MediaPlayer_X_Ark.Engine.Player
         /// </summary>
         [Browsable(false)]
         public int AudioEndMs { get; set; } = -1;
+
+        /// <summary>CUEトラック開始位置（ms）。null = 通常ファイル</summary>
+        [Browsable(false)]
+        public int? CueStartMs { get; set; }
+
+        /// <summary>CUEトラック終了位置（ms）。null = ファイル末尾または通常ファイル</summary>
+        [Browsable(false)]
+        public int? CueEndMs { get; set; }
+
+        /// <summary>親CUEシートへの参照（CDDBクエリ・カバーアート取得に使用）</summary>
+        [Browsable(false)]
+        public CueSheet CueSheetRef { get; set; }
+
+        /// <summary>CUEシートから生成されたトラックかどうか</summary>
+        [Browsable(false)]
+        public bool IsCueTrack => CueStartMs.HasValue;
 
 
         public void SetLength(uint length)

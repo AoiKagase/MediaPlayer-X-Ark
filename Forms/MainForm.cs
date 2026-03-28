@@ -309,11 +309,11 @@ namespace MediaPlayer_X_Ark
 					return true;
 
 				case Keys.X:
-					_controller.PlayNext();
+					_controller.PlayNext(true);
 					return true;
 
 				case Keys.Z:
-					_controller.PlayPrevious();
+					_controller.PlayPrevious(true);
 					return true;
 
 				// ── シーク（キーリピートによる加速は SeekiTimer と seeking フラグで実装）──
@@ -734,7 +734,7 @@ namespace MediaPlayer_X_Ark
 		}
 		private void BtnBack_Click(object sender, EventArgs e)
 		{
-			_controller.PlayPrevious();
+			_controller.PlayPrevious(true);
 		}
 		private void BtnSeekBack_Click(object sender, EventArgs e)
 		{
@@ -747,7 +747,7 @@ namespace MediaPlayer_X_Ark
 		}
 		private void BtnNext_Click(object sender, EventArgs e)
 		{
-			_controller.PlayNext();
+			_controller.PlayNext(true);
 		}
 
 		private void BtnRandom_Click(object sender, EventArgs e)
@@ -1192,10 +1192,10 @@ namespace MediaPlayer_X_Ark
 						BtnStop_Click(this, EventArgs.Empty);
 						break;
 					case APPCOMMAND_MEDIA_NEXTTRACK:
-						_controller.PlayNext();
+						_controller.PlayNext(true);
 						break;
 					case APPCOMMAND_MEDIA_PREVIOUSTRACK:
-						_controller.PlayPrevious();
+						_controller.PlayPrevious(true);
 						break;
 				}
 				m.Result = (IntPtr)1;

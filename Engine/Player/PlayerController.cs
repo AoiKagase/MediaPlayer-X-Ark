@@ -178,26 +178,26 @@ namespace MediaPlayer_X_Ark.Engine.Player
         }
 
         /// <summary>次の曲へ（ループモードを考慮）</summary>
-        public void PlayNext()
+        public void PlayNext(bool manual = false)
         {
+			int currentIndex = _engine.PlayingIndex;
 			_nextTriggered = false;
 			_crossfadeTriggered = false;
 			_engine.SetDevice(_config.settings.Device);
-			_engine.PlayNext();
+			_engine.PlayNext(currentIndex, manual);
             TrackChanged?.Invoke(_engine.PlayingIndex);
             PlaybackStateChanged?.Invoke();
 			UpdatePreciseTimer();
 		}
 
         /// <summary>前の曲へ（ループモードを考慮）</summary>
-        public void PlayPrevious()
+        public void PlayPrevious(bool manual = false)
         {
 			int currentIndex = _engine.PlayingIndex;
-			Stop();
 			_nextTriggered = false;
 			_crossfadeTriggered = false;
 			_engine.SetDevice(_config.settings.Device);
-			_engine.PlayPrevious(currentIndex);
+			_engine.PlayPrevious(currentIndex, manual);
             TrackChanged?.Invoke(_engine.PlayingIndex);
             PlaybackStateChanged?.Invoke();
 			UpdatePreciseTimer();
@@ -347,8 +347,28 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			if (!_engine.NowPlaying)
 			{
 				StopPreciseTimer();
-				_syncContext.Post(_ => PlayNext(), null);
+				//_syncContext.Post(_ => PlayNext(), null);
 				return;
+			}
+
+			// ── CUEトラック終端監視 ──────────────────────────────────────
+			// FMODはトラック境界で止まらないため、CueEndMs到達を明示的に検知する
+			{
+				int pidxCue = _engine.PlayingIndex;
+				if (pidxCue >= 0 && pidxCue < _engine.PlayList.Count && !_nextTriggered)
+				{
+					var cuEntry = _engine.PlayList[pidxCue];
+					if (cuEntry.IsCueTrack && cuEntry.CueEndMs.HasValue)
+					{
+						uint relPos = _engine.GetPosition();
+						if (relPos >= cuEntry.LengthMs && cuEntry.LengthMs > 0)
+						{
+							_nextTriggered = true;
+							_syncContext.Post(_ => PlayNext(), null);
+							return;
+						}
+					}
+				}
 			}
 
 			// ── クロスフェード音量更新 ────────────────────────────────────────
@@ -394,7 +414,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					if (idx >= 0 && idx < _engine.PlayList.Count)
 					{
 						var entry = _engine.PlayList[idx];
-						if (entry.WaveformReady && entry.AudioEndMs > 0)
+						// CUEトラックはNonStopMixをバイパス（連続録音CDを想定）
+						if (!entry.IsCueTrack && entry.WaveformReady && entry.AudioEndMs > 0)
 						{
 							uint pos = _engine.GetPosition();
 							// AudioEndMs + オフセット（秒）を過ぎたら次曲へ
@@ -491,7 +512,17 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 		private void SavePlaylistToFile(string path)
 		{
-			var list = _engine.PlayList.Select(p => p.FileName).ToList();
+			// CUEトラックはCUEファイルパスを保存（重複排除）
+			var seen = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			var list = new System.Collections.Generic.List<string>();
+			foreach (var p in _engine.PlayList)
+			{
+				string entry = (p.IsCueTrack && p.CueSheetRef != null)
+					? p.CueSheetRef.CuePath
+					: p.FileName;
+				if (seen.Add(entry))
+					list.Add(entry);
+			}
 			File.WriteAllText(path,
 				System.Text.Json.JsonSerializer.Serialize(list),
 				System.Text.Encoding.UTF8);

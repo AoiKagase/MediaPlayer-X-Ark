@@ -52,6 +52,64 @@ namespace MediaPlayer_X_Ark.Engine.CD
 			return results;
 		}
 
+		/// <summary>
+		/// CUEシートの REM DISCID を使ってCDDB問い合わせを行う。
+		/// DiscId が未設定の場合は空リストを返す。
+		/// </summary>
+		public static async Task<List<CddbResult>> QueryByCueAsync(
+			CUE.CueSheet sheet,
+			IEnumerable<string> serverUrls,
+			CancellationToken ct = default)
+		{
+			if (sheet == null || sheet.Tracks.Count == 0 || string.IsNullOrEmpty(sheet.DiscId))
+				return new List<CddbResult>();
+
+			// セクタ配列（+150 = MSFオフセット）
+			var sectors = new int[sheet.Tracks.Count];
+			for (int i = 0; i < sheet.Tracks.Count; i++)
+				sectors[i] = sheet.Tracks[i].StartSector + 150;
+
+			int totalSeconds = sheet.TotalDurationMs > 0
+				? sheet.TotalDurationMs / 1000
+				: (sheet.Tracks.Count > 0 && sheet.Tracks[sheet.Tracks.Count - 1].EndMs > 0
+					? sheet.Tracks[sheet.Tracks.Count - 1].EndMs / 1000
+					: 0);
+
+			string queryCmd = BuildQueryCommandFromData(
+				sheet.DiscId, sheet.Tracks.Count, sectors, totalSeconds);
+
+			foreach (var baseUrl in serverUrls)
+			{
+				if (string.IsNullOrWhiteSpace(baseUrl)) continue;
+				List<CddbResult> results = null;
+				try { results = await TryQueryServer(baseUrl, queryCmd, sheet.Tracks.Count, ct); }
+				catch { }
+				if (results != null && results.Count > 0)
+				{
+					foreach (var r in results) r.Source = baseUrl;
+					return results;
+				}
+			}
+			return new List<CddbResult>();
+		}
+
+		private static string BuildQueryCommandFromData(
+			string discId, int trackCount, int[] sectors, int totalSeconds)
+		{
+			var sb = new StringBuilder("cddb query ");
+			sb.Append(discId);
+			sb.Append(' ');
+			sb.Append(trackCount);
+			foreach (int s in sectors)
+			{
+				sb.Append(' ');
+				sb.Append(s);
+			}
+			sb.Append(' ');
+			sb.Append(totalSeconds);
+			return sb.ToString();
+		}
+
 		// ─────────────────────────────────────────
 		//  CDDB プロトコル（gnudb / FreeDB 互換）
 		// ─────────────────────────────────────────
@@ -68,7 +126,7 @@ namespace MediaPlayer_X_Ark.Engine.CD
 				List<CddbResult> results = null;
 				try
 				{
-					results = await TryQueryServer(baseUrl, queryCmd, cd, ct);
+					results = await TryQueryServer(baseUrl, queryCmd, cd.Tracks.Count, ct);
 				}
 				catch { /* このサーバーが失敗したら次へ */ }
 
@@ -89,7 +147,7 @@ namespace MediaPlayer_X_Ark.Engine.CD
 		/// HELLO は失敗しても QUERY を試みる（サーバーによっては不要）。
 		/// </summary>
 		private static async Task<List<CddbResult>> TryQueryServer(
-			string baseUrl, string queryCmd, CdReader cd, CancellationToken ct)
+			string baseUrl, string queryCmd, int trackCount, CancellationToken ct)
 		{
 			// --- HELLO（失敗しても続行）---
 			try
@@ -98,7 +156,7 @@ namespace MediaPlayer_X_Ark.Engine.CD
 					"cddb hello user localhost MediaPlayerXArk 1.0");
 				await _http.GetStringAsync(helloUrl);
 			}
-			catch { /* HELLO 失敗は無視して QUERY へ進む */ }
+			catch { }
 
 			// --- QUERY ---
 			string queryUrl = BuildCddbUrl(baseUrl, queryCmd);
@@ -107,7 +165,7 @@ namespace MediaPlayer_X_Ark.Engine.CD
 			var matches = ParseGnudbQuery(queryResponse);
 			if (matches.Count == 0) return new List<CddbResult>();
 
-			// --- READ（候補を全件取得）---
+			// --- READ ---
 			var results = new List<CddbResult>();
 			foreach (var (category, discId) in matches)
 			{
@@ -115,15 +173,11 @@ namespace MediaPlayer_X_Ark.Engine.CD
 				{
 					string readUrl = BuildCddbUrl(baseUrl, $"cddb read {category} {discId}");
 					string readResponse = await _http.GetStringAsync(readUrl);
-					var result = ParseGnudbRead(readResponse, category, cd.Tracks.Count);
-					if (result != null)
-						results.Add(result);
+					var result = ParseGnudbRead(readResponse, category, trackCount);
+					if (result != null) results.Add(result);
 				}
-				catch { /* 1件の READ 失敗は無視して次候補へ */ }
+				catch { }
 			}
-
-			// READ が全件失敗した場合でも matches があれば空リストを返す
-			// （次のサーバーへは進まない）
 			return results;
 		}
 
