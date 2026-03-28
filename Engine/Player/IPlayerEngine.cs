@@ -60,9 +60,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		FMOD.RESULT PlaySoundPaused(int index, uint position = 0);
 		FMOD.RESULT PlayUrl(string url);
         void Stop();
-        void Pause();
+        void SwitchPause();
 		void PlayNext();
-		void PlayPrevious();
+		void PlayPrevious(int fromIndex = -1);
 		void ReleaseNonStopFadingIfDone();
 		void BuildShuffleQueue();
         void UpdateShuffleQueueOnRemove(int removedIndex);

@@ -171,7 +171,10 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			{
 				Text = "適用",
 				Location = new Point(16, y),
-				Size = new Size(75, 23),
+				Size = OptionsStyle.SaveButtonSize,
+				BackColor = OptionsStyle.PrimaryBlue,
+				ForeColor = Color.White,
+				FlatStyle = FlatStyle.Flat,
 			};
 			_btnSave.Click += BtnSave_Click;
 
@@ -213,8 +216,6 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			else if (_rdoOpenFileAdd.Checked) Config.settings.OpenFileAction = 2;
 			else Config.settings.OpenFileAction = 0;
             Config.settings.DiscordRichPresenceEnabled = _chkDiscordRichPresence.Checked;
-
-            Config.settings.DiscordRichPresenceEnabled = _chkDiscordRichPresence.Checked;
             Config.settings.DiscordApplicationId = _txtDiscordAppId.Text.Trim();
 
             _mainForm.SetDiscordPresenceEnabled(
@@ -223,12 +224,13 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
             // ★即時反映
             _mainForm.TopMost = Config.settings.AlwaysOnTop;
+
+			Config.Save();
 		}
 
 		private void BtnSave_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
-			Config.Save();
 		}
 	}
 }

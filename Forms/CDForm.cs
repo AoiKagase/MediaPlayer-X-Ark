@@ -87,6 +87,7 @@ namespace MediaPlayer_X_Ark
 
 				if (result == FMOD.RESULT.OK)
 				{
+					_mainForm.Controller.Stop();
 					// ★ PlayListIndex を記録
 					_cdReader.Tracks[trackIndex].PlayListIndex = index;
 					// ★ MusicBrainz Disc ID をセット

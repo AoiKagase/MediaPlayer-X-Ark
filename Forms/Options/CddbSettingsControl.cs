@@ -71,13 +71,14 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		private void BuildLayout()
 		{
 			const int lineH = 28;
+			const int pad = 16;
 
 			// ── 説明ラベル ────────────────────────────────────────
 			_lblDesc = new Label
 			{
 				Text = "CDDBサーバーを上から順に試み、最初に結果が返ったものを使用します。\n" +
 						   "上へ移動することで優先順位を上げられます。",
-				Location = new Point(0, 0),
+				Location = new Point(pad + 0, 0),
 				Size = new Size(500, 36),
 				AutoSize = false,
 			};
@@ -85,7 +86,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			// ── サーバーリスト ────────────────────────────────────
 			_lstServers = new ListBox
 			{
-				Location = new Point(0, 44),
+				Location = new Point(pad + 0, 44),
 				Size = new Size(380, 160),
 				SelectionMode = SelectionMode.One,
 			};
@@ -95,7 +96,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			_btnUp = new Button
 			{
 				Text = "▲ 上へ",
-				Location = new Point(388, 44),
+				Location = new Point(pad + 388, 44),
 				Size = new Size(80, lineH),
 				Enabled = false,
 			};
@@ -104,7 +105,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			_btnDown = new Button
 			{
 				Text = "▼ 下へ",
-				Location = new Point(388, 44 + lineH + 4),
+				Location = new Point(pad + 388, 44 + lineH + 4),
 				Size = new Size(80, lineH),
 				Enabled = false,
 			};
@@ -113,7 +114,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			_btnRemove = new Button
 			{
 				Text = "削除",
-				Location = new Point(388, 44 + (lineH + 4) * 2),
+				Location = new Point(pad + 388, 44 + (lineH + 4) * 2),
 				Size = new Size(80, lineH),
 				Enabled = false,
 			};
@@ -123,7 +124,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			_lblCount = new Label
 			{
 				Text = $"0 / {MaxServers} 件",
-				Location = new Point(0, 208),
+				Location = new Point(pad + 0, 208),
 				Size = new Size(30, 22),
 				AutoSize = true,
 				TextAlign = ContentAlignment.MiddleLeft,
@@ -133,13 +134,13 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			_lblUrl = new Label
 			{
 				Text = "URL:",
-				Location = new Point(0, 240),
+				Location = new Point(pad + 0, 240),
 				AutoSize = true,
 			};
 
 			_txtUrl = new TextBox
 			{
-				Location = new Point(36, 238),
+				Location = new Point(pad + 36, 238),
 				Size = new Size(340, 22),
 				PlaceholderText = "http://freedbtest.dyndns.org/~cddb/cddb.cgi",
 			};
@@ -150,7 +151,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			_btnAdd = new Button
 			{
 				Text = "追加",
-				Location = new Point(388, 236),
+				Location = new Point(pad + 388, 236),
 				Size = new Size(80, lineH),
 				Enabled = false,
 			};
@@ -160,7 +161,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			_lblNote = new Label
 			{
 				Text = "※ MusicBrainz は常にフォールバックとして使用されます（リストに表示されません）",
-				Location = new Point(0, 272),
+				Location = new Point(pad + 0, 272),
 				Size = new Size(480, 20),
 				AutoSize = false,
 				ForeColor = Color.Gray,
@@ -171,17 +172,17 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			_btnReset = new Button
 			{
 				Text = "デフォルトに戻す",
-				Location = new Point(0, 300),
+				Location = new Point(pad + 0, 300),
 				Size = new Size(140, lineH),
 			};
 			_btnReset.Click += BtnReset_Click;
 
 			_btnSave = new Button
 			{
-				Text = "保存",
-				Location = new Point(388, 300),
-				Size = new Size(80, lineH),
-				BackColor = Color.FromArgb(0, 120, 215),
+				Text = "適用",
+				Location = new Point(pad + 388, 300),
+				Size = OptionsStyle.SaveButtonSize,
+				BackColor = OptionsStyle.PrimaryBlue,
 				ForeColor = Color.White,
 				FlatStyle = FlatStyle.Flat,
 			};

@@ -78,7 +78,10 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			{
 				Text = "適用",
 				Location = new Point(16, y),
-				Size = new Size(75, 23),
+				Size = OptionsStyle.SaveButtonSize,
+				BackColor = OptionsStyle.PrimaryBlue,
+				ForeColor = Color.White,
+				FlatStyle = FlatStyle.Flat,
 			};
 			_btnSave.Click += BtnSave_Click;
 
@@ -102,12 +105,13 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			// ★即時反映
 			_mainForm.Spectrum.Mode = Config.settings.DefaultSpectrumMode;
 			_mainForm.Spectrum.SnowBlockEnabled = Config.settings.SnowBlockEnabled;
+
+			Config.Save();
 		}
 
 		private void BtnSave_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
-			Config.Save();
 		}
 	}
 }

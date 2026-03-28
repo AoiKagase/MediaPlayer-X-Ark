@@ -30,6 +30,13 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		[Browsable(false)]
 		public bool IsLoaded => Sound.hasHandle();
 
+		/// <summary>
+		/// メモリ上のPCMデータから生成されたサウンド\uff08CDDA等\uff09。
+		/// ファイルパスから再ロードできないため、クリーンアップ対象外にする。
+		/// </summary>
+		[Browsable(false)]
+		public bool IsPcm { get; set; } = false;
+
 		// TAG
 		[DisplayName("Title")]
 		public string Title

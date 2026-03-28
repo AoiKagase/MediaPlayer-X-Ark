@@ -255,7 +255,10 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			{
 				Text = "適用",
 				Location = new Point(16, y),
-				Size = new Size(75, 23),
+				Size = OptionsStyle.SaveButtonSize,
+				BackColor = OptionsStyle.PrimaryBlue,
+				ForeColor = Color.White,
+				FlatStyle = FlatStyle.Flat,
 			};
 			_btnSave.Click += BtnSave_Click;
 

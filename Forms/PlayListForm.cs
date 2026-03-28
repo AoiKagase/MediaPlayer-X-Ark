@@ -165,7 +165,10 @@ namespace MediaPlayer_X_Ark
 		private void PlayListGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
 		{
 			if (e.RowIndex >= 0)
+			{
+				_mainForm.Controller.Stop();
 				_mainForm.Controller.PlayAt(e.RowIndex);
+			}
 		}
 
 		private void PlayListForm_FormClosing(object sender, FormClosingEventArgs e)

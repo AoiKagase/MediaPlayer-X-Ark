@@ -104,7 +104,10 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			{
 				Text = "適用",
 				Location = new Point(pad + 449, 390),
-				Size = new Size(75, 23),
+				Size = OptionsStyle.SaveButtonSize,
+				BackColor = OptionsStyle.PrimaryBlue,
+				ForeColor = Color.White,
+				FlatStyle = FlatStyle.Flat,
 			};
 			_btnApply.Click += BtnApply_Click;
 
@@ -197,14 +200,8 @@ namespace MediaPlayer_X_Ark.Forms.Options
 					{
 						if (pkg.MainImagePath != null && File.Exists(pkg.MainImagePath))
 						{
-							using (var stream = new FileStream(
-								pkg.MainImagePath, FileMode.Open, FileAccess.Read))
-							{
-								var ms = new System.IO.MemoryStream();
-								stream.CopyTo(ms);
-								ms.Seek(0, System.IO.SeekOrigin.Begin);
-								previewImage = new Bitmap(ms);
-							}
+							using (var tmp = Image.FromFile(pkg.MainImagePath))
+								previewImage = new Bitmap(tmp);
 						}
 
 						if (pkg.Format == SkinPackage.SkinFormat.NewXsk &&
@@ -231,9 +228,10 @@ namespace MediaPlayer_X_Ark.Forms.Options
 				_lblAuthor.Text = author;
 				_lblDesc.Text = desc;
 			}
-			catch
+			catch(Exception e)
 			{
 				_pictPreview.Image = null;
+				System.Diagnostics.Debug.WriteLine(e);
 			}
 		}
 	}

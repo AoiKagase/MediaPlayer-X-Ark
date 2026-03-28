@@ -90,6 +90,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			_engine.CrossfadeEnabled = _config.settings.CrossfadeEnabled;
 			_engine.CrossfadeDurationMs = _config.settings.CrossfadeDurationMs;
             _engine.NonStopMixEnabled = _config.settings.NonStopMixEnabled;
+
             _engine.SoundFontPath = _config.settings.SoundFontPath;
 
             _engine.effector.ApplySettings(_config.settings.Effectors);
@@ -164,10 +165,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
         /// <summary>再生／一時停止をトグルする</summary>
         public void TogglePlayPause()
         {
-            if (_engine.IsPlaying())
-                _engine.Pause();
-            else if (_engine.PlayingIndex < _engine.PlayList.Count)
-                PlayAt(_engine.PlayingIndex);
+            _engine.SwitchPause();
 
             PlaybackStateChanged?.Invoke();
 			UpdatePreciseTimer();
@@ -198,11 +196,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
         /// <summary>前の曲へ（ループモードを考慮）</summary>
         public void PlayPrevious()
         {
+			int currentIndex = _engine.PlayingIndex;
 			Stop();
 			_nextTriggered = false;
 			_crossfadeTriggered = false;
 			_engine.SetDevice(_config.settings.Device);
-			_engine.PlayPrevious();
+			_engine.PlayPrevious(currentIndex);
             TrackChanged?.Invoke(_engine.PlayingIndex);
             PlaybackStateChanged?.Invoke();
 			UpdatePreciseTimer();
@@ -326,7 +325,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		private void StartPreciseTimer()
 		{
 			if (_preciseTimerRunning) return;
-			_lastTickMs = Environment.TickCount64;
+			Interlocked.Exchange(ref _lastTickMs, Environment.TickCount64);
 			_preciseTimerRunning = true;
 			timeBeginPeriod(1);
 			_preciseTimer = new System.Threading.Timer(
@@ -349,8 +348,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			// 経過時間計算
 			long now = Environment.TickCount64;
-			int elapsedMs = (int)(now - _lastTickMs);
-			_lastTickMs = now;
+			int elapsedMs = (int)(now - Interlocked.Read(ref _lastTickMs));
+			Interlocked.Exchange(ref _lastTickMs, now);
 
 			if (!_engine.NowPlaying)
 			{
@@ -405,7 +404,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 						if (entry.WaveformReady && entry.AudioEndMs > 0)
 						{
 							uint pos = _engine.GetPosition();
-							if ((int)pos > entry.AudioEndMs)
+							// 無音時間が来たら次の曲を再生開始
+							// オフセットは設定で調整可能（デフォルトは0秒＝曲の終わりちょうど, 負の値も可＝曲の終わり前から次をスタート）
+							if ((int)pos >= entry.AudioEndMs + _config.settings.NonStopMixOffsetSec)
 							{
 								_nextTriggered = true;
 								_syncContext.Post(_ => PlayNext(), null);

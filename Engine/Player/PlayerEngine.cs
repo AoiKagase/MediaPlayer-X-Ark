@@ -155,40 +155,61 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		{
 			if (_disposed) return;  // 二重解放防止
 			if (initialized)
-            {
-                if (disposing)
+			{
+				if (disposing)
 				{
 					spectrum?.Dispose();
-                    wave?.Dispose();
-					_tagLoadSemaphore?.Dispose(); 
+					wave?.Dispose();
+					_tagLoadSemaphore?.Dispose();
 				}
 
-				// Relase FMOD handles for Channel.
-				if (FmodChannel.hasHandle())
-					FmodChannel.stop();
 				_waveformCts?.Cancel();
 				_waveformCts?.Dispose();
-				if (FmodChannelFading.hasHandle())
-					FmodChannelFading.stop();
+
+				// Relase FMOD handles for Channel.
+				try
+				{
+					if (FmodChannel.hasHandle())
+						FmodChannel.stop();
+				}
+				catch { }
+				try
+				{
+					if (FmodChannelFading.hasHandle())
+						FmodChannelFading.stop();
+				}
+				catch { }
 				// Relase FMOD handles for ChannelGroup.
-				if (FmodChannelGroup.hasHandle())
-					FmodChannelGroup.release();
+				try
+				{
+					if (FmodChannelGroup.hasHandle())
+						FmodChannelGroup.release();
+				}
+				catch { }
 
 				// Relase FMOD handles for Sound.
 				for (int i = 0; i < PlayList.Count; i++)
 				{
 					// ★IsLoadedチェックを追加
-					if (PlayList[i].IsLoaded && PlayList[i].Sound.hasHandle())
-						PlayList[i].Sound.release();
+					try
+					{
+						if (PlayList[i].IsLoaded && PlayList[i].Sound.hasHandle())
+							PlayList[i].Sound.release();
+					}
+					catch { }
 				}
 				PlayList.Clear();
 
 				// Relase FMOD handles for System.
-				if (FmodSystem.hasHandle())
+				try
 				{
-					FmodSystem.close();
-					FmodSystem.release();
+					if (FmodSystem.hasHandle())
+					{
+						FmodSystem.close();
+						FmodSystem.release();
+					}
 				}
+				catch { }
 			}
 			_disposed = true;
 		}
@@ -317,7 +338,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		/// <summary>
 		/// Pause
 		/// </summary>
-		public void Pause()
+		public void SwitchPause()
         {
 			bool paused;
 			if (FmodCallFunction(FmodChannel.getPaused(out paused)) == RESULT.OK)
@@ -510,6 +531,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				if (i == index) continue;
 				if (i == index + 1) continue;
 				if (i == fadingIndex) continue;  // ← フェードアウト中は解放しない
+				if (PlayList[i].IsPcm) continue;   // PCMトラックは再ロード不可能なので常に保護
 				if (PlayList[i].IsLoaded)
 				{
 					PlayList[i].Sound.release();
@@ -704,8 +726,10 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			if (result == FMOD.RESULT.OK)
 			{
 				var plist = new Engine.Player.PlayList(title, sound);
+				plist.IsPcm = true;
 				PlayList.Add(plist);
 				index = PlayList.Count - 1;
+				_ = StartWaveformAnalysisFromSoundAsync(index);
 			}
 			return result;
 		}
@@ -840,6 +864,28 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				},
 				ct);
 		}
+		private async System.Threading.Tasks.Task StartWaveformAnalysisFromSoundAsync(int index)
+		{
+			if (index < 0 || index >= PlayList.Count) return;
+			var entry = PlayList[index];
+			if (!entry.IsPcm || !entry.IsLoaded) return;
+
+			_waveformCts?.Cancel();
+			_waveformCts?.Dispose();
+			_waveformCts = new System.Threading.CancellationTokenSource();
+			var ct = _waveformCts.Token;
+
+			await _waveformAnalyzer.AnalyzeFromSoundAsync(
+				entry.Sound,
+				entry,
+				e =>
+				{
+					int idx = PlayList.IndexOf(e);
+					if (idx >= 0)
+						WaveformReady?.Invoke(idx);
+				},
+				ct);
+		}
 		/// <summary>
 		/// プレイリストを全消去する。
 		/// </summary>
@@ -903,9 +949,10 @@ namespace MediaPlayer_X_Ark.Engine.Player
                 PlayingIndex = PlayList.IndexOf(playingItem);
         }
 
-        public void PlayPrevious()
+        public void PlayPrevious(int fromIndex = -1)
         {
             if (PlayList.Count == 0) return;
+            if (fromIndex < 0) fromIndex = PlayingIndex;
 
             if ((loop & LOOP_MODE.LOOP_RANDOM) != 0)
             {
@@ -920,10 +967,10 @@ namespace MediaPlayer_X_Ark.Engine.Player
             switch (loop)
             {
                 case LOOP_MODE.LOOP_ALL:
-                    prev = (PlayingIndex > 0) ? PlayingIndex - 1 : PlayList.Count - 1;
+                    prev = (fromIndex > 0) ? fromIndex - 1 : PlayList.Count - 1;
                     break;
                 default:
-                    prev = Math.Max(0, PlayingIndex - 1);
+                    prev = Math.Max(0, fromIndex - 1);
                     break;
             }
             PlaySound(prev);
@@ -941,7 +988,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			if (FmodChannelFading.hasHandle())
 				FmodChannelFading.stop();
 			if (_fadingPlayListIndex >= 0 && _fadingPlayListIndex < PlayList.Count
-				&& PlayList[_fadingPlayListIndex].IsLoaded)
+				&& PlayList[_fadingPlayListIndex].IsLoaded
+				&& !PlayList[_fadingPlayListIndex].IsPcm)
 			{
 				PlayList[_fadingPlayListIndex].Sound.release();
 				PlayList[_fadingPlayListIndex].Sound = default;
@@ -1134,8 +1182,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					if (_fadingPlayListIndex >= 0 && _fadingPlayListIndex < PlayList.Count
 						&& PlayList[_fadingPlayListIndex].IsLoaded)
 					{
-						PlayList[_fadingPlayListIndex].Sound.release();
-						PlayList[_fadingPlayListIndex].Sound = default;
+						if (!PlayList[_fadingPlayListIndex].IsPcm)
+						{
+							PlayList[_fadingPlayListIndex].Sound.release();
+							PlayList[_fadingPlayListIndex].Sound = default;
+						}
 					}
 					FmodChannelFading = default;
 					_fadingPlayListIndex = -1;
@@ -1170,7 +1221,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				// 前回のフェードが残っていたら先に止めてサウンドを解放
 				FmodChannelFading.stop();
 				if (_fadingPlayListIndex >= 0 && _fadingPlayListIndex < PlayList.Count
-					&& PlayList[_fadingPlayListIndex].IsLoaded)
+					&& PlayList[_fadingPlayListIndex].IsLoaded
+					&& !PlayList[_fadingPlayListIndex].IsPcm)
 				{
 					PlayList[_fadingPlayListIndex].Sound.release();
 					PlayList[_fadingPlayListIndex].Sound = default;
@@ -1201,8 +1253,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				{
 					try
 					{
-						PlayList[_fadingPlayListIndex].Sound.release();
-						PlayList[_fadingPlayListIndex].Sound = default;
+						if (!PlayList[_fadingPlayListIndex].IsPcm)
+						{
+							PlayList[_fadingPlayListIndex].Sound.release();
+							PlayList[_fadingPlayListIndex].Sound = default;
+						}
 					}
 					catch { }
 				}
@@ -1251,8 +1306,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				if (_fadingPlayListIndex >= 0 && _fadingPlayListIndex < PlayList.Count
 					&& PlayList[_fadingPlayListIndex].IsLoaded)
 				{
-					PlayList[_fadingPlayListIndex].Sound.release();
-					PlayList[_fadingPlayListIndex].Sound = default;
+					if (!PlayList[_fadingPlayListIndex].IsPcm)
+					{
+						PlayList[_fadingPlayListIndex].Sound.release();
+						PlayList[_fadingPlayListIndex].Sound = default;
+					}
 				}
 
 				FmodChannelFading = default;
