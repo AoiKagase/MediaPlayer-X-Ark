@@ -24,6 +24,10 @@
 		<Compile Remove="Resources\Skins\Temp\**" />
 		<EmbeddedResource Remove="Resources\Skins\Temp\**" />
 		<None Remove="Resources\Skins\Temp\**" />
+		<!-- Vendor 配下は ProjectReference で参照するため直接コンパイル対象から除外 -->
+		<Compile Remove="Vendor\**" />
+		<EmbeddedResource Remove="Vendor\**" />
+		<None Remove="Vendor\**" />
 	</ItemGroup>
 	<ItemGroup>
 		<Content Include="Resources\fmod.dll" />
@@ -36,6 +40,11 @@
 		<PackageReference Include="System.Data.DataSetExtensions" Version="4.6.0-preview3.19128.7" />
 		<PackageReference Include="z440.atl.core" Version="7.11.0" />
 		<PackageReference Include="DiscordRichPresence" Version="1.2.1.24" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="Vendor\cuetools.net\CUETools.Codecs\CUETools.Codecs.csproj" />
+		<ProjectReference Include="Vendor\cuetools.net\CUETools.Codecs.Flake\CUETools.Codecs.Flake.csproj" />
+		<ProjectReference Include="Vendor\cuetools.net\CUETools.Codecs.ALAC\CUETools.Codecs.ALAC.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="Mathf.cs" />
@@ -72,6 +81,18 @@
 		<Move SourceFiles="$(OutputPath)Ude.NetStandard.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)Ude.NetStandard.dll')" />
 		<Move SourceFiles="$(OutputPath)NFluidsynth.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)NFluidsynth.dll')" />
 		<Move SourceFiles="$(OutputPath)NFluidsynth.MidiAccess.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)NFluidsynth.MidiAccess.dll')" />
-		<Move SourceFiles="$(OutputPath)DiscordRPC.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)DiscordRPC.dll')" />		
+		<Move SourceFiles="$(OutputPath)DiscordRPC.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)DiscordRPC.dll')" />
+		<!-- CUETools -->
+		<Move SourceFiles="$(OutputPath)CUETools.Codecs.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)CUETools.Codecs.dll')" />
+		<Move SourceFiles="$(OutputPath)CUETools.Codecs.Flake.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)CUETools.Codecs.Flake.dll')" />
+		<Move SourceFiles="$(OutputPath)CUETools.Codecs.ALAC.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)CUETools.Codecs.ALAC.dll')" />
+		<!-- pdb は不要なため削除（ルート・Libs 両方） -->
+		<Delete Files="$(OutputPath)CUETools.Codecs.pdb;$(OutputPath)Libs\CUETools.Codecs.pdb" />
+		<Delete Files="$(OutputPath)CUETools.Codecs.Flake.pdb;$(OutputPath)Libs\CUETools.Codecs.Flake.pdb" />
+		<Delete Files="$(OutputPath)CUETools.Codecs.ALAC.pdb;$(OutputPath)Libs\CUETools.Codecs.ALAC.pdb" />
+		<Move SourceFiles="$(OutputPath)Newtonsoft.Json.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)Newtonsoft.Json.dll')" />
+		<!-- ロケールリソース（不要） -->
+		<RemoveDir Directories="$(OutputPath)de-DE" Condition="Exists('$(OutputPath)de-DE')" />
+		<RemoveDir Directories="$(OutputPath)ru-RU" Condition="Exists('$(OutputPath)ru-RU')" />
 	</Target>
 </Project>

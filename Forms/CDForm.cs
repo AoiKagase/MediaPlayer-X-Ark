@@ -3,6 +3,7 @@ using MediaPlayer_X_Ark.Engine.Config;
 using MediaPlayer_X_Ark.Engine.Player;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -240,7 +241,112 @@ namespace MediaPlayer_X_Ark
 			BtnClose.Enabled = enabled;
 			cmbDrive.Enabled = enabled;
 			BtnCddb.Enabled = enabled;
+			BtnRip.Enabled = enabled;
+			cmbFormat.Enabled = enabled;
 		}
+
+	// ── リップ保存 ─────────────────────────────────────────────────────
+	private CancellationTokenSource _ripCts;
+
+	private async void BtnRip_Click(object sender, EventArgs e)
+	{
+		if (_cdReader == null || _cdReader.Tracks.Count == 0)
+		{
+			lblStatus.Text = "CDが読み込まれていません";
+			return;
+		}
+
+		int[] indices;
+		if (lstTracks.SelectedIndices.Count > 0)
+		{
+			indices = new int[lstTracks.SelectedIndices.Count];
+			lstTracks.SelectedIndices.CopyTo(indices, 0);
+		}
+		else
+		{
+			// 未選択なら全トラック
+			indices = Enumerable.Range(0, _cdReader.Tracks.Count).ToArray();
+		}
+
+		// 出力フォルダ選択
+		string outputFolder;
+		using (var dlg = new FolderBrowserDialog())
+		{
+			dlg.Description = "保存先フォルダを選択してください";
+			dlg.UseDescriptionForTitle = true;
+			if (dlg.ShowDialog(this) != DialogResult.OK) return;
+			outputFolder = dlg.SelectedPath;
+		}
+
+		var format = (CdRipper.OutputFormat)cmbFormat.SelectedIndex;
+
+		_ripCts?.Cancel();
+		_ripCts = new CancellationTokenSource();
+		var ct = _ripCts.Token;
+
+		SetButtonsEnabled(false);
+		prgRip.Value = 0;
+		prgRip.Visible = true;
+
+		int completed = 0;
+		try
+		{
+			for (int i = 0; i < indices.Length; i++)
+			{
+				if (ct.IsCancellationRequested) break;
+
+				int trackIndex = indices[i];
+				var track = _cdReader.Tracks[trackIndex];
+				lblStatus.Text = $"[{i + 1}/{indices.Length}] Track {trackIndex + 1:D2} 読み込み中...";
+
+				byte[] pcmData = await Task.Run(() => _cdReader.ReadTrack(trackIndex), ct);
+
+				var meta = new RipMetadata
+				{
+					Title       = track.Title,
+					Artist      = _appliedResult?.Artist ?? "",
+					Album       = _appliedResult?.Album  ?? "",
+					TrackNumber = track.TrackNumber,
+					TrackTotal  = _cdReader.AudioTracks,
+				};
+
+				string outputPath = CdRipper.BuildFileName(outputFolder, format, track.TrackNumber, track.Title);
+				lblStatus.Text = $"[{i + 1}/{indices.Length}] Track {trackIndex + 1:D2} エンコード中...";
+
+				var progress = new Progress<int>(p =>
+				{
+					int overall = (completed * 100 + p) / indices.Length;
+					prgRip.Value = Math.Min(overall < 0 ? 0 : overall, 100);
+				});
+
+				await CdRipper.RipAsync(pcmData, outputPath, format, meta, progress, ct);
+				completed++;
+			}
+
+			if (!ct.IsCancellationRequested)
+			{
+				prgRip.Value = 100;
+				lblStatus.Text = $"{completed} トラックを保存しました → {outputFolder}";
+			}
+			else
+			{
+				lblStatus.Text = "キャンセルしました";
+			}
+		}
+		catch (OperationCanceledException)
+		{
+			lblStatus.Text = "キャンセルしました";
+		}
+		catch (Exception ex)
+		{
+			lblStatus.Text = $"エラー: {ex.Message}";
+		}
+		finally
+		{
+			SetButtonsEnabled(true);
+			prgRip.Visible = false;
+		}
+	}
 
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
