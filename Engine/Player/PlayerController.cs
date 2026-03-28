@@ -75,13 +75,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
         private void Initialize()
         {
             _engine.ErrorOccurred += (s, e) => _syncContext.Post(_ => ErrorOccurred?.Invoke(s, e), null);
-            // ② OutputType と SoftwareFormat は init() より前に設定
+            // OutputType は init() より前に設定する必要がある
             _engine.SetOutputTypeBeforeInit(_config.GetOutputType());
 
-			// ③ init() を実行
 			_engine.Initialize(_config.settings.Buffer);
 			_engine.WaveformReady += (index) =>	_syncContext.Post(_ => WaveformReady?.Invoke(index), null);
-			// ④ Device は init() 後でOK
+			// Device は init() 後に設定する
 			_engine.SetDevice(_config.settings.Device);
 
 			_engine.ReplayGainEnabled = _config.settings.ReplayGainEnabled;
@@ -106,7 +105,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				&& _config.settings.LastPlayingIndex >= 0
 				&& _config.settings.LastPlayingIndex < _engine.PlayList.Count)
 			{
-				// ★一時停止状態で再生開始
+				// 前回の再生位置を一時停止状態で復元する
 				_engine.SetDevice(_config.settings.Device);
 				_engine.PlaySoundPaused(_config.settings.LastPlayingIndex,
 					_config.settings.LastPlayingPosition);
@@ -150,9 +149,6 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			_engine.SetDevice(_config.settings.Device);
             _engine.PlaySound(index);
-
-            // タイトル等はエンジンが GetTags() で取得済み
-            // トラックバーの最大値は MainForm 側で設定（UI依存のため）
 
             ApplyVolumeFromConfig();
             ApplyPanFromConfig();
@@ -220,15 +216,14 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			bool anyAdded = false;
             foreach (var file in filenames)
             {
-				// 最初の1曲目
 				if (idx++ == 0)
 				{
-					// 最初の１つはOpen=>Play処理を行う
+					// 先頭ファイルのみ即再生
 					OpenAndPlay(file);
 				}
 				else
 				{
-					// 後はOpenのみでプレイリストへ追加
+					// 2曲目以降はプレイリストへ追加のみ
 					_engine.CreateSound(file, out _);
 				}
                 anyAdded = true;
@@ -265,8 +260,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
             return false;
         }
 
-        // PlayerController.cs に追加
-        public bool OpenUrl(string url)  // すでに存在するが戻り値をboolに
+        public bool OpenUrl(string url)
         {
             if (_engine.PlayUrl(url) == FMOD.RESULT.OK)
             {
@@ -346,7 +340,6 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		{
 			if (!_preciseTimerRunning) return;
 
-			// 経過時間計算
 			long now = Environment.TickCount64;
 			int elapsedMs = (int)(now - Interlocked.Read(ref _lastTickMs));
 			Interlocked.Exchange(ref _lastTickMs, now);
@@ -358,11 +351,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				return;
 			}
 
-			// ── クロスフェード音量更新 ────────────────────────────────
+			// ── クロスフェード音量更新 ────────────────────────────────────────
 			if (_engine.CrossfadeEnabled)
 				_engine.UpdateCrossfade(elapsedMs);
 
-			// ── クロスフェード開始検知 ────────────────────────────────
+			// ── クロスフェード開始検知 ────────────────────────────────────────
 			if (_engine.CrossfadeEnabled
 				&& !_engine.NonStopMixEnabled
 				&& !_crossfadeTriggered
@@ -381,7 +374,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				}
 			}
 
-			// ── ABリピート ────────────────────────────────────────────
+			// ── ABリピート ────────────────────────────────────────────────────
 			if (AbRepeatEnabled)
 			{
 				uint pos = _engine.GetPosition();
@@ -389,10 +382,10 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					_engine.SetPosition(AbStart);
 			}
 
-			// ── NonStopMix ────────────────────────────────────────────────
+			// ── NonStopMix ────────────────────────────────────────────────────
 			if (_config.settings.NonStopMixEnabled)
 			{
-				// 退避チャンネル（旧曲）の自然終了を監視して解放
+				// 退避チャンネル（旧曲）が自然終了していたら解放
 				_engine.ReleaseNonStopFadingIfDone();
 
 				if (!_nextTriggered)
@@ -404,8 +397,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 						if (entry.WaveformReady && entry.AudioEndMs > 0)
 						{
 							uint pos = _engine.GetPosition();
-							// 無音時間が来たら次の曲を再生開始
-							// オフセットは設定で調整可能（デフォルトは0秒＝曲の終わりちょうど, 負の値も可＝曲の終わり前から次をスタート）
+							// AudioEndMs + オフセット（秒）を過ぎたら次曲へ
+							// 負値オフセット = 無音前から早めに次曲をスタート
 							if ((int)pos >= entry.AudioEndMs + _config.settings.NonStopMixOffsetSec)
 							{
 								_nextTriggered = true;
@@ -419,19 +412,19 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			if (!_engine.IsPlaying())
 			{
-				// 再生が自然終了 → UIスレッドで次曲
+				// 再生が自然終了 → UIスレッドで次曲へ
 				StopPreciseTimer();
 				_syncContext.Post(_ => PlayNext(), null);
 				return;
 			}
 		}
 
-		// ── UIタイマーから呼ぶ（後方互換・現在は何もしない） ─────────
-		/// <summary>
-		/// 以前は曲終了検知・クロスフェード更新をここで行っていたが、
-		/// 高精度タイマーに移管済み。MainForm側の呼び出しは残しても問題なし。
+			/// <summary>
+		/// UIタイマー（PlayerTimer_Tick）から呼ぶ後方互換メソッド。
+		/// 曲終了検知・クロスフェード更新は高精度タイマーに移管済みだが、
+		/// NonStopMix/Crossfade 無効時は UI タイマーでも次曲検知を行う。
 		/// </summary>
-		public void OnTimerTick(int timerIntervalMs) 
+		public void OnTimerTick(int timerIntervalMs)
 		{
 			if (!_config.settings.NonStopMixEnabled && !_config.settings.CrossfadeEnabled)
 			{
@@ -507,11 +500,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
         public void Close()
         {
 			StopPreciseTimer();
-			// ★プレイリスト自動保存
 			if (_config.settings.RestorePlaylist)
 				SavePlaylistToFile(Path.Combine(
 					Application.StartupPath, "last_playlist.json"));
-			// ★再生位置を保存
 			if (_config.settings.RestorePosition)
 			{
 				_config.settings.LastPlayingIndex = _engine.PlayingIndex;

@@ -89,9 +89,7 @@ namespace MediaPlayer_X_Ark
 				if (result == FMOD.RESULT.OK)
 				{
 					_mainForm.Controller.Stop();
-					// ★ PlayListIndex を記録
 					_cdReader.Tracks[trackIndex].PlayListIndex = index;
-					// ★ MusicBrainz Disc ID をセット
 					_player.PlayList[index].MusicBrainzDiscId = _cdReader.MusicBrainzId;
 					if (playImmediately) 
 						_mainForm.Controller.PlayAt(index);
@@ -154,7 +152,6 @@ namespace MediaPlayer_X_Ark
 					string title = _cdReader.Tracks[trackIndex].Title;
 					int index;
 					_player.CreateSoundFromPCM(pcmData, title, out index);
-					// ★ PlayListIndex を記録
 					_cdReader.Tracks[trackIndex].PlayListIndex = index;
 
 					_player.PlayList[index].MusicBrainzDiscId = _cdReader.MusicBrainzId;
@@ -376,7 +373,7 @@ namespace MediaPlayer_X_Ark
 			{
 				results = await CddbClient.QueryAsync(
 					  _cdReader,
-					  _config.settings.CddbServers,  // ← 設定から取得
+					  _config.settings.CddbServers,
 					  ct);
 			}
 			catch (OperationCanceledException)
@@ -402,7 +399,6 @@ namespace MediaPlayer_X_Ark
 				return;
 			}
 
-			// 候補を選択
 			CddbResult selected;
 			if (results.Count == 1)
 			{
@@ -496,7 +492,6 @@ namespace MediaPlayer_X_Ark
 				_cdReader.Tracks[i].Title = title;
 				lstTracks.Items.Add($"{title}  [{_cdReader.Tracks[i].DurationText}]");
 
-				// ★ PlayListIndex が有効なエントリに Artist/Album/Title を直接書き込む
 				int plIdx = _cdReader.Tracks[i].PlayListIndex;
 				if (plIdx >= 0 && plIdx < _player.PlayList.Count)
 				{

@@ -68,7 +68,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
         private void BuildLayout()
         {
             // ── 上部パネル（説明 + 一括選択ボタン）──────────────────
-            var panelTop = new Panel { Dock = DockStyle.Top, Height = 90 };
+            var panelTop = new Panel { Dock = DockStyle.Top, Height = 80 };
 
             var lblDesc = new Label
             {
@@ -105,7 +105,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
             panelTop.Controls.AddRange(new Control[] { lblDesc, _btnSelectAll, _btnDeselectAll, _btnRefresh });
 
             // ── 下部パネル（登録ボタン + ステータス）─────────────────
-            var panelBottom = new Panel { Dock = DockStyle.Bottom, Height = 72 };
+            var panelBottom = new Panel { Dock = DockStyle.Bottom, Height = 62 };
 
             _btnRegister = new Button
             {
@@ -147,7 +147,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
             _lblFluidSynthStatus = new Label
             {
                 Text      = "",
-                Location  = new Point(0, 56),
+                Location  = new Point(0, 60),
                 AutoSize  = true,
                 ForeColor = Color.Gray,
                 Font      = new System.Drawing.Font(Font.FontFamily, Font.Size - 0.5f),

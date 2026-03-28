@@ -26,7 +26,6 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		[Browsable(false)] 
 		public FMOD.Sound Sound { get; set; }
 
-		// ロード済みかどうか
 		[Browsable(false)]
 		public bool IsLoaded => Sound.hasHandle();
 
@@ -37,7 +36,6 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		[Browsable(false)]
 		public bool IsPcm { get; set; } = false;
 
-		// TAG
 		[DisplayName("Title")]
 		public string Title
 		{
@@ -114,11 +112,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			OnPropertyChanged(nameof(length));
 		}
 
-		// ファイルパスのみで作成（遅延ロード用）
+		/// <summary>ファイルパスのみで作成。Sound は再生時に遅延ロードされる。</summary>
 		public PlayList(string fileName)
 		{
 			this.FileName = fileName;
-			this.Sound = default; // 未ロード状態
+			this.Sound = default;
 		}
 
 		public PlayList(string fileName, FMOD.Sound sound)

@@ -46,7 +46,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
     public class PlayerEngine : IPlayerEngine
 	{
-		private bool _disposed = false;  // 二重解放防止フラグ
+		private bool _disposed = false;
 		private readonly SemaphoreSlim _tagLoadSemaphore = new SemaphoreSlim(3, 3);
         public IReadOnlyList<PluginLoadResult> LoadedPlugins => _loadedPlugins;
         private readonly List<PluginLoadResult> _loadedPlugins = new List<PluginLoadResult>();
@@ -60,13 +60,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
         protected bool initialized = false;
         private bool _nowPlaying = false;
         public bool NowPlaying => _nowPlaying;
-        // FMOD SYSTEM.
         public BindingList<Engine.Player.PlayList> PlayList { get; set; } = new BindingList<Engine.Player.PlayList>();
         protected FMOD.System FmodSystem;
 		protected FMOD.ChannelGroup FmodChannelGroup;
 		protected FMOD.Channel FmodChannel;
 
-		// SOUND DEVICES.
 		protected FMOD.OUTPUTTYPE FmodOutputType;
 
 
@@ -80,22 +78,21 @@ namespace MediaPlayer_X_Ark.Engine.Player
         private int _shuffleQueueIndex = 0;
         private readonly Random _rng = new Random();
 
-		// クロスフェード用フィールド
-		private FMOD.Channel FmodChannelFading;   // フェードアウト中の旧チャンネル
-		private int _fadingPlayListIndex = -1;  // フェードアウト中のPlayListインデックス
-		private int _crossfadeElapsedMs = 0;    // フェード経過時間
+		// ── クロスフェード用フィールド ────────────────────────────────────────
+		private FMOD.Channel FmodChannelFading;      // フェードアウト中の旧チャンネル
+		private int _fadingPlayListIndex = -1;       // フェードアウト中の PlayList インデックス
+		private int _crossfadeElapsedMs = 0;         // フェード経過時間（ms）
 		private bool _isCrossfading = false;
-		private bool _isCrossfadeVolumeFixed = false; // 音量固定クロスフェード（NonStopMix用）
-		private float _masterVolume = 1.0f; // SetVolume で設定された音量を保持
+		private bool _isCrossfadeVolumeFixed = false; // NonStopMix 時は音量固定で並走
+		private float _masterVolume = 1.0f;           // SetVolume で設定されたマスター音量
 		public bool CrossfadeEnabled { get; set; } = false;
 		public int CrossfadeDurationMs { get; set; } = 3000;
 		public bool CrossfadeTriggered { get; set; } = false;
         public bool NonStopMixEnabled { get; set; } = false;
-        // SF2パス
         private string _soundFontPath = "";
 		private readonly object _fmodLock = new object();
 		private WaveformAnalyzer _waveformAnalyzer;
-		// キャンセル管理（曲が切り替わったら前の解析を中断）
+		// 曲切り替わり時に前回の波形解析をキャンセルするためのトークン
 		private System.Threading.CancellationTokenSource _waveformCts;
 		public bool WaveformEnabled { get; set; } = false;
 		public event Action<int> WaveformReady;
@@ -126,34 +123,25 @@ namespace MediaPlayer_X_Ark.Engine.Player
             return result;
         }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
 		public PlayerEngine()
         {
 			CreateSystem();
-//			Initialize();
 		}
 
-		/// <summary>
-		/// Destructor
-		/// </summary>
-		// 既存のデストラクタはDisposeを呼ぶだけにする
 		~PlayerEngine()
 		{
 			Dispose(false);
 		}
 
-		// 外部から明示的に呼ぶ用
 		public void Dispose()
 		{
 			Dispose(true);
-			GC.SuppressFinalize(this);  // デストラクタを呼ばせない
+			GC.SuppressFinalize(this);
 		}
 
 		protected virtual void Dispose(bool disposing)
 		{
-			if (_disposed) return;  // 二重解放防止
+			if (_disposed) return;
 			if (initialized)
 			{
 				if (disposing)
@@ -179,7 +167,6 @@ namespace MediaPlayer_X_Ark.Engine.Player
 						FmodChannelFading.stop();
 				}
 				catch { }
-				// Relase FMOD handles for ChannelGroup.
 				try
 				{
 					if (FmodChannelGroup.hasHandle())
@@ -187,10 +174,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				}
 				catch { }
 
-				// Relase FMOD handles for Sound.
 				for (int i = 0; i < PlayList.Count; i++)
 				{
-					// ★IsLoadedチェックを追加
 					try
 					{
 						if (PlayList[i].IsLoaded && PlayList[i].Sound.hasHandle())
@@ -200,7 +185,6 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				}
 				PlayList.Clear();
 
-				// Relase FMOD handles for System.
 				try
 				{
 					if (FmodSystem.hasHandle())
@@ -223,17 +207,13 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		/// </summary>
 		public void Initialize(CfgBuffer bufferSettings = null)
 		{
-			// Initialize() 内の先頭に追加
 			var fluidSynthPath = Path.Combine(
 				AppDomain.CurrentDomain.BaseDirectory, "Libs", "fluidsynth.dll");
 			_fluidSynthAvailable = File.Exists(fluidSynthPath);
 
-			// System Create.
 			{
-				// Get Version.
 				if (FmodCallFunction(FmodSystem.getVersion(out FmodVersion)) == FMOD.RESULT.OK)
 				{
-					// Version Check.
 					if (FmodVersion != FMOD.VERSION.number)
 					{
                         ErrorOccurred?.Invoke(this, new PlayerErrorEventArgs(
@@ -244,7 +224,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					}
 				}
 
-				// init()より前にバッファ設定を適用
+				// バッファ設定は init() より前に適用する必要がある
 				if (bufferSettings != null)
 				{
 					FmodSystem.setStreamBufferSize(
@@ -255,18 +235,14 @@ namespace MediaPlayer_X_Ark.Engine.Player
 						bufferSettings.DspBufferCount);
 				}
 
-				// System Init.
-				if (FmodCallFunction(FmodSystem.init(channelCount, FMOD.INITFLAGS.NORMAL, IntPtr.Zero)) == RESULT.OK)
+					if (FmodCallFunction(FmodSystem.init(channelCount, FMOD.INITFLAGS.NORMAL, IntPtr.Zero)) == RESULT.OK)
 				{
-					// Create Channel Group.
 					if (FmodCallFunction(FmodSystem.createChannelGroup("Channel 01", out FmodChannelGroup)) == RESULT.OK)
                     {
 						spectrum = new FmodSpectrum(ref FmodSystem, 1024, ref this.FmodChannelGroup);
 						wave = new FmodWave(ref FmodSystem, ref FmodChannelGroup);
 
 						LoadPlugins();
-
-//						FmodCallFunction(FmodSystem.getChannel(0, out FmodChannel));
 
 						PlayList = new BindingList<Engine.Player.PlayList>();
 
@@ -301,7 +277,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
             foreach (string dllPath in Directory.GetFiles(pluginDir, "*.dll"))
             {
                 string filename = Path.GetFileName(dllPath);
-                // ★loadPlugin にはファイル名のみ渡す（setPluginPath との相対）
+                // loadPlugin にはファイル名のみ渡す（setPluginPath との相対パス）
                 result = FmodSystem.loadPlugin(filename, out uint handle, 10);
 
                 if (result != FMOD.RESULT.OK)
@@ -335,9 +311,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
             return;
         }
 
-		/// <summary>
-		/// Pause
-		/// </summary>
+		/// <summary>一時停止をトグルする</summary>
 		public void SwitchPause()
         {
 			bool paused;
@@ -348,32 +322,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		}
 
 		/// <summary>
-		/// Device Setting: Output Type
+		/// 出力タイプを設定する。必ず Initialize() より前に呼ぶこと。
+		/// 対応タイプ：AUTODETECT / WASAPI / ASIO / WINSONIC
 		/// </summary>
-		/// <param name="outputtype">
-		/// [x] AUTODETECT,			Picks the best output mode for the platform. This is the default.
-		/// [ ] UNKNOWN,			All - 3rd party plugin, unknown. This is for use with System::getOutput only.
-		/// [ ]	NOSOUND,			All - Perform all mixing but discard the final output.
-		/// [ ] WAVWRITER,			All - Writes output to a .wav file.
-		/// [ ] NOSOUND_NRT,		All - Non-realtime version of FMOD_OUTPUTTYPE_NOSOUND, one mix per System::update.
-		/// [?] WAVWRITER_NRT,		All - Non-realtime version of FMOD_OUTPUTTYPE_WAVWRITER, one mix per System::update.
-		///	[x] WASAPI,				Win / UWP / Xbox One / Game Core - Windows Audio Session API. (Default on Windows, Xbox One, Game Core and UWP)
-		///	[x] ASIO,				Win - Low latency ASIO 2.0.
-		/// [ ] PULSEAUDIO,			Linux - Pulse Audio. (Default on Linux if available)
-		/// [ ] ALSA,				Linux - Advanced Linux Sound Architecture. (Default on Linux if PulseAudio isn't available)
-		/// [ ]	COREAUDIO,			Mac / iOS - Core Audio. (Default on Mac and iOS)
-		/// [ ] AUDIOTRACK,			Android - Java Audio Track. (Default on Android 2.2 and below)
-		/// [ ]	OPENSL,				Android - OpenSL ES. (Default on Android 2.3 up to 7.1)
-		/// [ ] AUDIOOUT,			PS4 / PS5 - Audio Out. (Default on PS4, PS5)
-		/// [ ]	AUDIO3D,			PS4 - Audio3D.
-		/// [ ] WEBAUDIO,			HTML5 - Web Audio ScriptProcessorNode output. (Default on HTML5 if AudioWorkletNode isn't available)
-		/// [ ]	NNAUDIO,			Switch - nn::audio. (Default on Switch)
-		/// [X] WINSONIC,			Win10 / Xbox One / Game Core - Windows Sonic.
-		/// [ ]	AAUDIO,				Android - AAudio. (Default on Android 8.1 and above)
-		/// [ ] AUDIOWORKLET,		HTML5 - Web Audio AudioWorkletNode output. (Default on HTML5 if available)
-		/// [ ] MAX,				Maximum number of output types supported.
-		/// OutputType設定。必ずInitialize()より前に呼ぶこと。
-		/// </param>
 		public void SetOutputTypeBeforeInit(FMOD.OUTPUTTYPE outputtype)
 		{
 			FmodOutputType = outputtype;
@@ -396,17 +347,13 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			return FmodOutputType;
         }
 
-		/// <summary>
-		/// IsPlaying
-		/// </summary>
-		/// <returns>boolean</returns>
+		/// <summary>再生中かどうかを返す</summary>
 		public bool IsPlaying()
 		{
 			bool result = false;
 			if (FmodChannel.hasHandle())
             {
-				// STOPした際にFmodChannelの関数は
-				// FMOD_ERR_INVALID_HANDLEを返すのでエラーチェックしない
+				// stop() 後は FMOD_ERR_INVALID_HANDLE が返るためエラーチェックしない
 				FmodChannel.isPlaying(out result);
 				return result;
 			}
@@ -414,9 +361,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		}
 
 
-		/// <summary>
-		/// Get Device list. for SoundCards.
-		/// </summary>
+		/// <summary>FMOD からデバイス一覧を取得して FmodDeviceList に格納する</summary>
         public void GetDeviceList()
         {
 			int numDrivers = 0;
@@ -438,9 +383,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			}
 		}
 
-		/// <summary>
-		/// Get Now selected device id;
-		/// </summary>
+		/// <summary>現在選択中のデバイス ID を返す</summary>
 		public int GetDevice()
         {
 			int driver;
@@ -460,19 +403,13 @@ namespace MediaPlayer_X_Ark.Engine.Player
             }
 			return "";
 		}
-		/// <summary>
-		/// Set selected device.
-		/// </summary>
-		/// <param name="driver">fmod device list number.</param>
+		/// <summary>デバイスをインデックスで指定する</summary>
 		public void SetDevice(int driver)
         {
 			FmodSystem.setDriver(driver);
         }
 
-		/// <summary>
-		/// Set selected device.
-		/// </summary>
-		/// <param name="driver">System GUID</param>
+		/// <summary>デバイスをシステム GUID 文字列で指定する</summary>
 		public void SetDevice(string driver)
 		{
 			for(int i = 0; i < FmodDeviceList.Count(); i++)
@@ -517,21 +454,19 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			if (index >= PlayList.Count) 
 				return FMOD.RESULT.OK;
 
-			// ★チャンネルが有効な場合のみstop（二重発火防止）
 			ReleaseNonStopFadingIfDone();
-			StartCrossfadeOrStop();  // ← ここを変更
+			StartCrossfadeOrStop();
 			CrossfadeTriggered = false;
 
-			// クロスフェード中は旧チャンネルが使用中のサウンドを解放しないよう保護する
-			int fadingIndex = _fadingPlayListIndex;  // フェードアウト中のインデックスを保持
+			// クロスフェード中の旧チャンネルが使うサウンドは解放しない
+			int fadingIndex = _fadingPlayListIndex;
 
-			// Sound解放
 			for (int i = 0; i < PlayList.Count; i++)
 			{
 				if (i == index) continue;
 				if (i == index + 1) continue;
-				if (i == fadingIndex) continue;  // ← フェードアウト中は解放しない
-				if (PlayList[i].IsPcm) continue;   // PCMトラックは再ロード不可能なので常に保護
+				if (i == fadingIndex) continue;
+				if (PlayList[i].IsPcm) continue; // PCM トラックは再ロード不可のため常に保護
 				if (PlayList[i].IsLoaded)
 				{
 					PlayList[i].Sound.release();
@@ -539,12 +474,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				}
 			}
 
-			// ロード
 			var loadResult = LoadSound(index);
 			if (loadResult != FMOD.RESULT.OK) return loadResult;
 
 			PlayingIndex = index;
-			// クロスフェード時は音量0で開始してフェードイン
+			// クロスフェード時は音量 0 で開始してフェードインする
 			float startVolume = CrossfadeEnabled && _isCrossfading ? 0f : _masterVolume;
 
 			var result = FmodCallFunction(FmodSystem.playSound(
@@ -558,26 +492,24 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			return result;
 		}
 
-		// ── ApplyReplayGain() 追加 ────────────────────────────────────────
 		private void ApplyReplayGain(int index)
 		{
 			if (!FmodChannel.hasHandle()) return;
 
 			var entry = PlayList[index];
 
-			// モードに応じてゲイン値を選択
+			// モードに応じてゲイン値を選択（アルバム優先 or トラック優先）
 			float? gainDb = ReplayGainMode == 1
-				? (entry.ReplayGainAlbum ?? entry.ReplayGainTrack)  // アルバム優先
-				: (entry.ReplayGainTrack ?? entry.ReplayGainAlbum); // トラック優先
+				? (entry.ReplayGainAlbum ?? entry.ReplayGainTrack)
+				: (entry.ReplayGainTrack ?? entry.ReplayGainAlbum);
 
-			if (gainDb == null) return;  // タグなし → 適用しない
+			if (gainDb == null) return;
 
-			// dB → 線形変換（プリアンプ込み）
-			// volume = 10 ^ ((gainDb + preamp) / 20)
+			// dB → 線形変換： volume = 10 ^ ((gainDb + preamp) / 20)
 			float totalDb = gainDb.Value + ReplayGainPreamp;
 			float linearGain = (float)Math.Pow(10.0, totalDb / 20.0);
 
-			// マスター音量と合算（クリッピング防止で上限1.0）
+			// マスター音量と合算してクリッピング防止
 			float finalVolume = Math.Min(_masterVolume * linearGain, 1.0f);
 
 			FmodChannel.setVolume(finalVolume);
@@ -594,7 +526,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			PlayingIndex = index;
 
-			// ★paused=true で再生開始（音が出ない）
+			// paused=true で再生開始することで位置だけ設定し、音を出さない
 			var result = FmodCallFunction(FmodSystem.playSound(
 				PlayList[index].Sound, FmodChannelGroup, true, out FmodChannel));
 
@@ -612,7 +544,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
             FmodCallFunction(PlayList[index].Sound.getLength(out length, TIMEUNIT.MS));
 
-			// ★FMODで取得できない場合はATLの値を使用
+			// FMOD で取得できない場合（ストリームなど）は ATL で読み込んだ値を使う
 			if (length == 0 || length == 0xFFFFFFFF)
 				length = PlayList[index].LengthMs;
 
@@ -620,15 +552,13 @@ namespace MediaPlayer_X_Ark.Engine.Player
         }
 
 		/// <summary>
-		/// Create Sound.
-		/// Removed CDDA support.
+		/// ファイルをプレイリストに追加する。タグ情報はバックグラウンドで取得する。
+		/// URL の場合はタグ取得をスキップする。
 		/// </summary>
-		/// <param name="filename"></param>
 		public RESULT CreateSound(string filename, out int index)
         {
 			index = 0;
 
-			// ★URLの場合はバックグラウンドタグ取得をスキップ
 			if (!filename.StartsWith("http://") && !filename.StartsWith("https://"))
 			{
                 var existing = PlayList.FirstOrDefault(p => p.FileName == filename);
@@ -669,8 +599,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 						PlayList[index].Album = track.Album;
 						PlayList[index].SetLength((uint)track.DurationMs);
 
-						// ★ ReplayGain タグを取得
-						// ATL では AdditionalFields に "REPLAYGAIN_TRACK_GAIN" などが入っている
+						// ATL の AdditionalFields に "REPLAYGAIN_TRACK_GAIN" などが格納される
 						if (track.AdditionalFields.TryGetValue("REPLAYGAIN_TRACK_GAIN", out string tGain))
 							PlayList[index].ReplayGainTrack = ParseReplayGainDb(tGain);
 
@@ -688,13 +617,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 		}
 
-		// ── ParseReplayGainDb() ヘルパー追加 ─────────────────────────────
-		// "-6.54 dB" → -6.54f を返す。解析失敗時は null。
+		/// <summary>"-6.54 dB" 形式の文字列を float に変換する。解析失敗時は null を返す。</summary>
 		private static float? ParseReplayGainDb(string value)
 		{
 			if (string.IsNullOrEmpty(value)) return null;
-			// "dB" や空白を除去して数値部分を取得
-			string num = value.Replace("dB", "").Replace("dB", "").Trim();
+			string num = value.Replace("dB", "").Trim();
 			if (float.TryParse(num,
 				System.Globalization.NumberStyles.Float,
 				System.Globalization.CultureInfo.InvariantCulture,
@@ -760,7 +687,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				if (_fluidSynthAvailable && !string.IsNullOrEmpty(_soundFontPath)
 					&& File.Exists(_soundFontPath))
 				{
-					// ★FluidSynthでPCMにレンダリング
+					// FluidSynth が利用可能な場合は PCM にレンダリングして再生する
 					try
 					{
 						using (var renderer = new FluidSynthMidiRenderer())
@@ -770,7 +697,6 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 							if (pcm != null && pcm.Length > 0)
 							{
-								// ★PlayListを経由せず直接FMOD Soundを生成
 								FMOD.CREATESOUNDEXINFO pcmInfo = new FMOD.CREATESOUNDEXINFO();
 								pcmInfo.cbsize = Marshal.SizeOf(pcmInfo);
 								pcmInfo.length = (uint)pcm.Length;
@@ -804,11 +730,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				}
 
 				info.suggestedsoundtype = FMOD.SOUND_TYPE.MIDI;
-				// ★SF2ファイルが設定されている場合は適用
 				IntPtr dlsPtr = IntPtr.Zero;
+				// FluidSynth 未導入時のみ FMOD の DLS として SF2 を使用する
 				if (!string.IsNullOrEmpty(_soundFontPath) &&
 					File.Exists(_soundFontPath) &&
-					!_fluidSynthAvailable) // FluidSynth未導入時のみDLSを使用
+					!_fluidSynthAvailable)
 				{
 					dlsPtr = Marshal.StringToHGlobalAnsi(_soundFontPath);
 					info.dlsname = dlsPtr;
@@ -825,7 +751,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			}
             else if (_trackerExtensions.Contains(ext))
             {
-                // トラッカー形式はcreateSound
+                // トラッカー形式はストリームではなく createSound でメモリに展開する
                 result = FmodCallFunction(FmodSystem.createSound(
                     filename, FMOD.MODE.DEFAULT | FMOD.MODE.ACCURATETIME | FMOD.MODE.LOOP_OFF, ref info, out sound));
             }
@@ -846,7 +772,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		private async System.Threading.Tasks.Task StartWaveformAnalysisAsync(
 			string filename, int index)
 		{
-			// 前回の解析をキャンセル
+			// 前回の曲の解析をキャンセルしてから新しい解析を開始する
 			_waveformCts?.Cancel();
 			_waveformCts?.Dispose();
 			_waveformCts = new System.Threading.CancellationTokenSource();
@@ -857,7 +783,6 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				PlayList[index],
 				entry =>
 				{
-					// 解析完了 → インデックスを特定してイベント発火
 					int idx = PlayList.IndexOf(entry);
 					if (idx >= 0)
 						WaveformReady?.Invoke(idx);
@@ -894,7 +819,6 @@ namespace MediaPlayer_X_Ark.Engine.Player
             Stop();
 			for (int i = 0; i < PlayList.Count; i++)
 			{
-				// ★ロード済みのものだけ解放
 				if (PlayList[i].IsLoaded)
 					PlayList[i].Sound.release();
 			}
@@ -910,7 +834,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
             if ((loop & LOOP_MODE.LOOP_RANDOM) != 0)
             {
-                // キューが終わったら再シャッフル
+                // シャッフルキューが枯渇したら再生成する
                 if (_shuffleQueueIndex >= _shuffleQueue.Count)
                     BuildShuffleQueue();
                 PlaySound(_shuffleQueue[_shuffleQueueIndex++]);
@@ -956,7 +880,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
             if ((loop & LOOP_MODE.LOOP_RANDOM) != 0)
             {
-                // キューを1つ戻る（最低0）
+                // シャッフルキューを 1 つ戻る（最低 0 まで）
                 _shuffleQueueIndex = Math.Max(0, _shuffleQueueIndex - 2);
                 if (_shuffleQueueIndex < _shuffleQueue.Count)
                     PlaySound(_shuffleQueue[_shuffleQueueIndex++]);
@@ -975,10 +899,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
             }
             PlaySound(prev);
         }
-        /// <summary>
-        /// Stop Player
-        /// </summary>
-        /// <param name="channel"></param>
+        /// <summary>再生を停止する。クロスフェード用の退避チャンネルも解放する。</summary>
         public void Stop()
         {
 			_nowPlaying = false;
@@ -1000,16 +921,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			_crossfadeElapsedMs = 0;
 		}
 
-		/// <summary>
-		/// Set Volume.
-		/// </summary>
-		/// <param name="channel"></param>
-		/// <param name="vol"></param>
+		/// <summary>マスター音量を設定する（0.0〜1.0）</summary>
 		public void SetVolume(float vol)
         {
 			_masterVolume = vol;
 			FmodChannel.setVolume(vol);
-			// フェードアウト中のチャンネルには触らない
+			// フェードアウト中の旧チャンネルの音量には干渉しない
         }
 
 		public int GetVolume()
@@ -1018,11 +935,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			FmodChannel.getVolume(out volume);
 			return (int) (volume * 100);
         }
-		/// <summary>
-		/// Set Pan
-		/// </summary>
-		/// <param name="channel"></param>
-		/// <param name="pan"></param>
+		/// <summary>パンを設定する（-1.0〜1.0）</summary>
 		public void SetPan(float pan)
         {
 			FmodChannel.setPan(pan);
@@ -1042,11 +955,10 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			try
 			{
-				// 出力タイプをinit前に設定
 				if (tempSystem.setOutput(outputType) != FMOD.RESULT.OK)
 					return list;
 
-				// 最小構成でinit（1ch、サウンド再生なし）
+				// 最小構成（1ch）で初期化してデバイス一覧を取得する
 				if (tempSystem.init(1, FMOD.INITFLAGS.NORMAL, IntPtr.Zero) != FMOD.RESULT.OK)
 					return list;
 
@@ -1069,7 +981,6 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			}
 			finally
 			{
-				// 必ずクリーンアップ
 				tempSystem.close();
 				tempSystem.release();
 			}
@@ -1107,7 +1018,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
         {
             _shuffleQueue = Enumerable.Range(0, PlayList.Count).ToList();
 
-            // Fisher-Yatesシャッフル
+            // Fisher-Yates シャッフル
             for (int i = _shuffleQueue.Count - 1; i > 0; i--)
             {
                 int j = _rng.Next(i + 1);
@@ -1144,7 +1055,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
             if (result != FMOD.RESULT.OK) return result;
 
-            // プレイリストに追加せず直接再生
+            // URL ストリームはプレイリストに追加せず直接再生する
             FmodCallFunction(FmodSystem.playSound(sound, FmodChannelGroup, false, out FmodChannel));
 
             _nowPlaying = true;
@@ -1172,10 +1083,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		}
 		private void StartCrossfadeOrStop()
 		{
-			// NonStopMix：フェードなし即切り替え
 			if (NonStopMixEnabled)
 			{
-				// 前回の退避チャンネルが残っていたら強制解放（新曲開始時は必ず）
+				// NonStopMix：フェードなし即切り替え。前回の退避チャンネルを強制解放する
 				if (FmodChannelFading.hasHandle())
 				{
 					FmodChannelFading.stop();
@@ -1192,7 +1102,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					_fadingPlayListIndex = -1;
 				}
 
-				// 現在の再生チャンネルを退避（stop()しない・自然終了に任せる）
+				// 現在のチャンネルは stop() せず退避し、自然終了に任せる
 				if (FmodChannel.hasHandle() && IsPlaying())
 				{
 					_fadingPlayListIndex = PlayingIndex;
@@ -1208,17 +1118,16 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			}
 			if (!CrossfadeEnabled || !FmodChannel.hasHandle() || !IsPlaying())
 			{
-				// クロスフェード無効または再生中でなければ即停止
 				if (FmodChannel.hasHandle())
 					FmodChannel.stop();
 				_fadingPlayListIndex = -1;
 				return;
 			}
 
-			// 現在のチャンネルをフェードアウト用に退避
+			// 現在のチャンネルをフェードアウト用に退避する
 			if (FmodChannelFading.hasHandle())
 			{
-				// 前回のフェードが残っていたら先に止めてサウンドを解放
+				// 前回のフェードが残っていたら先に停止してサウンドを解放する
 				FmodChannelFading.stop();
 				if (_fadingPlayListIndex >= 0 && _fadingPlayListIndex < PlayList.Count
 					&& PlayList[_fadingPlayListIndex].IsLoaded
@@ -1228,7 +1137,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					PlayList[_fadingPlayListIndex].Sound = default;
 				}
 			}
-			_fadingPlayListIndex = PlayingIndex;  // ← 旧曲のインデックスを記録
+			_fadingPlayListIndex = PlayingIndex;
 			FmodChannelFading = FmodChannel;
 			FmodChannel = default;
 			_crossfadeElapsedMs = 0;
@@ -1265,8 +1174,6 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				_fadingPlayListIndex = -1;
 			}
 		}
-		// ── UpdateCrossfade() 追加 ────────────────────────────────────────
-		// MainForm の PlayerTimer_Tick から毎フレーム呼ぶ。
 		public void UpdateCrossfade(int elapsedMs)
 		{
 			if (!_isCrossfading) return;
@@ -1280,7 +1187,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			float t = Math.Min((float)_crossfadeElapsedMs / CrossfadeDurationMs, 1.0f);
 			if (_isCrossfadeVolumeFixed)
 			{
-				// NonStopMix：音量固定で並走、時間経過で旧チャンネル停止のみ
+				// NonStopMix：音量固定のまま並走させる
 				if (FmodChannelFading.hasHandle())
 					FmodChannelFading.setVolume(_masterVolume);
 				if (FmodChannel.hasHandle())
@@ -1288,21 +1195,18 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			}
 			else
 			{
-				// フェードアウト（旧チャンネル）
+				// クロスフェード：旧チャンネルをフェードアウト、新チャンネルをフェードイン
 				if (FmodChannelFading.hasHandle())
 					FmodChannelFading.setVolume(_masterVolume * (1.0f - t));
 
-				// フェードイン（新チャンネル）
 				if (FmodChannel.hasHandle())
 					FmodChannel.setVolume(_masterVolume * t);
 			}
-			// フェード完了
 			if (t >= 1.0f)
 			{
 				if (FmodChannelFading.hasHandle())
 					FmodChannelFading.stop();
 
-				// フェード完了後に旧曲のサウンドを解放する
 				if (_fadingPlayListIndex >= 0 && _fadingPlayListIndex < PlayList.Count
 					&& PlayList[_fadingPlayListIndex].IsLoaded)
 				{

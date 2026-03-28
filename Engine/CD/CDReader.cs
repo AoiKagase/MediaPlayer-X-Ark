@@ -201,9 +201,8 @@ namespace MediaPlayer_X_Ark.Engine.CD
 						TrackNumber = current.TrackNumber,
 						StartSector = startSector,
 						EndSector = endSector,
-                        Title = $"Track {current.TrackNumber:D2}", // デフォルト
+                        Title = $"Track {current.TrackNumber:D2}",
                     });
-                    // DiscId計算
                     MusicBrainzId = CalculateDiscId(toc);
 					FreeDbDiscId = CalculateFreeDbDiscId(toc);
                 }

@@ -118,6 +118,7 @@ namespace MediaPlayer_X_Ark.Forms
             });
 
 			_treeMenu.ExpandAll();
+			_treeMenu.SelectedNode = nodeGeneral;
 		}
 		private void RegisterControls()
 		{

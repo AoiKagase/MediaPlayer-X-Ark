@@ -12,16 +12,9 @@ namespace MediaPlayer_X_Ark.Engine.Config
 {
     public class ConfigurationData
     {
-        /// ===================================
-        /// 画面
-        /// ===================================
-        /// <summary>
-        /// PAN
-        /// </summary>
+        /// <summary>パン（-10〜+10）</summary>
         public int Pan { get; set; }
-        /// <summary>
-        /// Volume
-        /// </summary>
+        /// <summary>音量（0〜150）</summary>
         public int Volume { get; set; }
 
 		public bool RestorePlaylist { get; set; } = false;
@@ -31,28 +24,16 @@ namespace MediaPlayer_X_Ark.Engine.Config
 		public int OpenFileAction { get; set; } = 0;
 		public int DefaultSpectrumMode { get; set; } = 0;
 		public bool SnowBlockEnabled { get; set; } = false;
-		/// ===================================
-		/// 出力設定
-		/// ===================================
-		/// <summary>
-		/// 出力形式
-		/// </summary>
+		/// <summary>出力形式（0=AUTODETECT, 1=WASAPI, 2=ASIO, 3=WinSonic）</summary>
 		public int OutputType { get; set; }
 
-        /// <summary>
-        /// デバイス
-        /// </summary>
+        /// <summary>デバイス GUID</summary>
         public string Device { get; set; }
 
 		public string SoundFontPath { get; set; } = "";
-		/// ===================================
-		/// エフェクト
-		/// ===================================
 		public CfgEffectors Effectors { get; set; } = new CfgEffectors();
         public Dictionary<string, string> EffectPresets { get; set; } = new Dictionary<string, string>();
-        /// <summary>
-        /// スキン
-        /// </summary>
+        /// <summary>スキンファイルパス（.xsk）</summary>
         public string Skin { get; set; }
 
 		public CfgBuffer Buffer { get; set; } = new CfgBuffer();
@@ -171,7 +152,7 @@ namespace MediaPlayer_X_Ark.Engine.Config
         [JsonPropertyName("22000")]
         public decimal GEQ_22K { get; set; }
 
-        // Helper to update band value by index to avoid duplicated switch logic across UI
+        /// <summary>バンドインデックスでゲイン値を設定する（UI側のswitch重複を避けるためのヘルパー）</summary>
         public void SetByIndex(int index, int value)
         {
             switch (index)
@@ -305,10 +286,8 @@ namespace MediaPlayer_X_Ark.Engine.Config
         public ConfigurationData settings { get; set; }
         protected IPlayerEngine engine;
 
-        // Backwards-compatible shim to expose existing functionality via IConfigService
         public IConfigService AsService() => new ConfigServiceAdapter(this);
 
-        // Constructor no longer requires a `ref` parameter. Pass the engine instance by value.
         public Configuration(IPlayerEngine engine)
         {
             this.engine = engine;
@@ -337,15 +316,13 @@ namespace MediaPlayer_X_Ark.Engine.Config
                         break;
                 }
                 settings.Device = engine.GetDeviceGUID();
-				// 新形式を優先、なければ旧形式
 				var defaultXsk = Path.Combine(Application.StartupPath, "Skins", "Default", "Default.xsk");
-                var defaultXsf = ".\\bbbs\\bs.xsf"; // 既存のデフォルト
+                var defaultXsf = ".\\bbbs\\bs.xsf";
 
                 settings.Skin = File.Exists(defaultXsk) ? defaultXsk : defaultXsf;
             }
 		}
 
-		// Adapter to expose Configuration via IConfigService without breaking existing code
 		internal class ConfigServiceAdapter : IConfigService
         {
             private readonly Configuration _cfg;
@@ -384,7 +361,7 @@ namespace MediaPlayer_X_Ark.Engine.Config
 
         public void GetEqualizerValue()
         {
-            // engine or effector may be null during early startup; guard against that
+            // 起動直後はエンジンやエフェクターが null の場合があるため保護する
             if (engine == null || engine.effector == null || engine.effector.GEqualizer == null)
                 return;
 

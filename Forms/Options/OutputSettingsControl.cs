@@ -47,7 +47,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			{
 				Text = "出力設定",
 				Location = new Point(16, y),
-				Size = new Size(520, 100),
+				Size = new Size(520, 120),
 			};
 
 			grpOutput.Controls.Add(new Label
@@ -110,7 +110,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			{
 				Text = "バッファ設定",
 				Location = new Point(16, y),
-				Size = new Size(520, 120),
+				Size = new Size(520, 145),
 			};
 
 			grpBuffer.Controls.Add(new Label
@@ -193,7 +193,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 				_nudStreamBuffer, _nudDspBufferSize, _nudDspBufferCount
 			});
 
-			y += grpBuffer.Height + 12;
+			y += grpBuffer.Height + 17;
 
 			// ===========================
 			// MIDIサウンドフォント

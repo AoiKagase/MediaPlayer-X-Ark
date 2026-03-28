@@ -26,12 +26,11 @@ namespace MediaPlayer_X_Ark
 				return null;
 			};
 
-			// ★Libs フォルダのネイティブDLLを先にロード
+			// Libs フォルダのネイティブ DLL を init() より前に明示的にロードする
 			string libsPath = Path.Combine(
 				AppDomain.CurrentDomain.BaseDirectory, "Libs");
             Win32API.SetDllDirectory(libsPath);
 			Win32API.LoadLibrary(Path.Combine(libsPath, "fmod.dll"));
-			// fmod.dllの次に追加
 			Win32API.LoadLibrary(Path.Combine(libsPath, "fluidsynth.dll"));
 			this.EnableVisualStyles = true;
             this.IsSingleInstance = true;
@@ -47,7 +46,6 @@ namespace MediaPlayer_X_Ark
         /// <param name="e"></param>
         void StartUp_StartupNextInstance(object sender, StartupNextInstanceEventArgs e)
         {
-            // パラメータを取得してOpen関数へ引き渡し
             string parameters = e.CommandLine[0];
             if (File.Exists(parameters))
             {

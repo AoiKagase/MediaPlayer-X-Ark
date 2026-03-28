@@ -22,7 +22,7 @@ namespace MediaPlayer_X_Ark
 		private MainForm _mainForm;
 		private IPlayerEngine _player;
 		private IConfigService _config;
-		// When true, do not forward mouse messages to owner (used while modal dialogs are open)
+		// モーダルダイアログ表示中はオーナーへのマウスイベント転送を抑制する
 		private bool _suppressForwarding = false;
 
 		public PlayListForm(MainForm main, PlayerController player, IConfigService config)
@@ -39,22 +39,12 @@ namespace MediaPlayer_X_Ark
 		{
 			this.PlayListGrid.DataSource = _player.PlayList;
 
-			//        public string FileName { get; set; }
-			//        public FMOD.Sound Sound { get; set; }
-			//        public string Title { get; set; }
-			//        public string Artist { get; set; }
-			//        public string Album { get; set; }
-			//        public FMOD.SOUND_TYPE SoundType { get; set; }
-			//        public FMOD.SOUND_FORMAT Format { get; set; }
-			//        public int Bit { get; set; }
-			//        public uint length { get; set; }
 			this.PlayListGrid.Columns[1].Visible = false;
 			this.PlayListGrid.Columns[2].Visible = false;
 
 			this.PlayListGrid.Columns[0].AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
 			this.PlayListGrid.Columns[3].AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
 
-			// ★コンテキストメニュー初期化
 			InitContextMenus();
 		}
 		private void InitContextMenus()
@@ -113,14 +103,11 @@ namespace MediaPlayer_X_Ark
 				menuSave,
 				new ToolStripSeparator(),
 				menuClear,
-	            new ToolStripSeparator(),   // ← 追加
+	            new ToolStripSeparator(),
 				menuSort
             });
 
-			// グリッドの右クリックイベント
 			PlayListGrid.MouseDown += PlayListGrid_MouseDown;
-
-			// フォームの右クリックイベント
 			this.MouseDown += PlayListForm_MouseDown_ContextMenu;
 		}
         private void SortPlayList<T>(Func<PlayList, T> keySelector)
@@ -255,7 +242,7 @@ namespace MediaPlayer_X_Ark
 							 "WPL|*.wpl|" +
 							 "全てのファイル|*.*";
 				dlg.DefaultExt = "m3u";
-				// disable forwarding while modal dialog is shown to avoid re-entrancy / environment-specific issues
+				// モーダルダイアログ表示中は転送を抑制する
 				try
 				{
 					_suppressForwarding = true;
@@ -487,8 +474,7 @@ namespace MediaPlayer_X_Ark
 		/// </summary>
 		private Point mousePoint;
 		/// <summary>
-		/// フォーム内のマウス押下処理
-		/// 位置の記憶
+		/// マウス押下でウィンドウ移動の基点を記録する。
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -496,7 +482,6 @@ namespace MediaPlayer_X_Ark
 		{
 			if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
 			{
-				//位置を記憶する
 				mousePoint = new Point(e.X, e.Y);
 				_mainForm.Activate();
 			}
@@ -536,10 +521,7 @@ namespace MediaPlayer_X_Ark
 		{
 			get
 			{
-				//const int WS_EX_TRANSPARENT = 0x00000020;
-				var cp = base.CreateParams;
-				// 透過ピクセル上のみ透過させるため
-				// WndProc の HTTRANSPARENT と組み合わせて使用
+					var cp = base.CreateParams;
 				return cp;
 			}
 		}
@@ -560,7 +542,6 @@ namespace MediaPlayer_X_Ark
 					base.WndProc(ref m);
 					if (m.Result == (IntPtr)1)
 					{
-						// use ToInt64 to be safe on both 32/64-bit
 						long lp = m.LParam.ToInt64();
 						var screenPt = new Point(
 							(short)(lp & 0xFFFF),
@@ -571,7 +552,6 @@ namespace MediaPlayer_X_Ark
 				}
 				catch (Exception)
 				{
-					// swallow to avoid crashing due to unexpected message formats on some environments
 				}
 				return;
 			}
@@ -582,7 +562,7 @@ namespace MediaPlayer_X_Ark
 				m.Msg == WM_RBUTTONDOWN ||
 				m.Msg == WM_RBUTTONUP)
 			{
-				// do not forward messages while a modal dialog is active (some environments crash when forwarded)
+				// モーダルダイアログ中はメッセージ転送をスキップする
 				if (_suppressForwarding) { base.WndProc(ref m); return; }
 				try
 				{
@@ -611,8 +591,7 @@ namespace MediaPlayer_X_Ark
 				}
 				catch (Exception)
 				{
-					// swallow to prevent environment-specific crashes; if reproducible, collect stacktrace
-				}
+					}
 			}
 
 			base.WndProc(ref m);

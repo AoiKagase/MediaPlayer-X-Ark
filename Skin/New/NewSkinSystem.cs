@@ -82,7 +82,6 @@ namespace MediaPlayer_X_Ark.Skin.New
         public void Open(string jsonPath)
 		{
 			_skinDir = Path.GetDirectoryName(jsonPath);
-			// 古いキャッシュを破棄
 			foreach (var bmp in _imageCache.Values)
 				bmp?.Dispose();
 			_imageCache.Clear();
@@ -99,17 +98,15 @@ namespace MediaPlayer_X_Ark.Skin.New
 				return;
 			}
 
-            // 画像をキャッシュにロード
             if (skin.Images != null)
 			{
 				foreach (var kv in skin.Images)
 				{
-					// / と \ 両方対応
 					var relativePath = kv.Value.Replace('/', Path.DirectorySeparatorChar);
 					var imgPath = Path.Combine(_skinDir, relativePath);
 					if (File.Exists(imgPath))
 					{
-						// ファイルロックを避けるためメモリストリーム経由でロード
+						// ファイルロック回避のためメモリストリーム経由でロードする
 						using (var stream = new FileStream(imgPath, FileMode.Open, FileAccess.Read))
 						{
 							_imageCache[kv.Key] = new Bitmap(stream);
@@ -118,7 +115,6 @@ namespace MediaPlayer_X_Ark.Skin.New
 				}
 			}
 
-			// MainForm
 			var mf = skin.MainForm;
 			MainForm = new FormComponents
 			{
@@ -130,30 +126,25 @@ namespace MediaPlayer_X_Ark.Skin.New
 					Height = mf.Location.H,
 				}
 			};
-            // MainForm: ボタン類
             Buttons = new Dictionary<string, Dictionary<string, ButtonComponents>>();
             Buttons["MainForm"] = new Dictionary<string, ButtonComponents>();
             foreach (var kv in skin.MainForm.Buttons ?? new Dictionary<string, PartsButtons>())
 				Buttons["MainForm"][kv.Key] = LoadButton(skin.MainForm.Buttons, kv.Key);
 
-			// MainForm: Sliders
 			Sliders = new Dictionary<string, SliderComponents>();
 			foreach (var kv in skin.MainForm.Sliders ?? new Dictionary<string, PartsSliders>())
 				Sliders[kv.Key] = LoadSlider(skin.MainForm.Sliders, kv.Key);
 
-			// MainForm: Labels
 			Labels = new Dictionary<string, Dictionary<string, LabelComponents>>();
             Labels["MainForm"] = new Dictionary<string, LabelComponents>();
             foreach (var kv in skin.MainForm.Labels ?? new Dictionary<string, PartsTextArea>())
 				Labels["MainForm"][kv.Key] = LoadText(skin.MainForm.Labels, kv.Key);
 
-			// MainForm: Pictures
 			Pictures = new Dictionary<string, Dictionary<string, PictureComponents>>();
 			Pictures["MainForm"] = new Dictionary<string, PictureComponents>();
 			foreach (var kv in skin.MainForm.Pictures ?? new Dictionary<string, PartsPictureArea>())
 				Pictures["MainForm"][kv.Key] = LoadPictures(skin.MainForm.Pictures, kv.Key);
 
-			// MainForm: Spectrum
 			var sp = mf.Spectrum;
             Spectrum = new SpectrumComponents
 			{
@@ -169,8 +160,7 @@ namespace MediaPlayer_X_Ark.Skin.New
 				Enabled = true,
 			};
 
-			// WaveForm
-			// TODO: テスト用にデフォルト値を入れているが、正式にはスキン側で定義必須。NULLの場合は非表示
+			// スキン側で未定義の場合はデフォルト値にフォールバックする
 			WaveForm = new WaveformComponents
 			{
 				Target = mf.WaveArea?.Target ?? "trackbar",
@@ -181,7 +171,6 @@ namespace MediaPlayer_X_Ark.Skin.New
                 ColorMix = ParseColor(mf.WaveArea?.ColorMix ?? "FF00FF"),
                 ColorPlayed = ParseColor(mf.WaveArea?.ColorPlayed ?? "00FF00"),
                 ColorUnplayed = ParseColor(mf.WaveArea?.ColorUnplayed ?? "202020"),
-                // target="area" の場合のみ使用
                 Location = new Location
 				{
 					X = mf.WaveArea?.Location?.X ?? 0,
@@ -191,12 +180,10 @@ namespace MediaPlayer_X_Ark.Skin.New
                 }
             };
 
-            // SubForms
             SubForms = new Dictionary<string, FormComponents>();
             Grids = new Dictionary<string, Dictionary<string, GridComponents>>();
             foreach (var kv in skin.SubForms ?? new Dictionary<string, SubFormDef>())
 			{
-                // Form
                 SubForms[kv.Key] = new FormComponents
 				{
 					BackImage = CropImage(kv.Value.Src?.ImageKey, kv.Value.Src),
@@ -218,7 +205,6 @@ namespace MediaPlayer_X_Ark.Skin.New
 					MagnetMode = kv.Value.Magnetic,
                 };
 
-                // Buttons
                 foreach (var btnKv in kv.Value.Buttons ?? new Dictionary<string, PartsButtons>())
 				{
 					if (!Buttons.ContainsKey(kv.Key))
@@ -226,7 +212,6 @@ namespace MediaPlayer_X_Ark.Skin.New
 					Buttons[kv.Key][btnKv.Key] = LoadButton(kv.Value.Buttons, btnKv.Key);
                 }
 
-				// Labels
 				foreach (var labelKv in kv.Value.Labels ?? new Dictionary<string, PartsTextArea>())
 				{
 					if (!Labels.ContainsKey(kv.Key))
@@ -234,7 +219,6 @@ namespace MediaPlayer_X_Ark.Skin.New
 					Labels[kv.Key][labelKv.Key] = LoadText(kv.Value.Labels, labelKv.Key);
                 }
 
-				// Grids
 				foreach (var gridKv in kv.Value.Grids ?? new Dictionary<string, PartsGrids>())
 				{
 					if (!Grids.ContainsKey(kv.Key))
@@ -253,7 +237,6 @@ namespace MediaPlayer_X_Ark.Skin.New
                     };
                 }
 
-				// Pictures
 				foreach (var picKv in kv.Value.Pictures ?? new Dictionary<string, PartsPictureArea>())
 				{
 					if (!Pictures.ContainsKey(kv.Key))
@@ -300,7 +283,6 @@ namespace MediaPlayer_X_Ark.Skin.New
 
 			result.Enabled = !def.IsDisabled && result.BackImage != null;
 
-            // optional
             if (def.Optional != null)
             {
                 result.OptionalImage = CropImage(def.Optional.ImageKey, def.Optional);

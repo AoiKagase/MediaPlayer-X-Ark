@@ -46,7 +46,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			const int sliderHeight = 154;
 			const int sliderWidth = 40;
 			const int sliderSpacing = 45;
-			const int sliderStartX = 30;
+			const int sliderStartX = 20;
 
 			// ===========================
 			// チェックボックス
@@ -111,6 +111,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 					sliderHeight,
 					i == 0); // 最初だけ目盛り表示
 				_sliders[i].ValueChanged += Slider_ValueChanged;
+				_sliders[i].BackColor = Color.Transparent;
 			}
 
 			// ===========================
@@ -147,6 +148,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			Controls.Add(_pictGraph);
 			Controls.Add(centerLine);
 			Controls.AddRange(_sliders);
+			centerLine.SendToBack();
 		}
 
 		private ColorSlider.ColorSlider CreateSlider(

@@ -47,7 +47,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			{
 				Text = "起動・プレイリスト",
 				Location = new Point(16, y),
-				Size = new Size(400, 130),
+				Size = new Size(400, 150),
 			};
 
 			_chkRestorePlaylist = new CheckBox
@@ -80,7 +80,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 				_chkRestorePlaylist, _chkRestorePosition,
 				_chkAutoSavePlaylist, _chkAlwaysOnTop
 			});
-            y += grpStartup.Height + 12;
+            y += grpStartup.Height + 22;
 
 			_chkRestorePlaylist.CheckedChanged += (s, e) =>
 			{
@@ -95,7 +95,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			{
 				Text = "ファイルを開いた時の動作",
 				Location = new Point(16, y),
-				Size = new Size(400, 100),
+				Size = new Size(400, 120),
 			};
 
 			_rdoOpenFileAuto = new RadioButton
@@ -122,7 +122,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 				_rdoOpenFileAuto, _rdoOpenFilePlay, _rdoOpenFileAdd
 			});
 
-			y += _grpOpenFileAction.Height + 12;
+			y += _grpOpenFileAction.Height + 22;
             // ===========================
             // Discord Rich Presence
             // ===========================

@@ -39,10 +39,9 @@ namespace MediaPlayer_X_Ark
 
 		public INewSkinSystem CurrentSkin => _currentSkin;
 
-		// 用途別にOpenFileDialogを分離
-		private OpenFileDialog _openFileDialogMedia;   // 音楽ファイル用
+		private OpenFileDialog _openFileDialogMedia;
 		private Bitmap _waveformBitmap = null;
-		private PictureBox _waveformArea = null;  // target="area" 用
+		private PictureBox _waveformArea = null;
 		private int _waveformRefreshCounter = 0;
 		private readonly List<Form> _managedForms = new List<Form>();
 
@@ -74,36 +73,25 @@ namespace MediaPlayer_X_Ark
 			{
 				if (pkg.Format == SkinPackage.SkinFormat.NewXsk)
 				{
-					// 新形式
 					var skin = new NewSkinSystem();
 					skin.Open(pkg.DefinitionPath);
 					_currentSkin = skin;
 				}
-				//else
-				//{
-				//	// 旧形式はOldSkinSystem自身がパス解決するため
-				//	// 元のパス（相対パス）をそのまま渡す
-				//	var skin = new OldSkinSystem();
-				//	skin.Open(pkg.OriginalPath);
-				//	_currentSkin = skin;
-				//}
 				_skinApplicator = new SkinApplicator(_currentSkin);
 				_skinApplicator.ApplyToMainForm(this, Spectrum);
 				_skinApplicator.ApplyToPlayListForm(_playListForm);
                 _skinApplicator.ApplyToFileInfoForm(_fileInfoForm);
                 _skinApplicator.ApplyToMiniPlayerForm(_miniPlayerForm);
 
-                SetupWaveformTarget(); // TODO: テスト表示
-				// プレビュー用メイン画像パスを保存
+                SetupWaveformTarget();
 				_config.settings.Skin = skinFile;
 
-				// ボリューム最大値を強制100（旧形式スキンはこの数値を変動出来ていた為、処理簡略化を考慮する）
 				SldVolume.Maximum = 150;
 				SldVolume.Value = _config.settings.Volume;
 			}
 		}
 		/// <summary>
-		/// TODO: テスト表示用
+		/// 波形表示エリアの初期化。スキン定義に従い描画対象を設定する。
 		/// </summary>
 		private void SetupWaveformTarget()
 		{
@@ -114,8 +102,6 @@ namespace MediaPlayer_X_Ark
 				_waveformArea = null;
 			}
 
-			// NewSkinSystem 側で null → new WaveformDef() にしたので
-			// ここでは常に non-null が来る（OldSkinSystem は下の else で無効化）
 			var wDef = (_currentSkin as NewSkinSystem)?.WaveForm;
 			if (wDef == null)
 			{
@@ -138,8 +124,8 @@ namespace MediaPlayer_X_Ark
 				Controls.Add(_waveformArea);
 				_waveformArea.BringToFront();
 			}
-			// target="trackbar" の場合は _waveformArea = null のまま
-			// → ApplyWaveformBitmap が SldTrack.BackgroundImage に描画
+			// target="trackbar" の場合、_waveformArea は null のまま。
+			// ApplyWaveformBitmap が SldTrack.BackgroundImage に描画する。
 		}
 
 		public void BtnMouseDown(object sender, MouseEventArgs e)
@@ -147,9 +133,6 @@ namespace MediaPlayer_X_Ark
 		public void BtnMouseUp(object sender, MouseEventArgs e)
 			=> _skinApplicator?.SetButtonUp((Button)sender);
 
-		/// =============================================================
-		/// 各コントロールイベント
-		/// =============================================================
 		#region MainForm Event
 		/// <summary>
 		/// フォームロード処理
@@ -158,21 +141,15 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			// ===================================
-			// インスタンスの生成
-			// ===================================
-			// ツールチップ
 			_toolTip = new ToolTip(components);
 			notifyIcon.Visible = false;
 			notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
 			notifyIcon.Icon = this.Icon;
 			this.KeyPreview = true;
-			// FMODサウンドエンジン
 			_engine = new PlayerEngine();
-			// ① 設定を先に読み込む
+			// 設定はエンジン初期化後に読み込む
 			_config = new Configuration(_engine);
 
-			// コントローラー生成
 			_controller = new PlayerController(_engine, _config);
 			_controller.TrackChanged += OnTrackChanged;
 			_controller.PlaybackStateChanged += OnPlaybackStateChanged;
@@ -183,16 +160,11 @@ namespace MediaPlayer_X_Ark
 			_fileInfoForm = new FileInfoForm(this, _controller);
             _miniPlayerForm = new MiniPlayerForm(this, _controller);
             
-			// ★管理リストに追加
             _managedForms.Add(_fileInfoForm);
             _managedForms.Add(_playListForm);
 			_managedForms.Add(_optionsForm);
 			_managedForms.Add(_cdForm);
             _managedForms.Add(_miniPlayerForm);
-            // 予定：設定ファイルの読み込み スキンファイルの指定も含む
-            // 旧形式（XSF）のスキンファイルの場合はOldSkinSystem
-            // 新形式（JSON）の場合はNewSkinSystemへインスタンス切替
-            // スキンロード
             SkinLoad(_config.settings.Skin);
 			Spectrum.Initialize();
 			Spectrum.Mode = _config.settings.DefaultSpectrumMode;
@@ -255,15 +227,12 @@ namespace MediaPlayer_X_Ark
 			_waveformBitmap = null;
 			if (_waveformArea != null) _waveformArea.Image = null;
 			else SldTrack.BackgroundImage = null;
-			// ── 追加：解析済みなら即再描画 ──
 			var entry = _controller.Engine.PlayList[index];
 			if (_controller.Engine.WaveformEnabled && entry.WaveformReady)
 				UpdateWaveformBitmap(index);
 		}
 		private void OnWaveformReady(int index)
 		{
-			// _controller.WaveformReady は常にUIスレッドで発火するので
-			// InvokeRequired チェック不要
 			if (!_controller.Engine.WaveformEnabled) return;
 			if (index != _controller.Engine.PlayingIndex) return;
 			UpdateWaveformBitmap(index);
@@ -325,12 +294,10 @@ namespace MediaPlayer_X_Ark
 				// ── 再生制御 ─────────────────────────────────────────────
 
 				case Keys.Space:
-					// Space: 再生/一時停止トグル
 					BtnPlay_Click(this, EventArgs.Empty);
 					return true;
 
 				case Keys.Enter:
-					// Enter: 現在曲を先頭から再生
 					if (_controller.IsPlaying)
 						_controller.SetPosition(0);
 					else
@@ -338,42 +305,35 @@ namespace MediaPlayer_X_Ark
 					return true;
 
 				case Keys.S:
-					// S: 停止
 					BtnStop_Click(this, EventArgs.Empty);
 					return true;
 
 				case Keys.X:
-					// B: 次の曲
 					_controller.PlayNext();
 					return true;
 
 				case Keys.Z:
-					// Z: 前の曲
 					_controller.PlayPrevious();
 					return true;
 
 				// ── シーク（キーリピートによる加速は SeekiTimer と seeking フラグで実装）──
 
 				case Keys.Right:
-					// Right: 早送り開始（キーリピートは KeyDown → SeekiTimer で継続）
 					seeking = 1;
 					return true;
 
 				case Keys.Left:
-					// Left: 早戻し開始
 					seeking = 2;
 					return true;
 
 				// ── 音量 ──────────────────────────────────────────────────
 
 				case Keys.Up:
-					// Up: 音量+5
 					SldVolume.Value = Math.Min(SldVolume.Value + 5, SldVolume.Maximum);
 					_controller.SetVolume(SldVolume.Value);
 					return true;
 
 				case Keys.Down:
-					// Down: 音量-5
 					SldVolume.Value = Math.Max(SldVolume.Value - 5, SldVolume.Minimum);
 					_controller.SetVolume(SldVolume.Value);
 					return true;
@@ -381,48 +341,43 @@ namespace MediaPlayer_X_Ark
 				// ── モード切替 ────────────────────────────────────────────
 
 				case Keys.L:
-					// L: ループモード切替
 					BtnLoop_Click(BtnLoop, EventArgs.Empty);
 					return true;
 
 				case Keys.R:
-					// R: ランダムモード切替
 					BtnRandom_Click(BtnRandom, EventArgs.Empty);
 					return true;
 
 				// ── UI ────────────────────────────────────────────────────
 
 				case Keys.Escape:
-					// Escape: ミニモード（タスクトレイへ）
 					BtnMinisize_Click(this, EventArgs.Empty);
 					return true;
 
                 case Keys.A:
-					// A点セット
 					_abStart = (float)_controller.GetPosition()
 							 / Math.Max(1f, _controller.GetLength());
 					_controller.SetAbStart((uint)_controller.GetPosition());
-					_controller.UpdatePreciseTimer(); // AB有効化でタイマー起動
+					_controller.UpdatePreciseTimer();
 					return true;
 
 				case Keys.B:
-					// B点セット（A点より後のみ有効）
+					// A点より後のみ有効
 					if (_controller.AbRepeatEnabled == false
 						|| (uint)_controller.GetPosition() > _controller.AbStart)
 					{
 						_abEnd = (float)_controller.GetPosition()
 							   / Math.Max(1f, _controller.GetLength());
 						_controller.SetAbEnd((uint)_controller.GetPosition());
-						_controller.UpdatePreciseTimer(); // AB有効化でタイマー起動
+						_controller.UpdatePreciseTimer();
 					}
 					return true;
 
 				case Keys.C:
-					// AB リピートクリア
 					_abStart = -1f;
 					_abEnd = -1f;
 					_controller.ClearAbRepeat();
-					_controller.UpdatePreciseTimer(); // AB無効化でタイマー停止判定
+					_controller.UpdatePreciseTimer();
 					return true;
 			}
 
@@ -430,8 +385,7 @@ namespace MediaPlayer_X_Ark
 		}
 
 		/// <summary>
-		/// フォーム内のマウス押下処理
-		/// 位置の記憶
+		/// マウス押下でウィンドウ移動の基点を記録し、関連フォームを前面に出す。
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -439,11 +393,9 @@ namespace MediaPlayer_X_Ark
 		{
 			if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
 			{
-				//位置を記憶する
 				mousePoint = new Point(e.X, e.Y);
 				this.Activate();
 
-				// ★関連フォームを前面に
 				foreach (var form in _managedForms)
 					if (form != null && !form.IsDisposed && form.Visible)
 						form.BringToFront();
@@ -494,33 +446,29 @@ namespace MediaPlayer_X_Ark
 			_fileInfoForm?.Dispose();
 			_cdForm?.Dispose();   // 追加
             _miniPlayerForm?.Dispose();
-            _engine.Dispose();  // 明示的に解放
+            _engine.Dispose();
 			_engine = null;
 			notifyIcon.Visible = false;
 			notifyIcon.Dispose();
-			SkinPackage.CleanupTempDirectory(); // 追加
+			SkinPackage.CleanupTempDirectory();
 		}
 		#endregion
 		#region Timer Event
 
 		/// <summary>
-		/// タイマー処理
-		/// リアルタイム処理が必要なものは全てここで処理する
-		/// (スレッド化したい)
+		/// タイマー処理。リアルタイム処理が必要なものはすべてここで処理する。
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void PlayerTimer_Tick(object sender, EventArgs e)
 		{
-			// 初期化済みの場合のみ処理する
 			if (!initialize || _engine == null || _engine.spectrum == null) return;
 
-            // スペクトラム画像の反映
-            Spectrum.mFFT = _engine.spectrum.UpdateSpectrum();
+                 Spectrum.mFFT = _engine.spectrum.UpdateSpectrum();
 			Spectrum.mWaveL = _engine.wave.GetWaveDataByChannel(0);
 			Spectrum.mWaveR = _engine.wave.GetWaveDataByChannel(1);
 
-			// 曲調トラックバーの反映 (シーク中はボタン側で動作する為動かさない)
+			// シーク中は SeekiTimer 側でスライダーを動かすためスキップする
 			if (this.seekValue == 0)
 				SldTrack.Value = (int)_controller.GetPosition();
 
@@ -559,8 +507,7 @@ namespace MediaPlayer_X_Ark
 
 			var (w, h) = GetWaveformSize(wDef);
 
-			// ABリピート範囲（未実装時は -1）
-            float abStart = _abStart;
+			float abStart = _abStart;
             float abEnd = _abEnd;
 
             var newBmp = WaveformRenderer.Render(
@@ -647,10 +594,6 @@ namespace MediaPlayer_X_Ark
 		#endregion
 
 		#region Button MouseDown Event
-		/// <summary>
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void SetMouseDownEvent()
 		{
 			foreach (Control c in this.Controls)
@@ -744,7 +687,7 @@ namespace MediaPlayer_X_Ark
 			}
 			finally
 			{
-				// ★ダイアログを閉じた後の最初のMouseDownを無視
+				// ダイアログを閉じた直後の最初の MouseDown は意図しない操作になるため抑制する
 				SuppressNextMouseDown = true;
 			}
 		}
@@ -766,7 +709,6 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void BtnStop_Click(object sender, EventArgs e)
 		{
-			// 問答無用の停止
 			_controller.Stop();
 		}
 
@@ -784,18 +726,14 @@ namespace MediaPlayer_X_Ark
 			_playListForm.Dispose();
 			_optionsForm.Close();
 			_optionsForm.Dispose();
-			_cdForm.Close();      // 追加
-			_cdForm.Dispose();    // 追加
+			_cdForm.Close();
+			_cdForm.Dispose();
             _miniPlayerForm?.Hide();
-            _miniPlayerForm?.Dispose();                              
-			// 終了
+            _miniPlayerForm?.Dispose();
             Close();
 		}
 		private void BtnBack_Click(object sender, EventArgs e)
 		{
-			// ループ無し：最初の曲まで減算
-			// １曲ループ：最初の曲まで減算
-			// 全曲ループ：最初の曲まで減算、最初の曲から最後の曲へ戻る
 			_controller.PlayPrevious();
 		}
 		private void BtnSeekBack_Click(object sender, EventArgs e)
@@ -809,9 +747,6 @@ namespace MediaPlayer_X_Ark
 		}
 		private void BtnNext_Click(object sender, EventArgs e)
 		{
-			// ループ無し：最後の曲まで加算
-			// １曲ループ：最後の曲まで加算
-			// 全曲ループ：最後の曲まで加算、最後の曲から最初の曲へ戻る
 			_controller.PlayNext();
 		}
 
@@ -843,7 +778,6 @@ namespace MediaPlayer_X_Ark
 
 			if (plForm != null)
 			{
-				// Main + Offset
 				_playListForm.Left = Left + plForm.Position.Left;
 				_playListForm.Top = Top + plForm.Position.Top;
 			}
@@ -864,11 +798,9 @@ namespace MediaPlayer_X_Ark
                 notifyIcon.Visible = true;
             }
 		}
-		// NotifyIcon ダブルクリックで復元
 		private void NotifyIcon_DoubleClick(object sender, EventArgs e)
 		{
 			this.Show();
-//			_playListForm.Show();
 			notifyIcon.Visible = false;
 			this.Activate();
 		}
@@ -963,19 +895,16 @@ namespace MediaPlayer_X_Ark
 		{
 			if (seeking == 0) return;
 
-			// seekValueを増加させるが上限を設ける
 			seekValue = Math.Min(seekValue + SeekStep, SeekMaxValue);
 			int newValue;
-			if (seeking == 1)  // 早送り
+			if (seeking == 1)
 			{
 				newValue = SldTrack.Value + seekValue;
-				// Maximumを超えないようにクランプ
 				SldTrack.Value = Math.Min(newValue, SldTrack.Maximum);
 			}
-			else if (seeking == 2)  // 早戻し
+			else if (seeking == 2)
 			{
 				newValue = SldTrack.Value - seekValue;
-				// 0を下回らないようにクランプ
 				SldTrack.Value = Math.Max(newValue, SldTrack.Minimum);
 			}
 		}
@@ -992,8 +921,6 @@ namespace MediaPlayer_X_Ark
 
 		private void MainForm_DragDrop(object sender, DragEventArgs e)
 		{
-			//コントロール内にドロップされたとき実行される
-			//ドロップされたすべてのファイル名を取得する
 			string[] fileName =
 				(string[])e.Data.GetData(DataFormats.FileDrop, false);
 
@@ -1002,12 +929,9 @@ namespace MediaPlayer_X_Ark
 
 		private void MainForm_DragEnter(object sender, DragEventArgs e)
 		{
-			//コントロール内にドラッグされたとき実行される
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
-				//ドラッグされたデータ形式を調べ、ファイルのときはコピーとする
 				e.Effect = DragDropEffects.Copy;
 			else
-				//ファイル以外は受け付けない
 				e.Effect = DragDropEffects.None;
 		}
 
@@ -1112,17 +1036,12 @@ namespace MediaPlayer_X_Ark
 				_fileInfoForm.Show();
 				_fileInfoForm.Activate();
 			};
-			// Effects / Equalizer / Extensions / SkinSelect は
-			// OptionsForm の該当タブを開く形にする
 			menuEffects.Click += (s, e) => OpenOptionsTab("PITCH");
 			menuEqualizer.Click += (s, e) => OpenOptionsTab("GEQ");
 			menuExtensions.Click += (s, e) => OpenOptionsTab("EXTENSIONS");
 			menuSkinSelect.Click += (s, e) => OpenOptionsTab("SKIN");
 			menuAbout.Click += (s, e) => OpenOptionsTab("ABOUT");
 
-			// 
-			// contextMenu
-			// 
 			contextMenu.Items.AddRange(new ToolStripItem[] {
 				menuOpen,
 				menuUrlOpen,
@@ -1161,7 +1080,6 @@ namespace MediaPlayer_X_Ark
 			menuPlayModeRepeat.Click += (s, e) => _controller.SetLoopMode(LOOP_MODE.LOOP_ONE_REPEAT);
 			menuPlayModeLoop.Click += (s, e) => _controller.SetLoopMode(LOOP_MODE.LOOP_ALL);
 
-			// 開く前にチェック状態を更新
 			contextMenu.Opening += ContextMenu_Opening;
 
 
@@ -1189,7 +1107,6 @@ namespace MediaPlayer_X_Ark
 		}
 		private void ContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			// PlayMode チェック状態を更新
 			menuPlayModeRandom.Enabled = false; // 未実装
 			menuPlayModeNormal.Checked = (_controller.GetLoopMode() & LOOP_MODE.LOOP_NONE) != 0;
 			menuPlayModeRandom.Checked = (_controller.GetLoopMode() & LOOP_MODE.LOOP_RANDOM) != 0;
@@ -1210,23 +1127,6 @@ namespace MediaPlayer_X_Ark
                 _discordPresence.Enabled = true;
             }
         }
-        //private void SetPlayMode(LOOP_MODE mode)
-        //{
-        //	if (mode == LOOP_MODE.LOOP_RANDOM)
-        //	{
-        //		// ランダムはトグル
-        //		_player.loop ^= LOOP_MODE.LOOP_RANDOM;
-        //		if ((_player.loop & LOOP_MODE.LOOP_RANDOM) != 0)
-        //			_player.BuildShuffleQueue(); // ONになった時点で生成
-        //	}
-        //	else
-        //	{
-        //		// ランダムフラグを保持しつつ他のモードを切り替え
-        //		bool isRandom = (_player.loop & LOOP_MODE.LOOP_RANDOM) != 0;
-        //		_player.loop = mode;
-        //		if (isRandom) _player.loop |= LOOP_MODE.LOOP_RANDOM;
-        //	}
-        //}
 
         private void OpenOptionsTab(string tabName)
 		{
@@ -1273,14 +1173,10 @@ namespace MediaPlayer_X_Ark
 
 		private const int WM_APPCOMMAND = 0x0319;
 
-		// メディアキーコマンド値
 		private const int APPCOMMAND_MEDIA_PLAY_PAUSE = 14;
 		private const int APPCOMMAND_MEDIA_STOP = 13;
 		private const int APPCOMMAND_MEDIA_NEXTTRACK = 11;
 		private const int APPCOMMAND_MEDIA_PREVIOUSTRACK = 12;
-		//private const int APPCOMMAND_VOLUME_UP = 10;
-		//private const int APPCOMMAND_VOLUME_DOWN = 9;
-		//private const int APPCOMMAND_VOLUME_MUTE = 8;
 
 		protected override void WndProc(ref Message m)
 		{
@@ -1301,19 +1197,8 @@ namespace MediaPlayer_X_Ark
 					case APPCOMMAND_MEDIA_PREVIOUSTRACK:
 						_controller.PlayPrevious();
 						break;
-						//case APPCOMMAND_VOLUME_UP:
-						//    SldVolume.Value = Math.Min(SldVolume.Value + 5, SldVolume.Maximum);
-						//    _player.SetVolume(((float)SldVolume.Value) / 100f);
-						//    break;
-						//case APPCOMMAND_VOLUME_DOWN:
-						//    SldVolume.Value = Math.Max(SldVolume.Value - 5, SldVolume.Minimum);
-						//    _player.SetVolume(((float)SldVolume.Value) / 100f);
-						//    break;
-						//case APPCOMMAND_VOLUME_MUTE:
-						//    _player.SetVolume(0f);
-						//    break;
 				}
-				m.Result = (IntPtr)1; // 処理済みを通知
+				m.Result = (IntPtr)1;
 				return;
 			}
 			base.WndProc(ref m);
@@ -1323,8 +1208,6 @@ namespace MediaPlayer_X_Ark
             _miniPlayerForm.Hide();
             this.Show();
             this.Activate();
-            // PlayListForm が表示中だった場合は復元
-            // （必要に応じて状態を保持して復元）
         }
     }
 }
