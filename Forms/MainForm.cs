@@ -34,6 +34,7 @@ namespace MediaPlayer_X_Ark
         private MiniPlayerForm _miniPlayerForm;
         private Engine.Discord.DiscordPresenceService _discordPresence;
         private int _sleepTimerRemaining = 0; // 残り秒数（0=無効）
+        private Forms.ErrorToastForm _currentToast;
 
 		private INewSkinSystem _currentSkin;
 		private SkinApplicator _skinApplicator;
@@ -175,7 +176,7 @@ namespace MediaPlayer_X_Ark
             _controller.ErrorOccurred += (s, e) =>
             {
                 if (!e.IsOk)
-                    LabelTitle.Value.Text = e.ToString();
+                    ShowErrorToast(e.Message);
             };
 
             InitContextMenu();
@@ -438,7 +439,19 @@ namespace MediaPlayer_X_Ark
 						_playListForm.Top = Top + plForm.Position.Top;
 					}
 				}
+
+				_currentToast?.UpdatePosition(this);
 			}
+		}
+
+		private void ShowErrorToast(string message)
+		{
+			if (_currentToast != null && !_currentToast.IsDisposed)
+				_currentToast.Close();
+
+			_currentToast = new Forms.ErrorToastForm(message);
+			_currentToast.FormClosed += (s, e) => _currentToast = null;
+			_currentToast.ShowToast(this);
 		}
 
 		/// <summary>
