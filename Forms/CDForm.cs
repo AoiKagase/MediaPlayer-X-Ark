@@ -1,4 +1,4 @@
-﻿using MediaPlayer_X_Ark.Engine.CD;
+using MediaPlayer_X_Ark.Engine.CD;
 using MediaPlayer_X_Ark.Engine.Config;
 using MediaPlayer_X_Ark.Engine.Player;
 using System;
@@ -374,7 +374,8 @@ namespace MediaPlayer_X_Ark
 				results = await CddbClient.QueryAsync(
 					  _cdReader,
 					  _config.settings.CddbServers,
-					  ct);
+					  ct,
+					  _config.settings.CddbPreferMusicBrainz);
 			}
 			catch (OperationCanceledException)
 			{

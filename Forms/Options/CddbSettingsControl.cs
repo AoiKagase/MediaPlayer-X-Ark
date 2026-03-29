@@ -30,7 +30,8 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		private Label _lblDesc;
 		private Label _lblUrl;
 		private Label _lblCount;
-		private Label _lblNote;
+		private RadioButton _rdoGnudbFirst;
+		private RadioButton _rdoMusicBrainzFirst;
 
 		private const int MaxServers = 20;
 
@@ -54,6 +55,11 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			foreach (var url in Config.settings.CddbServers)
 				_lstServers.Items.Add(url);
 			UpdateButtonStates();
+
+			if (Config.settings.CddbPreferMusicBrainz)
+				_rdoMusicBrainzFirst.Checked = true;
+			else
+				_rdoGnudbFirst.Checked = true;
 		}
 
 		public override void SaveSettings()
@@ -61,6 +67,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			Config.settings.CddbServers = _lstServers.Items
 				.Cast<string>()
 				.ToList();
+			Config.settings.CddbPreferMusicBrainz = _rdoMusicBrainzFirst.Checked;
 			Config.Save();
 		}
 
@@ -157,22 +164,36 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			};
 			_btnAdd.Click += BtnAdd_Click;
 
-			// ── 注釈 ─────────────────────────────────────────────
-			_lblNote = new Label
+			// -- 優先度選択グループ ------------------------------------
+			var grpPriority = new GroupBox
 			{
-				Text = "※ MusicBrainz は常にフォールバックとして使用されます（リストに表示されません）",
+				Text = "問い合わせ優先順位",
 				Location = new Point(pad + 0, 272),
-				Size = new Size(480, 20),
-				AutoSize = false,
-				ForeColor = Color.Gray,
-				Font = new Font(Font.FontFamily, Font.Size - 0.5f),
+				Size = new Size(480, 60),
 			};
 
-			// ── リセット／保存ボタン ──────────────────────────────
+			_rdoGnudbFirst = new RadioButton
+			{
+				Text = "gnudb / FreeDB を優先（MusicBrainz はフォールバック）",
+				Location = new Point(8, 16),
+				AutoSize = true,
+				Checked = true,
+			};
+
+			_rdoMusicBrainzFirst = new RadioButton
+			{
+				Text = "MusicBrainz を優先（gnudb / FreeDB はフォールバック）",
+				Location = new Point(8, 36),
+				AutoSize = true,
+			};
+
+			grpPriority.Controls.AddRange(new Control[] { _rdoGnudbFirst, _rdoMusicBrainzFirst });
+
+			// -- リセット／保存ボタン ----------------------------------
 			_btnReset = new Button
 			{
 				Text = "デフォルトに戻す",
-				Location = new Point(pad + 0, 300),
+				Location = new Point(pad + 0, 344),
 				Size = new Size(140, lineH),
 			};
 			_btnReset.Click += BtnReset_Click;
@@ -180,7 +201,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			_btnSave = new Button
 			{
 				Text = "適用",
-				Location = new Point(pad + 388, 300),
+				Location = new Point(pad + 388, 344),
 				Size = OptionsStyle.SaveButtonSize,
 				BackColor = OptionsStyle.PrimaryBlue,
 				ForeColor = Color.White,
@@ -195,7 +216,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 				_btnUp, _btnDown, _btnRemove,
 				_lblCount,
 				_lblUrl, _txtUrl, _btnAdd,
-				_lblNote,
+				grpPriority,
 				_btnReset, _btnSave,
 			});
 		}

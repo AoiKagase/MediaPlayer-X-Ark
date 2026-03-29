@@ -11,6 +11,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Security.Policy;
 using System.Windows.Forms;
 
@@ -208,7 +209,10 @@ namespace MediaPlayer_X_Ark
 		private void OnPlaybackStateChanged() { }
 		private void OnTrackChanged(int index)
 		{
-			if (index < 0 || index >= _controller.Engine.PlayList.Count) return; // 曲無し
+			// インデックスが不正なら何もしない（再生停止などで -1 になることがあるため）
+			if (!_controller.IsValidTrackIndex(index)) 
+				return;
+
             _abStart = -1f;
             _abEnd = -1f;
             _controller.ClearAbRepeat();
@@ -240,6 +244,10 @@ namespace MediaPlayer_X_Ark
 
 		private void UpdateWaveformBitmap(int index)
 		{
+			// インデックスが不正なら何もしない（安全策。通常は OnTrackChanged で既にチェック済みのはず）
+			if (!_controller.IsValidTrackIndex(index))
+				return;
+
 			var wDef = (_currentSkin)?.WaveForm;
 			if (wDef == null) return;  // スキン未定義なら何もしない
 
@@ -474,7 +482,7 @@ namespace MediaPlayer_X_Ark
 
 			TimeSpan time1 = TimeSpan.FromMilliseconds(SldTrack.Value);
 			TimeSpan time2 = TimeSpan.FromMilliseconds(SldTrack.Maximum);
-			LabelTime.Value.Text = time1.ToString(@"mm\:ss") + "/" + time2.ToString(@"mm\:ss");
+			LabelTime.Value.Text = time1.ToString(@"hh\:mm\:ss") + "/" + time2.ToString(@"hh\:mm\:ss");
 
 			if (_sleepTimerRemaining > 0)
 			{
@@ -498,10 +506,12 @@ namespace MediaPlayer_X_Ark
 		}
 		private void UpdateWaveformPlayedRatio(float ratio)
 		{
+			if (!_controller.IsValidTrackIndex(_controller.PlayingIndex))
+				return;
+
 			var wDef = (_currentSkin)?.WaveForm;
 			if (wDef == null) return;  // スキン未定義なら何もしない
 
-			if (_controller.PlayingIndex < 0) return;
 			var entry = _controller.Engine.PlayList[_controller.PlayingIndex];
 			if (!entry.WaveformReady) return;
 

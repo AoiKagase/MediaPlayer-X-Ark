@@ -795,7 +795,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			{
 				".mod", ".xm", ".it", ".s3m"
 			};
-        private FMOD.RESULT LoadSound(int index)
+		private FMOD.RESULT LoadSound(int index)
 		{
 			if (index < 0 || index >= PlayList.Count)
 				return FMOD.RESULT.ERR_INVALID_PARAM;
@@ -809,8 +809,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			FMOD.RESULT result;
 			FMOD.CREATESOUNDEXINFO info = new FMOD.CREATESOUNDEXINFO();
 			info.cbsize = Marshal.SizeOf(info);
-            string ext = Path.GetExtension(filename).ToLower();
-            if (ext == ".mid")
+			string ext = Path.GetExtension(filename).ToLower();
+			if (ext == ".mid")
 			{
 				if (_fluidSynthAvailable && !string.IsNullOrEmpty(_soundFontPath)
 					&& File.Exists(_soundFontPath))
@@ -819,7 +819,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					try
 					{
 						using (var renderer = new FluidSynthMidiRenderer())
-						  {
+						{
 							var pcm = renderer.Render(filename, _soundFontPath);
 							System.Diagnostics.Debug.WriteLine($"PCM size: {pcm.Length}");
 
@@ -849,12 +849,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					}
 					catch (Exception ex)
 					{
-                        ErrorOccurred?.Invoke(this, new PlayerErrorEventArgs(
+						ErrorOccurred?.Invoke(this, new PlayerErrorEventArgs(
 							nameof(LoadSound),
 							$"FluidSynth error: {ex.Message}",
-					    -1));
-                        // フォールバック：FMODのDLSで再生
-                    }
+						-1));
+						// フォールバック：FMODのDLSで再生
+					}
 				}
 
 				info.suggestedsoundtype = FMOD.SOUND_TYPE.MIDI;
@@ -871,19 +871,32 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				{
 					result = FmodCallFunction(FmodSystem.createSound(
 						filename, FMOD.MODE.DEFAULT, ref info, out sound));
-				} finally
+				}
+				finally
 				{
 					if (dlsPtr != IntPtr.Zero)
 						Marshal.FreeHGlobal(dlsPtr);
 				}
 			}
-            else if (_trackerExtensions.Contains(ext))
-            {
-                // トラッカー形式はストリームではなく createSound でメモリに展開する
-                result = FmodCallFunction(FmodSystem.createSound(
-                    filename, FMOD.MODE.DEFAULT | FMOD.MODE.ACCURATETIME | FMOD.MODE.LOOP_OFF, ref info, out sound));
-            }
-            else
+			// .bin は生PCMとして開く
+			else if (ext == ".bin")
+			{
+				info.format = FMOD.SOUND_FORMAT.PCM16;
+				info.numchannels = 2;
+				info.defaultfrequency = 44100;
+				result = FmodCallFunction(FmodSystem.createStream(
+					filename,
+					FMOD.MODE.OPENRAW | FMOD.MODE.DEFAULT,
+					ref info,
+					out sound));
+			}
+			else if (_trackerExtensions.Contains(ext))
+			{
+				// トラッカー形式はストリームではなく createSound でメモリに展開する
+				result = FmodCallFunction(FmodSystem.createSound(
+					filename, FMOD.MODE.DEFAULT | FMOD.MODE.ACCURATETIME | FMOD.MODE.LOOP_OFF, ref info, out sound));
+			}
+			else
 			{
 				result = FmodCallFunction(FmodSystem.createStream(
 					filename, FMOD.MODE.DEFAULT, ref info, out sound));

@@ -17,7 +17,7 @@ namespace MediaPlayer_X_Ark.Engine.CD
 	public static class CddbClient
 	{
 		private const string MbBaseUrl = "https://musicbrainz.org/ws/2";
-		private const string UserAgent = "MediaPlayerXArk/1.0 (contact@example.com)";
+		private const string UserAgent = "MediaPlayerXArk/1.0";
 		private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(10);
 
 		private static readonly HttpClient _http = new HttpClient
@@ -32,24 +32,42 @@ namespace MediaPlayer_X_Ark.Engine.CD
 
 		/// <summary>
 		/// CdReader の情報を元に CDDB 問い合わせを行い、候補リストを返す。
-		/// serverUrls のサーバーを上から順に試み、全て失敗なら MusicBrainz へフォールバック。
+		/// preferMusicBrainz = false（既定）: gnudb/FreeDB を優先し MusicBrainz をフォールバックにする。
+		/// preferMusicBrainz = true          : MusicBrainz を優先し gnudb/FreeDB をフォールバックにする。
 		/// </summary>
 		public static async Task<List<CddbResult>> QueryAsync(
 			CdReader cd,
 			IEnumerable<string> serverUrls,
-			CancellationToken ct = default)
+			CancellationToken ct = default,
+			bool preferMusicBrainz = false)
 		{
-			// ① 設定サーバーを順番に試みる
-			var results = await QueryGnudbAsync(cd, serverUrls, ct);
-
-			// ② 全サーバーで取得できなければ MusicBrainz
-			if (results.Count == 0)
+			if (preferMusicBrainz)
 			{
+				// ① MusicBrainz を優先
+				var results = new List<CddbResult>();
 				try { results = await QueryMusicBrainzAsync(cd, ct); }
 				catch { }
-			}
 
-			return results;
+				// ② MusicBrainz で取得できなければ gnudb/FreeDB
+				if (results.Count == 0)
+					results = await QueryGnudbAsync(cd, serverUrls, ct);
+
+				return results;
+			}
+			else
+			{
+				// ① gnudb/FreeDB を順番に試みる
+				var results = await QueryGnudbAsync(cd, serverUrls, ct);
+
+				// ② 全サーバーで取得できなければ MusicBrainz
+				if (results.Count == 0)
+				{
+					try { results = await QueryMusicBrainzAsync(cd, ct); }
+					catch { }
+				}
+
+				return results;
+			}
 		}
 
 		/// <summary>

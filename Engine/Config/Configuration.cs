@@ -52,6 +52,9 @@ namespace MediaPlayer_X_Ark.Engine.Config
 			"http://gnudb.gnudb.org/~cddb/cddb.cgi",        // フォールバック
         };
 
+		/// <summary>true のとき MusicBrainz を優先し gnudb をフォールバックにする</summary>
+		public bool CddbPreferMusicBrainz { get; set; } = false;
+
 		/// <summary>クロスフェードの有効/無効</summary>
 		public bool CrossfadeEnabled { get; set; } = false;
 

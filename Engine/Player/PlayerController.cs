@@ -9,13 +9,13 @@ using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark.Engine.Player
 {
-    /// <summary>
-    /// 再生制御の高レベルAPIを提供するコントローラー。
-    /// MainForm はこのクラスのメソッドを呼ぶだけで再生制御が完結する。
-    /// UI更新が必要な場合は TrackChanged / PlaybackStateChanged イベントを購読する。
-    /// </summary>
-    public class PlayerController
-    {
+	/// <summary>
+	/// 再生制御の高レベルAPIを提供するコントローラー。
+	/// MainForm はこのクラスのメソッドを呼ぶだけで再生制御が完結する。
+	/// UI更新が必要な場合は TrackChanged / PlaybackStateChanged イベントを購読する。
+	/// </summary>
+	public class PlayerController
+	{
 		// ── Win32 高精度タイマー ─────────────────────────────────────
 		[DllImport("winmm.dll")] private static extern uint timeBeginPeriod(uint uPeriod);
 		[DllImport("winmm.dll")] private static extern uint timeEndPeriod(uint uPeriod);
@@ -35,7 +35,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		private volatile bool _crossfadeTriggered = false;
 
 		private readonly IPlayerEngine _engine;
-        private readonly IConfigService _config;
+		private readonly IConfigService _config;
 		private readonly SynchronizationContext _syncContext;
 
 		// ── イベント ────────────────────────────────────────────────
@@ -43,43 +43,43 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		/// <summary>曲が切り替わったときに発火。引数は新しい PlayingIndex。</summary>
 		public event Action<int> TrackChanged;
 
-        /// <summary>再生状態が変化したときに発火（再生開始・停止・一時停止）。</summary>
-        public event Action PlaybackStateChanged;
-		
-        /// <summary>波形解析が完了したときに発火（常にUIスレッドで呼ばれる）。</summary>
-		public event Action<int> WaveformReady;
-        public event EventHandler<PlayerErrorEventArgs> ErrorOccurred;
-        // ── プロパティ ───────────────────────────────────────────────
-        // ── AB リピート ───────────────────────────────────────────────
-        public uint AbStart { get; private set; } = uint.MaxValue;
-        public uint AbEnd { get; private set; } = uint.MaxValue;
-        public bool AbRepeatEnabled => AbStart != uint.MaxValue && AbEnd != uint.MaxValue;
+		/// <summary>再生状態が変化したときに発火（再生開始・停止・一時停止）。</summary>
+		public event Action PlaybackStateChanged;
 
-		public IPlayerEngine Engine  => _engine;
-        public IConfigService Config => _config;
-        public void SetAbStart(uint ms) => AbStart = ms;
-        public void SetAbEnd(uint ms) => AbEnd = ms;
-        public void ClearAbRepeat()
-        {
-            AbStart = uint.MaxValue;
-            AbEnd = uint.MaxValue;
-        }
-        public PlayerController(IPlayerEngine engine, IConfigService config)
-        {
-            _engine = engine;
-            _config = config;
+		/// <summary>波形解析が完了したときに発火（常にUIスレッドで呼ばれる）。</summary>
+		public event Action<int> WaveformReady;
+		public event EventHandler<PlayerErrorEventArgs> ErrorOccurred;
+		// ── プロパティ ───────────────────────────────────────────────
+		// ── AB リピート ───────────────────────────────────────────────
+		public uint AbStart { get; private set; } = uint.MaxValue;
+		public uint AbEnd { get; private set; } = uint.MaxValue;
+		public bool AbRepeatEnabled => AbStart != uint.MaxValue && AbEnd != uint.MaxValue;
+
+		public IPlayerEngine Engine => _engine;
+		public IConfigService Config => _config;
+		public void SetAbStart(uint ms) => AbStart = ms;
+		public void SetAbEnd(uint ms) => AbEnd = ms;
+		public void ClearAbRepeat()
+		{
+			AbStart = uint.MaxValue;
+			AbEnd = uint.MaxValue;
+		}
+		public PlayerController(IPlayerEngine engine, IConfigService config)
+		{
+			_engine = engine;
+			_config = config;
 			_syncContext = SynchronizationContext.Current ?? new SynchronizationContext();
 			Initialize();
 		}
 
-        private void Initialize()
-        {
-            _engine.ErrorOccurred += (s, e) => _syncContext.Post(_ => ErrorOccurred?.Invoke(s, e), null);
-            // OutputType は init() より前に設定する必要がある
-            _engine.SetOutputTypeBeforeInit(_config.GetOutputType());
+		private void Initialize()
+		{
+			_engine.ErrorOccurred += (s, e) => _syncContext.Post(_ => ErrorOccurred?.Invoke(s, e), null);
+			// OutputType は init() より前に設定する必要がある
+			_engine.SetOutputTypeBeforeInit(_config.GetOutputType());
 
 			_engine.Initialize(_config.settings.Buffer);
-			_engine.WaveformReady += (index) =>	_syncContext.Post(_ => WaveformReady?.Invoke(index), null);
+			_engine.WaveformReady += (index) => _syncContext.Post(_ => WaveformReady?.Invoke(index), null);
 			// Device は init() 後に設定する
 			_engine.SetDevice(_config.settings.Device);
 
@@ -88,13 +88,13 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			_engine.ReplayGainPreamp = _config.settings.ReplayGainPreamp;
 			_engine.CrossfadeEnabled = _config.settings.CrossfadeEnabled;
 			_engine.CrossfadeDurationMs = _config.settings.CrossfadeDurationMs;
-            _engine.NonStopMixEnabled = _config.settings.NonStopMixEnabled;
+			_engine.NonStopMixEnabled = _config.settings.NonStopMixEnabled;
 
-            _engine.SoundFontPath = _config.settings.SoundFontPath;
+			_engine.SoundFontPath = _config.settings.SoundFontPath;
 
-            _engine.effector.ApplySettings(_config.settings.Effectors);
+			_engine.effector.ApplySettings(_config.settings.Effectors);
 
-            if (_config.settings.RestorePlaylist)
+			if (_config.settings.RestorePlaylist)
 			{
 				var playlistPath = Path.Combine(
 					Application.StartupPath, "last_playlist.json");
@@ -134,88 +134,89 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			catch { }
 		}
 		// ── 再生制御 ─────────────────────────────────────────────────
-        public bool IsPlaying => _engine.IsPlaying();
-        public int PlayingIndex => _engine.PlayingIndex;
+		public bool IsPlaying => _engine.IsPlaying();
+		public int PlayingIndex => _engine.PlayingIndex;
 		/// <summary>
 		/// 指定インデックスを再生する。
 		/// 音量・パン・タグ取得・ReplayGain適用を一括で行う。
 		/// </summary>
 		public void PlayAt(int index)
-        {
-			if (index < 0 || index >= _engine.PlayList.Count) return;
+		{
+			if (!IsValidTrackIndex(index))
+				return;
 
 			_nextTriggered = false;
 			_crossfadeTriggered = false;
 
 			_engine.SetDevice(_config.settings.Device);
-            _engine.PlaySound(index);
+			_engine.PlaySound(index);
 
-            ApplyVolumeFromConfig();
-            ApplyPanFromConfig();
+			ApplyVolumeFromConfig();
+			ApplyPanFromConfig();
 
-            TrackChanged?.Invoke(index);
-            PlaybackStateChanged?.Invoke();
+			TrackChanged?.Invoke(index);
+			PlaybackStateChanged?.Invoke();
 			UpdatePreciseTimer();
 		}
 
-        /// <summary>再生／一時停止をトグルする</summary>
-        public void TogglePlayPause()
-        {
-            _engine.SwitchPause();
+		/// <summary>再生／一時停止をトグルする</summary>
+		public void TogglePlayPause()
+		{
+			_engine.SwitchPause();
 
-            PlaybackStateChanged?.Invoke();
+			PlaybackStateChanged?.Invoke();
 			UpdatePreciseTimer();
 		}
 
-        /// <summary>停止する</summary>
-        public void Stop()
-        {
+		/// <summary>停止する</summary>
+		public void Stop()
+		{
 			_nextTriggered = false;
 			_crossfadeTriggered = false;
 			StopPreciseTimer();
 			_engine.Stop();
-            PlaybackStateChanged?.Invoke();
-        }
+			PlaybackStateChanged?.Invoke();
+		}
 
-        /// <summary>次の曲へ（ループモードを考慮）</summary>
-        public void PlayNext(bool manual = false)
-        {
+		/// <summary>次の曲へ（ループモードを考慮）</summary>
+		public void PlayNext(bool manual = false)
+		{
 			int currentIndex = _engine.PlayingIndex;
 			_nextTriggered = false;
 			_crossfadeTriggered = false;
 			_engine.SetDevice(_config.settings.Device);
 			_engine.PlayNext(currentIndex, manual);
-            TrackChanged?.Invoke(_engine.PlayingIndex);
-            PlaybackStateChanged?.Invoke();
+			TrackChanged?.Invoke(_engine.PlayingIndex);
+			PlaybackStateChanged?.Invoke();
 			UpdatePreciseTimer();
 		}
 
-        /// <summary>前の曲へ（ループモードを考慮）</summary>
-        public void PlayPrevious(bool manual = false)
-        {
+		/// <summary>前の曲へ（ループモードを考慮）</summary>
+		public void PlayPrevious(bool manual = false)
+		{
 			int currentIndex = _engine.PlayingIndex;
 			_nextTriggered = false;
 			_crossfadeTriggered = false;
 			_engine.SetDevice(_config.settings.Device);
 			_engine.PlayPrevious(currentIndex, manual);
-            TrackChanged?.Invoke(_engine.PlayingIndex);
-            PlaybackStateChanged?.Invoke();
+			TrackChanged?.Invoke(_engine.PlayingIndex);
+			PlaybackStateChanged?.Invoke();
 			UpdatePreciseTimer();
 		}
 
 		public void SetPosition(uint ms)
-        {
-            _engine.SetPosition(ms);
-        }
+		{
+			_engine.SetPosition(ms);
+		}
 		public uint GetPosition() => _engine.GetPosition();
 		public uint GetLength() => _engine.GetLength(_engine.PlayingIndex);
 		public bool OpenFiles(string[] filenames)
-        {
+		{
 			int idx = 0;
 
 			bool anyAdded = false;
-            foreach (var file in filenames)
-            {
+			foreach (var file in filenames)
+			{
 				if (idx++ == 0)
 				{
 					// 先頭ファイルのみ即再生
@@ -226,19 +227,19 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					// 2曲目以降はプレイリストへ追加のみ
 					_engine.CreateSound(file, out _);
 				}
-                anyAdded = true;
-            }
+				anyAdded = true;
+			}
 
-            return anyAdded;
-        }
+			return anyAdded;
+		}
 
-        /// <summary>
-        /// ファイルをプレイリストに追加して再生する。
-        /// </summary>
-        public bool OpenAndPlay(string filename)
-        {
+		/// <summary>
+		/// ファイルをプレイリストに追加して再生する。
+		/// </summary>
+		public bool OpenAndPlay(string filename)
+		{
 			if (_engine.CreateSound(filename, out int index) == FMOD.RESULT.OK)
-            {
+			{
 				switch (_config.settings.OpenFileAction)
 				{
 					case 1: // 常に再生
@@ -255,50 +256,50 @@ namespace MediaPlayer_X_Ark.Engine.Player
 						break;
 				}
 
-                return true;
-            }
-            return false;
-        }
+				return true;
+			}
+			return false;
+		}
 
-        public bool OpenUrl(string url)
-        {
-            if (_engine.PlayUrl(url) == FMOD.RESULT.OK)
-            {
-                TrackChanged?.Invoke(_engine.PlayingIndex);
-                PlaybackStateChanged?.Invoke();
-                return true;
-            }
-            return false;
-        }
+		public bool OpenUrl(string url)
+		{
+			if (_engine.PlayUrl(url) == FMOD.RESULT.OK)
+			{
+				TrackChanged?.Invoke(_engine.PlayingIndex);
+				PlaybackStateChanged?.Invoke();
+				return true;
+			}
+			return false;
+		}
 
-        // ── ループモード制御 ─────────────────────────────────────────
-        public LOOP_MODE GetLoopMode()
-        {
-            return _engine.loop;
+		// ── ループモード制御 ─────────────────────────────────────────
+		public LOOP_MODE GetLoopMode()
+		{
+			return _engine.loop;
 		}
 		/// <summary>ループモードを設定する（ランダムフラグは保持）</summary>
 		public void SetLoopMode(LOOP_MODE mode)
-        {
-            bool isRandom = (_engine.loop & LOOP_MODE.LOOP_RANDOM) != 0;
-            _engine.loop = mode;
-            if (isRandom) _engine.loop |= LOOP_MODE.LOOP_RANDOM;
-        }
+		{
+			bool isRandom = (_engine.loop & LOOP_MODE.LOOP_RANDOM) != 0;
+			_engine.loop = mode;
+			if (isRandom) _engine.loop |= LOOP_MODE.LOOP_RANDOM;
+		}
 
 		/// <summary>ランダム再生をトグルする</summary>
 		public void ToggleRandom() => _engine.loop ^= LOOP_MODE.LOOP_RANDOM;
 
 		/// <summary>ループボタン押下時のサイクル（NONE → ONE_REPEAT → ALL → NONE）</summary>
 		public void CycleLoop()
-        {
-            var loopOnly = _engine.loop & ~LOOP_MODE.LOOP_RANDOM;
-            var next = loopOnly switch
-            {
-                LOOP_MODE.LOOP_NONE       => LOOP_MODE.LOOP_ONE_REPEAT,
-                LOOP_MODE.LOOP_ONE_REPEAT => LOOP_MODE.LOOP_ALL,
-                _                         => LOOP_MODE.LOOP_NONE,
-            };
-            SetLoopMode(next);
-        }
+		{
+			var loopOnly = _engine.loop & ~LOOP_MODE.LOOP_RANDOM;
+			var next = loopOnly switch
+			{
+				LOOP_MODE.LOOP_NONE => LOOP_MODE.LOOP_ONE_REPEAT,
+				LOOP_MODE.LOOP_ONE_REPEAT => LOOP_MODE.LOOP_ALL,
+				_ => LOOP_MODE.LOOP_NONE,
+			};
+			SetLoopMode(next);
+		}
 
 		/// <summary>
 		/// 再生状態・設定に応じて高精度タイマーを起動または停止する。
@@ -440,7 +441,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			}
 		}
 
-			/// <summary>
+		/// <summary>
 		/// UIタイマー（PlayerTimer_Tick）から呼ぶ後方互換メソッド。
 		/// 曲終了検知・クロスフェード更新は高精度タイマーに移管済みだが、
 		/// NonStopMix/Crossfade 無効時は UI タイマーでも次曲検知を行う。
@@ -460,48 +461,50 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		// ── 音量・パン ───────────────────────────────────────────────
 
 		public void SetVolume(int sliderValue)
-        {
-            float vol = sliderValue / 100f;
-            _engine.SetVolume(vol);
-            _config.settings.Volume = sliderValue;
-        }
-        public int GetVolume()
-        {
-            return _engine.GetVolume();
-        }
+		{
+			float vol = sliderValue / 100f;
+			_engine.SetVolume(vol);
+			_config.settings.Volume = sliderValue;
+		}
+		public int GetVolume()
+		{
+			return _engine.GetVolume();
+		}
 
-        public void SetPan(int sliderValue)
-        {
-            float pan = sliderValue / 10f;
-            _engine.SetPan(pan);
-            _config.settings.Pan = sliderValue;
-        }
+		public void SetPan(int sliderValue)
+		{
+			float pan = sliderValue / 10f;
+			_engine.SetPan(pan);
+			_config.settings.Pan = sliderValue;
+		}
 
-        // ── 内部ヘルパー ─────────────────────────────────────────────
+		// ── 内部ヘルパー ─────────────────────────────────────────────
 
-        private void ApplyVolumeFromConfig()
-        {
-            _engine.SetVolume(_config.settings.Volume / 100f);
-        }
+		private void ApplyVolumeFromConfig()
+		{
+			_engine.SetVolume(_config.settings.Volume / 100f);
+		}
 
-        private void ApplyPanFromConfig()
-        {
-            _engine.SetPan(_config.settings.Pan / 10f);
-        }
+		private void ApplyPanFromConfig()
+		{
+			_engine.SetPan(_config.settings.Pan / 10f);
+		}
 
-        /// <summary>再生中の曲のタイトル文字列を生成する</summary>
-        public string BuildTitleText()
-        {
-            int index = _engine.PlayingIndex;
-            if (index < 0 || index >= _engine.PlayList.Count) return string.Empty;
-            var entry = _engine.PlayList[index];
-            string title = !string.IsNullOrEmpty(entry.Title)
-                ? entry.Title
-                : Path.GetFileName(entry.FileName);
-            if (!string.IsNullOrEmpty(entry.Artist)) title += " - " + entry.Artist;
-            if (!string.IsNullOrEmpty(entry.Album))  title += " - " + entry.Album;
-            return title;
-        }
+		/// <summary>再生中の曲のタイトル文字列を生成する</summary>
+		public string BuildTitleText()
+		{
+			int index = _engine.PlayingIndex;
+			if (!IsValidTrackIndex(index))
+				return string.Empty;
+
+			var entry = _engine.PlayList[index];
+			string title = !string.IsNullOrEmpty(entry.Title)
+				? entry.Title
+				: Path.GetFileName(entry.FileName);
+			if (!string.IsNullOrEmpty(entry.Artist)) title += " - " + entry.Artist;
+			if (!string.IsNullOrEmpty(entry.Album)) title += " - " + entry.Album;
+			return title;
+		}
 
 		public void AutoSavePlaylist()
 		{
@@ -528,8 +531,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				System.Text.Encoding.UTF8);
 		}
 
-        public void Close()
-        {
+		public void Close()
+		{
 			StopPreciseTimer();
 			if (_config.settings.RestorePlaylist)
 				SavePlaylistToFile(Path.Combine(
@@ -544,6 +547,21 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				_config.settings.LastPlayingIndex = -1;
 				_config.settings.LastPlayingPosition = 0;
 			}
+		}
+
+		/// <summary>
+		/// 指定インデックスがプレイリスト内に存在するか（再生可能な曲か）を返す。
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public bool IsValidTrackIndex(int index)
+		{
+			// プレイリストが存在しない場合は常に無効とする
+			if (_engine.PlayList == null)
+				return false;
+
+			// インデックスが0以上でプレイリストの範囲内にあるかをチェック
+			return index >= 0 && index < _engine.PlayList.Count;
 		}
 	}
 }

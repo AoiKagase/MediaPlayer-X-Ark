@@ -16,6 +16,8 @@ namespace MediaPlayer_X_Ark.Engine.CD
 		public long SectorCount => EndSector - StartSector;
 		public TimeSpan Duration => TimeSpan.FromSeconds(SectorCount / 75.0);
         public string Title { get; set; }
+		public string Artist { get; set; }
+		public string Album { get; set; }
         public string DurationText => Duration.ToString(@"mm\:ss");
 
 		public int PlayListIndex { get; set; } = -1;
