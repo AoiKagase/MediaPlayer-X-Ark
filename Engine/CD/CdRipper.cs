@@ -1,4 +1,3 @@
-using CUETools.Codecs;
 using System;
 using System.IO;
 using System.Threading;
@@ -42,7 +41,7 @@ namespace MediaPlayer_X_Ark.Engine.CD
           case OutputFormat.Alac: WriteAlac(pcmData, outputPath, progress, ct); break;
         }
 
-        if (meta != null)
+        if (meta != null && format != OutputFormat.Alac)
           WriteTags(outputPath, meta);
       }, ct);
     }
@@ -96,83 +95,72 @@ namespace MediaPlayer_X_Ark.Engine.CD
 
     private static void WriteFlac(byte[] pcmData, string path, IProgress<int> progress, CancellationToken ct)
     {
-      var pcmConfig = new AudioPCMConfig(16, 2, 44100);
-      int totalSamples = pcmData.Length / pcmConfig.BlockAlign;
-
-      var settings = new CUETools.Codecs.Flake.EncoderSettings
+      const int bytesPerFrame = 4; // 16bit stereo @ 2ch
+      var createParams = new FlacEncoderCreateParams
       {
-        PCM = pcmConfig,
-        EncoderMode = "8",   // 最高圧縮
+        sample_rate = 44100,
+        channels = 2,
+        bits_per_sample = 16,
+        frames_per_packet = 4096,
       };
 
-      using var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
-      var encoder = new CUETools.Codecs.Flake.AudioEncoder(settings, null, fs);
-      encoder.FinalSampleCount = totalSamples;
+      if ((pcmData.Length % bytesPerFrame) != 0)
+        throw new InvalidOperationException("FLAC input PCM length is not aligned to audio frame size.");
 
-      WriteWithEncoder(encoder, pcmConfig, pcmData, progress, ct);
+      int chunkSize = createParams.frames_per_packet * bytesPerFrame;
+      int written = 0;
+
+      using var encoder = new FlacEncoder(path, createParams);
+      while (written < pcmData.Length)
+      {
+        ct.ThrowIfCancellationRequested();
+
+        int len = Math.Min(chunkSize, pcmData.Length - written);
+        var chunk = new byte[len];
+        Buffer.BlockCopy(pcmData, written, chunk, 0, len);
+
+        encoder.Write(chunk);
+        written += len;
+        progress?.Report((int)((long)written * 100 / pcmData.Length));
+      }
+
+      encoder.Close();
     }
 
     // ── ALAC ─────────────────────────────────────────────────────────
 
     private static void WriteAlac(byte[] pcmData, string path, IProgress<int> progress, CancellationToken ct)
     {
-      var pcmConfig = new AudioPCMConfig(16, 2, 44100);
-      int totalSamples = pcmData.Length / pcmConfig.BlockAlign;
-
-      var settings = new CUETools.Codecs.ALAC.EncoderSettings
+      const int bytesPerFrame = 4; // 16bit stereo @ 2ch
+      var createParams = new AlacEncoderCreateParams
       {
-        PCM = pcmConfig,
-        EncoderMode = "5",
+        sample_rate = 44100,
+        channels = 2,
+        bits_per_sample = 16,
+        frames_per_packet = 4096,
       };
 
-      using var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
-      var encoder = new CUETools.Codecs.ALAC.AudioEncoder(settings, null, fs);
-      encoder.FinalSampleCount = totalSamples;
+      if ((pcmData.Length % bytesPerFrame) != 0)
+        throw new InvalidOperationException("ALAC input PCM length is not aligned to audio frame size.");
 
-      WriteWithEncoder(encoder, pcmConfig, pcmData, progress, ct);
-    }
+      int chunkSize = createParams.frames_per_packet * bytesPerFrame;
+      int written = 0;
 
-    // ── 共通エンコーダー書き込みループ ──────────────────────────────
-
-    private static void WriteWithEncoder(
-      IAudioDest encoder,
-      AudioPCMConfig pcmConfig,
-      byte[] pcmData,
-      IProgress<int> progress,
-      CancellationToken ct)
-    {
-      const int framesPerChunk = 4096;
-      int bytesPerFrame  = pcmConfig.BlockAlign;
-      int bytesPerChunk  = framesPerChunk * bytesPerFrame;
-      int totalBytes     = pcmData.Length;
-      int offset         = 0;
-
-      try
+      using var encoder = new AlacEncoder(path, createParams);
+      while (written < pcmData.Length)
       {
-        while (offset < totalBytes)
-        {
-          ct.ThrowIfCancellationRequested();
+        ct.ThrowIfCancellationRequested();
 
-          int remaining  = totalBytes - offset;
-          int chunkBytes = Math.Min(bytesPerChunk, remaining);
-          int frames     = chunkBytes / bytesPerFrame;
+        int len = Math.Min(chunkSize, pcmData.Length - written);
+        var chunk = new byte[len];
+        Buffer.BlockCopy(pcmData, written, chunk, 0, len);
 
-          var chunk = new byte[chunkBytes];
-          Buffer.BlockCopy(pcmData, offset, chunk, 0, chunkBytes);
-          var buffer = new AudioBuffer(pcmConfig, chunk, frames);
-
-          encoder.Write(buffer);
-          offset += chunkBytes;
-          progress?.Report((int)((long)offset * 100 / totalBytes));
-        }
-
-        encoder.Close();
+        encoder.Write(chunk);
+        written += len;
+        progress?.Report((int)((long)written * 100 / pcmData.Length));
       }
-      catch
-      {
-        encoder.Close();
-        throw;
-      }
+
+      encoder.Close();
     }
 
     // ── メタデータ書き込み（ATL経由） ────────────────────────────────

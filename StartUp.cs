@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MediaPlayer_X_Ark.Engine.CD;
+using Microsoft.VisualBasic.ApplicationServices;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualBasic.ApplicationServices;
-using System.IO;
 using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark
@@ -29,9 +30,13 @@ namespace MediaPlayer_X_Ark
 			// Libs フォルダのネイティブ DLL を init() より前に明示的にロードする
 			string libsPath = Path.Combine(
 				AppDomain.CurrentDomain.BaseDirectory, "Libs");
-            Win32API.SetDllDirectory(libsPath);
+			Win32API.SetDllDirectory(libsPath);
 			Win32API.LoadLibrary(Path.Combine(libsPath, "fmod.dll"));
 			Win32API.LoadLibrary(Path.Combine(libsPath, "fluidsynth.dll"));
+			Win32API.LoadLibrary(Path.Combine(libsPath, "AlacEncoder.dll"));
+			Win32API.LoadLibrary(Path.Combine(libsPath, "FlacEncoder.dll"));
+            System.Diagnostics.Debug.WriteLine(AlacEncoder.GetLoadedBuildId());
+            System.Diagnostics.Debug.WriteLine(FlacEncoder.GetLoadedBuildId());
 			this.EnableVisualStyles = true;
             this.IsSingleInstance = true;
             this.MainForm = new MainForm();
