@@ -1,6 +1,7 @@
 ﻿using MediaPlayer_X_Ark.Engine;
 using MediaPlayer_X_Ark.Engine.Config;
 using MediaPlayer_X_Ark.Engine.Player;
+using MediaPlayer_X_Ark.Engine.Render;
 using MediaPlayer_X_Ark.Forms;
 using MediaPlayer_X_Ark.Skin;
 using MediaPlayer_X_Ark.Skin.New;
@@ -56,6 +57,7 @@ namespace MediaPlayer_X_Ark
         private float _abEnd = -1f;
         public MainForm()
 		{
+			D2DContext.Initialize();
 			InitializeComponent();
 		}
 
@@ -461,6 +463,7 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
+            D2DContext.Dispose();
             _discordPresence?.Dispose();
             _controller.Close();
 			_config.Save();
@@ -488,7 +491,8 @@ namespace MediaPlayer_X_Ark
                  Spectrum.mFFT = _engine.spectrum.UpdateSpectrum();
 			Spectrum.mWaveL = _engine.wave.GetWaveDataByChannel(0);
 			Spectrum.mWaveR = _engine.wave.GetWaveDataByChannel(1);
-
+//			Spectrum.Invalidate();
+			Spectrum.RenderFrame();
 			// シーク中は SeekiTimer 側でスライダーを動かすためスキップする
 			if (this.seekValue == 0)
 				SldTrack.Value = (int)_controller.GetPosition();

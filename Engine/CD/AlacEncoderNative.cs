@@ -38,38 +38,38 @@ internal static class AlacEncoderNative
 {
     private const string DllName = "AlacEncoder.dll";
 
-    [DllImport(DllName, EntryPoint = "AlacMux_Open", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(DllName, EntryPoint = "AlacEnc_Open", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
     internal static extern int AlacEncoder_Open(
         string output_path,
         in AlacEncoderCreateParams @params,
         out IntPtr out_handle);
 
-    [DllImport(DllName, EntryPoint = "AlacMux_WritePcmBytes", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(DllName, EntryPoint = "AlacEnc_WritePcmBytes", CallingConvention = CallingConvention.Cdecl)]
     internal static extern int AlacEncoder_WritePcmBytes(
         IntPtr handle,
         IntPtr pcm_bytes,
         int byte_count);
 
-    [DllImport(DllName, EntryPoint = "AlacMux_Close", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(DllName, EntryPoint = "AlacEnc_Close", CallingConvention = CallingConvention.Cdecl)]
     internal static extern int AlacEncoder_Close(IntPtr handle);
 
-    [DllImport(DllName, EntryPoint = "AlacMux_Dispose", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(DllName, EntryPoint = "AlacEnc_Dispose", CallingConvention = CallingConvention.Cdecl)]
     internal static extern void AlacEncoder_Dispose(IntPtr handle);
 
-    [DllImport(DllName, EntryPoint = "AlacMux_GetLastError", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(DllName, EntryPoint = "AlacEnc_GetLastError", CallingConvention = CallingConvention.Cdecl)]
     internal static extern IntPtr AlacEncoder_GetLastError(IntPtr handle);
 
-    [DllImport(DllName, EntryPoint = "AlacMux_GetStats", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(DllName, EntryPoint = "AlacEnc_GetStats", CallingConvention = CallingConvention.Cdecl)]
     internal static extern int AlacEncoder_GetStats(IntPtr handle, out AlacEncoderStats out_stats);
 
-    [DllImport(DllName, EntryPoint = "AlacMux_EncodePcmToFile", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(DllName, EntryPoint = "AlacEnc_EncodePcmToFile", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
     internal static extern int AlacEncoder_EncodePcmToFile(
         string output_path,
         in AlacEncoderCreateParams @params,
         IntPtr pcm_bytes,
         int byte_count);
 
-    [DllImport(DllName, EntryPoint = "AlacMux_GetBuildId", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(DllName, EntryPoint = "AlacEnc_GetBuildId", CallingConvention = CallingConvention.Cdecl)]
     internal static extern IntPtr AlacEncoder_GetBuildId();
 }
 
