@@ -19,6 +19,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		private NumericUpDown _nudStreamBuffer;
 		private NumericUpDown _nudDspBufferSize;
 		private NumericUpDown _nudDspBufferCount;
+		private ComboBox _cmbMidiRenderer;
 		private TextBox _txtSoundFont;
 		private Button _btnSoundFontBrowse;
 		private Button _btnSave;
@@ -202,18 +203,32 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			{
 				Text = "MIDIサウンドフォント（SF2）",
 				Location = new Point(16, y),
-				Size = new Size(520, 80),
+				Size = new Size(520, 118),
 			};
 			grpSoundFont.Controls.Add(new Label
 			{
-				Text = "SF2ファイル",
+				Text = "レンダラー",
 				Location = new Point(12, 28),
+				Size = new Size(labelWidth, 23),
+				TextAlign = System.Drawing.ContentAlignment.MiddleRight,
+			});
+			_cmbMidiRenderer = new ComboBox
+			{
+				Location = new Point(controlX, 24),
+				Size = new Size(controlWidth, 23),
+				DropDownStyle = ComboBoxStyle.DropDownList,
+			};
+			grpSoundFont.Controls.Add(_cmbMidiRenderer);
+			grpSoundFont.Controls.Add(new Label
+			{
+				Text = "SF2ファイル",
+				Location = new Point(12, 60),
 				Size = new Size(labelWidth, 23),
 				TextAlign = System.Drawing.ContentAlignment.MiddleRight,
 			});
 			_lblSoundFontNote = new Label
 			{
-				Location = new Point(controlX, 50),
+				Location = new Point(controlX, 82),
 				Size = new Size(controlWidth + 60, 30),
 				ForeColor = System.Drawing.Color.Gray,
 				Font = new Font("Yu Gothic UI", 8f),
@@ -221,7 +236,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			grpSoundFont.Controls.Add(_lblSoundFontNote);
 			_txtSoundFont = new TextBox
 			{
-				Location = new Point(controlX, 24),
+				Location = new Point(controlX, 56),
 				Size = new Size(controlWidth - 60, 23),
 				ReadOnly = true,
 			};
@@ -229,7 +244,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			_btnSoundFontBrowse = new Button
 			{
 				Text = "参照",
-				Location = new Point(controlX + controlWidth - 58, 24),
+				Location = new Point(controlX + controlWidth - 58, 56),
 				Size = new Size(50, 23),
 			};
 			_btnSoundFontBrowse.Click += BtnSoundFontBrowse_Click;
@@ -243,7 +258,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			var _btnSoundFontClear = new Button
 			{
 				Text = "クリア",
-				Location = new Point(controlX + controlWidth - 4, 24),
+				Location = new Point(controlX + controlWidth - 4, 56),
 				Size = new Size(50, 23),
 			};
 			_btnSoundFontClear.Click += BtnSoundFontClear_Click;
@@ -279,22 +294,12 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			_nudDspBufferSize.Value = Config.settings.Buffer.DspBufferSize;
 			_nudDspBufferCount.Value = Config.settings.Buffer.DspBufferCount;
 
+			PopulateMidiRendererOptions();
 			_txtSoundFont.Text = Config.settings.SoundFontPath ?? "";
 
-			// ★FluidSynth状態に応じてUIを切り替え
-			if (Engine.FluidSynthAvailable)
-			{
-				_lblSoundFontNote.Text =
-					"✓ fluidsynth.dll が検出されました。SF2/DLS両対応です。";
-				_lblSoundFontNote.ForeColor = System.Drawing.Color.Green;
-			}
-			else
-			{
-				_lblSoundFontNote.Text =
-					"※ SF2を使用するには Libs フォルダに fluidsynth.dll を配置してください。現在はDLSのみ対応です。";
-				_lblSoundFontNote.ForeColor = System.Drawing.Color.Gray;
-			}
+			UpdateMidiRendererNote();
 			Engine.SoundFontPath = Config.settings.SoundFontPath;
+			Engine.MidiRendererBackend = Config.settings.MidiRendererBackend;
 		}
 
 		public override void SaveSettings()
@@ -310,9 +315,11 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			Config.settings.Buffer.DspBufferSize = (int)_nudDspBufferSize.Value;
 			Config.settings.Buffer.DspBufferCount = (int)_nudDspBufferCount.Value;
 			Config.settings.SoundFontPath = _txtSoundFont.Text;
+			Config.settings.MidiRendererBackend = GetSelectedMidiRendererBackend();
 
 			// ★エンジンに即時反映
 			Engine.SoundFontPath = _txtSoundFont.Text;
+			Engine.MidiRendererBackend = Config.settings.MidiRendererBackend;
 
 			Config.Save();
 
@@ -330,8 +337,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		{
 			using (var dlg = new OpenFileDialog())
 			{
-				// FluidSynth利用可能かどうかでフィルターを切り替え
-				dlg.Filter = Engine.FluidSynthAvailable
+				dlg.Filter = (Engine.FluidSynthAvailable || Engine.BassMidiAvailable)
 					? "サウンドフォント|*.sf2;*.dls|SF2|*.sf2|DLS|*.dls|すべて|*.*"
 					: "DLSサウンドフォント|*.dls|すべて|*.*";
 
@@ -411,6 +417,69 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		private void BtnSoundFontClear_Click(object sender, EventArgs e)
 		{
 			_txtSoundFont.Text = "";
+		}
+
+		private void PopulateMidiRendererOptions()
+		{
+			var items = new List<KeyValuePair<string, MidiRendererBackend>>
+			{
+				new KeyValuePair<string, MidiRendererBackend>("自動選択", MidiRendererBackend.Auto),
+			};
+
+			if (Engine.FluidSynthAvailable)
+				items.Add(new KeyValuePair<string, MidiRendererBackend>("FluidSynth", MidiRendererBackend.FluidSynth));
+
+			if (Engine.BassMidiAvailable)
+				items.Add(new KeyValuePair<string, MidiRendererBackend>("BASSMIDI", MidiRendererBackend.BassMidi));
+
+			_cmbMidiRenderer.DataSource = items;
+			_cmbMidiRenderer.DisplayMember = "Key";
+			_cmbMidiRenderer.ValueMember = "Value";
+
+			var requested = Config.settings.MidiRendererBackend;
+			bool hasRequested = items.Any(x => x.Value == requested);
+			_cmbMidiRenderer.SelectedValue = hasRequested ? requested : MidiRendererBackend.Auto;
+			_cmbMidiRenderer.Enabled = items.Count > 1;
+		}
+
+		private MidiRendererBackend GetSelectedMidiRendererBackend()
+		{
+			if (_cmbMidiRenderer.SelectedValue is MidiRendererBackend selected)
+				return selected;
+			if (_cmbMidiRenderer.SelectedValue is int selectedInt)
+				return (MidiRendererBackend)selectedInt;
+			return MidiRendererBackend.Auto;
+		}
+
+		private void UpdateMidiRendererNote()
+		{
+			if (Engine.FluidSynthAvailable && Engine.BassMidiAvailable)
+			{
+				_lblSoundFontNote.Text =
+					"✓ fluidsynth.dll / bass.dll / bassmidi.dll を検出しました。レンダラーを選択できます。";
+				_lblSoundFontNote.ForeColor = System.Drawing.Color.Green;
+				return;
+			}
+
+			if (Engine.BassMidiAvailable)
+			{
+				_lblSoundFontNote.Text =
+					"✓ bass.dll / bassmidi.dll を検出しました。BASSMIDI が使用できます。";
+				_lblSoundFontNote.ForeColor = System.Drawing.Color.Green;
+				return;
+			}
+
+			if (Engine.FluidSynthAvailable)
+			{
+				_lblSoundFontNote.Text =
+					"✓ fluidsynth.dll が検出されました。FluidSynth が使用できます。";
+				_lblSoundFontNote.ForeColor = System.Drawing.Color.Green;
+				return;
+			}
+
+			_lblSoundFontNote.Text =
+				"※ Libs に fluidsynth.dll または bass.dll + bassmidi.dll を配置すると選択できます。";
+			_lblSoundFontNote.ForeColor = System.Drawing.Color.Gray;
 		}
 	}
 }

@@ -33,6 +33,8 @@ namespace MediaPlayer_X_Ark
 			Win32API.SetDllDirectory(libsPath);
 			Win32API.LoadLibrary(Path.Combine(libsPath, "fmod.dll"));
 			Win32API.LoadLibrary(Path.Combine(libsPath, "fluidsynth.dll"));
+			TryLoadOptionalLibrary(libsPath, "bass.dll");
+			TryLoadOptionalLibrary(libsPath, "bassmidi.dll");
 			Win32API.LoadLibrary(Path.Combine(libsPath, "AlacEncoder.dll"));
 			Win32API.LoadLibrary(Path.Combine(libsPath, "FlacEncoder.dll"));
             System.Diagnostics.Debug.WriteLine(AlacEncoder.GetLoadedBuildId());
@@ -42,6 +44,13 @@ namespace MediaPlayer_X_Ark
             this.MainForm = new MainForm();
             this.StartupNextInstance += new StartupNextInstanceEventHandler(StartUp_StartupNextInstance);
         }
+
+		private static void TryLoadOptionalLibrary(string libsPath, string fileName)
+		{
+			string fullPath = Path.Combine(libsPath, fileName);
+			if (File.Exists(fullPath))
+				Win32API.LoadLibrary(fullPath);
+		}
 
         /// <summary>
         /// 多重起動処理

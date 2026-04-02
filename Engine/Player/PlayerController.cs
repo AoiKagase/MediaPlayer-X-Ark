@@ -92,6 +92,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			_engine.NonStopMixEnabled = _config.settings.NonStopMixEnabled;
 
 			_engine.SoundFontPath = _config.settings.SoundFontPath;
+			_engine.MidiRendererBackend = _config.settings.MidiRendererBackend;
 
 			_engine.effector.ApplySettings(_config.settings.Effectors);
 

@@ -18,16 +18,36 @@
 		<PublishSingleFile>true</PublishSingleFile>
 		<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
 		<EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+		<PublishReadyToRun>true</PublishReadyToRun>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="Resources\Skins\Temp\**" />
+		<Compile Remove="SkinConverter\**" />
+		<Compile Remove="SkinCreator\**" />
 		<EmbeddedResource Remove="Resources\Skins\Temp\**" />
+		<EmbeddedResource Remove="SkinConverter\**" />
+		<EmbeddedResource Remove="SkinCreator\**" />
 		<None Remove="Resources\Skins\Temp\**" />
 		<!-- Vendor 配下は ProjectReference で参照するため直接コンパイル対象から除外 -->
 		<Compile Remove="Vendor\**" />
 		<EmbeddedResource Remove="Vendor\**" />
+		<None Remove="SkinConverter\**" />
+		<None Remove="SkinCreator\**" />
 		<None Remove="Vendor\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="Controls\SpectrumAnalyzer - Copy.cs" />
+	  <Compile Remove="Controls\SpectrumAnalyzer - コピー.cs" />
+	  <Compile Remove="Controls\SpectrumAnalyzer - コピー.Designer.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Remove="Controls\SpectrumAnalyzer - コピー.resx" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Forms\_OptionsForm.bak" />
+	  <None Remove="Forms\_OptionsForm.Designer.bak" />
+	  <None Remove="Forms\_OptionsForm.resx.bak" />
 	</ItemGroup>
 	<ItemGroup>
 		<Content Include="Resources\fmod.dll" />
@@ -41,19 +61,6 @@
 		<PackageReference Include="Vortice.Direct2D1" Version="3.8.3" />
 		<PackageReference Include="z440.atl.core" Version="7.11.0" />
 		<PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
-	</ItemGroup>
-	<ItemGroup>
-		<Compile Remove="Controls\SpectrumAnalyzer - コピー.cs" />
-		<Compile Remove="Controls\SpectrumAnalyzer - コピー.Designer.cs" />
-		<Compile Remove="Mathf.cs" />
-	</ItemGroup>
-	<ItemGroup>
-	  <EmbeddedResource Remove="Controls\SpectrumAnalyzer - コピー.resx" />
-	</ItemGroup>
-	<ItemGroup>
-	  <None Remove="Forms\_OptionsForm.bak" />
-	  <None Remove="Forms\_OptionsForm.Designer.bak" />
-	  <None Remove="Forms\_OptionsForm.resx.bak" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="Properties\Settings.Designer.cs">

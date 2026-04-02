@@ -6,7 +6,7 @@ namespace MediaPlayer_X_Ark.Forms
 {
 	public class ErrorToastForm : Form
 	{
-		private readonly Timer _fadeTimer;
+		private readonly System.Windows.Forms.Timer _fadeTimer;
 		private double _displaySeconds = 0;
 		private bool _fading = false;
 		private const double FadeStep = 0.06;
@@ -64,7 +64,7 @@ namespace MediaPlayer_X_Ark.Forms
 			Controls.Add(icon);
 			Controls.Add(messageLabel);
 
-			_fadeTimer = new Timer { Interval = 80 };
+			_fadeTimer = new System.Windows.Forms.Timer { Interval = 80 };
 			_fadeTimer.Tick += FadeTimer_Tick;
 		}
 

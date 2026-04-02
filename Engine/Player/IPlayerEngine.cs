@@ -7,13 +7,22 @@ using System.Drawing;
 
 namespace MediaPlayer_X_Ark.Engine.Player
 {
+    public enum MidiRendererBackend
+    {
+        Auto = 0,
+        FluidSynth = 1,
+        BassMidi = 2,
+    }
+
     public interface IPlayerEngine : IDisposable
     {
         // ── 状態・プロパティ ──────────────────────────
         IReadOnlyList<PluginLoadResult> LoadedPlugins { get; }
         event EventHandler<PlayerErrorEventArgs> ErrorOccurred;
         bool FluidSynthAvailable { get; }
+        bool BassMidiAvailable { get; }
 		string SoundFontPath { get; set; }
+        MidiRendererBackend MidiRendererBackend { get; set; }
 		BindingList<PlayList> PlayList { get; }
         List<DEVICE_INFO> DeviceList { get; }
         LOOP_MODE loop { get; set; }

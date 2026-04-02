@@ -91,6 +91,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		public bool CrossfadeTriggered { get; set; } = false;
 		public bool NonStopMixEnabled { get; set; } = false;
 		private string _soundFontPath = "";
+		private MidiRendererBackend _midiRendererBackend = MidiRendererBackend.Auto;
 		private readonly object _fmodLock = new object();
 		private WaveformAnalyzer _waveformAnalyzer;
 		// 曲切り替わり時に前回の波形解析をキャンセルするためのトークン
@@ -101,6 +102,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		{
 			get => _soundFontPath;
 			set => _soundFontPath = value ?? "";
+		}
+
+		public MidiRendererBackend MidiRendererBackend
+		{
+			get => _midiRendererBackend;
+			set => _midiRendererBackend = value;
 		}
 
 		public List<DEVICE_INFO> DeviceList
@@ -211,6 +218,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			var fluidSynthPath = Path.Combine(
 				AppDomain.CurrentDomain.BaseDirectory, "Libs", "fluidsynth.dll");
 			_fluidSynthAvailable = File.Exists(fluidSynthPath);
+			var bassPath = Path.Combine(
+				AppDomain.CurrentDomain.BaseDirectory, "Libs", "bass.dll");
+			var bassMidiPath = Path.Combine(
+				AppDomain.CurrentDomain.BaseDirectory, "Libs", "bassmidi.dll");
+			_bassMidiAvailable = File.Exists(bassPath) && File.Exists(bassMidiPath);
 
 			{
 				if (FmodCallFunction(FmodSystem.getVersion(out FmodVersion)) == FMOD.RESULT.OK)
@@ -803,6 +815,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		}
 		private bool _fluidSynthAvailable = false;
 		public bool FluidSynthAvailable => _fluidSynthAvailable;
+		private bool _bassMidiAvailable = false;
+		public bool BassMidiAvailable => _bassMidiAvailable;
 
 		private static readonly HashSet<string> _trackerExtensions = new HashSet<string>
 			{
@@ -825,48 +839,56 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			string ext = Path.GetExtension(filename).ToLower();
 			if (ext == ".mid")
 			{
-				if (_fluidSynthAvailable && !string.IsNullOrEmpty(_soundFontPath)
-					&& File.Exists(_soundFontPath))
+				if (!string.IsNullOrEmpty(_soundFontPath) && File.Exists(_soundFontPath))
 				{
-					// FluidSynth が利用可能な場合は PCM にレンダリングして再生する
-					try
+					var rendererBackend = ResolveMidiRendererBackend();
+					if (rendererBackend == MidiRendererBackend.BassMidi)
 					{
-						using (var renderer = new FluidSynthMidiRenderer())
+						try
 						{
-							var pcm = renderer.Render(filename, _soundFontPath);
-							System.Diagnostics.Debug.WriteLine($"PCM size: {pcm.Length}");
-
-							if (pcm != null && pcm.Length > 0)
+							using (var renderer = new BassMidiRenderer())
 							{
-								FMOD.CREATESOUNDEXINFO pcmInfo = new FMOD.CREATESOUNDEXINFO();
-								pcmInfo.cbsize = Marshal.SizeOf(pcmInfo);
-								pcmInfo.length = (uint)pcm.Length;
-								pcmInfo.numchannels = 2;
-								pcmInfo.defaultfrequency = 44100;
-								pcmInfo.format = FMOD.SOUND_FORMAT.PCM16;
-
-								result = FmodCallFunction(FmodSystem.createSound(
-									pcm,
-									FMOD.MODE.OPENMEMORY | FMOD.MODE.OPENRAW |
-									FMOD.MODE._2D | FMOD.MODE.CREATESAMPLE,
-									ref pcmInfo,
-									out sound));
-
+								var pcm = renderer.Render(filename, _soundFontPath);
+								result = CreateMidiPcmSound(pcm, out sound);
 								if (result == FMOD.RESULT.OK)
-								{
-									PlayList[index].Sound = sound;
-									return result;
-								}
+									return StoreMidiPcmSound(index, sound, result);
 							}
 						}
+						catch (Exception ex)
+						{
+							System.Diagnostics.Debug.WriteLine(
+								$"[BASSMIDI] Render failed midi=\"{filename}\" sf2=\"{_soundFontPath}\" error=\"{ex}\"");
+							ErrorOccurred?.Invoke(this, new PlayerErrorEventArgs(
+								nameof(LoadSound),
+								$"BASSMIDI error: {ex.Message}",
+							-1));
+						}
 					}
-					catch (Exception ex)
+					else if (rendererBackend == MidiRendererBackend.FluidSynth)
 					{
-						ErrorOccurred?.Invoke(this, new PlayerErrorEventArgs(
-							nameof(LoadSound),
-							$"FluidSynth error: {ex.Message}",
-						-1));
-						// フォールバック：FMODのDLSで再生
+						try
+						{
+							using (var renderer = new FluidSynthMidiRenderer())
+							{
+								System.Diagnostics.Debug.WriteLine(
+									$"[FluidSynth] Rendering MIDI via FluidSynth midi=\"{filename}\" sf2=\"{_soundFontPath}\"");
+								var pcm = renderer.Render(filename, _soundFontPath);
+								System.Diagnostics.Debug.WriteLine(
+									$"[FluidSynth] Render completed profile={renderer.LastProfileUsed} pcmSize={pcm?.Length ?? 0}");
+								result = CreateMidiPcmSound(pcm, out sound);
+								if (result == FMOD.RESULT.OK)
+									return StoreMidiPcmSound(index, sound, result);
+							}
+						}
+						catch (Exception ex)
+						{
+							System.Diagnostics.Debug.WriteLine(
+								$"[FluidSynth] Render failed midi=\"{filename}\" sf2=\"{_soundFontPath}\" error=\"{ex}\"");
+							ErrorOccurred?.Invoke(this, new PlayerErrorEventArgs(
+								nameof(LoadSound),
+								$"FluidSynth error: {ex.Message}",
+							-1));
+						}
 					}
 				}
 
@@ -922,6 +944,61 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				if (!PlayList[index].IsCueTrack)
 					_ = StartWaveformAnalysisAsync(filename, index);
 			}
+			return result;
+		}
+
+		private MidiRendererBackend ResolveMidiRendererBackend()
+		{
+			switch (_midiRendererBackend)
+			{
+				case MidiRendererBackend.FluidSynth:
+					if (_fluidSynthAvailable)
+						return MidiRendererBackend.FluidSynth;
+					if (_bassMidiAvailable)
+						return MidiRendererBackend.BassMidi;
+					break;
+				case MidiRendererBackend.BassMidi:
+					if (_bassMidiAvailable)
+						return MidiRendererBackend.BassMidi;
+					if (_fluidSynthAvailable)
+						return MidiRendererBackend.FluidSynth;
+					break;
+				default:
+					if (_bassMidiAvailable)
+						return MidiRendererBackend.BassMidi;
+					if (_fluidSynthAvailable)
+						return MidiRendererBackend.FluidSynth;
+					break;
+			}
+
+			return MidiRendererBackend.Auto;
+		}
+
+		private FMOD.RESULT CreateMidiPcmSound(byte[] pcm, out FMOD.Sound sound)
+		{
+			sound = default;
+			if (pcm == null || pcm.Length == 0)
+				return FMOD.RESULT.ERR_FILE_BAD;
+
+			FMOD.CREATESOUNDEXINFO pcmInfo = new FMOD.CREATESOUNDEXINFO();
+			pcmInfo.cbsize = Marshal.SizeOf(pcmInfo);
+			pcmInfo.length = (uint)pcm.Length;
+			pcmInfo.numchannels = 2;
+			pcmInfo.defaultfrequency = 44100;
+			pcmInfo.format = FMOD.SOUND_FORMAT.PCM16;
+
+			return FmodCallFunction(FmodSystem.createSound(
+				pcm,
+				FMOD.MODE.OPENMEMORY | FMOD.MODE.OPENRAW |
+				FMOD.MODE._2D | FMOD.MODE.CREATESAMPLE,
+				ref pcmInfo,
+				out sound));
+		}
+
+		private FMOD.RESULT StoreMidiPcmSound(int index, FMOD.Sound sound, FMOD.RESULT result)
+		{
+			if (result == FMOD.RESULT.OK)
+				PlayList[index].Sound = sound;
 			return result;
 		}
 

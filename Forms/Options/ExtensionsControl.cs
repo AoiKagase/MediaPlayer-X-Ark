@@ -191,8 +191,9 @@ namespace MediaPlayer_X_Ark.Forms.Options
             _lvExtensions.Groups.Clear();
             _lvExtensions.Items.Clear();
 
-            // FluidSynth 導入済みなら MIDI のデコーダー列を "FluidSynth" で上書き表示する
-            bool fluidSynthAvailable = Engine.FluidSynthAvailable;
+            string midiDecoderLabel = Engine.BassMidiAvailable
+                ? "BASSMIDI"
+                : Engine.FluidSynthAvailable ? "FluidSynth" : "FMOD";
             var allFormats = SupportedFormats.GetAll().ToList();
 
             foreach (var groupName in allFormats.Select(f => f.Group).Distinct())
@@ -202,9 +203,8 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
                 foreach (var fmt in allFormats.Where(f => f.Group == groupName))
                 {
-                    // MIDI グループかつ FluidSynth 導入済みの場合はデコーダー表示を切り替える
-                    string decoderLabel = (fmt.Group == "MIDI" && fluidSynthAvailable)
-                        ? "FluidSynth"
+                    string decoderLabel = (fmt.Group == "MIDI" && midiDecoderLabel != "FMOD")
+                        ? midiDecoderLabel
                         : fmt.Source;
 
                     var item = new ListViewItem(new[] { fmt.Ext, fmt.Description, decoderLabel, "" })
@@ -245,9 +245,22 @@ namespace MediaPlayer_X_Ark.Forms.Options
             _lblAdminStatus.Text      = isAdmin ? "🔑 管理者権限あり" : "⚠ 通常権限（ユーザー別登録）";
             _lblAdminStatus.ForeColor = isAdmin ? Color.DarkGreen : Color.DarkOrange;
 
-            if (!Engine.FluidSynthAvailable)
+            if (Engine.BassMidiAvailable && Engine.FluidSynthAvailable)
             {
-                _lblFluidSynthStatus.Text      = "※ fluidsynth.dll 未導入：MIDI は FMOD のデフォルト デコーダーで再生されます";
+                _lblFluidSynthStatus.Text =
+                    "✔ BASSMIDI / FluidSynth 導入済み：設定 → 出力 で MIDI レンダラーを選択できます";
+                _lblFluidSynthStatus.ForeColor = Color.DarkGreen;
+            }
+            else if (Engine.BassMidiAvailable)
+            {
+                _lblFluidSynthStatus.Text =
+                    "✔ BASSMIDI 導入済み：MIDI は BASSMIDI でデコードされます";
+                _lblFluidSynthStatus.ForeColor = Color.DarkGreen;
+            }
+            else if (!Engine.FluidSynthAvailable)
+            {
+                _lblFluidSynthStatus.Text =
+                    "※ Libs に fluidsynth.dll または bass.dll + bassmidi.dll を配置すると MIDI レンダラーを利用できます";
                 _lblFluidSynthStatus.ForeColor = Color.Gray;
             }
             else

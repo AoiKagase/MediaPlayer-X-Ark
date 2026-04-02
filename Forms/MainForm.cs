@@ -1070,6 +1070,9 @@ namespace MediaPlayer_X_Ark
 		{
 			if (seeking == 0) return;
 
+			if (_controller.IsValidTrackIndex(_controller.PlayingIndex) == false)
+				return;
+
 			seekValue = Math.Min(seekValue + SeekStep, SeekMaxValue);
 			int newValue;
 			if (seeking == 1)
