@@ -2,7 +2,14 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Numerics;
 using System.Windows.Forms;
+using MediaPlayer_X_Ark.Engine.Render;
+using Vortice.Direct2D1;
+using Vortice.DirectWrite;
+// 曖昧参照を解消するエイリアス
+using Color4     = Vortice.Mathematics.Color4;
+using RectangleF = System.Drawing.RectangleF;
 
 namespace UI
 {
@@ -99,12 +106,93 @@ namespace UI
 		/// </summary>
 		public Knob()
 		{
-			SetStyle(ControlStyles.Selectable,true);
+			SetStyle(ControlStyles.Selectable | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 			UpdateStyles();
 			TabStop = true;
-			DoubleBuffered = true;
+			// D2D HwndRenderTarget が直接 HWND に描画するため DoubleBuffer (GDI BitBlt) は無効にする
+			DoubleBuffered = false;
 			_RecomputeTicks();
 		}
+
+		#region D2D
+
+		private ID2D1HwndRenderTarget _renderTarget;
+		private ID2D1StrokeStyle _pointerStrokeStyle;
+		private LineCap _cachedStartCap;
+		private LineCap _cachedEndCap;
+
+		protected override void OnHandleCreated(EventArgs e)
+		{
+			base.OnHandleCreated(e);
+			if (D2DContext.Factory == null) return;
+			CreateRenderTarget();
+		}
+
+		protected override void OnHandleDestroyed(EventArgs e)
+		{
+			DisposeDeviceResources();
+			base.OnHandleDestroyed(e);
+		}
+
+		protected override void OnPaintBackground(PaintEventArgs e) { }
+
+		protected override void WndProc(ref Message m)
+		{
+			const int WM_ERASEBKGND = 0x0014;
+			if (m.Msg == WM_ERASEBKGND) { m.Result = IntPtr.Zero; return; }
+			base.WndProc(ref m);
+		}
+
+		private void CreateRenderTarget()
+		{
+			if (!IsHandleCreated || D2DContext.Factory == null) return;
+			DisposeDeviceResources();
+			_renderTarget = D2DContext.Factory.CreateHwndRenderTarget(
+				new RenderTargetProperties(),
+				new HwndRenderTargetProperties
+				{
+					Hwnd           = Handle,
+					PixelSize      = new Vortice.Mathematics.SizeI(Math.Max(1, Width), Math.Max(1, Height)),
+					PresentOptions = PresentOptions.None,
+				});
+		}
+
+		private void DisposeDeviceResources()
+		{
+			_pointerStrokeStyle?.Dispose(); _pointerStrokeStyle = null;
+			_renderTarget?.Dispose();       _renderTarget       = null;
+		}
+
+		private ID2D1StrokeStyle GetPointerStrokeStyle()
+		{
+			if (_pointerStrokeStyle == null
+				|| _cachedStartCap != _pointerStartCap
+				|| _cachedEndCap   != _pointerEndCap)
+			{
+				_pointerStrokeStyle?.Dispose();
+				_pointerStrokeStyle = D2DContext.Factory.CreateStrokeStyle(new StrokeStyleProperties
+				{
+					StartCap = ToCapStyle(_pointerStartCap),
+					EndCap   = ToCapStyle(_pointerEndCap),
+				});
+				_cachedStartCap = _pointerStartCap;
+				_cachedEndCap   = _pointerEndCap;
+			}
+			return _pointerStrokeStyle;
+		}
+
+		private static CapStyle ToCapStyle(LineCap cap) => cap switch
+		{
+			LineCap.Round    => CapStyle.Round,
+			LineCap.Square   => CapStyle.Square,
+			LineCap.Triangle => CapStyle.Triangle,
+			_                => CapStyle.Flat,
+		};
+
+		private static Color4 ToColor4(Color c)
+			=> new Color4(c.R / 255f, c.G / 255f, c.B / 255f, c.A / 255f);
+
+		#endregion
 		/// <summary>
 		/// Indicates the value of the control
 		/// </summary>
@@ -742,129 +830,137 @@ namespace UI
 		/// <param name="args">The event args</param>
 		protected override void OnPaint(PaintEventArgs args)
 		{
-			// call the base method
-			base.OnPaint(args);
+			if (_renderTarget == null)
+			{
+				if (IsHandleCreated && D2DContext.Factory != null)
+					CreateRenderTarget();
+				if (_renderTarget == null) return;
+			}
 
-			var g = args.Graphics;
-			
-			// we need to copy these so we can adjust them
+			// 角度計算（GDI+ 版と同一ロジック）
 			float knobMinAngle = _minimumAngle;
 			float knobMaxAngle = _maximumAngle;
-			// adjust them to be within bounds
-			if (knobMinAngle < 0)
-				knobMinAngle = 360 + knobMinAngle;
-			if (knobMaxAngle <= 0)
-				knobMaxAngle = 360 + knobMaxAngle;
+			if (knobMinAngle < 0)  knobMinAngle = 360 + knobMinAngle;
+			if (knobMaxAngle <= 0) knobMaxAngle = 360 + knobMaxAngle;
 
 			double offset = 0.0;
 			int min = Minimum, max = Maximum;
-			var knobRange = (knobMaxAngle - knobMinAngle);
+			var knobRange  = knobMaxAngle - knobMinAngle;
 			double valueRange = max - min;
 			double valueRatio = knobRange / valueRange;
-			if (0 > min)
-				offset = -min;
+			if (0 > min) offset = -min;
+
 			var knobRect = ClientRectangle;
-			// adjust the client rect so it doesn't overhang
 			knobRect.Inflate(-1, -1);
 			var orr = knobRect;
-			if(TicksVisible)
-			{
-				// we have to make the knob smaller to make room
-				// for the ticks
-				knobRect.Inflate(new Size(-_tickHeight-2, -_tickHeight-2));
-			}
-			var size = (float)Math.Min(knobRect.Width-4, knobRect.Height-4);
-			// give it a bit of a margin:
+			if (TicksVisible)
+				knobRect.Inflate(new Size(-_tickHeight - 2, -_tickHeight - 2));
+
+			var size   = (float)Math.Min(knobRect.Width - 4, knobRect.Height - 4);
 			knobRect.X += 2;
 			knobRect.Y += 2;
-
 			var radius = size / 2f;
-			var origin = new PointF(knobRect.Left +radius, knobRect.Top + radius);
-			var borderRect = _GetCircleRect(origin.X, origin.Y, (radius - (_borderWidth / 2)));
-			var knobInnerRect = _GetCircleRect(origin.X, origin.Y, (radius - (_borderWidth)));
-			// compute our angle
-			double q = ((Value + offset) * valueRatio) + knobMinAngle;
-			double angle = (q + 90d);
-			if (angle > 360.0)
-				angle -= 360.0;
-			// now in radians
+			var origin = new Vector2(knobRect.Left + radius, knobRect.Top + radius);
+
+			double q     = ((Value + offset) * valueRatio) + knobMinAngle;
+			double angle = q + 90d;
+			if (angle > 360.0) angle -= 360.0;
 			double angrad = angle * (Math.PI / 180d);
-			// pointer adjustment
-			double adj = 1;
-			// adjust for endcap
-			if (_pointerEndCap != LineCap.NoAnchor)
-				adj += (_pointerWidth) / 2d;
-			// compute the pointer line coordinates
-			var x1 = (float)(origin.X + (_pointerOffset - adj) * (float)Math.Cos(angrad));
-			var y1 = (float)(origin.Y + (_pointerOffset - adj) * (float)Math.Sin(angrad));
-			var x2 = (float)(origin.X + (radius - adj) * (float)Math.Cos(angrad));
-			var y2 = (float)(origin.Y + (radius - adj) * (float)Math.Sin(angrad));
+			double adj    = 1;
+			if (_pointerEndCap != LineCap.NoAnchor) adj += _pointerWidth / 2d;
+			var x1 = (float)(origin.X + (_pointerOffset - adj) * Math.Cos(angrad));
+			var y1 = (float)(origin.Y + (_pointerOffset - adj) * Math.Sin(angrad));
+			var x2 = (float)(origin.X + (radius - adj) * Math.Cos(angrad));
+			var y2 = (float)(origin.Y + (radius - adj) * Math.Sin(angrad));
 
-			using (var backBrush = new SolidBrush(BackColor))
+			var rt = _renderTarget;
+			rt.BeginDraw();
+			try
 			{
-				using (var bgBrush = new SolidBrush(_knobColor))
+				// 背景
+				using (var backBrush = rt.CreateSolidColorBrush(ToColor4(BackColor)))
+					rt.FillRectangle(
+						new Vortice.Mathematics.Rect(orr.Left - 1, orr.Top - 1, orr.Width + 2, orr.Height + 2),
+						backBrush);
+
+				// ボーダー（円）
+				var borderR       = radius - _borderWidth / 2f;
+				var borderEllipse = new Ellipse(origin, borderR, borderR);
+				using (var borderBrush = rt.CreateSolidColorBrush(ToColor4(_borderColor)))
+					rt.DrawEllipse(borderEllipse, borderBrush, _borderWidth);
+
+				// ノブ塗りつぶし
+				var knobR       = radius - _borderWidth;
+				var knobEllipse = new Ellipse(origin, knobR, knobR);
+				using (var bgBrush = rt.CreateSolidColorBrush(ToColor4(_knobColor)))
+					rt.FillEllipse(knobEllipse, bgBrush);
+
+				// 現在値テキスト（ドラッグ調整中のみ表示）
+				if (_dragging)
 				{
-					using (var borderPen = new Pen(_borderColor, _borderWidth))
-					{
-						using (var pointerPen = new Pen(_pointerColor, _pointerWidth))
-						{
-							g.SmoothingMode = SmoothingMode.AntiAlias;
-							
-							pointerPen.StartCap = _pointerStartCap;
-							pointerPen.EndCap = _pointerEndCap;
-
-							// 現在値をKnob中央に描画
-							string valueText = _scale == 1f
-								? Value.ToString()
-								: (Value / _scale).ToString("0.##");
-
-							using (var font = new Font(Font.FontFamily, Math.Max(6f, size / 5f), FontStyle.Regular))
-							using (var textBrush = new SolidBrush(ForeColor))
-							{
-								var textSize = g.MeasureString(valueText, font);
-								var textX = origin.X - textSize.Width / 2f;
-								var textY = origin.Y - textSize.Height / 2f;
-								g.DrawString(valueText, font, textBrush, textX, textY);
-							}
-
-							// erase the background so it antialiases properly
-							g.FillRectangle(backBrush, (float)orr.Left - 1, (float)orr.Top - 1, (float)orr.Width + 2, (float)orr.Height + 2);
-							// draw the border
-							g.DrawEllipse(borderPen, borderRect); 
-							// draw the knob
-							g.FillEllipse(bgBrush, knobInnerRect);
-							// draw the pointer
-							g.DrawLine(pointerPen, x1, y1, x2, y2);
-						}
-					}
+					string valueText = _scale == 1f
+						? Value.ToString()
+						: (Value / _scale).ToString("0.##");
+					float fontSize = Math.Max(6f, size / 5f) * 96f / 72f;
+					using var tf = D2DContext.DWrite.CreateTextFormat(
+						Font.Name,
+						FontWeight.Normal, Vortice.DirectWrite.FontStyle.Normal, FontStretch.Normal,
+						fontSize);
+					using var layout = D2DContext.DWrite.CreateTextLayout(valueText, tf, float.MaxValue, float.MaxValue);
+					var metrics = layout.Metrics;
+					using (var textBrush = rt.CreateSolidColorBrush(ToColor4(ForeColor)))
+						rt.DrawTextLayout(
+							new Vector2(origin.X - metrics.Width / 2f, origin.Y - metrics.Height / 2f),
+							layout, textBrush);
 				}
-			}
-			
-			if (TicksVisible)
-			{
-				// draw the ticks
-				using (var pen = new Pen(_tickColor, _tickWidth))
+
+				// ポインター
+				using (var pointerBrush = rt.CreateSolidColorBrush(ToColor4(_pointerColor)))
+					rt.DrawLine(new Vector2(x1, y1), new Vector2(x2, y2),
+						pointerBrush, _pointerWidth, GetPointerStrokeStyle());
+
+				// 目盛り
+				if (TicksVisible)
 				{
-					// for each tick line, compute its coordinates
-					// and then draw it
+					using var tickBrush = rt.CreateSolidColorBrush(ToColor4(_tickColor));
 					for (var i = 0; i < _tickPositions.Length; ++i)
 					{
-						// get the angle from our tick position
 						angle = ((_tickPositions[i] + offset) * valueRatio) + knobMinAngle + 90d;
-						if (angle > 360.0)
-							angle -= 360.0;
+						if (angle > 360.0) angle -= 360.0;
 						angrad = angle * (Math.PI / 180d);
-						x1 = origin.X + (radius +2) * (float)Math.Cos(angrad);
-						y1 = origin.Y + (radius + 2) * (float)Math.Sin(angrad);
-						x2 = origin.X + (radius + _tickHeight+2) * (float)Math.Cos(angrad);
-						y2 = origin.Y + (radius + _tickHeight+2) * (float)Math.Sin(angrad);
-						g.DrawLine(pen, x1, y1, x2, y2);
+						var tx1 = origin.X + (radius + 2)               * (float)Math.Cos(angrad);
+						var ty1 = origin.Y + (radius + 2)               * (float)Math.Sin(angrad);
+						var tx2 = origin.X + (radius + _tickHeight + 2) * (float)Math.Cos(angrad);
+						var ty2 = origin.Y + (radius + _tickHeight + 2) * (float)Math.Sin(angrad);
+						rt.DrawLine(new Vector2(tx1, ty1), new Vector2(tx2, ty2), tickBrush, _tickWidth);
 					}
 				}
+
+				// フォーカス矩形
+				if (Focused)
+				{
+					float fw = Math.Min(Width, Height);
+					using var focusBrush = rt.CreateSolidColorBrush(new Color4(0f, 0f, 0f, 1f));
+					using var focusStyle = D2DContext.Factory.CreateStrokeStyle(
+						new StrokeStyleProperties { DashStyle = Vortice.Direct2D1.DashStyle.Dot });
+					rt.DrawRectangle(new Vortice.Mathematics.Rect(0, 0, fw, fw), focusBrush, 1f, focusStyle);
+				}
 			}
-			// draw the focus rectangle if needed
-			if (Focused)
-				ControlPaint.DrawFocusRectangle(g, new Rectangle(0, 0, Math.Min(Width,Height), Math.Min(Width,Height)));
+			catch (Exception ex)
+			{
+				System.Diagnostics.Debug.WriteLine($"Knob draw error: {ex.Message}");
+			}
+			finally
+			{
+				try { rt.EndDraw(); }
+				catch
+				{
+					DisposeDeviceResources();
+					if (IsHandleCreated && !IsDisposed && D2DContext.Factory != null)
+						CreateRenderTarget();
+					BeginInvoke((Action)Invalidate);
+				}
+			}
 		}
 		
 		/// <summary>
@@ -900,6 +996,7 @@ namespace UI
 		protected override void OnMouseUp(MouseEventArgs args)
 		{
 			_dragging = false;
+			Invalidate();
 			base.OnMouseUp(args);
 		}
 		/// <summary>
@@ -1043,6 +1140,8 @@ namespace UI
 		/// <param name="args">The event arguments</param>
 		protected override void OnResize(EventArgs args)
 		{
+			if (_renderTarget != null && Width > 0 && Height > 0)
+				_renderTarget.Resize(new Vortice.Mathematics.SizeI(Width, Height));
 			Invalidate();
 			base.OnResize(args);
 		}

@@ -4,87 +4,108 @@ using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark.Forms
 {
-  public class ErrorToastForm : Form
-  {
-    private readonly Timer _fadeTimer;
-    private double _displaySeconds = 0;
-    private bool _fading = false;
-    private const double FadeStep = 0.06;
+	public class ErrorToastForm : Form
+	{
+		private readonly Timer _fadeTimer;
+		private double _displaySeconds = 0;
+		private bool _fading = false;
+		private const double FadeStep = 0.06;
 
-    public ErrorToastForm(string message)
-    {
-      FormBorderStyle = FormBorderStyle.None;
-      ShowInTaskbar = false;
-      TopMost = true;
-      BackColor = Color.FromArgb(40, 40, 40);
-      Opacity = 0.9;
-      Size = new Size(300, 64);
-      StartPosition = FormStartPosition.Manual;
+		protected override CreateParams CreateParams
+		{
+			get
+			{
+				const int WS_EX_NOACTIVATE = 0x08000000;
+				const int WS_EX_TOOLWINDOW = 0x00000080;
+				var cp = base.CreateParams;
+				cp.ExStyle |= WS_EX_NOACTIVATE | WS_EX_TOOLWINDOW;
+				return cp;
+			}
+		}
 
-      var icon = new Label
-      {
-        Text = "⚠",
-        ForeColor = Color.Orange,
-        Font = new Font("Segoe UI", 18f, FontStyle.Regular),
-        Location = new Point(8, 12),
-        Size = new Size(36, 36),
-        TextAlign = ContentAlignment.MiddleCenter,
-      };
+		public ErrorToastForm(string message)
+		{
+			SetStyle(
+				ControlStyles.AllPaintingInWmPaint |
+				ControlStyles.UserPaint |
+				ControlStyles.DoubleBuffer,
+				true);
 
-      var messageLabel = new Label
-      {
-        Text = message,
-        ForeColor = Color.White,
-        Font = new Font("Segoe UI", 9f),
-        Location = new Point(50, 8),
-        Size = new Size(244, 48),
-        TextAlign = ContentAlignment.MiddleLeft,
-      };
+			FormBorderStyle = FormBorderStyle.None;
+			ShowInTaskbar = false;
+			TopMost = true;
+			BackColor = Color.FromArgb(40, 40, 40);
+			Opacity = 0.9;
+			Size = new Size(300, 64);
+			StartPosition = FormStartPosition.Manual;
 
-      Controls.Add(icon);
-      Controls.Add(messageLabel);
+			var icon = new Label
+			{
+				Text = "⚠",
+				ForeColor = Color.Orange,
+				BackColor = Color.FromArgb(40, 40, 40),
+				Font = new Font("Segoe UI", 18f, FontStyle.Regular),
+				Location = new Point(8, 12),
+				Size = new Size(36, 36),
+				TextAlign = ContentAlignment.MiddleCenter,
+			};
 
-      _fadeTimer = new Timer { Interval = 80 };
-      _fadeTimer.Tick += FadeTimer_Tick;
-    }
+			var messageLabel = new Label
+			{
+				Text = message,
+				ForeColor = Color.White,
+				BackColor = Color.FromArgb(40, 40, 40),
+				Font = new Font("Segoe UI", 9f),
+				Location = new Point(50, 8),
+				Size = new Size(244, 48),
+				TextAlign = ContentAlignment.MiddleLeft,
+			};
 
-    public void ShowToast(Form owner)
-    {
-      UpdatePosition(owner);
-      _fadeTimer.Start();
-      Show(owner);
-    }
+			Controls.Add(icon);
+			Controls.Add(messageLabel);
 
-    public void UpdatePosition(Form owner)
-    {
-      if (IsDisposed) return;
-      Left = owner.Left + owner.Width - Width - 8;
-      Top = owner.Top + owner.Height - Height - 8;
-    }
+			_fadeTimer = new Timer { Interval = 80 };
+			_fadeTimer.Tick += FadeTimer_Tick;
+		}
 
-    private void FadeTimer_Tick(object sender, EventArgs e)
-    {
-      _displaySeconds += 0.08;
+		public void ShowToast(Form owner)
+		{
+			UpdatePosition(owner);
+			_fadeTimer.Start();
+			Show(owner);
+		}
 
-      if (!_fading && _displaySeconds >= 3.0)
-        _fading = true;
+		public void UpdatePosition(Form owner)
+		{
+			if (IsDisposed)
+				return;
+			Left = owner.Left + owner.Width - Width - 8;
+			Top = owner.Top + owner.Height - Height - 8;
+		}
 
-      if (_fading)
-      {
-        Opacity -= FadeStep;
-        if (Opacity <= 0)
-        {
-          _fadeTimer.Stop();
-          Close();
-        }
-      }
-    }
+		private void FadeTimer_Tick(object sender, EventArgs e)
+		{
+			_displaySeconds += 0.08;
 
-    protected override void Dispose(bool disposing)
-    {
-      if (disposing)
-        _fadeTimer?.Dispose();
-      base.Dispose(disposing);
-    }
-  }
+			if (!_fading && _displaySeconds >= 3.0)
+				_fading = true;
+
+			if (_fading)
+			{
+				Opacity -= FadeStep;
+				if (Opacity <= 0)
+				{
+					_fadeTimer.Stop();
+					Close();
+				}
+			}
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+				_fadeTimer?.Dispose();
+			base.Dispose(disposing);
+		}
+	}
 }

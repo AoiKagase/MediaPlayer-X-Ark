@@ -16,5 +16,9 @@ namespace MediaPlayer_X_Ark.Skin.New.Parts
 		/// SRCが指定されている場合は、この項目は未使用で、スペクトラムの色は画像に従う。
 		/// </summary>
 		[JsonPropertyName("color")] public string Color { get; set; }
+		/// <summary>ウェーブラインL色（RRGGBB形式）。未指定時はデフォルト（Lime）。</summary>
+		[JsonPropertyName("waveColorL")] public string WaveColorL { get; set; }
+		/// <summary>ウェーブラインR色（RRGGBB形式）。未指定時はデフォルト（Cyan）。</summary>
+		[JsonPropertyName("waveColorR")] public string WaveColorR { get; set; }
 	}
 }

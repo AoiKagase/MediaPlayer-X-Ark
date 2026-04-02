@@ -158,6 +158,8 @@ namespace MediaPlayer_X_Ark.Skin.New
 					Height = sp.Location.H,
 				},
 				Enabled = true,
+				WaveColorL = sp.WaveColorL != null ? ParseColor(sp.WaveColorL) : Color.Empty,
+				WaveColorR = sp.WaveColorR != null ? ParseColor(sp.WaveColorR) : Color.Empty,
 			};
 
 			// スキン側で未定義の場合はデフォルト値にフォールバックする

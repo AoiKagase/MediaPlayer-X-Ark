@@ -14,6 +14,8 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Security.Policy;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark
@@ -39,6 +41,12 @@ namespace MediaPlayer_X_Ark
 
 		private INewSkinSystem _currentSkin;
 		private SkinApplicator _skinApplicator;
+		private int _spectrumUpdateCounter;
+
+		// スキン適用後の値バックアップ（設定オーバーライドをOFFにした時に復元するため）
+		private System.Drawing.Font _skinTitleFont;
+		private System.Drawing.Font _skinTimeFont;
+		private int _skinTitleScrollInterval;
 
 		public INewSkinSystem CurrentSkin => _currentSkin;
 
@@ -59,6 +67,8 @@ namespace MediaPlayer_X_Ark
 		{
 			D2DContext.Initialize();
 			InitializeComponent();
+			this.Visible = false;
+			Spectrum.Visible = false;
 		}
 
 		public void ApplyDisplaySettings()
@@ -87,13 +97,124 @@ namespace MediaPlayer_X_Ark
                 _skinApplicator.ApplyToFileInfoForm(_fileInfoForm);
                 _skinApplicator.ApplyToMiniPlayerForm(_miniPlayerForm);
 
+				// スキン適用後の値をバックアップ（設定オーバーライドOFF時の復元用）
+				_skinTitleFont = LabelTitle.Value.Font;
+				_skinTimeFont = LabelTime.Value.Font;
+				_skinTitleScrollInterval = LabelTitle.Timer.Interval;
+
                 SetupWaveformTarget();
 				_config.settings.Skin = skinFile;
 
 				SldVolume.Maximum = 150;
 				SldVolume.Value = _config.settings.Volume;
+
+				ApplySpectrumVisualSettings();
 			}
 		}
+		/// <summary>
+		/// スキンロード後・設定保存後に呼ぶ。スペクトラム表示色・速度・フォントを設定値で統合適用する。
+		/// </summary>
+		public void ApplySpectrumVisualSettings()
+		{
+			var s = _config.settings;
+
+			// ウェーブ色（設定優先でなければスキン値、またはデフォルト）
+			if (s.UseCustomWaveColor)
+			{
+				Spectrum.WaveColorL = ColorTranslator.FromHtml('#' + s.WaveColorL);
+				Spectrum.WaveColorR = ColorTranslator.FromHtml('#' + s.WaveColorR);
+			}
+			else
+			{
+				var skinL = _currentSkin?.Spectrum?.WaveColorL ?? System.Drawing.Color.Empty;
+				var skinR = _currentSkin?.Spectrum?.WaveColorR ?? System.Drawing.Color.Empty;
+				Spectrum.WaveColorL = skinL.IsEmpty ? System.Drawing.Color.Lime : skinL;
+				Spectrum.WaveColorR = skinR.IsEmpty ? System.Drawing.Color.Cyan : skinR;
+			}
+			Spectrum.RefreshBrushes();
+
+			// バー色
+			if (s.UseCustomSpectrumBarColor)
+			{
+				var bmp = new System.Drawing.Bitmap(Math.Max(1, Spectrum.Width), Math.Max(1, Spectrum.Height));
+				using var g = System.Drawing.Graphics.FromImage(bmp);
+				g.Clear(ColorTranslator.FromHtml('#' + s.SpectrumBarColor));
+				Spectrum.BitmapSpectrum = bmp;
+			}
+			else
+			{
+				// スキンのビットマップを再生成して復元
+				var skinSp = _currentSkin?.Spectrum;
+				if (skinSp != null)
+				{
+					System.Drawing.Bitmap bmp;
+					if (skinSp.Image != null)
+					{
+						bmp = new System.Drawing.Bitmap(skinSp.Image);
+					}
+					else
+					{
+						bmp = new System.Drawing.Bitmap(Math.Max(1, Spectrum.Width), Math.Max(1, Spectrum.Height));
+						using var g = System.Drawing.Graphics.FromImage(bmp);
+						g.Clear(skinSp.Color);
+					}
+					Spectrum.BitmapSpectrum = bmp;
+				}
+			}
+
+			// スノー落下速度（px/秒 → px/frame）
+			Spectrum.SnowFallSpeed = s.SnowFallSpeedPxPerSec * (s.SpectrumUpdateIntervalMs / 1000f);
+
+			// タイトルフォント
+			if (s.UseCustomTitleFont && !string.IsNullOrEmpty(s.TitleFontName) && s.TitleFontSize > 0)
+			{
+				var style = s.TitleFontBold ? System.Drawing.FontStyle.Bold : System.Drawing.FontStyle.Regular;
+				LabelTitle.Value.Font = new System.Drawing.Font(s.TitleFontName, s.TitleFontSize, style, System.Drawing.GraphicsUnit.Point);
+			}
+			else if (_skinTitleFont != null)
+				LabelTitle.Value.Font = _skinTitleFont;
+
+			// 時間表示フォント
+			if (s.UseCustomTimeFont && !string.IsNullOrEmpty(s.TimeFontName) && s.TimeFontSize > 0)
+			{
+				var style = s.TimeFontBold ? System.Drawing.FontStyle.Bold : System.Drawing.FontStyle.Regular;
+				LabelTime.Value.Font = new System.Drawing.Font(s.TimeFontName, s.TimeFontSize, style, System.Drawing.GraphicsUnit.Point);
+			}
+			else if (_skinTimeFont != null)
+				LabelTime.Value.Font = _skinTimeFont;
+
+			// タイトルスクロール速度
+			if (s.UseCustomTitleScrollInterval && s.TitleScrollIntervalMs > 0)
+				LabelTitle.Timer.Interval = s.TitleScrollIntervalMs;
+			else if (_skinTitleScrollInterval > 0)
+				LabelTitle.Timer.Interval = _skinTitleScrollInterval;
+
+			// ウェーブフォーム色変更の即時反映
+			if (_controller.IsValidTrackIndex(_controller.PlayingIndex))
+				UpdateWaveformBitmap(_controller.PlayingIndex);
+
+			QueueSpectrumRedraw();
+		}
+
+		private void QueueSpectrumRedraw()
+		{
+			if (Spectrum.IsDisposed)
+				return;
+
+			Spectrum.Invalidate();
+
+			if (!Spectrum.IsHandleCreated)
+				return;
+
+			Spectrum.BeginInvoke((Action)(() =>
+			{
+				if (!Spectrum.IsDisposed && Spectrum.IsHandleCreated)
+				{
+					Spectrum.RenderFrame();
+				}
+			}));
+		}
+
 		/// <summary>
 		/// 波形表示エリアの初期化。スキン定義に従い描画対象を設定する。
 		/// </summary>
@@ -143,45 +264,52 @@ namespace MediaPlayer_X_Ark
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void MainForm_Load(object sender, EventArgs e)
+		private async void MainForm_Load(object sender, EventArgs e)
 		{
+			var syncCtx = SynchronizationContext.Current;
+
 			_toolTip = new ToolTip(components);
 			notifyIcon.Visible = false;
 			notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
 			notifyIcon.Icon = this.Icon;
 			this.KeyPreview = true;
+
 			_engine = new PlayerEngine();
 			// 設定はエンジン初期化後に読み込む
 			_config = new Configuration(_engine);
 
-			_controller = new PlayerController(_engine, _config);
+			// FMOD 初期化（最重量部分）をバックグラウンドで実行。
+			// await で制御が戻りフォームが描画される。
+			PlayerController ctrl = null;
+			await Task.Run(() => ctrl = new PlayerController(_engine, _config, syncCtx));
+			_controller = ctrl;
+
 			_controller.TrackChanged += OnTrackChanged;
 			_controller.PlaybackStateChanged += OnPlaybackStateChanged;
 			_controller.WaveformReady += OnWaveformReady;
+			_controller.ErrorOccurred += (s, e) =>
+			{
+				if (!e.IsOk)
+					ShowErrorToast(e.Message);
+			};
+
 			_playListForm = new PlayListForm(this, _controller, _config);
-			_optionsForm = new OptionsForm(this, _controller, _config);
-			_cdForm = new CDForm(this, _controller, _config);
 			_fileInfoForm = new FileInfoForm(this, _controller);
-            _miniPlayerForm = new MiniPlayerForm(this, _controller);
-            
-            _managedForms.Add(_fileInfoForm);
-            _managedForms.Add(_playListForm);
-			_managedForms.Add(_optionsForm);
-			_managedForms.Add(_cdForm);
-            _managedForms.Add(_miniPlayerForm);
-            SkinLoad(_config.settings.Skin);
+			_miniPlayerForm = new MiniPlayerForm(this, _controller);
+			// _optionsForm, _cdForm は初回表示時に遅延生成
+
+			_managedForms.Add(_fileInfoForm);
+			_managedForms.Add(_playListForm);
+			_managedForms.Add(_miniPlayerForm);
+
 			Spectrum.Initialize();
+			SkinLoad(_config.settings.Skin);
 			Spectrum.Mode = _config.settings.DefaultSpectrumMode;
 			Spectrum.SnowBlockEnabled = _config.settings.SnowBlockEnabled;
+			QueueSpectrumRedraw();
 			SetMouseDownEvent();
 
-            _controller.ErrorOccurred += (s, e) =>
-            {
-                if (!e.IsOk)
-                    ShowErrorToast(e.Message);
-            };
-
-            InitContextMenu();
+			InitContextMenu();
 
 			_openFileDialogMedia = new OpenFileDialog();
 			_openFileDialogMedia.Filter = "音楽ファイル|*.mp3;*.flac;*.ogg;*.wav;*.aac;*.m4a;*.wma;*.mid;*.mod;*.xm;*.it;*.s3m|すべてのファイル|*.*";
@@ -189,25 +317,21 @@ namespace MediaPlayer_X_Ark
 
 			this.TopMost = _config.settings.AlwaysOnTop;
 
-            if (_config.settings.DiscordRichPresenceEnabled
+			if (_config.settings.DiscordRichPresenceEnabled
 				    && !string.IsNullOrWhiteSpace(_config.settings.DiscordApplicationId))
-            {
-                _discordPresence = new Engine.Discord.DiscordPresenceService(
-                    _controller, _config.settings.DiscordApplicationId);
-                _discordPresence.Enabled = true;
-            }
+			{
+				_discordPresence = new Engine.Discord.DiscordPresenceService(
+					_controller, _config.settings.DiscordApplicationId);
+				_discordPresence.Enabled = true;
+			}
 
-            initialize = true;
+			initialize = true;
 
 			// 起動パラメータを取得し、ファイルパスが取得出来るならばOpen関数へ引き渡す
 			string[] parameters = System.Environment.GetCommandLineArgs();
-			if (parameters.Length > 1)
-			{
-				if (File.Exists(parameters[1]))
-				{
-					_controller.OpenAndPlay(parameters[1]);
-				}
-			}
+			if (parameters.Length > 1 && File.Exists(parameters[1]))
+				_controller.OpenAndPlay(parameters[1]);
+			this.Visible = true;
 		}
 		private void OnPlaybackStateChanged() { }
 		private void OnTrackChanged(int index)
@@ -486,13 +610,20 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void PlayerTimer_Tick(object sender, EventArgs e)
 		{
-			if (!initialize || _engine == null || _engine.spectrum == null) return;
+			if (!initialize || _engine == null || _engine.spectrum == null)
+				return;
 
-                 Spectrum.mFFT = _engine.spectrum.UpdateSpectrum();
-			Spectrum.mWaveL = _engine.wave.GetWaveDataByChannel(0);
-			Spectrum.mWaveR = _engine.wave.GetWaveDataByChannel(1);
-//			Spectrum.Invalidate();
-			Spectrum.RenderFrame();
+			_spectrumUpdateCounter += Timer.Interval;
+			if (_spectrumUpdateCounter >= _config.settings.SpectrumUpdateIntervalMs)
+			{
+				_spectrumUpdateCounter = 0;
+				Spectrum.mFFT = _engine.spectrum.UpdateSpectrum();
+				Spectrum.mWaveL = _engine.wave.GetWaveDataByChannel(0);
+				Spectrum.mWaveR = _engine.wave.GetWaveDataByChannel(1);
+				Spectrum.RenderFrame();
+				if (!Spectrum.Visible)
+					Spectrum.Visible = true;
+			}
 			// シーク中は SeekiTimer 側でスライダーを動かすためスキップする
 			if (this.seekValue == 0)
 				SldTrack.Value = (int)_controller.GetPosition();
@@ -590,17 +721,29 @@ namespace MediaPlayer_X_Ark
 				dst[i] = (float)Math.Pow(src[i], exponent);
 			return dst;
 		}
-		/// <summary>WaveformDef からカラー設定を構築</summary>
+		/// <summary>WaveformDef からカラー設定を構築。UseCustomWaveformColors=true の場合は設定値を優先する。</summary>
 		private WaveformRenderer.WaveformColors BuildWaveformColors(
 			WaveformComponents wDef)
 		{
+			var s = _config.settings;
+			if (s.UseCustomWaveformColors)
+			{
+				return new WaveformRenderer.WaveformColors
+				{
+					ColorL   = ParseSkinColor(s.WaveformColorL),
+					ColorR   = ParseSkinColor(s.WaveformColorR),
+					ColorMix = ParseSkinColor(s.WaveformColorMix),
+					Played   = ParseSkinColor(s.WaveformColorPlayed),
+					Unplayed = ParseSkinColor(s.WaveformColorUnplayed),
+				};
+			}
 			return new WaveformRenderer.WaveformColors
 			{
-				ColorL = wDef.ColorL,// ?? "00CC66",
-				ColorR = wDef.ColorR,// ?? "0066CC",
-				ColorMix = wDef.ColorMix,// ?? "00AA88",
-				Played = wDef.ColorPlayed,// ?? "555555",
-				Unplayed = wDef.ColorUnplayed,// ?? "333333",
+				ColorL   = wDef.ColorL,
+				ColorR   = wDef.ColorR,
+				ColorMix = wDef.ColorMix,
+				Played   = wDef.ColorPlayed,
+				Unplayed = wDef.ColorUnplayed,
 			};
 		}
 		private static System.Drawing.Color ParseSkinColor(string hex)
@@ -747,17 +890,17 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private void BtnClose_Click(object sender, EventArgs e)
 		{
-			_fileInfoForm.Close();
-			_fileInfoForm.Dispose();
-            _playListForm.Close();
-			_playListForm.Dispose();
-			_optionsForm.Close();
-			_optionsForm.Dispose();
-			_cdForm.Close();
-			_cdForm.Dispose();
-            _miniPlayerForm?.Hide();
-            _miniPlayerForm?.Dispose();
-            Close();
+			_fileInfoForm?.Close();
+			_fileInfoForm?.Dispose();
+			_playListForm?.Close();
+			_playListForm?.Dispose();
+			_optionsForm?.Close();
+			_optionsForm?.Dispose();
+			_cdForm?.Close();
+			_cdForm?.Dispose();
+			_miniPlayerForm?.Hide();
+			_miniPlayerForm?.Dispose();
+			Close();
 		}
 		private void BtnBack_Click(object sender, EventArgs e)
 		{
@@ -790,6 +933,11 @@ namespace MediaPlayer_X_Ark
 		}
 		private void BtnSetting_Click(object sender, EventArgs e)
 		{
+			if (_optionsForm == null)
+			{
+				_optionsForm = new OptionsForm(this, _controller, _config);
+				_managedForms.Add(_optionsForm);
+			}
 			_optionsForm.Show();
 		}
 		private void BtnPlaylist_Click(object sender, EventArgs e)
@@ -943,6 +1091,11 @@ namespace MediaPlayer_X_Ark
 
 		private void BtnCD_Click(object sender, EventArgs e)
 		{
+			if (_cdForm == null)
+			{
+				_cdForm = new CDForm(this, _controller, _config);
+				_managedForms.Add(_cdForm);
+			}
 			_cdForm.Show();
 		}
 
@@ -1155,8 +1308,13 @@ namespace MediaPlayer_X_Ark
             }
         }
 
-        private void OpenOptionsTab(string tabName)
+		private void OpenOptionsTab(string tabName)
 		{
+			if (_optionsForm == null)
+			{
+				_optionsForm = new OptionsForm(this, _controller, _config);
+				_managedForms.Add(_optionsForm);
+			}
 			_optionsForm.Show();
 			_optionsForm.SelectTab(tabName);
 		}

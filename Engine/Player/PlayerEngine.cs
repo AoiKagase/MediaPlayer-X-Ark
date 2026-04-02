@@ -45,24 +45,24 @@ namespace MediaPlayer_X_Ark.Engine.Player
         LOOP_ALL		= 0x08, // 1000
     }
 
-    public class PlayerEngine : IPlayerEngine
+	public class PlayerEngine : IPlayerEngine
 	{
 		private bool _disposed = false;
 		private readonly SemaphoreSlim _tagLoadSemaphore = new SemaphoreSlim(3, 3);
-        public IReadOnlyList<PluginLoadResult> LoadedPlugins => _loadedPlugins;
-        private readonly List<PluginLoadResult> _loadedPlugins = new List<PluginLoadResult>();
+		public IReadOnlyList<PluginLoadResult> LoadedPlugins => _loadedPlugins;
+		private readonly List<PluginLoadResult> _loadedPlugins = new List<PluginLoadResult>();
 
-        public FmodSpectrum spectrum { get; private set; }
-        public FmodWave wave { get; private set; }
-        public Effector.Effectors effector { get; private set; }
-        public LOOP_MODE loop { get; set; }
-        public event EventHandler<PlayerErrorEventArgs> ErrorOccurred;
-        public int PlayingIndex { get; private set; } = -1;
-        protected bool initialized = false;
-        private bool _nowPlaying = false;
-        public bool NowPlaying => _nowPlaying;
-        public BindingList<Engine.Player.PlayList> PlayList { get; set; } = new BindingList<Engine.Player.PlayList>();
-        protected FMOD.System FmodSystem;
+		public FmodSpectrum spectrum { get; private set; }
+		public FmodWave wave { get; private set; }
+		public Effector.Effectors effector { get; private set; }
+		public LOOP_MODE loop { get; set; }
+		public event EventHandler<PlayerErrorEventArgs> ErrorOccurred;
+		public int PlayingIndex { get; private set; } = -1;
+		protected bool initialized = false;
+		private bool _nowPlaying = false;
+		public bool NowPlaying => _nowPlaying;
+		public BindingList<Engine.Player.PlayList> PlayList { get; set; } = new BindingList<Engine.Player.PlayList>();
+		protected FMOD.System FmodSystem;
 		protected FMOD.ChannelGroup FmodChannelGroup;
 		protected FMOD.Channel FmodChannel;
 
@@ -76,8 +76,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		private const int channelCount = 2;
 		public int ChannelCount => channelCount;
 		private List<int> _shuffleQueue = new List<int>();
-        private int _shuffleQueueIndex = 0;
-        private readonly Random _rng = new Random();
+		private int _shuffleQueueIndex = 0;
+		private readonly Random _rng = new Random();
 
 		// ── クロスフェード用フィールド ────────────────────────────────────────
 		private FMOD.Channel FmodChannelFading;      // フェードアウト中の旧チャンネル
@@ -89,8 +89,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		public bool CrossfadeEnabled { get; set; } = false;
 		public int CrossfadeDurationMs { get; set; } = 3000;
 		public bool CrossfadeTriggered { get; set; } = false;
-        public bool NonStopMixEnabled { get; set; } = false;
-        private string _soundFontPath = "";
+		public bool NonStopMixEnabled { get; set; } = false;
+		private string _soundFontPath = "";
 		private readonly object _fmodLock = new object();
 		private WaveformAnalyzer _waveformAnalyzer;
 		// 曲切り替わり時に前回の波形解析をキャンセルするためのトークン
@@ -104,28 +104,28 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		}
 
 		public List<DEVICE_INFO> DeviceList
-        {
-            get { return FmodDeviceList; }
-        }
+		{
+			get { return FmodDeviceList; }
+		}
 
 		public bool ReplayGainEnabled { get; set; } = false;
 		public int ReplayGainMode { get; set; } = 0;
 		public float ReplayGainPreamp { get; set; } = 0.0f;
 
 		protected FMOD.RESULT FmodCallFunction(FMOD.RESULT result, [CallerMemberName] string callerMethodName = "")
-        {
-            if (result != FMOD.RESULT.OK)
-            {
-                ErrorOccurred?.Invoke(this, new PlayerErrorEventArgs(
-                    callerMethodName,
-                    FMOD.Error.String(result),
-                    (int)result));
-            }
-            return result;
-        }
+		{
+			if (result != FMOD.RESULT.OK)
+			{
+				ErrorOccurred?.Invoke(this, new PlayerErrorEventArgs(
+					callerMethodName,
+					FMOD.Error.String(result),
+					(int)result));
+			}
+			return result;
+		}
 
 		public PlayerEngine()
-        {
+		{
 			CreateSystem();
 		}
 
@@ -200,7 +200,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		}
 
 		protected FMOD.RESULT CreateSystem()
-        {
+		{
 			return FmodCallFunction(FMOD.Factory.System_Create(out FmodSystem));
 		}
 		/// <summary>
@@ -217,11 +217,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				{
 					if (FmodVersion != FMOD.VERSION.number)
 					{
-                        ErrorOccurred?.Invoke(this, new PlayerErrorEventArgs(
-                            nameof(Initialize),
-                            $"FMOD version mismatch. Found: {FmodVersion:X}, Required: {FMOD.VERSION.number:X}",
-                            -1));
-                        return;
+						ErrorOccurred?.Invoke(this, new PlayerErrorEventArgs(
+							nameof(Initialize),
+							$"FMOD version mismatch. Found: {FmodVersion:X}, Required: {FMOD.VERSION.number:X}",
+							-1));
+						return;
 					}
 				}
 
@@ -236,10 +236,10 @@ namespace MediaPlayer_X_Ark.Engine.Player
 						bufferSettings.DspBufferCount);
 				}
 
-					if (FmodCallFunction(FmodSystem.init(channelCount, FMOD.INITFLAGS.NORMAL, IntPtr.Zero)) == RESULT.OK)
+				if (FmodCallFunction(FmodSystem.init(channelCount, FMOD.INITFLAGS.NORMAL, IntPtr.Zero)) == RESULT.OK)
 				{
 					if (FmodCallFunction(FmodSystem.createChannelGroup("Channel 01", out FmodChannelGroup)) == RESULT.OK)
-                    {
+					{
 						spectrum = new FmodSpectrum(ref FmodSystem, 1024, ref this.FmodChannelGroup);
 						wave = new FmodWave(ref FmodSystem, ref FmodChannelGroup);
 
@@ -260,61 +260,61 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		}
 
 		public void LoadPlugins()
-        {
-            _loadedPlugins.Clear();
+		{
+			_loadedPlugins.Clear();
 
-            string pluginDir = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+			string pluginDir = Path.Combine(
+				AppDomain.CurrentDomain.BaseDirectory, "Plugins");
 
-            if (!Directory.Exists(pluginDir)) return;
+			if (!Directory.Exists(pluginDir)) return;
 
-            // ★末尾にセパレータを付けてパスを確定させる
-            string pluginPath = pluginDir.TrimEnd(
-                Path.DirectorySeparatorChar,
-                Path.AltDirectorySeparatorChar)
-                + Path.DirectorySeparatorChar;
+			// ★末尾にセパレータを付けてパスを確定させる
+			string pluginPath = pluginDir.TrimEnd(
+				Path.DirectorySeparatorChar,
+				Path.AltDirectorySeparatorChar)
+				+ Path.DirectorySeparatorChar;
 			var result = FmodSystem.setPluginPath(pluginPath);
 
-            foreach (string dllPath in Directory.GetFiles(pluginDir, "*.dll"))
-            {
-                string filename = Path.GetFileName(dllPath);
-                // loadPlugin にはファイル名のみ渡す（setPluginPath との相対パス）
-                result = FmodSystem.loadPlugin(filename, out uint handle, 10);
+			foreach (string dllPath in Directory.GetFiles(pluginDir, "*.dll"))
+			{
+				string filename = Path.GetFileName(dllPath);
+				// loadPlugin にはファイル名のみ渡す（setPluginPath との相対パス）
+				result = FmodSystem.loadPlugin(filename, out uint handle, 10);
 
-                if (result != FMOD.RESULT.OK)
-                {
-                    _loadedPlugins.Add(new PluginLoadResult
-                    {
-                        FileName = filename,
-                        Success = false,
-                        Type = FMOD.PLUGINTYPE.MAX,
-                        Version = 0,
-                    });
-                    continue;
-                }
+				if (result != FMOD.RESULT.OK)
+				{
+					_loadedPlugins.Add(new PluginLoadResult
+					{
+						FileName = filename,
+						Success = false,
+						Type = FMOD.PLUGINTYPE.MAX,
+						Version = 0,
+					});
+					continue;
+				}
 
-                FmodSystem.getPluginInfo(
-                    handle,
-                    out FMOD.PLUGINTYPE pluginType,
-                    out string pluginName,
-                    256,
-                    out uint version);
+				FmodSystem.getPluginInfo(
+					handle,
+					out FMOD.PLUGINTYPE pluginType,
+					out string pluginName,
+					256,
+					out uint version);
 
-                _loadedPlugins.Add(new PluginLoadResult
-                {
-                    FileName = filename,
-                    PluginName = pluginName,
-                    Success = true,
-                    Type = pluginType,
-                    Version = version,
-                });
-            }
-            return;
-        }
+				_loadedPlugins.Add(new PluginLoadResult
+				{
+					FileName = filename,
+					PluginName = pluginName,
+					Success = true,
+					Type = pluginType,
+					Version = version,
+				});
+			}
+			return;
+		}
 
 		/// <summary>一時停止をトグルする</summary>
 		public void SwitchPause()
-        {
+		{
 			if (FmodChannel.hasHandle())
 			{
 				FmodChannel.isPlaying(out bool isplaying);
@@ -325,9 +325,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					{
 						FmodCallFunction(FmodChannel.setPaused(!paused));
 					}
-				} else
+				}
+				else
 				{
-					FmodCallFunction(FmodSystem.playSound(PlayList[PlayingIndex].Sound, FmodChannelGroup, false, out FmodChannel));
+					if (IsValidIndex(PlayingIndex))
+						FmodCallFunction(FmodSystem.playSound(PlayList[PlayingIndex].Sound, FmodChannelGroup, false, out FmodChannel));
 				}
 			}
 		}
@@ -353,17 +355,17 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		}
 
 		public FMOD.OUTPUTTYPE GetOutputType()
-        {
+		{
 			FmodCallFunction(FmodSystem.getOutput(out FmodOutputType));
 			return FmodOutputType;
-        }
+		}
 
 		/// <summary>再生中かどうかを返す</summary>
 		public bool IsPlaying()
 		{
 			bool result = false;
 			if (FmodChannel.hasHandle())
-            {
+			{
 				// stop() 後は FMOD_ERR_INVALID_HANDLE が返るためエラーチェックしない
 				FmodChannel.isPlaying(out result);
 				return result;
@@ -373,21 +375,21 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 
 		/// <summary>FMOD からデバイス一覧を取得して FmodDeviceList に格納する</summary>
-        public void GetDeviceList()
-        {
+		public void GetDeviceList()
+		{
 			int numDrivers = 0;
 			DEVICE_INFO device;
 
 			FmodDeviceList.Clear();
 			if (FmodCallFunction(FmodSystem.getNumDrivers(out numDrivers)) == RESULT.OK)
-            {
+			{
 				for (int i = 0; i < numDrivers; i++)
 				{
 					device = new DEVICE_INFO();
 					device.namelen = 64;
 					device.deviceId = i;
 					if (FmodCallFunction(FmodSystem.getDriverInfo(i, out device.name, device.namelen, out device.guid, out device.systemrate, out device.speakermode, out device.speakerModeChannels)) == RESULT.OK)
-                    {
+					{
 						FmodDeviceList.Add(device);
 					}
 				}
@@ -396,50 +398,50 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 		/// <summary>現在選択中のデバイス ID を返す</summary>
 		public int GetDevice()
-        {
+		{
 			int driver;
 			FmodSystem.getDriver(out driver);
 			return driver;
-        }
+		}
 		public string GetDeviceGUID()
-        {
+		{
 			int driver;
 			FmodSystem.getDriver(out driver);
-			for(int i = 0; i < FmodDeviceList.Count(); i++)
-            {
-				if(FmodDeviceList[i].deviceId == driver)
-                {
+			for (int i = 0; i < FmodDeviceList.Count(); i++)
+			{
+				if (FmodDeviceList[i].deviceId == driver)
+				{
 					return FmodDeviceList[i].GUID.ToString();
-                }
-            }
+				}
+			}
 			return "";
 		}
 		/// <summary>デバイスをインデックスで指定する</summary>
 		public void SetDevice(int driver)
-        {
+		{
 			FmodSystem.setDriver(driver);
-        }
+		}
 
 		/// <summary>デバイスをシステム GUID 文字列で指定する</summary>
 		public void SetDevice(string driver)
 		{
-			for(int i = 0; i < FmodDeviceList.Count(); i++)
-            {
+			for (int i = 0; i < FmodDeviceList.Count(); i++)
+			{
 				if (FmodDeviceList[i].GUID.Equals(driver))
-                {
+				{
 					FmodSystem.setDriver(FmodDeviceList[i].deviceId);
 					return;
 				}
 			}
 		}
 		public uint GetPosition()
-        {
+		{
 			uint position = 0;
 			if (FmodChannel.hasHandle() && IsPlaying())
 				FmodCallFunction(FmodChannel.getPosition(out position, TIMEUNIT.MS));
 
 			// CUEトラック: 絶対位置→トラック相対位置に変換
-			if (PlayingIndex >= 0 && PlayingIndex < PlayList.Count)
+			if (IsValidIndex(PlayingIndex))
 			{
 				var entry = PlayList[PlayingIndex];
 				if (entry.IsCueTrack && entry.CueStartMs.HasValue
@@ -447,18 +449,18 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					position -= (uint)entry.CueStartMs.Value;
 			}
 			return position;
-        }
+		}
 		public void SetPosition(uint position)
-        {
+		{
 			uint absPos = position;
-			if (PlayingIndex >= 0 && PlayingIndex < PlayList.Count)
+			if (IsValidIndex(PlayingIndex))
 			{
 				var entry = PlayList[PlayingIndex];
 				if (entry.IsCueTrack && entry.CueStartMs.HasValue)
 					absPos = (uint)entry.CueStartMs.Value + position;
 			}
 			FmodCallFunction(FmodChannel.setPosition(absPos, TIMEUNIT.MS));
-        }
+		}
 		/// <summary>
 		/// Retrieves the state a sound is in after being opened with the non blocking flag, or the current state of the streaming buffer.
 		/// </summary>
@@ -467,18 +469,18 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		/// <param name="diskBusy">Disk is currently being accessed for this sound.</param>
 		/// <returns>Open state of a sound. </returns>
 		public FMOD.OPENSTATE GetOpenState(int index, out uint buffered, out bool starving, out bool diskBusy)
-        {
+		{
 			FMOD.OPENSTATE state;
 			buffered = 0;
 			starving = false;
 			diskBusy = false;
 			PlayList[index].Sound.getOpenState(out state, out buffered, out starving, out diskBusy);
 			return state;
-        }
+		}
 
 		public FMOD.RESULT PlaySound(int index)
 		{
-			if (index >= PlayList.Count) 
+			if (!IsValidIndex(index))
 				return FMOD.RESULT.OK;
 
 			ReleaseNonStopFadingIfDone();
@@ -525,7 +527,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 		private void ApplyReplayGain(int index)
 		{
-			if (!FmodChannel.hasHandle()) return;
+			if (!FmodChannel.hasHandle())
+				return;
+
+			if (!IsValidIndex(index))
+				return;
 
 			var entry = PlayList[index];
 
@@ -534,7 +540,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				? (entry.ReplayGainAlbum ?? entry.ReplayGainTrack)
 				: (entry.ReplayGainTrack ?? entry.ReplayGainAlbum);
 
-			if (gainDb == null) return;
+			if (gainDb == null)
+				return;
 
 			// dB → 線形変換： volume = 10 ^ ((gainDb + preamp) / 20)
 			float totalDb = gainDb.Value + ReplayGainPreamp;
@@ -547,13 +554,15 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		}
 		public FMOD.RESULT PlaySoundPaused(int index, uint position = 0)
 		{
-			if (index >= PlayList.Count) return FMOD.RESULT.OK;
+			if (!IsValidIndex(index))
+				return FMOD.RESULT.OK;
 
 			if (FmodChannel.hasHandle())
 				FmodChannel.stop();
 
 			var loadResult = LoadSound(index);
-			if (loadResult != FMOD.RESULT.OK) return loadResult;
+			if (loadResult != FMOD.RESULT.OK)
+				return loadResult;
 
 			PlayingIndex = index;
 
@@ -575,26 +584,26 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			return result;
 		}
 		public uint GetLength(int index)
-        {
+		{
 			uint length = 0;
-            if (index >= PlayList.Count || index < 0)
-                return 0;
+			if (index >= PlayList.Count || index < 0)
+				return 0;
 
-            FmodCallFunction(PlayList[index].Sound.getLength(out length, TIMEUNIT.MS));
+			FmodCallFunction(PlayList[index].Sound.getLength(out length, TIMEUNIT.MS));
 
 			// FMOD で取得できない場合（ストリームなど）は ATL で読み込んだ値を使う
 			if (length == 0 || length == 0xFFFFFFFF)
 				length = PlayList[index].LengthMs;
 
 			return length;
-        }
+		}
 
 		/// <summary>
 		/// ファイルをプレイリストに追加する。タグ情報はバックグラウンドで取得する。
 		/// URL の場合はタグ取得をスキップする。
 		/// </summary>
 		public RESULT CreateSound(string filename, out int index)
-        {
+		{
 			index = 0;
 
 			// CUEシートは専用メソッドで処理する
@@ -603,13 +612,13 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			if (!filename.StartsWith("http://") && !filename.StartsWith("https://"))
 			{
-                var existing = PlayList.FirstOrDefault(p => p.FileName == filename);
+				var existing = PlayList.FirstOrDefault(p => p.FileName == filename);
 
 				if (existing != null)
-                {
-                    index = PlayList.IndexOf(existing);
+				{
+					index = PlayList.IndexOf(existing);
 					return FMOD.RESULT.OK;
-                }
+				}
 
 				var plist = new Engine.Player.PlayList(filename);
 				PlayList.Add(plist);
@@ -621,100 +630,104 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			}
 
 			return FMOD.RESULT.OK;
-        }
+		}
 		/// <summary>
-	/// CUEシートを解析してプレイリストにトラックを追加する。
-	/// タグはCUEから直接設定し、タグ取得・波形解析は行わない。
-	/// </summary>
-	private FMOD.RESULT CreateCueSounds(string cuePath, out int firstIndex)
-	{
-		firstIndex = 0;
-
-		// 既に同じCUEファイルが追加済みなら最初のトラックを返す
-		var existing = PlayList.FirstOrDefault(
-			p => p.IsCueTrack && string.Equals(
-				p.CueSheetRef?.CuePath, cuePath, StringComparison.OrdinalIgnoreCase));
-		if (existing != null)
+		/// CUEシートを解析してプレイリストにトラックを追加する。
+		/// タグはCUEから直接設定し、タグ取得・波形解析は行わない。
+		/// </summary>
+		private FMOD.RESULT CreateCueSounds(string cuePath, out int firstIndex)
 		{
-			firstIndex = PlayList.IndexOf(existing);
-			return FMOD.RESULT.OK;
-		}
+			firstIndex = 0;
 
-		CUE.CueSheet sheet;
-		try { sheet = CUE.CueParser.Parse(cuePath); }
-		catch { return FMOD.RESULT.ERR_FILE_BAD; }
+			// 既に同じCUEファイルが追加済みなら最初のトラックを返す
+			var existing = PlayList.FirstOrDefault(
+				p => p.IsCueTrack && string.Equals(
+					p.CueSheetRef?.CuePath, cuePath, StringComparison.OrdinalIgnoreCase));
+			if (existing != null)
+			{
+				firstIndex = PlayList.IndexOf(existing);
+				return FMOD.RESULT.OK;
+			}
 
-		if (sheet.Tracks.Count == 0) return FMOD.RESULT.ERR_FILE_BAD;
+			CUE.CueSheet sheet;
+			try { sheet = CUE.CueParser.Parse(cuePath); }
+			catch { return FMOD.RESULT.ERR_FILE_BAD; }
 
-		// 音声ファイルの総再生時間を取得（最終トラックの長さ計算に使用）
-		string lastAudioFile = sheet.IsMultiFile
-			? (sheet.Tracks[sheet.Tracks.Count - 1].AudioFile ?? sheet.AudioPath)
-			: sheet.AudioPath;
+			if (sheet.Tracks.Count == 0)
+				return FMOD.RESULT.ERR_FILE_BAD;
 
-		int fileDurationMs = 0;
-		if (!string.IsNullOrEmpty(lastAudioFile) && File.Exists(lastAudioFile))
-		{
-			try { fileDurationMs = (int)new ATL.Track(lastAudioFile).DurationMs; }
-			catch { }
-		}
-		sheet.TotalDurationMs = fileDurationMs;
-
-		bool first = true;
-		foreach (var track in sheet.Tracks)
-		{
-			string audioFile = sheet.IsMultiFile
-				? (track.AudioFile ?? sheet.AudioPath)
+			// 音声ファイルの総再生時間を取得（最終トラックの長さ計算に使用）
+			string lastAudioFile = sheet.IsMultiFile
+				? (sheet.Tracks[sheet.Tracks.Count - 1].AudioFile ?? sheet.AudioPath)
 				: sheet.AudioPath;
 
-			if (string.IsNullOrEmpty(audioFile) || !File.Exists(audioFile)) continue;
+			int fileDurationMs = 0;
+			if (!string.IsNullOrEmpty(lastAudioFile) && File.Exists(lastAudioFile))
+			{
+				try { fileDurationMs = (int)new ATL.Track(lastAudioFile).DurationMs; }
+				catch { }
+			}
+			sheet.TotalDurationMs = fileDurationMs;
 
-			uint lengthMs;
-			int? cueEnd;
-			if (track.EndMs >= 0)
+			bool first = true;
+			foreach (var track in sheet.Tracks)
 			{
-				lengthMs = (uint)(track.EndMs - track.StartMs);
-				cueEnd = track.EndMs;
-			}
-			else if (fileDurationMs > 0)
-			{
-				lengthMs = (uint)(fileDurationMs - track.StartMs);
-				cueEnd = null; // ファイル末尾はFMODに任せる
-			}
-			else
-			{
-				lengthMs = 0;
-				cueEnd = null;
+				string audioFile = sheet.IsMultiFile
+					? (track.AudioFile ?? sheet.AudioPath)
+					: sheet.AudioPath;
+
+				if (string.IsNullOrEmpty(audioFile) || !File.Exists(audioFile))
+					continue;
+
+				uint lengthMs;
+				int? cueEnd;
+				if (track.EndMs >= 0)
+				{
+					lengthMs = (uint)(track.EndMs - track.StartMs);
+					cueEnd = track.EndMs;
+				}
+				else if (fileDurationMs > 0)
+				{
+					lengthMs = (uint)(fileDurationMs - track.StartMs);
+					cueEnd = null; // ファイル末尾はFMODに任せる
+				}
+				else
+				{
+					lengthMs = 0;
+					cueEnd = null;
+				}
+
+				var plist = new PlayList(audioFile);
+				plist.Title = !string.IsNullOrEmpty(track.Title)
+					? track.Title
+					: $"Track {track.Number:D2}";
+				plist.Artist = track.Performer ?? sheet.Performer ?? "";
+				plist.Album = sheet.Title ?? "";
+				plist.SetLength(lengthMs);
+				plist.CueStartMs = track.StartMs;
+				plist.CueEndMs = cueEnd;
+				plist.CueSheetRef = sheet;
+
+				PlayList.Add(plist);
+				if (first)
+				{
+					firstIndex = PlayList.Count - 1;
+					first = false;
+				}
 			}
 
-			var plist = new PlayList(audioFile);
-			plist.Title = !string.IsNullOrEmpty(track.Title)
-				? track.Title
-				: $"Track {track.Number:D2}";
-			plist.Artist = track.Performer ?? sheet.Performer ?? "";
-			plist.Album = sheet.Title ?? "";
-			plist.SetLength(lengthMs);
-			plist.CueStartMs = track.StartMs;
-			plist.CueEndMs = cueEnd;
-			plist.CueSheetRef = sheet;
-
-			PlayList.Add(plist);
-			if (first)
-			{
-				firstIndex = PlayList.Count - 1;
-				first = false;
-			}
+			return first ? FMOD.RESULT.ERR_FILE_BAD : FMOD.RESULT.OK;
 		}
 
-		return first ? FMOD.RESULT.ERR_FILE_BAD : FMOD.RESULT.OK;
-	}
-
-	private async Task LoadTagsOnlyAsync(int index)
+		private async Task LoadTagsOnlyAsync(int index)
 		{
 			await _tagLoadSemaphore.WaitAsync();
+
+			if (!IsValidIndex(index))
+				return;
+
 			try
 			{
-				if (index < 0 || index >= PlayList.Count) return;
-
 				string filename = PlayList[index].FileName;
 
 				await Task.Run(() =>
@@ -791,13 +804,13 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		private bool _fluidSynthAvailable = false;
 		public bool FluidSynthAvailable => _fluidSynthAvailable;
 
-        private static readonly HashSet<string> _trackerExtensions = new HashSet<string>
+		private static readonly HashSet<string> _trackerExtensions = new HashSet<string>
 			{
 				".mod", ".xm", ".it", ".s3m"
 			};
 		private FMOD.RESULT LoadSound(int index)
 		{
-			if (index < 0 || index >= PlayList.Count)
+			if (!IsValidIndex(index))
 				return FMOD.RESULT.ERR_INVALID_PARAM;
 
 			// 既にロード済みの場合はスキップ
@@ -915,6 +928,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		private async System.Threading.Tasks.Task StartWaveformAnalysisAsync(
 			string filename, int index)
 		{
+			if (!IsValidIndex(index))
+				return;
+
 			// 前回の曲の解析をキャンセルしてから新しい解析を開始する
 			_waveformCts?.Cancel();
 			_waveformCts?.Dispose();
@@ -934,9 +950,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		}
 		private async System.Threading.Tasks.Task StartWaveformAnalysisFromSoundAsync(int index)
 		{
-			if (index < 0 || index >= PlayList.Count) return;
+			if (!IsValidIndex(index))
+				return;
+
 			var entry = PlayList[index];
-			if (!entry.IsPcm || !entry.IsLoaded) return;
+			if (!entry.IsPcm || !entry.IsLoaded)
+				return;
 
 			_waveformCts?.Cancel();
 			_waveformCts?.Dispose();
@@ -959,7 +978,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		/// </summary>
 		public void ClearPlayList()
 		{
-            Stop();
+			Stop();
 			for (int i = 0; i < PlayList.Count; i++)
 			{
 				if (PlayList[i].IsLoaded)
@@ -969,97 +988,99 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		}
 
 		public void CreateSoundForMidi(string filename)
-        {
+		{
 		}
 		public void PlayNext(int fromIndex, bool manual = false)
 		{
-            if (PlayList.Count == 0) return;
+			if (PlayList.Count == 0) return;
 
-			if (fromIndex < 0) 
-				fromIndex = PlayingIndex;
+			if (fromIndex < 0)
+				fromIndex = Math.Min(PlayingIndex, PlayList.Count - 1);
 
 			if (manual)
 				Stop();
 
-            if ((loop & LOOP_MODE.LOOP_RANDOM) != 0)
-            {
-                // シャッフルキューが枯渇したら再生成する
-                if (_shuffleQueueIndex >= _shuffleQueue.Count)
-                    BuildShuffleQueue();
-                PlaySound(_shuffleQueue[_shuffleQueueIndex++]);
-                return;
-            }
+			if ((loop & LOOP_MODE.LOOP_RANDOM) != 0)
+			{
+				// シャッフルキューが枯渇したら再生成する
+				if (_shuffleQueueIndex >= _shuffleQueue.Count)
+					BuildShuffleQueue();
+				PlaySound(_shuffleQueue[_shuffleQueueIndex++]);
+				return;
+			}
 
-            int next;
-            switch (loop)
-            {
-                case LOOP_MODE.LOOP_ONE_REPEAT:
-                    next = fromIndex;
-                    break;
-                case LOOP_MODE.LOOP_ALL:
-                    next = (fromIndex < PlayList.Count - 1) ? fromIndex + 1 : 0;
-                    break;
-                default: // LOOP_NONE
-                    if (fromIndex >= PlayList.Count - 1) { _nowPlaying = false; return; }
-                    next = fromIndex + 1;
-                    break;
-            }
+			int next;
+			switch (loop)
+			{
+				case LOOP_MODE.LOOP_ONE_REPEAT:
+					next = fromIndex;
+					break;
+				case LOOP_MODE.LOOP_ALL:
+					next = (fromIndex < PlayList.Count - 1) ? fromIndex + 1 : 0;
+					break;
+				default: // LOOP_NONE
+					if (fromIndex >= PlayList.Count - 1) { _nowPlaying = false; return; }
+					next = fromIndex + 1;
+					break;
+			}
 			PlaySound(next);
 		}
-        public void Sort<T>(Func<Engine.Player.PlayList, T> keySelector)
-        {
-            var playingItem = (PlayingIndex >= 0 && PlayingIndex < PlayList.Count)
-                ? PlayList[PlayingIndex]
-                : null;
+		public void Sort<T>(Func<Engine.Player.PlayList, T> keySelector)
+		{
+			var playingItem = IsValidIndex(PlayingIndex)
+				? PlayList[PlayingIndex]
+				: null;
 
-            var sorted = PlayList.OrderBy(keySelector).ToList();
-            PlayList.Clear();
-            foreach (var item in sorted)
-                PlayList.Add(item);
+			var sorted = PlayList.OrderBy(keySelector).ToList();
+			PlayList.Clear();
+			foreach (var item in sorted)
+				PlayList.Add(item);
 
-            // private set なので内部で更新可能
-            if (playingItem != null)
-                PlayingIndex = PlayList.IndexOf(playingItem);
-        }
+			// private set なので内部で更新可能
+			if (playingItem != null)
+				PlayingIndex = PlayList.IndexOf(playingItem);
+		}
 
-        public void PlayPrevious(int fromIndex = -1, bool manual = false)
-        {
-            if (PlayList.Count == 0) return;
-            if (fromIndex < 0) fromIndex = PlayingIndex;
+		public void PlayPrevious(int fromIndex = -1, bool manual = false)
+		{
+			if (PlayList.Count == 0)
+				return;
+			if (fromIndex < 0)
+				fromIndex = Math.Max(0, PlayingIndex);
 			if (manual) Stop();
 			if ((loop & LOOP_MODE.LOOP_RANDOM) != 0)
-            {
-                // シャッフルキューを 1 つ戻る（最低 0 まで）
-                _shuffleQueueIndex = Math.Max(0, _shuffleQueueIndex - 2);
-                if (_shuffleQueueIndex < _shuffleQueue.Count)
-                    PlaySound(_shuffleQueue[_shuffleQueueIndex++]);
-                return;
-            }
+			{
+				// シャッフルキューを 1 つ戻る（最低 0 まで）
+				_shuffleQueueIndex = Math.Max(0, _shuffleQueueIndex - 2);
+				if (_shuffleQueueIndex < _shuffleQueue.Count)
+					PlaySound(_shuffleQueue[_shuffleQueueIndex++]);
+				return;
+			}
 
-            int prev;
-            switch (loop)
-            {
-                case LOOP_MODE.LOOP_ALL:
-                    prev = (fromIndex > 0) ? fromIndex - 1 : PlayList.Count - 1;
-                    break;
-                default:
-                    prev = Math.Max(0, fromIndex - 1);
-                    break;
-            }
-            PlaySound(prev);
-        }
-        /// <summary>再生を停止する。クロスフェード用の退避チャンネルも解放する。</summary>
-        public void Stop()
-        {
+			int prev;
+			switch (loop)
+			{
+				case LOOP_MODE.LOOP_ALL:
+					prev = (fromIndex > 0) ? fromIndex - 1 : PlayList.Count - 1;
+					break;
+				default:
+					prev = Math.Max(0, fromIndex - 1);
+					break;
+			}
+			PlaySound(prev);
+		}
+		/// <summary>再生を停止する。クロスフェード用の退避チャンネルも解放する。</summary>
+		public void Stop()
+		{
 			_nowPlaying = false;
-//			PlayingIndex = -1;
+			//			PlayingIndex = -1;
 			if (FmodChannel.hasHandle())
 				FmodChannel.stop();
 
 			if (FmodChannelFading.hasHandle())
 				FmodChannelFading.stop();
 
-			if (_fadingPlayListIndex >= 0 && _fadingPlayListIndex < PlayList.Count
+			if (IsValidIndex(_fadingPlayListIndex)
 				&& PlayList[_fadingPlayListIndex].IsLoaded
 				&& !PlayList[_fadingPlayListIndex].IsPcm)
 			{
@@ -1075,23 +1096,23 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 		/// <summary>マスター音量を設定する（0.0〜1.0）</summary>
 		public void SetVolume(float vol)
-        {
+		{
 			_masterVolume = vol;
 			FmodChannel.setVolume(vol);
 			// フェードアウト中の旧チャンネルの音量には干渉しない
-        }
+		}
 
 		public int GetVolume()
-        {
+		{
 			float volume;
 			FmodChannel.getVolume(out volume);
-			return (int) (volume * 100);
-        }
+			return (int)(volume * 100);
+		}
 		/// <summary>パンを設定する（-1.0〜1.0）</summary>
 		public void SetPan(float pan)
-        {
+		{
 			FmodChannel.setPan(pan);
-        }
+		}
 
 		/// <summary>
 		/// 指定した出力タイプのデバイス一覧を取得する。
@@ -1166,57 +1187,58 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			return list;
 		}
 
-        public void BuildShuffleQueue()
-        {
-            _shuffleQueue = Enumerable.Range(0, PlayList.Count).ToList();
+		public void BuildShuffleQueue()
+		{
+			_shuffleQueue = Enumerable.Range(0, PlayList.Count).ToList();
 
-            // Fisher-Yates シャッフル
-            for (int i = _shuffleQueue.Count - 1; i > 0; i--)
-            {
-                int j = _rng.Next(i + 1);
-                (_shuffleQueue[i], _shuffleQueue[j]) = (_shuffleQueue[j], _shuffleQueue[i]);
-            }
-            _shuffleQueueIndex = 0;
-        }
+			// Fisher-Yates シャッフル
+			for (int i = _shuffleQueue.Count - 1; i > 0; i--)
+			{
+				int j = _rng.Next(i + 1);
+				(_shuffleQueue[i], _shuffleQueue[j]) = (_shuffleQueue[j], _shuffleQueue[i]);
+			}
+			_shuffleQueueIndex = 0;
+		}
 
-        public void UpdateShuffleQueueOnRemove(int removedIndex)
-        {
-            for (int i = _shuffleQueue.Count - 1; i >= 0; i--)
-            {
-                if (_shuffleQueue[i] == removedIndex)
-                {
-                    _shuffleQueue.RemoveAt(i);
-                    if (i < _shuffleQueueIndex)
-                        _shuffleQueueIndex--;
-                }
-                else if (_shuffleQueue[i] > removedIndex)
-                {
-                    _shuffleQueue[i]--;
-                }
-            }
-        }
+		public void UpdateShuffleQueueOnRemove(int removedIndex)
+		{
+			for (int i = _shuffleQueue.Count - 1; i >= 0; i--)
+			{
+				if (_shuffleQueue[i] == removedIndex)
+				{
+					_shuffleQueue.RemoveAt(i);
+					if (i < _shuffleQueueIndex)
+						_shuffleQueueIndex--;
+				}
+				else if (_shuffleQueue[i] > removedIndex)
+				{
+					_shuffleQueue[i]--;
+				}
+			}
+		}
 
-        public FMOD.RESULT PlayUrl(string url)
-        {
-            FMOD.Sound sound;
-            FMOD.CREATESOUNDEXINFO info = new FMOD.CREATESOUNDEXINFO();
-            info.cbsize = Marshal.SizeOf(info);
+		public FMOD.RESULT PlayUrl(string url)
+		{
+			FMOD.Sound sound;
+			FMOD.CREATESOUNDEXINFO info = new FMOD.CREATESOUNDEXINFO();
+			info.cbsize = Marshal.SizeOf(info);
 
-            var result = FmodCallFunction(FmodSystem.createStream(
-                url, FMOD.MODE.DEFAULT | FMOD.MODE.NONBLOCKING, ref info, out sound));
+			var result = FmodCallFunction(FmodSystem.createStream(
+				url, FMOD.MODE.DEFAULT | FMOD.MODE.NONBLOCKING, ref info, out sound));
 
-            if (result != FMOD.RESULT.OK) return result;
+			if (result != FMOD.RESULT.OK) return result;
 
-            // URL ストリームはプレイリストに追加せず直接再生する
-            FmodCallFunction(FmodSystem.playSound(sound, FmodChannelGroup, false, out FmodChannel));
+			// URL ストリームはプレイリストに追加せず直接再生する
+			FmodCallFunction(FmodSystem.playSound(sound, FmodChannelGroup, false, out FmodChannel));
 
-            _nowPlaying = true;
-            return FMOD.RESULT.OK;
-        }
+			_nowPlaying = true;
+			return FMOD.RESULT.OK;
+		}
 
 		public Bitmap GetCoverArt(int index)
 		{
-			if (index < 0 || index >= PlayList.Count) return null;
+			if (!IsValidIndex(index))
+				return null;
 			string filename = PlayList[index].FileName;
 			if (string.IsNullOrEmpty(filename) || !File.Exists(filename)) return null;
 
@@ -1241,7 +1263,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				if (FmodChannelFading.hasHandle())
 				{
 					FmodChannelFading.stop();
-					if (_fadingPlayListIndex >= 0 && _fadingPlayListIndex < PlayList.Count
+					if (IsValidIndex(_fadingPlayListIndex)
 						&& PlayList[_fadingPlayListIndex].IsLoaded)
 					{
 						if (!PlayList[_fadingPlayListIndex].IsPcm)
@@ -1281,7 +1303,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			{
 				// 前回のフェードが残っていたら先に停止してサウンドを解放する
 				FmodChannelFading.stop();
-				if (_fadingPlayListIndex >= 0 && _fadingPlayListIndex < PlayList.Count
+				if (IsValidIndex(_fadingPlayListIndex)
 					&& PlayList[_fadingPlayListIndex].IsLoaded
 					&& !PlayList[_fadingPlayListIndex].IsPcm)
 				{
@@ -1309,7 +1331,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			if (!isPlaying)
 			{
 				FmodChannelFading.stop();
-				if (_fadingPlayListIndex >= 0 && _fadingPlayListIndex < PlayList.Count
+				if (IsValidIndex(_fadingPlayListIndex)
 					&& PlayList[_fadingPlayListIndex].IsLoaded)
 				{
 					try
@@ -1370,10 +1392,20 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				}
 
 				FmodChannelFading = default;
-				_fadingPlayListIndex = -1; 
+				_fadingPlayListIndex = -1;
 				_isCrossfading = false;
 				_crossfadeElapsedMs = 0;
 			}
+		}
+
+		/// <summary>
+		/// インデックスがプレイリスト内に存在するかチェックする。存在しない場合は再生操作をスキップするために使用。
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		private bool IsValidIndex(int index)
+		{
+			return index >= 0 && index < PlayList.Count;
 		}
 	}
 }

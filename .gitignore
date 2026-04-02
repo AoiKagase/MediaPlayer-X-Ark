@@ -363,3 +363,9 @@ MigrationBackup/
 FodyWeavers.xsd
 *.db
 /.claude
+/.claude
+/.dotnet
+/.claude
+.claude/settings.local.json
+/.dotnetcli
+/.claude

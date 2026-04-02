@@ -4,6 +4,8 @@ using MediaPlayer_X_Ark.Skin.New;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark.Skin
@@ -14,6 +16,10 @@ namespace MediaPlayer_X_Ark.Skin
     /// </summary>
     public class SkinApplicator
     {
+        [DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int wMsg, bool wParam, int lParam);
+        private const int WM_SETREDRAW = 0x000B;
+
         private readonly INewSkinSystem _skin;
 
         public SkinApplicator(INewSkinSystem skin)
@@ -24,62 +30,69 @@ namespace MediaPlayer_X_Ark.Skin
         /// <summary>メインフォームにスキンを適用する</summary>
         public void ApplyToMainForm(Form form, Controls.SpectrumAnalyzer spectrum)
         {
-            form.BackgroundImage = _skin.MainForm.BackImage;
-            form.TransparencyKey = _skin.MainForm.TransparentKey;
-            form.Width           = _skin.MainForm.Position.Width;
-            form.Height          = _skin.MainForm.Position.Height;
-
-            // スペクトラム配置
-            form.SuspendLayout();
-            spectrum.Left   = _skin.Spectrum.Position.Left;
-            spectrum.Top    = _skin.Spectrum.Position.Top;
-            spectrum.Width  = _skin.Spectrum.Position.Width;
-            spectrum.Height = _skin.Spectrum.Position.Height;
-            form.ResumeLayout(false);
-
-            // スペクトラムビットマップ再生成
-            int sw = _skin.Spectrum.Position.Width;
-            int sh = _skin.Spectrum.Position.Height;
-            spectrum.BitmapSnow       = new Bitmap(sw, sh);
-            spectrum.BitmapWave       = new Bitmap(sw, sh);
-            spectrum.BitmapBackground = new Bitmap(sw, sh);
-
-            if (_skin.Spectrum.Image != null)
+            // 全変更が終わるまで描画を停止して中間状態の残像を防ぐ
+            if (form.IsHandleCreated)
+                SendMessage(form.Handle, WM_SETREDRAW, false, 0);
+            try
             {
-                spectrum.BitmapSpectrum = new Bitmap(_skin.Spectrum.Image);
-            }
-            else
-            {
-                spectrum.BitmapSpectrum = new Bitmap(sw, sh);
-                using (var g = Graphics.FromImage(spectrum.BitmapSpectrum))
-                    g.Clear(_skin.Spectrum.Color);
-                using (var g = Graphics.FromImage(spectrum.BitmapSnow))
-                    g.Clear(_skin.Spectrum.Color);
-                using (var g = Graphics.FromImage(spectrum.BitmapWave))
-                    g.Clear(_skin.Spectrum.Color);
-            }
+                form.BackgroundImage = _skin.MainForm.BackImage;
+                form.TransparencyKey = _skin.MainForm.TransparentKey;
+                form.Width           = _skin.MainForm.Position.Width;
+                form.Height          = _skin.MainForm.Position.Height;
 
-            // 背景からスペクトラム領域を切り出し
-            if (_skin.MainForm.BackImage != null)
-            {
-                var rect = new Rectangle(
-                    _skin.Spectrum.Position.Left,
-                    _skin.Spectrum.Position.Top,
-                    sw, sh);
-                var bmp = new Bitmap(sw, sh);
-                using (var g = Graphics.FromImage(bmp))
-                    g.DrawImage(_skin.MainForm.BackImage,
-                        new Rectangle(0, 0, sw, sh), rect, GraphicsUnit.Pixel);
-                spectrum.BitmapBackground = bmp;
-            }
-            else
-            {
-                spectrum.BitmapBackground = null;
-            }
+                // スペクトラム配置
+                form.SuspendLayout();
+                spectrum.Left   = _skin.Spectrum.Position.Left;
+                spectrum.Top    = _skin.Spectrum.Position.Top;
+                spectrum.Width  = _skin.Spectrum.Position.Width;
+                spectrum.Height = _skin.Spectrum.Position.Height;
+                form.ResumeLayout(false);
 
-            // ボタン・スライダー・ラベルを適用
-            ApplyControls(form.Controls);
-            form.Refresh();
+                // スペクトラムビットマップ再生成
+                int sw = _skin.Spectrum.Position.Width;
+                int sh = _skin.Spectrum.Position.Height;
+
+                if (_skin.Spectrum.Image != null)
+                {
+                    spectrum.BitmapSpectrum = new Bitmap(_skin.Spectrum.Image);
+                }
+                else
+                {
+                    spectrum.BitmapSpectrum = new Bitmap(sw, sh);
+                    using (var g = Graphics.FromImage(spectrum.BitmapSpectrum))
+                        g.Clear(_skin.Spectrum.Color);
+                }
+
+                // 背景からスペクトラム領域を切り出し
+                if (_skin.MainForm.BackImage != null)
+                {
+                    var rect = new Rectangle(
+                        _skin.Spectrum.Position.Left,
+                        _skin.Spectrum.Position.Top,
+                        sw, sh);
+                    var bmp = new Bitmap(sw, sh);
+                    using (var g = Graphics.FromImage(bmp))
+                        g.DrawImage(_skin.MainForm.BackImage,
+                            new Rectangle(0, 0, sw, sh), rect, GraphicsUnit.Pixel);
+                    spectrum.BitmapBackground = bmp;
+                }
+                else
+                {
+                    spectrum.BitmapBackground = null;
+                }
+
+                // ビットマップ設定直後に D2D 描画を有効化して残像を防ぐ
+                spectrum.Initialize();
+
+                // ボタン・スライダー・ラベルを適用
+                ApplyControls(form.Controls);
+            }
+            finally
+            {
+                if (form.IsHandleCreated)
+                    SendMessage(form.Handle, WM_SETREDRAW, true, 0);
+                form.Refresh();
+            }
         }
 
         /// <summary>プレイリストフォームにスキンを適用する</summary>

@@ -92,6 +92,7 @@ namespace MediaPlayer_X_Ark
 			// Timer
 			// 
 			Timer.Enabled = true;
+			Timer.Interval = 60;
 			Timer.Tick += PlayerTimer_Tick;
 			// 
 			// BtnOpen
@@ -173,7 +174,6 @@ namespace MediaPlayer_X_Ark
 			BtnLoop.TabIndex = 8;
 			BtnLoop.UseVisualStyleBackColor = false;
 			BtnLoop.Click += BtnLoop_Click;
-			//BtnLoop.MouseDown += BtnLoop_MouseDown;
 			BtnLoop.MouseUp += BtnLoop_MouseUp;
 			// 
 			// BtnRandom
@@ -188,7 +188,6 @@ namespace MediaPlayer_X_Ark
 			BtnRandom.TabIndex = 9;
 			BtnRandom.UseVisualStyleBackColor = false;
 			BtnRandom.Click += BtnRandom_Click;
-			//BtnRandom.MouseDown += BtnRandom_MouseDown;
 			BtnRandom.MouseUp += BtnRandom_MouseUp;
 			// 
 			// BtnNext
@@ -329,9 +328,7 @@ namespace MediaPlayer_X_Ark
 			// 
 			Spectrum.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
 			Spectrum.BitmapBackground = null;
-			Spectrum.BitmapSnow = (System.Drawing.Bitmap)resources.GetObject("Spectrum.BitmapSnow");
 			Spectrum.BitmapSpectrum = (System.Drawing.Bitmap)resources.GetObject("Spectrum.BitmapSpectrum");
-			Spectrum.BitmapWave = (System.Drawing.Bitmap)resources.GetObject("Spectrum.BitmapWave");
 			Spectrum.Location = new System.Drawing.Point(138, 275);
 			Spectrum.mFFT = null;
 			Spectrum.Mode = 0;
@@ -340,8 +337,11 @@ namespace MediaPlayer_X_Ark
 			Spectrum.Name = "Spectrum";
 			Spectrum.Size = new System.Drawing.Size(128, 54);
 			Spectrum.SnowBlockEnabled = true;
+			Spectrum.SnowFallSpeed = 0.72F;
 			Spectrum.TabIndex = 20;
 			Spectrum.TabStop = false;
+			Spectrum.WaveColorL = System.Drawing.Color.Lime;
+			Spectrum.WaveColorR = System.Drawing.Color.Cyan;
 			Spectrum.Click += Spectrum_Click;
 			// 
 			// BtnCD

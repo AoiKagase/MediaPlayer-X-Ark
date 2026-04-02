@@ -83,6 +83,63 @@ namespace MediaPlayer_X_Ark.Engine.Config
         /// <summary>Discord Rich Presence の有効/無効</summary>
         public bool DiscordRichPresenceEnabled { get; set; } = false;
         public string DiscordApplicationId { get; set; } = "";
+
+		// ── スペクトラム表示設定 ────────────────────────────────────────
+		/// <summary>スペクトラム更新間隔（ms）。Timer.Interval（60ms固定）とは独立したカウンターで制御。</summary>
+		public int SpectrumUpdateIntervalMs { get; set; } = 60;
+
+		/// <summary>ウェーブラインL色（RRGGBB形式）</summary>
+		public string WaveColorL { get; set; } = "00FF00";
+		/// <summary>ウェーブラインR色（RRGGBB形式）</summary>
+		public string WaveColorR { get; set; } = "00FFFF";
+		/// <summary>true=設定色を使用、false=スキン定義色（未定義時はデフォルト）</summary>
+		public bool UseCustomWaveColor { get; set; } = false;
+
+		/// <summary>スペクトラムバー色（RRGGBB形式）</summary>
+		public string SpectrumBarColor { get; set; } = "FFFFFF";
+		/// <summary>true=設定色で単色塗り、false=スキン画像を使用</summary>
+		public bool UseCustomSpectrumBarColor { get; set; } = false;
+
+		/// <summary>スノーブロック落下速度（px/秒）。フレームレート非依存。デフォルト12 = 0.72px/frame @ 60ms</summary>
+		public float SnowFallSpeedPxPerSec { get; set; } = 12f;
+
+		// ── ウェーブフォーム表示色 ────────────────────────────────────────
+		/// <summary>ウェーブフォームL色（RRGGBB形式）</summary>
+		public string WaveformColorL { get; set; } = "00C864";
+		/// <summary>ウェーブフォームR色（RRGGBB形式）</summary>
+		public string WaveformColorR { get; set; } = "0064C8";
+		/// <summary>ウェーブフォームMix色（RRGGBB形式）</summary>
+		public string WaveformColorMix { get; set; } = "00B478";
+		/// <summary>再生済み部分の色（RRGGBB形式）</summary>
+		public string WaveformColorPlayed { get; set; } = "646464";
+		/// <summary>未再生部分の色（RRGGBB形式）</summary>
+		public string WaveformColorUnplayed { get; set; } = "323232";
+		/// <summary>true=設定色を使用、false=スキン定義色</summary>
+		public bool UseCustomWaveformColors { get; set; } = false;
+
+		// ── テキスト表示設定 ──────────────────────────────────────────
+		/// <summary>タイトルラベルのフォント名</summary>
+		public string TitleFontName { get; set; } = "";
+		/// <summary>タイトルラベルのフォントサイズ（pt）</summary>
+		public float TitleFontSize { get; set; } = 0f;
+		/// <summary>タイトルラベルフォントを太字にするか</summary>
+		public bool TitleFontBold { get; set; } = false;
+		/// <summary>true=設定フォントを使用、false=スキン定義フォント</summary>
+		public bool UseCustomTitleFont { get; set; } = false;
+
+		/// <summary>時間表示ラベルのフォント名</summary>
+		public string TimeFontName { get; set; } = "";
+		/// <summary>時間表示ラベルのフォントサイズ（pt）</summary>
+		public float TimeFontSize { get; set; } = 0f;
+		/// <summary>時間表示ラベルフォントを太字にするか</summary>
+		public bool TimeFontBold { get; set; } = false;
+		/// <summary>true=設定フォントを使用、false=スキン定義フォント</summary>
+		public bool UseCustomTimeFont { get; set; } = false;
+
+		/// <summary>タイトルスクロール間隔（ms/tick）。0=スキン定義値を使用。</summary>
+		public int TitleScrollIntervalMs { get; set; } = 100;
+		/// <summary>true=設定値を使用、false=スキン定義値</summary>
+		public bool UseCustomTitleScrollInterval { get; set; } = false;
     }
 	public class CfgBuffer
 	{

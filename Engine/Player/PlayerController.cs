@@ -64,11 +64,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			AbStart = uint.MaxValue;
 			AbEnd = uint.MaxValue;
 		}
-		public PlayerController(IPlayerEngine engine, IConfigService config)
+		public PlayerController(IPlayerEngine engine, IConfigService config,
+			SynchronizationContext syncCtx = null)
 		{
 			_engine = engine;
 			_config = config;
-			_syncContext = SynchronizationContext.Current ?? new SynchronizationContext();
+			_syncContext = syncCtx ?? SynchronizationContext.Current ?? new SynchronizationContext();
 			Initialize();
 		}
 
@@ -356,7 +357,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			// FMODはトラック境界で止まらないため、CueEndMs到達を明示的に検知する
 			{
 				int pidxCue = _engine.PlayingIndex;
-				if (pidxCue >= 0 && pidxCue < _engine.PlayList.Count && !_nextTriggered)
+				if (IsValidTrackIndex(pidxCue) && !_nextTriggered)
 				{
 					var cuEntry = _engine.PlayList[pidxCue];
 					if (cuEntry.IsCueTrack && cuEntry.CueEndMs.HasValue)
@@ -412,7 +413,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				if (!_nextTriggered)
 				{
 					int idx = _engine.PlayingIndex;
-					if (idx >= 0 && idx < _engine.PlayList.Count)
+					if (IsValidTrackIndex(idx))
 					{
 						var entry = _engine.PlayList[idx];
 						// CUEトラックはNonStopMixをバイパス（連続録音CDを想定）
@@ -450,7 +451,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		{
 			if (!_config.settings.NonStopMixEnabled && !_config.settings.CrossfadeEnabled)
 			{
-				if (_engine.NowPlaying && !_engine.IsPlaying() && _engine.PlayingIndex < _engine.PlayList.Count - 1)
+				if (_engine.NowPlaying && !_engine.IsPlaying() && IsValidTrackIndex(_engine.PlayingIndex + 1))
 				{
 					StopPreciseTimer();
 					_syncContext.Post(_ => PlayNext(), null);

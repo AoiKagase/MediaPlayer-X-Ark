@@ -63,6 +63,10 @@ namespace MediaPlayer_X_Ark.Skin
         public Color Color;
         public RECT Position;
         public bool Enabled;
+        /// <summary>ウェーブラインL色。スキン未定義時は Color.Empty → フォールバックは Lime。</summary>
+        public Color WaveColorL;
+        /// <summary>ウェーブラインR色。スキン未定義時は Color.Empty → フォールバックは Cyan。</summary>
+        public Color WaveColorR;
     }
 
     public class GridComponents
