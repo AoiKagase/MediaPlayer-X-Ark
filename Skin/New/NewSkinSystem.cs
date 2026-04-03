@@ -278,7 +278,11 @@ namespace MediaPlayer_X_Ark.Skin.New
 			if (buttons == null || !buttons.TryGetValue(key, out var def))
 				return result;
 
-			result.BackImage = CropImage(def.Up.ImageKey, def.Up);
+			result.Enabled = !def.IsDisabled;
+			if (def.IsDisabled)
+				return result;
+
+			result.BackImage = CropImage(def.Up?.ImageKey, def.Up);
 
             // downImage キーが指定されていれば別画像から、なければ同画像からクロップ
             result.DownImage = CropImage(def.Down?.ImageKey, def.Down);
@@ -308,6 +312,10 @@ namespace MediaPlayer_X_Ark.Skin.New
 			if (sliders == null || !sliders.TryGetValue(key, out var def))
 				return result;
 
+			result.Enabled = !def.IsDisabled;
+			if (def.IsDisabled)
+				return result;
+
 			result.SliderImage = CropImage(def.Src.ImageKey, def.Src);
 			if (result.SliderImage == null) return result;
 
@@ -330,6 +338,10 @@ namespace MediaPlayer_X_Ark.Skin.New
 		{
 			var result = new LabelComponents { Enabled = false };
 			if (texts == null || !texts.TryGetValue(key, out var def))
+				return result;
+
+			result.Enabled = !def.IsDisabled;
+			if (def.IsDisabled)
 				return result;
 
 			var style = FontStyle.Regular;
@@ -356,6 +368,10 @@ namespace MediaPlayer_X_Ark.Skin.New
 		{
 			var result = new PictureComponents { Enabled = false };
 			if (picts == null || !picts.TryGetValue(key, out var def))
+				return result;
+
+			result.Enabled = !def.IsDisabled;
+			if (def.IsDisabled)
 				return result;
 
 			if (def.Src != null)

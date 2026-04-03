@@ -67,7 +67,7 @@ namespace MediaPlayer_X_Ark
 		{
 			D2DContext.Initialize();
 			InitializeComponent();
-			this.Visible = false;
+			this.Opacity = 0;
 			Spectrum.Visible = false;
 		}
 
@@ -266,6 +266,7 @@ namespace MediaPlayer_X_Ark
 		/// <param name="e"></param>
 		private async void MainForm_Load(object sender, EventArgs e)
 		{
+			this.Visible = false;
 			var syncCtx = SynchronizationContext.Current;
 
 			_toolTip = new ToolTip(components);
@@ -330,7 +331,10 @@ namespace MediaPlayer_X_Ark
 			// 起動パラメータを取得し、ファイルパスが取得出来るならばOpen関数へ引き渡す
 			string[] parameters = System.Environment.GetCommandLineArgs();
 			if (parameters.Length > 1 && File.Exists(parameters[1]))
+			{
 				_controller.OpenAndPlay(parameters[1]);
+			}
+			this.Opacity = 1;
 			this.Visible = true;
 		}
 		private void OnPlaybackStateChanged() { }
@@ -849,6 +853,7 @@ namespace MediaPlayer_X_Ark
 				{
 					_config.settings.LastMediaDirectory = Path.GetDirectoryName(_openFileDialogMedia.FileName);
 					_controller.OpenAndPlay(_openFileDialogMedia.FileName);
+					
 				}
 			}
 			catch (Exception ex)

@@ -942,7 +942,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				PlayList[index].Sound = sound;
 				// CUEトラックは全体ファイルの解析は不要
 				if (!PlayList[index].IsCueTrack)
-					_ = StartWaveformAnalysisAsync(filename, index);
+				{
+					if (_trackerExtensions.Contains(ext) || ext == ".mid")
+						_ = StartWaveformAnalysisFromSoundAsync(index);
+					else
+						_ = StartWaveformAnalysisAsync(filename, index);
+				}
 			}
 			return result;
 		}
@@ -998,7 +1003,10 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		private FMOD.RESULT StoreMidiPcmSound(int index, FMOD.Sound sound, FMOD.RESULT result)
 		{
 			if (result == FMOD.RESULT.OK)
+			{
 				PlayList[index].Sound = sound;
+				_ = StartWaveformAnalysisFromSoundAsync(index);
+			}
 			return result;
 		}
 
@@ -1031,7 +1039,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				return;
 
 			var entry = PlayList[index];
-			if (!entry.IsPcm || !entry.IsLoaded)
+			if (!entry.IsLoaded)
 				return;
 
 			_waveformCts?.Cancel();

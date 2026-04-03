@@ -32,7 +32,6 @@ namespace MediaPlayer_X_Ark
 		private void InitializeComponent()
 		{
 			components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			BtnPlay = new System.Windows.Forms.Button();
 			BtnStop = new System.Windows.Forms.Button();
 			Timer = new System.Windows.Forms.Timer(components);
@@ -258,7 +257,7 @@ namespace MediaPlayer_X_Ark
 			// SldVolume
 			// 
 			SldVolume.BackColor = System.Drawing.Color.Transparent;
-			SldVolume.Location = new System.Drawing.Point(138, 12);
+			SldVolume.Location = new System.Drawing.Point(149, 12);
 			SldVolume.Maximum = 0;
 			SldVolume.Minimum = 0;
 			SldVolume.Name = "SldVolume";
@@ -273,7 +272,7 @@ namespace MediaPlayer_X_Ark
 			// SldPan
 			// 
 			SldPan.BackColor = System.Drawing.Color.Transparent;
-			SldPan.Location = new System.Drawing.Point(244, 12);
+			SldPan.Location = new System.Drawing.Point(257, 12);
 			SldPan.Maximum = 0;
 			SldPan.Minimum = 0;
 			SldPan.Name = "SldPan";
@@ -288,7 +287,7 @@ namespace MediaPlayer_X_Ark
 			// SldTrack
 			// 
 			SldTrack.BackColor = System.Drawing.Color.Transparent;
-			SldTrack.Location = new System.Drawing.Point(350, 12);
+			SldTrack.Location = new System.Drawing.Point(363, 12);
 			SldTrack.Maximum = 0;
 			SldTrack.Minimum = 0;
 			SldTrack.Name = "SldTrack";
@@ -328,8 +327,8 @@ namespace MediaPlayer_X_Ark
 			// 
 			Spectrum.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
 			Spectrum.BitmapBackground = null;
-			Spectrum.BitmapSpectrum = (System.Drawing.Bitmap)resources.GetObject("Spectrum.BitmapSpectrum");
-			Spectrum.Location = new System.Drawing.Point(138, 275);
+			Spectrum.BitmapSpectrum = null;
+			Spectrum.Location = new System.Drawing.Point(12, 12);
 			Spectrum.mFFT = null;
 			Spectrum.Mode = 0;
 			Spectrum.mWaveL = null;
@@ -351,7 +350,7 @@ namespace MediaPlayer_X_Ark
 			BtnCD.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
 			BtnCD.FlatAppearance.BorderSize = 0;
 			BtnCD.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			BtnCD.Location = new System.Drawing.Point(12, 194);
+			BtnCD.Location = new System.Drawing.Point(176, 161);
 			BtnCD.Name = "BtnCD";
 			BtnCD.Size = new System.Drawing.Size(75, 27);
 			BtnCD.TabIndex = 21;
@@ -374,7 +373,7 @@ namespace MediaPlayer_X_Ark
 			AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			BackColor = System.Drawing.SystemColors.Window;
 			BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-			ClientSize = new System.Drawing.Size(500, 500);
+			ClientSize = new System.Drawing.Size(520, 227);
 			ContextMenuStrip = contextMenu;
 			ControlBox = false;
 			Controls.Add(BtnPlaylist);
