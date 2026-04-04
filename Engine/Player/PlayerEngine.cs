@@ -223,6 +223,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			var bassMidiPath = Path.Combine(
 				AppDomain.CurrentDomain.BaseDirectory, "Libs", "bassmidi.dll");
 			_bassMidiAvailable = File.Exists(bassPath) && File.Exists(bassMidiPath);
+			var arkMidiPath = Path.Combine(
+				AppDomain.CurrentDomain.BaseDirectory, "Libs", "ArkMidiEngine.dll");
+			_arkMidiAvailable = File.Exists(arkMidiPath);
 
 			{
 				if (FmodCallFunction(FmodSystem.getVersion(out FmodVersion)) == FMOD.RESULT.OK)
@@ -817,6 +820,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		public bool FluidSynthAvailable => _fluidSynthAvailable;
 		private bool _bassMidiAvailable = false;
 		public bool BassMidiAvailable => _bassMidiAvailable;
+		private bool _arkMidiAvailable = false;
+		public bool ArkMidiAvailable => _arkMidiAvailable;
 
 		private static readonly HashSet<string> _trackerExtensions = new HashSet<string>
 			{
@@ -842,7 +847,29 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				if (!string.IsNullOrEmpty(_soundFontPath) && File.Exists(_soundFontPath))
 				{
 					var rendererBackend = ResolveMidiRendererBackend();
-					if (rendererBackend == MidiRendererBackend.BassMidi)
+					if (rendererBackend == MidiRendererBackend.ArkMidi)
+					{
+						try
+						{
+							using (var arkEngine = new ArkMidiEngine.Engine(filename, _soundFontPath))
+							{
+								var pcm = arkEngine.RenderAllPcm16();
+								result = CreateMidiPcmSound(pcm, out sound);
+								if (result == FMOD.RESULT.OK)
+									return StoreMidiPcmSound(index, sound, result);
+							}
+						}
+						catch (Exception ex)
+						{
+							System.Diagnostics.Debug.WriteLine(
+								$"[ArkMidi] Render failed midi=\"{filename}\" sf2=\"{_soundFontPath}\" error=\"{ex}\"");
+							ErrorOccurred?.Invoke(this, new PlayerErrorEventArgs(
+								nameof(LoadSound),
+								$"ArkMidiEngine error: {ex.Message}",
+								-1));
+						}
+					}
+					else if (rendererBackend == MidiRendererBackend.BassMidi)
 					{
 						try
 						{
@@ -894,13 +921,16 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 				info.suggestedsoundtype = FMOD.SOUND_TYPE.MIDI;
 				IntPtr dlsPtr = IntPtr.Zero;
-				// FluidSynth 未導入時のみ FMOD の DLS として SF2 を使用する
+				// いずれのレンダラーも未導入時のみ FMOD の DLS として SF2 を使用する
 				if (!string.IsNullOrEmpty(_soundFontPath) &&
 					File.Exists(_soundFontPath) &&
-					!_fluidSynthAvailable)
+					!_fluidSynthAvailable && !_bassMidiAvailable && !_arkMidiAvailable)
 				{
-					dlsPtr = Marshal.StringToHGlobalAnsi(_soundFontPath);
-					info.dlsname = dlsPtr;
+					if (Path.GetExtension(_soundFontPath).ToLower() == ".dls")
+					{
+						dlsPtr = Marshal.StringToHGlobalAnsi(_soundFontPath);
+						info.dlsname = dlsPtr;
+					}
 				}
 				try
 				{
@@ -956,23 +986,25 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		{
 			switch (_midiRendererBackend)
 			{
-				case MidiRendererBackend.FluidSynth:
-					if (_fluidSynthAvailable)
-						return MidiRendererBackend.FluidSynth;
-					if (_bassMidiAvailable)
-						return MidiRendererBackend.BassMidi;
+				case MidiRendererBackend.ArkMidi:
+					if (_arkMidiAvailable)    return MidiRendererBackend.ArkMidi;
+					if (_bassMidiAvailable)   return MidiRendererBackend.BassMidi;
+					if (_fluidSynthAvailable) return MidiRendererBackend.FluidSynth;
 					break;
 				case MidiRendererBackend.BassMidi:
-					if (_bassMidiAvailable)
-						return MidiRendererBackend.BassMidi;
-					if (_fluidSynthAvailable)
-						return MidiRendererBackend.FluidSynth;
+					if (_bassMidiAvailable)   return MidiRendererBackend.BassMidi;
+					if (_fluidSynthAvailable) return MidiRendererBackend.FluidSynth;
+					if (_arkMidiAvailable)    return MidiRendererBackend.ArkMidi;
 					break;
-				default:
-					if (_bassMidiAvailable)
-						return MidiRendererBackend.BassMidi;
-					if (_fluidSynthAvailable)
-						return MidiRendererBackend.FluidSynth;
+				case MidiRendererBackend.FluidSynth:
+					if (_fluidSynthAvailable) return MidiRendererBackend.FluidSynth;
+					if (_bassMidiAvailable)   return MidiRendererBackend.BassMidi;
+					if (_arkMidiAvailable)    return MidiRendererBackend.ArkMidi;
+					break;
+				default: // Auto: BASSMIDI > FluidSynth > ArkMidi
+					if (_bassMidiAvailable)   return MidiRendererBackend.BassMidi;
+					if (_fluidSynthAvailable) return MidiRendererBackend.FluidSynth;
+					if (_arkMidiAvailable)    return MidiRendererBackend.ArkMidi;
 					break;
 			}
 

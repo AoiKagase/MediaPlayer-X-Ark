@@ -193,7 +193,9 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
             string midiDecoderLabel = Engine.BassMidiAvailable
                 ? "BASSMIDI"
-                : Engine.FluidSynthAvailable ? "FluidSynth" : "FMOD";
+                : Engine.FluidSynthAvailable
+                    ? "FluidSynth"
+                    : Engine.ArkMidiAvailable ? "ArkMidiEngine" : "FMOD";
             var allFormats = SupportedFormats.GetAll().ToList();
 
             foreach (var groupName in allFormats.Select(f => f.Group).Distinct())
@@ -257,16 +259,22 @@ namespace MediaPlayer_X_Ark.Forms.Options
                     "✔ BASSMIDI 導入済み：MIDI は BASSMIDI でデコードされます";
                 _lblFluidSynthStatus.ForeColor = Color.DarkGreen;
             }
-            else if (!Engine.FluidSynthAvailable)
+            else if (Engine.FluidSynthAvailable)
+            {
+                _lblFluidSynthStatus.Text      = "✔ FluidSynth 導入済み：MIDI は FluidSynth でデコードされます";
+                _lblFluidSynthStatus.ForeColor = Color.DarkGreen;
+            }
+            else if (Engine.ArkMidiAvailable)
+            {
+                _lblFluidSynthStatus.Text =
+                    "✔ ArkMidiEngine 同梱済み：MIDI は ArkMidiEngine でデコードされます";
+                _lblFluidSynthStatus.ForeColor = Color.DarkGreen;
+            }
+            else
             {
                 _lblFluidSynthStatus.Text =
                     "※ Libs に fluidsynth.dll または bass.dll + bassmidi.dll を配置すると MIDI レンダラーを利用できます";
                 _lblFluidSynthStatus.ForeColor = Color.Gray;
-            }
-            else
-            {
-                _lblFluidSynthStatus.Text      = "✔ FluidSynth 導入済み：MIDI は FluidSynth でデコードされます";
-                _lblFluidSynthStatus.ForeColor = Color.DarkGreen;
             }
         }
 

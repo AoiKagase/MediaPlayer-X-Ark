@@ -337,7 +337,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		{
 			using (var dlg = new OpenFileDialog())
 			{
-				dlg.Filter = (Engine.FluidSynthAvailable || Engine.BassMidiAvailable)
+				dlg.Filter = (Engine.FluidSynthAvailable || Engine.BassMidiAvailable || Engine.ArkMidiAvailable)
 					? "サウンドフォント|*.sf2;*.dls|SF2|*.sf2|DLS|*.dls|すべて|*.*"
 					: "DLSサウンドフォント|*.dls|すべて|*.*";
 
@@ -426,11 +426,14 @@ namespace MediaPlayer_X_Ark.Forms.Options
 				new KeyValuePair<string, MidiRendererBackend>("自動選択", MidiRendererBackend.Auto),
 			};
 
+			if (Engine.BassMidiAvailable)
+				items.Add(new KeyValuePair<string, MidiRendererBackend>("BASSMIDI", MidiRendererBackend.BassMidi));
+
 			if (Engine.FluidSynthAvailable)
 				items.Add(new KeyValuePair<string, MidiRendererBackend>("FluidSynth", MidiRendererBackend.FluidSynth));
 
-			if (Engine.BassMidiAvailable)
-				items.Add(new KeyValuePair<string, MidiRendererBackend>("BASSMIDI", MidiRendererBackend.BassMidi));
+			if (Engine.ArkMidiAvailable)
+				items.Add(new KeyValuePair<string, MidiRendererBackend>("ArkMidiEngine", MidiRendererBackend.ArkMidi));
 
 			_cmbMidiRenderer.DataSource = items;
 			_cmbMidiRenderer.DisplayMember = "Key";
@@ -473,6 +476,14 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			{
 				_lblSoundFontNote.Text =
 					"✓ fluidsynth.dll が検出されました。FluidSynth が使用できます。";
+				_lblSoundFontNote.ForeColor = System.Drawing.Color.Green;
+				return;
+			}
+
+			if (Engine.ArkMidiAvailable)
+			{
+				_lblSoundFontNote.Text =
+					"✓ ArkMidiEngine.dll を検出しました。ArkMidiEngine が使用できます。";
 				_lblSoundFontNote.ForeColor = System.Drawing.Color.Green;
 				return;
 			}
