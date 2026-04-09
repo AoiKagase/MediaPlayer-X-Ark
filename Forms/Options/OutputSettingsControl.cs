@@ -337,7 +337,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		{
 			using (var dlg = new OpenFileDialog())
 			{
-				dlg.Filter = (Engine.FluidSynthAvailable || Engine.BassMidiAvailable || Engine.ArkMidiAvailable)
+				dlg.Filter = (Engine.FluidSynthAvailable || Engine.BassMidiAvailable || Engine.XArkMidiAvailable)
 					? "サウンドフォント|*.sf2;*.dls|SF2|*.sf2|DLS|*.dls|すべて|*.*"
 					: "DLSサウンドフォント|*.dls|すべて|*.*";
 
@@ -432,8 +432,8 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			if (Engine.FluidSynthAvailable)
 				items.Add(new KeyValuePair<string, MidiRendererBackend>("FluidSynth", MidiRendererBackend.FluidSynth));
 
-			if (Engine.ArkMidiAvailable)
-				items.Add(new KeyValuePair<string, MidiRendererBackend>("ArkMidiEngine", MidiRendererBackend.ArkMidi));
+			if (Engine.XArkMidiAvailable)
+				items.Add(new KeyValuePair<string, MidiRendererBackend>("XArkMidiEngine", MidiRendererBackend.XArkMidi));
 
 			_cmbMidiRenderer.DataSource = items;
 			_cmbMidiRenderer.DisplayMember = "Key";
@@ -480,10 +480,10 @@ namespace MediaPlayer_X_Ark.Forms.Options
 				return;
 			}
 
-			if (Engine.ArkMidiAvailable)
+			if (Engine.XArkMidiAvailable)
 			{
 				_lblSoundFontNote.Text =
-					"✓ ArkMidiEngine.dll を検出しました。ArkMidiEngine が使用できます。";
+					"✓ XArkMidiEngine.dll を検出しました。X-Ark Midi Engine が使用できます。";
 				_lblSoundFontNote.ForeColor = System.Drawing.Color.Green;
 				return;
 			}

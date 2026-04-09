@@ -31,7 +31,7 @@ namespace MediaPlayer_X_Ark.Engine.Config
         public string Device { get; set; }
 
 		public string SoundFontPath { get; set; } = "";
-		public MidiRendererBackend MidiRendererBackend { get; set; } = MidiRendererBackend.ArkMidi;
+		public MidiRendererBackend MidiRendererBackend { get; set; } = MidiRendererBackend.XArkMidi;
 		public CfgEffectors Effectors { get; set; } = new CfgEffectors();
         public Dictionary<string, string> EffectPresets { get; set; } = new Dictionary<string, string>();
         /// <summary>スキンファイルパス（.xsk）</summary>

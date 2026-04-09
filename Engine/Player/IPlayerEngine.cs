@@ -12,7 +12,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
         Auto = 0,
         FluidSynth = 1,
         BassMidi = 2,
-        ArkMidi = 3,
+        XArkMidi = 3,
     }
 
     public interface IPlayerEngine : IDisposable
@@ -22,7 +22,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
         event EventHandler<PlayerErrorEventArgs> ErrorOccurred;
         bool FluidSynthAvailable { get; }
         bool BassMidiAvailable { get; }
-        bool ArkMidiAvailable { get; }
+        bool XArkMidiAvailable { get; }
 		string SoundFontPath { get; set; }
         MidiRendererBackend MidiRendererBackend { get; set; }
 		BindingList<PlayList> PlayList { get; }

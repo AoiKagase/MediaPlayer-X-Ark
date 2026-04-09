@@ -195,7 +195,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
                 ? "BASSMIDI"
                 : Engine.FluidSynthAvailable
                     ? "FluidSynth"
-                    : Engine.ArkMidiAvailable ? "ArkMidiEngine" : "FMOD";
+                    : Engine.XArkMidiAvailable ? "ArkMidiEngine" : "FMOD";
             var allFormats = SupportedFormats.GetAll().ToList();
 
             foreach (var groupName in allFormats.Select(f => f.Group).Distinct())
@@ -264,10 +264,10 @@ namespace MediaPlayer_X_Ark.Forms.Options
                 _lblFluidSynthStatus.Text      = "✔ FluidSynth 導入済み：MIDI は FluidSynth でデコードされます";
                 _lblFluidSynthStatus.ForeColor = Color.DarkGreen;
             }
-            else if (Engine.ArkMidiAvailable)
+            else if (Engine.XArkMidiAvailable)
             {
                 _lblFluidSynthStatus.Text =
-                    "✔ ArkMidiEngine 同梱済み：MIDI は ArkMidiEngine でデコードされます";
+                    "✔ X-Ark Midi Engine 同梱済み：MIDI は X-Ark Midi Engine でデコードされます";
                 _lblFluidSynthStatus.ForeColor = Color.DarkGreen;
             }
             else
