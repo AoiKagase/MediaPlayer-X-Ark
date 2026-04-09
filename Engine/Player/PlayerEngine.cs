@@ -422,13 +422,18 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			FmodDeviceList.Clear();
 			if (FmodCallFunction(FmodSystem.getNumDrivers(out numDrivers)) == RESULT.OK)
 			{
-				for (int i = 0; i < numDrivers; i++)
+				for (int i = 0; i <= numDrivers; i++)
 				{
 					device = new DEVICE_INFO();
 					device.namelen = 64;
 					device.deviceId = i;
 					if (FmodCallFunction(FmodSystem.getDriverInfo(i, out device.name, device.namelen, out device.guid, out device.systemrate, out device.speakermode, out device.speakerModeChannels)) == RESULT.OK)
 					{
+						FmodDeviceList.Add(device);
+					} else if (i == 0)
+					{
+						device.name = "Default Device";
+						device.guid = Guid.Empty;
 						FmodDeviceList.Add(device);
 					}
 				}
@@ -461,9 +466,32 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			FmodSystem.setDriver(driver);
 		}
 
-		/// <summary>デバイスをシステム GUID 文字列で指定する</summary>
+		/// <summary>デバイスをシステム GUID 文字列で指定する。空またはnullはOSデフォルトデバイスを使用する</summary>
 		public void SetDevice(string driver)
 		{
+			if (string.IsNullOrEmpty(driver))
+			{
+				// テンポラリシステムで現在のOSデフォルトデバイスGUIDを取得する
+				// （setDriver(0)を直接呼ぶと2回目以降にOS変更が反映されないため）
+				var defaultGuid = GetCurrentDefaultDeviceGuid();
+				if (defaultGuid != Guid.Empty)
+				{
+					int matchedId = FindDeviceIdByGuid(defaultGuid);
+					if (matchedId < 0)
+					{
+						// リストに無ければ再列挙してリトライ
+						GetDeviceList();
+						matchedId = FindDeviceIdByGuid(defaultGuid);
+					}
+					if (matchedId >= 0)
+					{
+						FmodSystem.setDriver(matchedId);
+						return;
+					}
+				}
+				FmodSystem.setDriver(0);
+				return;
+			}
 			for (int i = 0; i < FmodDeviceList.Count(); i++)
 			{
 				if (FmodDeviceList[i].GUID.Equals(driver))
@@ -472,6 +500,43 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					return;
 				}
 			}
+		}
+
+		/// <summary>テンポラリFMODシステムで現在のOSデフォルトデバイスのGUIDを取得する</summary>
+		private Guid GetCurrentDefaultDeviceGuid()
+		{
+			FMOD.System tempSystem;
+			if (FMOD.Factory.System_Create(out tempSystem) != FMOD.RESULT.OK)
+				return Guid.Empty;
+			try
+			{
+				if (tempSystem.setOutput(FmodOutputType) != FMOD.RESULT.OK)
+					return Guid.Empty;
+				if (tempSystem.init(1, FMOD.INITFLAGS.NORMAL, IntPtr.Zero) != FMOD.RESULT.OK)
+					return Guid.Empty;
+				var device = new DEVICE_INFO { namelen = 256 };
+				if (tempSystem.getDriverInfo(0, out device.name, device.namelen,
+					out device.guid, out device.systemrate,
+					out device.speakermode, out device.speakerModeChannels) == FMOD.RESULT.OK)
+					return device.guid;
+				return Guid.Empty;
+			}
+			finally
+			{
+				tempSystem.close();
+				tempSystem.release();
+			}
+		}
+
+		/// <summary>FmodDeviceListからGUIDが一致するdeviceIdを返す。見つからなければ-1</summary>
+		private int FindDeviceIdByGuid(Guid guid)
+		{
+			for (int i = 0; i < FmodDeviceList.Count; i++)
+			{
+				if (FmodDeviceList[i].guid == guid)
+					return FmodDeviceList[i].deviceId;
+			}
+			return -1;
 		}
 		public uint GetPosition()
 		{
@@ -866,7 +931,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			FMOD.CREATESOUNDEXINFO info = new FMOD.CREATESOUNDEXINFO();
 			info.cbsize = Marshal.SizeOf(info);
 			string ext = Path.GetExtension(filename).ToLower();
-			if (ext == ".mid")
+			if (ext == ".mid" || ext == ".midi")
 			{
 				if (!string.IsNullOrEmpty(_soundFontPath) && File.Exists(_soundFontPath))
 				{
@@ -945,16 +1010,26 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 				info.suggestedsoundtype = FMOD.SOUND_TYPE.MIDI;
 				IntPtr dlsPtr = IntPtr.Zero;
-				// いずれのレンダラーも未導入時のみ FMOD の DLS として SF2 を使用する
-				if (!string.IsNullOrEmpty(_soundFontPath) &&
-					File.Exists(_soundFontPath) &&
-					!_fluidSynthAvailable && !_bassMidiAvailable && !_xarkMidiAvailable)
+				string dlsPath = null;
+				if (string.IsNullOrEmpty(_soundFontPath) || !File.Exists(_soundFontPath))
 				{
+					// サウンドフォント未設定 → Windows標準の gm.dls をフォールバックとして使用
+					var systemGmDls = Path.Combine(
+						Environment.GetFolderPath(Environment.SpecialFolder.System),
+						"drivers", "gm.dls");
+					if (File.Exists(systemGmDls))
+						dlsPath = systemGmDls;
+				}
+				else if (!_fluidSynthAvailable && !_bassMidiAvailable && !_xarkMidiAvailable)
+				{
+					// サウンドフォント設定済み + .dls形式 + レンダラー全不在 → そのDLSをFMODに渡す
 					if (Path.GetExtension(_soundFontPath).ToLower() == ".dls")
-					{
-						dlsPtr = Marshal.StringToHGlobalAnsi(_soundFontPath);
-						info.dlsname = dlsPtr;
-					}
+						dlsPath = _soundFontPath;
+				}
+				if (dlsPath != null)
+				{
+					dlsPtr = Marshal.StringToHGlobalAnsi(dlsPath);
+					info.dlsname = dlsPtr;
 				}
 				try
 				{
@@ -997,10 +1072,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				// CUEトラックは全体ファイルの解析は不要
 				if (!PlayList[index].IsCueTrack)
 				{
-					if (_trackerExtensions.Contains(ext) || ext == ".mid")
+					if (_trackerExtensions.Contains(ext))
 						_ = StartWaveformAnalysisFromSoundAsync(index);
-					else
+					else if (ext != ".mid" && ext != ".midi")
 						_ = StartWaveformAnalysisAsync(filename, index);
+					// FMODネイティブMIDIはseekData非対応のため波形解析スキップ
 				}
 			}
 			return result;
@@ -1280,7 +1356,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				if (tempSystem.getNumDrivers(out numDrivers) != FMOD.RESULT.OK)
 					return list;
 
-				for (int i = 0; i < numDrivers; i++)
+				for (int i = 0; i <= numDrivers; i++)
 				{
 					var device = new DEVICE_INFO();
 					device.namelen = 256;
@@ -1290,8 +1366,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
 						out device.speakermode, out device.speakerModeChannels) == FMOD.RESULT.OK)
 					{
 						list.Add(device);
+					} else if (i == 0)
+					{
+						device.name = "Default Device";
+						list.Add(device);
 					}
-				}
+				} 
 			}
 			finally
 			{
@@ -1313,7 +1393,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			if (FmodSystem.getNumDrivers(out numDrivers) != FMOD.RESULT.OK)
 				return list;
 
-			for (int i = 0; i < numDrivers; i++)
+			for (int i = 0; i <= numDrivers; i++)
 			{
 				var device = new DEVICE_INFO();
 				device.namelen = 256;

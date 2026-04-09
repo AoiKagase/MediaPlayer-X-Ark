@@ -308,7 +308,11 @@ namespace MediaPlayer_X_Ark.Forms.Options
 				Config.settings.OutputType != _cmbOutput.SelectedIndex;
 
 			if (_cmbDevice.Enabled && _cmbDevice.SelectedValue != null)
-				Config.settings.Device = _cmbDevice.SelectedValue.ToString();
+			{
+				var selectedGuid = _cmbDevice.SelectedValue.ToString();
+				// Guid.Empty はデフォルトデバイス → 空文字列として保存
+				Config.settings.Device = selectedGuid == Guid.Empty.ToString() ? "" : selectedGuid;
+			}
 
 			Config.settings.OutputType = _cmbOutput.SelectedIndex;
 			Config.settings.Buffer.StreamBufferSizeKB = (int)_nudStreamBuffer.Value;
@@ -383,25 +387,28 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			else
 				devices = Engine.GetDeviceListForOutputType(outputType);
 
-			if (devices.Count == 0)
+			// デフォルトデバイス（OS設定）を先頭に追加
+			var defaultEntry = new DEVICE_INFO { deviceId = 0, guid = Guid.Empty, name = "デフォルト（OS設定）" };
+			var displayList = new List<DEVICE_INFO> { defaultEntry };
+			displayList.AddRange(devices);
+
+			_cmbDevice.Enabled = true;
+			_cmbDevice.DataSource = displayList;
+			_cmbDevice.DisplayMember = "Name";
+			_cmbDevice.ValueMember = "GUID";
+
+			// preferredGuid が空/null の場合はデフォルト（index 0）
+			if (string.IsNullOrEmpty(preferredGuid))
 			{
-				_cmbDevice.Enabled = false;
-				_cmbDevice.Items.Clear();
-				_cmbDevice.Items.Add("（デバイスなし）");
 				_cmbDevice.SelectedIndex = 0;
 				return;
 			}
 
-			_cmbDevice.Enabled = true;
-			_cmbDevice.DataSource = devices;
-			_cmbDevice.DisplayMember = "Name";
-			_cmbDevice.ValueMember = "GUID";
-
-			bool found = preferredGuid != null
-				&& devices.Any(d => d.GUID == preferredGuid);
-
-			if (found) _cmbDevice.SelectedValue = preferredGuid;
-			else _cmbDevice.SelectedIndex = 0;
+			bool found = displayList.Any(d => d.GUID == preferredGuid);
+			if (found)
+				_cmbDevice.SelectedValue = preferredGuid;
+			else
+				_cmbDevice.SelectedIndex = 0;
 		}
 
 		private FMOD.OUTPUTTYPE IndexToOutputType(int index)
