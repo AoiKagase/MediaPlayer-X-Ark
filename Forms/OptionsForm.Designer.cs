@@ -13,13 +13,16 @@
 
 		private void InitializeComponent()
 		{
-			this.SuspendLayout();
-			this.ClientSize = new System.Drawing.Size(800, 520);
-			this.Name = "OptionsForm";
-			this.Text = "Options";
-			this.FormClosing += OptionsForm_FormClosing;
-			this.Load += OptionsForm_Load;
-			this.ResumeLayout(false);
+			SuspendLayout();
+			// 
+			// OptionsForm
+			// 
+			ClientSize = new System.Drawing.Size(800, 609);
+			Name = "OptionsForm";
+			Text = "Options";
+			FormClosing += OptionsForm_FormClosing;
+			Load += OptionsForm_Load;
+			ResumeLayout(false);
 		}
 	}
 }
