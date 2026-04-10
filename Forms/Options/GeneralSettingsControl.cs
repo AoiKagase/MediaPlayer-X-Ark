@@ -17,6 +17,9 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		private CheckBox _chkAlwaysOnTop;
 		private CheckBox _chkAutoSavePlaylist;
         private CheckBox _chkDiscordRichPresence;
+        private CheckBox _chkAutoUpdate;
+        private Label _lblGitHubRepo;
+        private TextBox _txtGitHubRepo;
 
         private GroupBox _grpOpenFileAction;
 		private RadioButton _rdoOpenFileAuto;    // 再生中なら追加・停止中なら再生
@@ -165,6 +168,46 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
             y += grpDiscord.Height + 12;
             // ===========================
+            // 自動更新
+            // ===========================
+            var grpAutoUpdate = new GroupBox
+            {
+                Text = "自動更新",
+                Location = new Point(16, y),
+                Size = new Size(400, 88),
+            };
+
+            _chkAutoUpdate = new CheckBox
+            {
+                Text = "起動時に更新チェックを行う",
+                Location = new Point(12, 24),
+                AutoSize = true,
+            };
+            _chkAutoUpdate.CheckedChanged += (s, e) =>
+            {
+                _txtGitHubRepo.Enabled = _chkAutoUpdate.Checked;
+            };
+
+            _lblGitHubRepo = new Label
+            {
+                Text = "GitHubリポジトリ：",
+                Location = new Point(12, 52),
+                AutoSize = true,
+            };
+            _txtGitHubRepo = new TextBox
+            {
+                Location = new Point(122, 49),
+                Size = new Size(258, 23),
+                PlaceholderText = "owner/repo",
+            };
+
+            grpAutoUpdate.Controls.AddRange(new Control[]
+            {
+                _chkAutoUpdate, _lblGitHubRepo, _txtGitHubRepo,
+            });
+
+            y += grpAutoUpdate.Height + 12;
+            // ===========================
             // 保存ボタン
             // ===========================
             _btnSave = new Button
@@ -180,7 +223,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
 			Controls.AddRange(new Control[]
 			{
-				grpStartup, _grpOpenFileAction, grpDiscord, _btnSave
+				grpStartup, _grpOpenFileAction, grpDiscord, grpAutoUpdate, _btnSave
 			});
 		}
 
@@ -193,6 +236,9 @@ namespace MediaPlayer_X_Ark.Forms.Options
             _chkDiscordRichPresence.Checked = Config.settings.DiscordRichPresenceEnabled;
             _txtDiscordAppId.Text = Config.settings.DiscordApplicationId ?? "";
             _txtDiscordAppId.Enabled = _chkDiscordRichPresence.Checked;
+            _chkAutoUpdate.Checked = Config.settings.AutoUpdateCheckEnabled;
+            _txtGitHubRepo.Text = Config.settings.UpdateGitHubRepo ?? "";
+            _txtGitHubRepo.Enabled = _chkAutoUpdate.Checked;
 
             // ★RestorePlaylistがOFFの場合はRestorePositionを無効化
             _chkRestorePosition.Enabled = _chkRestorePlaylist.Checked;
@@ -217,6 +263,8 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			else Config.settings.OpenFileAction = 0;
             Config.settings.DiscordRichPresenceEnabled = _chkDiscordRichPresence.Checked;
             Config.settings.DiscordApplicationId = _txtDiscordAppId.Text.Trim();
+            Config.settings.AutoUpdateCheckEnabled = _chkAutoUpdate.Checked;
+            Config.settings.UpdateGitHubRepo = _txtGitHubRepo.Text.Trim();
 
             _mainForm.SetDiscordPresenceEnabled(
                 Config.settings.DiscordRichPresenceEnabled,

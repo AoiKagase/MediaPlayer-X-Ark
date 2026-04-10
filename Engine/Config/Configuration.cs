@@ -15,7 +15,7 @@ namespace MediaPlayer_X_Ark.Engine.Config
         /// <summary>パン（-10〜+10）</summary>
         public int Pan { get; set; }
         /// <summary>音量（0〜150）</summary>
-        public int Volume { get; set; }
+        public int Volume { get; set; } = 100;
 
 		public bool RestorePlaylist { get; set; } = false;
 		public bool RestorePosition { get; set; } = false;
@@ -28,7 +28,7 @@ namespace MediaPlayer_X_Ark.Engine.Config
 		public int OutputType { get; set; }
 
         /// <summary>デバイス GUID</summary>
-        public string Device { get; set; }
+        public string Device { get; set; } = "";
 
 		public string SoundFontPath { get; set; } = "";
 		public MidiRendererBackend MidiRendererBackend { get; set; } = MidiRendererBackend.XArkMidi;
@@ -84,6 +84,11 @@ namespace MediaPlayer_X_Ark.Engine.Config
         /// <summary>Discord Rich Presence の有効/無効</summary>
         public bool DiscordRichPresenceEnabled { get; set; } = false;
         public string DiscordApplicationId { get; set; } = "";
+
+		/// <summary>起動時に自動で更新チェックを行うか</summary>
+		public bool AutoUpdateCheckEnabled { get; set; } = true;
+		/// <summary>GitHub リポジトリ（owner/repo 形式）</summary>
+		public string UpdateGitHubRepo { get; set; } = "";
 
 		// ── スペクトラム表示設定 ────────────────────────────────────────
 		/// <summary>スペクトラム更新間隔（ms）。Timer.Interval（60ms固定）とは独立したカウンターで制御。</summary>

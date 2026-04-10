@@ -2,6 +2,7 @@
 using MediaPlayer_X_Ark.Engine.Config;
 using MediaPlayer_X_Ark.Engine.Player;
 using MediaPlayer_X_Ark.Engine.Render;
+using MediaPlayer_X_Ark.Engine.Update;
 using MediaPlayer_X_Ark.Forms;
 using MediaPlayer_X_Ark.Skin;
 using MediaPlayer_X_Ark.Skin.New;
@@ -326,6 +327,10 @@ namespace MediaPlayer_X_Ark
 				_discordPresence.Enabled = true;
 			}
 
+			if (_config.settings.AutoUpdateCheckEnabled
+				&& !string.IsNullOrWhiteSpace(_config.settings.UpdateGitHubRepo))
+				_ = CheckForUpdateOnStartupAsync();
+
 			initialize = true;
 
 			// 起動パラメータを取得し、ファイルパスが取得出来るならばOpen関数へ引き渡す
@@ -337,6 +342,16 @@ namespace MediaPlayer_X_Ark
 			this.Opacity = 1;
 			this.Visible = true;
 		}
+		private async Task CheckForUpdateOnStartupAsync()
+		{
+			var syncCtx = SynchronizationContext.Current;
+			var info = await Task.Run(() =>
+				UpdateChecker.CheckAsync(_config.settings.UpdateGitHubRepo));
+			if (info == null)
+				return;
+			syncCtx.Post(_ => new UpdateAvailableDialog(info).ShowDialog(this), null);
+		}
+
 		private void OnPlaybackStateChanged() { }
 		private void OnTrackChanged(int index)
 		{
@@ -852,8 +867,11 @@ namespace MediaPlayer_X_Ark
 				if (_openFileDialogMedia.ShowDialog() == DialogResult.OK)
 				{
 					_config.settings.LastMediaDirectory = Path.GetDirectoryName(_openFileDialogMedia.FileName);
-					_controller.OpenAndPlay(_openFileDialogMedia.FileName);
-					
+					var files = _openFileDialogMedia.FileNames;
+					if (files.Length > 1)
+						_controller.OpenMultipleAndPlay(files);
+					else
+						_controller.OpenAndPlay(files[0]);
 				}
 			}
 			catch (Exception ex)
@@ -1150,6 +1168,15 @@ namespace MediaPlayer_X_Ark
 			var menuExtensions = new ToolStripMenuItem("関連付け(&D)", null, null, "menuExtensions");
 			var menuSkinSelect = new ToolStripMenuItem("スキン設定(&A)", null, null, "menuSkinSelect");
 			var menuAutoUpdateCheck = new ToolStripMenuItem("最新版確認(&U)", null, null, "menuAutoUpdateCheck");
+			menuAutoUpdateCheck.Click += async (s, e) =>
+			{
+				var info = await UpdateChecker.CheckAsync(_config.settings.UpdateGitHubRepo);
+				if (info == null)
+					MessageBox.Show("最新バージョンを使用中です。", "更新確認",
+						MessageBoxButtons.OK, MessageBoxIcon.Information);
+				else
+					new UpdateAvailableDialog(info).ShowDialog(this);
+			};
 			var menuAbout = new ToolStripMenuItem("About(&C)", null, null, "menuAbout");
 			var menuHelp = new ToolStripMenuItem("ヘルプ(&V)", null, null, "menuHelp");
 			var menuMinimize = new ToolStripMenuItem("最小化(&X)", null, BtnMinisize_Click, "menuMinimize");

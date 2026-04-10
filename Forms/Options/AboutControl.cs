@@ -1,5 +1,7 @@
 ﻿using MediaPlayer_X_Ark.Engine.Config;
 using MediaPlayer_X_Ark.Engine.Player;
+using MediaPlayer_X_Ark.Engine.Update;
+using MediaPlayer_X_Ark.Forms;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -15,6 +17,8 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		private Label _lblCopyright;
 		private Label _lblCompany;
 		private LinkLabel _lnkGitHub;
+		private Button _btnCheckUpdate;
+		private Label _lblUpdateStatus;
 
 		public AboutControl(IPlayerEngine engine, IConfigService config)
 			: base(engine, config)
@@ -70,17 +74,40 @@ namespace MediaPlayer_X_Ark.Forms.Options
 				});
 			};
 
+			_btnCheckUpdate = new Button
+			{
+				Location = new Point(pad, pad + (lineHeight + 12) * 5),
+				Size = new Size(160, 28),
+				Text = "アップデートを確認",
+				FlatStyle = FlatStyle.Flat,
+				BackColor = Color.FromArgb(0, 120, 215),
+				ForeColor = Color.White,
+				Font = new Font("Yu Gothic UI", 9f),
+			};
+			_btnCheckUpdate.Click += BtnCheckUpdate_Click;
+
+			_lblUpdateStatus = new Label
+			{
+				Location = new Point(pad, pad + (lineHeight + 12) * 5 + 36),
+				AutoSize = true,
+				Font = new Font("Yu Gothic UI", 9f),
+				ForeColor = Color.Gray,
+			};
+
 			Controls.AddRange(new Control[]
 			{
 				_lblAppName, _lblVersion,
 				_lblCopyright, _lblCompany, _lnkGitHub,
+				_btnCheckUpdate, _lblUpdateStatus,
 			});
 		}
 
 		public override void LoadSettings()
 		{
-			var asm = Assembly.GetExecutingAssembly();
-			var info = FileVersionInfo.GetVersionInfo(asm.Location);
+			var location = Assembly.GetExecutingAssembly().Location;
+			if (string.IsNullOrEmpty(location))
+				location = Environment.ProcessPath ?? string.Empty;
+			var info = FileVersionInfo.GetVersionInfo(location);
 
 			_lblAppName.Text = info.ProductName ?? "MediaPlayer X-Ark";
 			_lblVersion.Text = "Version " + (info.ProductVersion ?? "1.0.0.0");
@@ -90,5 +117,34 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		}
 
 		public override void SaveSettings() { }
+
+		private async void BtnCheckUpdate_Click(object sender, EventArgs e)
+		{
+			_btnCheckUpdate.Enabled = false;
+			_lblUpdateStatus.Text = "チェック中...";
+			_lblUpdateStatus.ForeColor = Color.Gray;
+
+			var repo = Config.settings.UpdateGitHubRepo;
+			if (string.IsNullOrWhiteSpace(repo))
+			{
+				_lblUpdateStatus.Text = "GitHubリポジトリが設定されていません。";
+				_btnCheckUpdate.Enabled = true;
+				return;
+			}
+
+			var info = await UpdateChecker.CheckAsync(repo);
+			_btnCheckUpdate.Enabled = true;
+
+			if (info == null)
+			{
+				_lblUpdateStatus.Text = "最新バージョンを使用中です。";
+				_lblUpdateStatus.ForeColor = Color.Gray;
+				return;
+			}
+
+			_lblUpdateStatus.Text = $"バージョン {info.Version} が利用可能です！";
+			_lblUpdateStatus.ForeColor = Color.FromArgb(0, 120, 215);
+			new UpdateAvailableDialog(info).ShowDialog(this.FindForm());
+		}
 	}
 }
