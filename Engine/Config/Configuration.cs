@@ -88,7 +88,7 @@ namespace MediaPlayer_X_Ark.Engine.Config
 		/// <summary>起動時に自動で更新チェックを行うか</summary>
 		public bool AutoUpdateCheckEnabled { get; set; } = true;
 		/// <summary>GitHub リポジトリ（owner/repo 形式）</summary>
-		public string UpdateGitHubRepo { get; set; } = "";
+		public string UpdateGitHubRepo { get; set; } = "AoiKagase/MediaPlayer-X-Ark";
 
 		// ── スペクトラム表示設定 ────────────────────────────────────────
 		/// <summary>スペクトラム更新間隔（ms）。Timer.Interval（60ms固定）とは独立したカウンターで制御。</summary>
