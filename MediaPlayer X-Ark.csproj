@@ -89,6 +89,7 @@
 		</ItemGroup>
 		<Move SourceFiles="@(VorticeDlls)" DestinationFolder="$(OutputPath)Libs\" Condition="'@(VorticeDlls)' != ''" />
 		<Move SourceFiles="$(OutputPath)fmod.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)fmod.dll')" />
+		<Move SourceFiles="$(OutputPath)XArkMidiEngine.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)XArkMidiEngine.dll')" />
 		<Move SourceFiles="$(OutputPath)AlacEncoder.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)AlacEncoder.dll')" />
 		<Move SourceFiles="$(OutputPath)FlacEncoder.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)FlacEncoder.dll')" />
 		<Move SourceFiles="$(OutputPath)ATL.dll" DestinationFolder="$(OutputPath)Libs\" Condition="Exists('$(OutputPath)ATL.dll')" />

@@ -1,9 +1,17 @@
-﻿using System;
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+using System;
 using System.Runtime.InteropServices;
 
 public static class XArkMidiEngine
 {
-    private const string DllName = "XArkMidiEngine.dll";
+    // 拡張子なしで指定すると .NET がプラットフォーム毎に自動解決する
+    // Windows: XArkMidiEngine.dll / Linux: libXArkMidiEngine.so
+    private const string DllName = "XArkMidiEngine";
 
     public enum XAmeResult : int
     {
@@ -25,6 +33,13 @@ public static class XArkMidiEngine
         Dls = 2,
     }
 
+    [Flags]
+    public enum CompatibilityFlags : uint
+    {
+        None = 0,
+        Sf2ZeroLengthLoopRetrigger = 1 << 0,
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct CreateOptions
     {
@@ -32,24 +47,25 @@ public static class XArkMidiEngine
         public ulong MaxSampleDataBytes;
         public uint MaxSf2PdtaEntries;
         public uint MaxDlsPoolTableEntries;
+        public CompatibilityFlags CompatibilityFlags;
 
         public static CreateOptions Default()
             => new CreateOptions { StructSize = (uint)Marshal.SizeOf<CreateOptions>() };
     }
 
-    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-    private static extern XAmeResult XAmeCreateEngineFromPaths(
-        string midiPath,
-        string soundBankPath,
+    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+    private static extern XAmeResult XAmeCreateEngineFromPathsUtf8(
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string midiPath,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string soundBankPath,
         SoundBankKind soundBankKind,
         uint sampleRate,
         uint numChannels,
         out IntPtr outEngine);
 
-    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-    private static extern XAmeResult XAmeCreateEngineWithOptions(
-        string midiPath,
-        string soundBankPath,
+    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+    private static extern XAmeResult XAmeCreateEngineWithOptionsUtf8(
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string midiPath,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string soundBankPath,
         SoundBankKind soundBankKind,
         uint sampleRate,
         uint numChannels,
@@ -113,7 +129,7 @@ public static class XArkMidiEngine
                 var nativeOptions = options.Value;
                 if (nativeOptions.StructSize == 0)
                     nativeOptions.StructSize = (uint)Marshal.SizeOf<CreateOptions>();
-                result = XAmeCreateEngineWithOptions(
+                result = XAmeCreateEngineWithOptionsUtf8(
                     midiPath,
                     soundBankPath,
                     soundBankKind,
@@ -124,7 +140,7 @@ public static class XArkMidiEngine
             }
             else
             {
-                result = XAmeCreateEngineFromPaths(
+                result = XAmeCreateEngineFromPathsUtf8(
                     midiPath,
                     soundBankPath,
                     soundBankKind,
