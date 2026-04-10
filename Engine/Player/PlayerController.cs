@@ -165,6 +165,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		/// <summary>再生／一時停止をトグルする</summary>
 		public void TogglePlayPause()
 		{
+			_engine.SetDevice(_config.settings.Device);
 			_engine.SwitchPause();
 
 			PlaybackStateChanged?.Invoke();
@@ -178,6 +179,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			_crossfadeTriggered = false;
 			StopPreciseTimer();
 			_engine.Stop();
+			_engine.SetDevice(_config.settings.Device);
 			PlaybackStateChanged?.Invoke();
 		}
 
@@ -262,6 +264,38 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				return true;
 			}
 			return false;
+		}
+
+		/// <summary>
+		/// 複数ファイルを一括でプレイリストに追加し、OpenFileAction に従って最初のファイルを再生する。
+		/// </summary>
+		public void OpenMultipleAndPlay(string[] filenames)
+		{
+			if (filenames == null || filenames.Length == 0) return;
+
+			int firstIndex = -1;
+			foreach (var file in filenames)
+			{
+				if (_engine.CreateSound(file, out int index) == FMOD.RESULT.OK && firstIndex == -1)
+					firstIndex = index;
+			}
+
+			if (firstIndex < 0) return;
+
+			switch (_config.settings.OpenFileAction)
+			{
+				case 1: // 常に再生
+					PlayAt(firstIndex);
+					break;
+
+				case 2: // 常に追加のみ
+					break;
+
+				default: // 再生中なら追加・停止中なら再生
+					if (!_engine.IsPlaying())
+						PlayAt(firstIndex);
+					break;
+			}
 		}
 
 		public bool OpenUrl(string url)
