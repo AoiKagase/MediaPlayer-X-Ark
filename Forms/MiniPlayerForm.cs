@@ -108,7 +108,22 @@ namespace MediaPlayer_X_Ark.Forms
         private void MiniPlayerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
-            _mainForm.RestoreFromMini();
+            if (e.CloseReason == CloseReason.UserClosing)
+                _mainForm.FormClose();
+            else
+                _mainForm.RestoreFromMini();
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            const int WM_SYSCOMMAND = 0x0112;
+            const int SC_CLOSE = 0xF060;
+            if (m.Msg == WM_SYSCOMMAND && (int)(m.WParam.ToInt64() & 0xFFF0) == SC_CLOSE)
+            {
+                _mainForm.FormClose();
+                return;
+            }
+            base.WndProc(ref m);
         }
 
         protected override void Dispose(bool disposing)

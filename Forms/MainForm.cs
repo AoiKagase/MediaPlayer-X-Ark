@@ -925,6 +925,10 @@ namespace MediaPlayer_X_Ark
 			_miniPlayerForm?.Dispose();
 			Close();
 		}
+		public void FormClose()
+		{
+			BtnClose_Click(this, EventArgs.Empty);
+		}
 		private void BtnBack_Click(object sender, EventArgs e)
 		{
 			_controller.PlayPrevious(true);
@@ -1392,6 +1396,11 @@ namespace MediaPlayer_X_Ark
 		}
 
 		private const int WM_APPCOMMAND = 0x0319;
+		private const int WM_SYSCOMMAND = 0x0112;
+		private const int SC_CLOSE = 0xF060;
+
+		private const int FAPPCOMMAND_MASK = 0xF000;
+		private const int FAPPCOMMAND_MOUSE = 0x8000;
 
 		private const int APPCOMMAND_MEDIA_PLAY_PAUSE = 14;
 		private const int APPCOMMAND_MEDIA_STOP = 13;
@@ -1400,9 +1409,22 @@ namespace MediaPlayer_X_Ark
 
 		protected override void WndProc(ref Message m)
 		{
+			if (m.Msg == WM_SYSCOMMAND && (int)(m.WParam.ToInt64() & 0xFFF0) == SC_CLOSE)
+			{
+				BtnClose_Click(this, EventArgs.Empty);
+				return;
+			}
 			if (m.Msg == WM_APPCOMMAND)
 			{
+				int device = (int)(m.LParam.ToInt64() >> 16) & FAPPCOMMAND_MASK;
+				if (device == FAPPCOMMAND_MOUSE)
+				{
+					base.WndProc(ref m);
+					return;
+				}
+
 				int command = (int)(m.LParam.ToInt64() >> 16) & 0xFFF;
+				bool handled = true;
 				switch (command)
 				{
 					case APPCOMMAND_MEDIA_PLAY_PAUSE:
@@ -1417,9 +1439,15 @@ namespace MediaPlayer_X_Ark
 					case APPCOMMAND_MEDIA_PREVIOUSTRACK:
 						_controller.PlayPrevious(true);
 						break;
+					default:
+						handled = false;
+						break;
 				}
-				m.Result = (IntPtr)1;
-				return;
+				if (handled)
+				{
+					m.Result = (IntPtr)1;
+					return;
+				}
 			}
 			base.WndProc(ref m);
 		}
