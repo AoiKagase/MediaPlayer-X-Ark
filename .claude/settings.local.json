@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(dotnet add:*)",
+      "Read(//h/sourcecode/MediaPlayer-X-Ark/$USERPROFILE/.nuget/packages/vortice.directx/3.8.3/lib/**)",
+      "Read(//h/sourcecode/MediaPlayer-X-Ark/$USERPROFILE/.nuget/packages/vortice.directx/3.8.3/**)"
     ]
   }
 }

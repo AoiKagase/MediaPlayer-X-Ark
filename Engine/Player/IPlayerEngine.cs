@@ -20,6 +20,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
         // ── 状態・プロパティ ──────────────────────────
         IReadOnlyList<PluginLoadResult> LoadedPlugins { get; }
         event EventHandler<PlayerErrorEventArgs> ErrorOccurred;
+        event Action<int> TrackAdvanced;
         bool FluidSynthAvailable { get; }
         bool BassMidiAvailable { get; }
         bool XArkMidiAvailable { get; }
@@ -75,6 +76,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		void PlayNext(int fromIndex = -1, bool manual = false);
 		void PlayPrevious(int fromIndex = -1, bool manual = false);
 		void ReleaseNonStopFadingIfDone();
+		void UpdateScheduledTransition();
 		void BuildShuffleQueue();
         void UpdateShuffleQueueOnRemove(int removedIndex);
 

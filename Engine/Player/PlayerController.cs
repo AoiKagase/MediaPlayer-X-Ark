@@ -34,6 +34,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		private volatile bool _nextTriggered = false;
 		// クロスフェード開始済みフラグ（残り時間検知の二重発火防止）
 		private volatile bool _crossfadeTriggered = false;
+		private long _suppressAutoAdvanceUntilMs = 0;
+		private const int SeekAutoAdvanceSuppressMs = 1000;
 
 		private readonly IPlayerEngine _engine;
 		private readonly IConfigService _config;
@@ -77,6 +79,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		private void Initialize()
 		{
 			_engine.ErrorOccurred += (s, e) => _syncContext.Post(_ => ErrorOccurred?.Invoke(s, e), null);
+			_engine.TrackAdvanced += index => _syncContext.Post(_ =>
+			{
+				TrackChanged?.Invoke(index);
+				PlaybackStateChanged?.Invoke();
+				UpdatePreciseTimer();
+			}, null);
 			// OutputType は init() より前に設定する必要がある
 			_engine.SetOutputTypeBeforeInit(_config.GetOutputType());
 
@@ -211,6 +219,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 		public void SetPosition(uint ms)
 		{
+			_nextTriggered = false;
+			_crossfadeTriggered = false;
+			Interlocked.Exchange(
+				ref _suppressAutoAdvanceUntilMs,
+				Environment.TickCount64 + SeekAutoAdvanceSuppressMs);
 			_engine.SetPosition(ms);
 		}
 		public uint GetPosition() => _engine.GetPosition();
@@ -378,9 +391,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		{
 			if (!_preciseTimerRunning) return;
 
+			_engine.UpdateScheduledTransition();
+
 			long now = Environment.TickCount64;
 			int elapsedMs = (int)(now - Interlocked.Read(ref _lastTickMs));
 			Interlocked.Exchange(ref _lastTickMs, now);
+			bool suppressAutoAdvance = now < Interlocked.Read(ref _suppressAutoAdvanceUntilMs);
 
 			if (!_engine.NowPlaying)
 			{
@@ -391,6 +407,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			// ── CUEトラック終端監視 ──────────────────────────────────────
 			// FMODはトラック境界で止まらないため、CueEndMs到達を明示的に検知する
+			if (!_config.settings.NonStopMixEnabled && !suppressAutoAdvance)
 			{
 				int pidxCue = _engine.PlayingIndex;
 				if (IsValidTrackIndex(pidxCue) && !_nextTriggered)
@@ -416,6 +433,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			// ── クロスフェード開始検知 ────────────────────────────────────────
 			if (_engine.CrossfadeEnabled
 				&& !_engine.NonStopMixEnabled
+				&& !suppressAutoAdvance
 				&& !_crossfadeTriggered
 				&& !_engine.CrossfadeTriggered)
 			{
@@ -440,36 +458,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					_engine.SetPosition(AbStart);
 			}
 
-			// ── NonStopMix ────────────────────────────────────────────────────
 			if (_config.settings.NonStopMixEnabled)
-			{
-				// 退避チャンネル（旧曲）が自然終了していたら解放
 				_engine.ReleaseNonStopFadingIfDone();
 
-				if (!_nextTriggered)
-				{
-					int idx = _engine.PlayingIndex;
-					if (IsValidTrackIndex(idx))
-					{
-						var entry = _engine.PlayList[idx];
-						// CUEトラックはNonStopMixをバイパス（連続録音CDを想定）
-						if (!entry.IsCueTrack && entry.WaveformReady && entry.AudioEndMs > 0)
-						{
-							uint pos = _engine.GetPosition();
-							// AudioEndMs + オフセット（秒）を過ぎたら次曲へ
-							// 負値オフセット = 無音前から早めに次曲をスタート
-							if ((int)pos >= entry.AudioEndMs + _config.settings.NonStopMixOffsetSec)
-							{
-								_nextTriggered = true;
-								_syncContext.Post(_ => PlayNext(), null);
-							}
-						}
-					}
-				}
-			}
 
-
-			if (!_engine.IsPlaying())
+			if (!suppressAutoAdvance && !_engine.IsPlaying())
 			{
 				// 再生が自然終了 → UIスレッドで次曲へ
 				StopPreciseTimer();
@@ -487,7 +480,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		{
 			if (!_config.settings.NonStopMixEnabled && !_config.settings.CrossfadeEnabled)
 			{
-				if (_engine.NowPlaying && !_engine.IsPlaying() && IsValidTrackIndex(_engine.PlayingIndex + 1))
+				bool suppressAutoAdvance = Environment.TickCount64 < Interlocked.Read(ref _suppressAutoAdvanceUntilMs);
+				if (!suppressAutoAdvance
+					&& _engine.NowPlaying
+					&& !_engine.IsPlaying()
+					&& IsValidTrackIndex(_engine.PlayingIndex + 1))
 				{
 					StopPreciseTimer();
 					_syncContext.Post(_ => PlayNext(), null);

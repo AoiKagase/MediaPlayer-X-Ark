@@ -61,14 +61,8 @@ namespace MediaPlayer_X_Ark.Engine.Config
 
 		/// <summary>クロスフェード時間（ミリ秒）デフォルト3秒</summary>
 		public int CrossfadeDurationMs { get; set; } = 3000;
-        /// <summary>NonStopMixの有効/無効（クロスフェードと排他）</summary>
+        /// <summary>ギャップレス再生の有効/無効（クロスフェードと排他）</summary>
         public bool NonStopMixEnabled { get; set; } = false;
-		/// <summary>
-		/// NonStopMix切替オフセット（秒）。
-		/// 負値 = 実音終了より早く切る、0 = 無音検知時間。
-		/// 範囲：-1000.0〜+0.0
-		/// </summary>
-		public float NonStopMixOffsetSec { get; set; } = 0.0f;
 		/// <summary>ReplayGainの有効/無効</summary>
 		public bool ReplayGainEnabled { get; set; } = false;
 

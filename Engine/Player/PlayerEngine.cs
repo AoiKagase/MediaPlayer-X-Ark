@@ -57,6 +57,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		public Effector.Effectors effector { get; private set; }
 		public LOOP_MODE loop { get; set; }
 		public event EventHandler<PlayerErrorEventArgs> ErrorOccurred;
+		public event Action<int> TrackAdvanced;
 		public int PlayingIndex { get; private set; } = -1;
 		protected bool initialized = false;
 		private bool _nowPlaying = false;
@@ -73,7 +74,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 		protected List<DEVICE_INFO> FmodDeviceList = new List<DEVICE_INFO>();
 
-		private const int channelCount = 2;
+		private const int channelCount = 8;
 		public int ChannelCount => channelCount;
 		private List<int> _shuffleQueue = new List<int>();
 		private int _shuffleQueueIndex = 0;
@@ -86,6 +87,16 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		private bool _isCrossfading = false;
 		private bool _isCrossfadeVolumeFixed = false; // NonStopMix 時は音量固定で並走
 		private float _masterVolume = 1.0f;           // SetVolume で設定されたマスター音量
+		private float _masterPan = 0.0f;
+		private FMOD.Channel _preparedChannel;
+		private FMOD.Channel _retiringChannel;
+		private int _preparedIndex = -1;
+		private int _preparedShuffleQueueIndex = -1;
+		private ulong _scheduledTransitionClock = 0;
+		private bool _pendingGaplessTransition = false;
+		private volatile bool _preparedChannelEnded = false;
+		private volatile bool _retiringChannelEnded = false;
+		private readonly FMOD.CHANNELCONTROL_CALLBACK _channelControlCallback;
 		public bool CrossfadeEnabled { get; set; } = false;
 		public int CrossfadeDurationMs { get; set; } = 3000;
 		public bool CrossfadeTriggered { get; set; } = false;
@@ -157,6 +168,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 		public PlayerEngine()
 		{
+			_channelControlCallback = OnChannelControlCallback;
 			CreateSystem();
 		}
 
@@ -402,6 +414,10 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		/// <summary>再生中かどうかを返す</summary>
 		public bool IsPlaying()
 		{
+			UpdateScheduledTransition();
+			if (_pendingGaplessTransition)
+				return true;
+
 			bool result = false;
 			if (FmodChannel.hasHandle())
 			{
@@ -410,6 +426,70 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				return result;
 			}
 			return false;
+		}
+
+		public void UpdateScheduledTransition()
+		{
+			if (_retiringChannelEnded)
+			{
+				_retiringChannel = default;
+				_retiringChannelEnded = false;
+			}
+
+			if (!_pendingGaplessTransition)
+			{
+				if (_preparedChannelEnded && !_preparedChannel.hasHandle())
+					_preparedChannelEnded = false;
+				return;
+			}
+
+			if (!_preparedChannel.hasHandle() || _preparedChannelEnded)
+			{
+				ClearPreparedTransition(false);
+				return;
+			}
+
+			if (!FmodChannelGroup.hasHandle())
+				return;
+
+			FmodChannelGroup.getDSPClock(out _, out ulong parentClock);
+			if (parentClock < _scheduledTransitionClock)
+				return;
+
+			FmodChannel = _preparedChannel;
+			_preparedChannel = default;
+			PlayingIndex = _preparedIndex;
+			_preparedIndex = -1;
+			if (_preparedShuffleQueueIndex >= 0)
+				_shuffleQueueIndex = _preparedShuffleQueueIndex;
+			_preparedShuffleQueueIndex = -1;
+			_pendingGaplessTransition = false;
+			_scheduledTransitionClock = 0;
+			_preparedChannelEnded = false;
+			_nowPlaying = true;
+			TrackAdvanced?.Invoke(PlayingIndex);
+
+			if (NonStopMixEnabled && !CrossfadeEnabled)
+				PrepareGaplessTransition(PlayingIndex);
+		}
+
+		private FMOD.RESULT OnChannelControlCallback(
+			IntPtr channelcontrol,
+			FMOD.CHANNELCONTROL_TYPE controltype,
+			FMOD.CHANNELCONTROL_CALLBACK_TYPE callbacktype,
+			IntPtr commanddata1,
+			IntPtr commanddata2)
+		{
+			if (controltype != FMOD.CHANNELCONTROL_TYPE.CHANNEL
+				|| callbacktype != FMOD.CHANNELCONTROL_CALLBACK_TYPE.END)
+				return FMOD.RESULT.OK;
+
+			if (_preparedChannel.hasHandle() && channelcontrol == _preparedChannel.handle)
+				_preparedChannelEnded = true;
+			else if (_retiringChannel.hasHandle() && channelcontrol == _retiringChannel.handle)
+				_retiringChannelEnded = true;
+
+			return FMOD.RESULT.OK;
 		}
 
 
@@ -422,7 +502,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			FmodDeviceList.Clear();
 			if (FmodCallFunction(FmodSystem.getNumDrivers(out numDrivers)) == RESULT.OK)
 			{
-				for (int i = 0; i <= numDrivers; i++)
+				for (int i = 0; i < numDrivers; i++)
 				{
 					device = new DEVICE_INFO();
 					device.namelen = 64;
@@ -540,8 +620,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		}
 		public uint GetPosition()
 		{
+			UpdateScheduledTransition();
 			uint position = 0;
-			if (FmodChannel.hasHandle() && IsPlaying())
+			if (FmodChannel.hasHandle() && (_pendingGaplessTransition || IsPlaying()))
 				FmodCallFunction(FmodChannel.getPosition(out position, TIMEUNIT.MS));
 
 			// CUEトラック: 絶対位置→トラック相対位置に変換
@@ -559,6 +640,13 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			if (!IsValidIndex(PlayingIndex))
 				return;
 
+			bool wasPendingTransition = _pendingGaplessTransition;
+			bool preservePaused = false;
+			if (!_pendingGaplessTransition && FmodChannel.hasHandle())
+				FmodChannel.getPaused(out preservePaused);
+
+			ClearPreparedTransition(true);
+
 			var entry = PlayList[PlayingIndex];
 			uint maxPosition = entry.IsCueTrack ? entry.LengthMs : GetLength(PlayingIndex);
 			if (maxPosition > 0)
@@ -567,7 +655,20 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			uint absPos = position;
 			if (entry.IsCueTrack && entry.CueStartMs.HasValue)
 				absPos = (uint)entry.CueStartMs.Value + position;
-			FmodCallFunction(FmodChannel.setPosition(absPos, TIMEUNIT.MS));
+
+			if (wasPendingTransition || !FmodChannel.hasHandle())
+			{
+				RecreateCurrentChannelAtPosition(absPos, preservePaused);
+			}
+			else
+			{
+				var result = FmodCallFunction(FmodChannel.setPosition(absPos, TIMEUNIT.MS));
+				if (result == FMOD.RESULT.ERR_INVALID_HANDLE)
+					RecreateCurrentChannelAtPosition(absPos, preservePaused);
+			}
+
+			if (NonStopMixEnabled && !CrossfadeEnabled && IsPlaying())
+				PrepareGaplessTransition(PlayingIndex);
 		}
 		/// <summary>
 		/// Retrieves the state a sound is in after being opened with the non blocking flag, or the current state of the streaming buffer.
@@ -586,11 +687,240 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			return state;
 		}
 
+		private void ClearPreparedTransition(bool stopChannel)
+		{
+			if (_preparedChannel.hasHandle() && stopChannel)
+				_preparedChannel.stop();
+			if (_retiringChannel.hasHandle() && stopChannel)
+				_retiringChannel.stop();
+
+			_preparedChannel = default;
+			_retiringChannel = default;
+			_preparedIndex = -1;
+			_preparedShuffleQueueIndex = -1;
+			_scheduledTransitionClock = 0;
+			_pendingGaplessTransition = false;
+			_preparedChannelEnded = false;
+			_retiringChannelEnded = false;
+		}
+
+		private void RecreateCurrentChannelAtPosition(uint absPos, bool startPaused)
+		{
+			if (!IsValidIndex(PlayingIndex))
+				return;
+
+			try
+			{
+				if (FmodChannel.hasHandle())
+					FmodChannel.stop();
+			}
+			catch { }
+
+			var result = FmodCallFunction(FmodSystem.playSound(
+				PlayList[PlayingIndex].Sound, FmodChannelGroup, true, out FmodChannel));
+			if (result != FMOD.RESULT.OK)
+				return;
+
+			if (ReplayGainEnabled)
+				ApplyReplayGain(PlayingIndex);
+			else
+				FmodChannel.setVolume(_masterVolume);
+			FmodChannel.setPan(_masterPan);
+
+			result = FmodCallFunction(FmodChannel.setPosition(absPos, TIMEUNIT.MS));
+			if (result != FMOD.RESULT.OK)
+				return;
+
+			FmodCallFunction(FmodChannel.setPaused(startPaused));
+			_nowPlaying = true;
+		}
+
+		private bool TryResolveNextIndex(int fromIndex, out int nextIndex, bool advanceShuffleQueue)
+		{
+			nextIndex = -1;
+			if (PlayList.Count == 0)
+				return false;
+
+			if (fromIndex < 0)
+				fromIndex = Math.Min(PlayingIndex, PlayList.Count - 1);
+
+			if ((loop & LOOP_MODE.LOOP_RANDOM) != 0)
+			{
+				if (_shuffleQueueIndex >= _shuffleQueue.Count)
+					BuildShuffleQueue();
+				if (_shuffleQueueIndex >= _shuffleQueue.Count)
+					return false;
+
+				nextIndex = _shuffleQueue[_shuffleQueueIndex];
+				if (advanceShuffleQueue)
+					_shuffleQueueIndex++;
+				return true;
+			}
+
+			switch (loop)
+			{
+				case LOOP_MODE.LOOP_ONE_REPEAT:
+					nextIndex = fromIndex;
+					return true;
+				case LOOP_MODE.LOOP_ALL:
+					nextIndex = (fromIndex < PlayList.Count - 1) ? fromIndex + 1 : 0;
+					return true;
+				default:
+					if (fromIndex >= PlayList.Count - 1)
+						return false;
+					nextIndex = fromIndex + 1;
+					return true;
+			}
+		}
+
+		private void ApplyReplayGainToChannel(int index, FMOD.Channel channel)
+		{
+			if (!channel.hasHandle() || !IsValidIndex(index))
+				return;
+
+			var entry = PlayList[index];
+			float? gainDb = ReplayGainMode == 1
+				? (entry.ReplayGainAlbum ?? entry.ReplayGainTrack)
+				: (entry.ReplayGainTrack ?? entry.ReplayGainAlbum);
+
+			if (gainDb == null)
+			{
+				channel.setVolume(_masterVolume);
+				return;
+			}
+
+			float totalDb = gainDb.Value + ReplayGainPreamp;
+			float linearGain = (float)Math.Pow(10.0, totalDb / 20.0);
+			float finalVolume = Math.Min(_masterVolume * linearGain, 1.0f);
+			channel.setVolume(finalVolume);
+		}
+
+		private ulong EstimateRemainingDspClocks(int index)
+		{
+			if (!IsValidIndex(index) || !FmodChannel.hasHandle())
+				return 0;
+
+			FmodSystem.getSoftwareFormat(out int mixerRate, out _, out _);
+			if (mixerRate <= 0)
+				return 0;
+
+			var entry = PlayList[index];
+			if (entry.IsCueTrack)
+			{
+				uint currentPos = GetPosition();
+				uint remainingMs = entry.LengthMs > currentPos
+					? entry.LengthMs - currentPos
+					: 0;
+				return (ulong)Math.Round(remainingMs * (double)mixerRate / 1000.0);
+			}
+
+			if (!entry.IsLoaded)
+				return 0;
+
+			entry.Sound.getLength(out uint lengthPcm, FMOD.TIMEUNIT.PCM);
+			FmodChannel.getPosition(out uint positionPcm, FMOD.TIMEUNIT.PCM);
+			entry.Sound.getDefaults(out float soundRate, out _);
+
+			if (lengthPcm == 0 || soundRate <= 0f || positionPcm >= lengthPcm)
+				return 0;
+
+			double remainingSeconds = (lengthPcm - positionPcm) / soundRate;
+			return (ulong)Math.Round(remainingSeconds * mixerRate);
+		}
+
+		private void PrepareGaplessTransition(int fromIndex)
+		{
+			ClearPreparedTransition(true);
+
+			if (!NonStopMixEnabled || CrossfadeEnabled || !IsValidIndex(fromIndex) || !FmodChannel.hasHandle())
+				return;
+
+			if (!TryResolveNextIndex(fromIndex, out int nextIndex, false))
+				return;
+
+			var loadResult = LoadSound(nextIndex);
+			if (loadResult != FMOD.RESULT.OK)
+				return;
+
+			var result = FmodCallFunction(FmodSystem.playSound(
+				PlayList[nextIndex].Sound, FmodChannelGroup, true, out FMOD.Channel preparedChannel));
+			if (result != FMOD.RESULT.OK)
+			{
+				ClearPreparedTransition(false);
+				return;
+			}
+
+			if (PlayList[nextIndex].IsCueTrack && PlayList[nextIndex].CueStartMs.HasValue)
+				preparedChannel.setPosition((uint)PlayList[nextIndex].CueStartMs.Value, FMOD.TIMEUNIT.MS);
+
+			if (ReplayGainEnabled)
+				ApplyReplayGainToChannel(nextIndex, preparedChannel);
+			else
+				preparedChannel.setVolume(_masterVolume);
+			preparedChannel.setPan(_masterPan);
+
+			FmodChannelGroup.getDSPClock(out _, out ulong parentClock);
+			ulong remainingClocks = EstimateRemainingDspClocks(fromIndex);
+			if (remainingClocks == 0)
+			{
+				preparedChannel.stop();
+				return;
+			}
+
+			result = FmodCallFunction(preparedChannel.setCallback(_channelControlCallback));
+			if (result != FMOD.RESULT.OK)
+			{
+				preparedChannel.stop();
+				return;
+			}
+
+			result = FmodCallFunction(FmodChannel.setCallback(_channelControlCallback));
+			if (result != FMOD.RESULT.OK)
+			{
+				preparedChannel.stop();
+				return;
+			}
+
+			ulong startClock = parentClock + remainingClocks;
+			result = FmodCallFunction(preparedChannel.setDelay(startClock, 0, false));
+			if (result != FMOD.RESULT.OK)
+			{
+				preparedChannel.stop();
+				return;
+			}
+
+			result = FmodCallFunction(FmodChannel.setDelay(0, startClock, true));
+			if (result != FMOD.RESULT.OK)
+			{
+				preparedChannel.stop();
+				return;
+			}
+
+			result = FmodCallFunction(preparedChannel.setPaused(false));
+			if (result != FMOD.RESULT.OK)
+			{
+				preparedChannel.stop();
+				return;
+			}
+
+			_retiringChannel = FmodChannel;
+			_preparedChannel = preparedChannel;
+			_preparedIndex = nextIndex;
+			_preparedShuffleQueueIndex = ((loop & LOOP_MODE.LOOP_RANDOM) != 0)
+				? _shuffleQueueIndex + 1
+				: -1;
+			_scheduledTransitionClock = startClock;
+			_pendingGaplessTransition = true;
+			_preparedChannelEnded = false;
+			_retiringChannelEnded = false;
+		}
+
 		public FMOD.RESULT PlaySound(int index)
 		{
 			if (!IsValidIndex(index))
 				return FMOD.RESULT.OK;
 
+			ClearPreparedTransition(true);
 			ReleaseNonStopFadingIfDone();
 			StartCrossfadeOrStop();
 			CrossfadeTriggered = false;
@@ -603,6 +933,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				if (i == index) continue;
 				if (i == index + 1) continue;
 				if (i == fadingIndex) continue;
+				if (i == _preparedIndex) continue;
 				if (PlayList[i].IsPcm) continue; // PCM トラックは再ロード不可のため常に保護
 				if (PlayList[i].IsLoaded)
 				{
@@ -615,9 +946,6 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			if (loadResult != FMOD.RESULT.OK) return loadResult;
 
 			PlayingIndex = index;
-			// クロスフェード時は音量 0 で開始してフェードインする
-			float startVolume = CrossfadeEnabled && _isCrossfading ? 0f : _masterVolume;
-
 			var result = FmodCallFunction(FmodSystem.playSound(
 				PlayList[index].Sound, FmodChannelGroup, false, out FmodChannel));
 
@@ -629,6 +957,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				ApplyReplayGain(index);
 
 			_nowPlaying = true;
+			if (result == FMOD.RESULT.OK && NonStopMixEnabled && !CrossfadeEnabled)
+				PrepareGaplessTransition(index);
 
 			return result;
 		}
@@ -665,6 +995,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			if (!IsValidIndex(index))
 				return FMOD.RESULT.OK;
 
+			ClearPreparedTransition(true);
 			if (FmodChannel.hasHandle())
 				FmodChannel.stop();
 
@@ -1227,28 +1558,11 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			if (manual)
 				Stop();
 
-			if ((loop & LOOP_MODE.LOOP_RANDOM) != 0)
+			ClearPreparedTransition(true);
+			if (!TryResolveNextIndex(fromIndex, out int next, true))
 			{
-				// シャッフルキューが枯渇したら再生成する
-				if (_shuffleQueueIndex >= _shuffleQueue.Count)
-					BuildShuffleQueue();
-				PlaySound(_shuffleQueue[_shuffleQueueIndex++]);
+				_nowPlaying = false;
 				return;
-			}
-
-			int next;
-			switch (loop)
-			{
-				case LOOP_MODE.LOOP_ONE_REPEAT:
-					next = fromIndex;
-					break;
-				case LOOP_MODE.LOOP_ALL:
-					next = (fromIndex < PlayList.Count - 1) ? fromIndex + 1 : 0;
-					break;
-				default: // LOOP_NONE
-					if (fromIndex >= PlayList.Count - 1) { _nowPlaying = false; return; }
-					next = fromIndex + 1;
-					break;
 			}
 			PlaySound(next);
 		}
@@ -1275,6 +1589,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			if (fromIndex < 0)
 				fromIndex = Math.Max(0, PlayingIndex);
 			if (manual) Stop();
+			ClearPreparedTransition(true);
 			if ((loop & LOOP_MODE.LOOP_RANDOM) != 0)
 			{
 				// シャッフルキューを 1 つ戻る（最低 0 まで）
@@ -1303,6 +1618,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			//			PlayingIndex = -1;
 			if (FmodChannel.hasHandle())
 				FmodChannel.stop();
+			ClearPreparedTransition(true);
 
 			if (FmodChannelFading.hasHandle())
 				FmodChannelFading.stop();
@@ -1324,21 +1640,33 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		/// <summary>マスター音量を設定する（0.0〜1.0）</summary>
 		public void SetVolume(float vol)
 		{
+			UpdateScheduledTransition();
 			_masterVolume = vol;
-			FmodChannel.setVolume(vol);
+			if (FmodChannel.hasHandle())
+				FmodChannel.setVolume(vol);
+			if (_preparedChannel.hasHandle())
+				_preparedChannel.setVolume(vol);
 			// フェードアウト中の旧チャンネルの音量には干渉しない
 		}
 
 		public int GetVolume()
 		{
+			UpdateScheduledTransition();
 			float volume;
+			if (!FmodChannel.hasHandle())
+				return (int)(_masterVolume * 100);
 			FmodChannel.getVolume(out volume);
 			return (int)(volume * 100);
 		}
 		/// <summary>パンを設定する（-1.0〜1.0）</summary>
 		public void SetPan(float pan)
 		{
-			FmodChannel.setPan(pan);
+			UpdateScheduledTransition();
+			_masterPan = pan;
+			if (FmodChannel.hasHandle())
+				FmodChannel.setPan(pan);
+			if (_preparedChannel.hasHandle())
+				_preparedChannel.setPan(pan);
 		}
 
 		/// <summary>
