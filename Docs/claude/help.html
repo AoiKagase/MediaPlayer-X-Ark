@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediaPlayer X-Ark ヘルプ</title>
+  <style>
+    :root {
+      --bg: #1a1a2e;
+      --bg2: #16213e;
+      --bg3: #0f3460;
+      --accent: #e94560;
+      --accent2: #7f5af0;
+      --text: #e0e0e0;
+      --text-muted: #a0a0b0;
+      --border: #2a2a4a;
+      --code-bg: #0d1b2a;
+      --sidebar-w: 260px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', 'Yu Gothic UI', Meiryo, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* ===== サイドバー ===== */
+    #sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      position: fixed;
+      top: 0; left: 0;
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+    #sidebar-header {
+      padding: 24px 20px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    #sidebar-header .logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+    }
+
+    #sidebar-header .subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    #sidebar nav {
+      padding: 12px 0;
+    }
+
+    #sidebar nav a {
+      display: block;
+      padding: 7px 20px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13.5px;
+      transition: all 0.15s;
+      border-left: 2px solid transparent;
+    }
+
+    #sidebar nav a:hover,
+    #sidebar nav a.active {
+      color: var(--text);
+      background: rgba(127,90,240,0.1);
+      border-left-color: var(--accent2);
+    }
+
+    #sidebar nav .nav-group {
+      padding: 14px 20px 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    /* ===== メインコンテンツ ===== */
+    #main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      padding: 0 40px 80px;
+      max-width: calc(100% - var(--sidebar-w));
+    }
+
+    /* ===== ヒーロー ===== */
+    #hero {
+      padding: 64px 0 48px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+    }
+
+    #hero h1 {
+      font-size: 36px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+
+    #hero p {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 600px;
+    }
+
+    /* ===== セクション ===== */
+    section {
+      margin-bottom: 60px;
+      scroll-margin-top: 24px;
+    }
+
+    section h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--accent2);
+      margin-bottom: 24px;
+    }
+
+    section h3 {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--accent2);
+      margin: 28px 0 12px;
+    }
+
+    section h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin: 20px 0 8px;
+    }
+
+    p { margin-bottom: 12px; }
+
+    ul, ol {
+      padding-left: 24px;
+      margin-bottom: 12px;
+    }
+
+    li { margin-bottom: 4px; }
+
+    /* ===== テーブル ===== */
+    .table-wrap { overflow-x: auto; margin-bottom: 20px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    thead tr {
+      background: var(--bg3);
+    }
+
+    th {
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+      vertical-align: top;
+    }
+
+    tr:hover td { background: rgba(127,90,240,0.05); }
+
+    td:first-child { color: var(--text); }
+
+    /* ===== キーバッジ ===== */
+    kbd {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: 'Consolas', monospace;
+      font-size: 12px;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    /* ===== カード ===== */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      transition: border-color 0.2s;
+    }
+
+    .card:hover { border-color: var(--accent2); }
+
+    .card-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .card h3 {
+      font-size: 15px;
+      color: var(--text);
+      margin: 0 0 6px;
+    }
+
+    .card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* ===== インフォボックス ===== */
+    .info-box {
+      background: rgba(127,90,240,0.08);
+      border: 1px solid rgba(127,90,240,0.3);
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .info-box strong { color: var(--text); }
+
+    .warn-box {
+      background: rgba(233,69,96,0.08);
+      border: 1px solid rgba(233,69,96,0.3);
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* ===== コード ===== */
+    code {
+      font-family: 'Consolas', monospace;
+      font-size: 13px;
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: #a8dadc;
+    }
+
+    /* ===== タグバッジ ===== */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    .badge-blue  { background: rgba(127,90,240,0.2); color: #a78bfa; }
+    .badge-red   { background: rgba(233,69,96,0.2);  color: #f87171; }
+    .badge-green { background: rgba(52,211,153,0.2); color: #6ee7b7; }
+
+    /* ===== スクロールバー ===== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg2); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ===== アンカーハイライト ===== */
+    :target { animation: highlight 1.2s ease; }
+    @keyframes highlight {
+      0%   { background: rgba(127,90,240,0.15); }
+      100% { background: transparent; }
+    }
+
+    /* ===== レスポンシブ ===== */
+    @media (max-width: 768px) {
+      #sidebar { display: none; }
+      #main { margin-left: 0; max-width: 100%; padding: 0 20px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== サイドバー ===== -->
+<aside id="sidebar">
+  <div id="sidebar-header">
+    <div class="logo">X-Ark</div>
+    <div class="subtitle">MediaPlayer ヘルプドキュメント</div>
+  </div>
+  <nav>
+    <div class="nav-group">はじめに</div>
+    <a href="#overview">概要</a>
+    <a href="#quickstart">クイックスタート</a>
+
+    <div class="nav-group">基本操作</div>
+    <a href="#playback">再生操作</a>
+    <a href="#keyboard">キーボードショートカット</a>
+    <a href="#volume">音量・パン</a>
+
+    <div class="nav-group">機能</div>
+    <a href="#playlist">プレイリスト</a>
+    <a href="#formats">対応フォーマット</a>
+    <a href="#effects">エフェクト</a>
+    <a href="#equalizer">グラフィックイコライザー</a>
+    <a href="#cd">CD機能</a>
+    <a href="#cue">CUEシート</a>
+    <a href="#visualizer">ビジュアライザー</a>
+    <a href="#miniplayer">ミニプレイヤー</a>
+
+    <div class="nav-group">設定</div>
+    <a href="#settings-general">一般設定</a>
+    <a href="#settings-output">出力設定</a>
+    <a href="#settings-playback">再生設定</a>
+    <a href="#settings-skin">スキン</a>
+    <a href="#settings-discord">Discord連携</a>
+
+    <div class="nav-group">詳細</div>
+    <a href="#replaygain">ReplayGain</a>
+    <a href="#abrepeat">ABリピート</a>
+    <a href="#crossfade">クロスフェード</a>
+    <a href="#nonstop">NonStopMix</a>
+    <a href="#midi-engine">MIDIエンジン</a>
+    <a href="#plugins">プラグイン</a>
+  </nav>
+</aside>
+
+<!-- ===== メインコンテンツ ===== -->
+<main id="main">
+
+  <!-- ヒーロー -->
+  <div id="hero">
+    <h1>MediaPlayer X-Ark</h1>
+    <p>Windows向け高機能メディアプレイヤー。FMODエンジン搭載、豊富なエフェクト・CD対応・スキンカスタマイズ対応。</p>
+  </div>
+
+  <!-- ===== 概要 ===== -->
+  <section id="overview">
+    <h2>概要</h2>
+    <p>MediaPlayer X-Ark は .NET 9.0 / Windows Forms で構築された Windows デスクトップ向けオーディオプレイヤーです。コアに <strong>FMOD</strong> エンジンを採用し、高品質な再生と多彩なDSPエフェクトを実現します。</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">🎵</div>
+        <h3>多彩なフォーマット対応</h3>
+        <p>MP3, FLAC, WAV, OGG, MIDI, トラッカー形式など30種類以上に対応。コーデックプラグインで拡張可能。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎛️</div>
+        <h3>12種類のDSPエフェクト</h3>
+        <p>イコライザー、リバーブ、エコー、コンプレッサーなど。プリセット保存・読み込み対応。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">💿</div>
+        <h3>CD取り込み</h3>
+        <p>Win32 IOCTL によるCDDA読み取り。CDDB / MusicBrainz 自動メタデータ取得対応。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎨</div>
+        <h3>スキンシステム</h3>
+        <p>XML ベースの .xsk スキンファイルによりUIを自由にカスタマイズできます。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <h3>ビジュアライザー</h3>
+        <p>FFTスペクトラム解析と波形表示。スノーブロックエフェクト付き。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎮</div>
+        <h3>Discord連携</h3>
+        <p>Rich Presence で再生中の曲情報をDiscordに表示できます。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== クイックスタート ===== -->
+  <section id="quickstart">
+    <h2>クイックスタート</h2>
+
+    <h3>ファイルを再生する</h3>
+    <ol>
+      <li>メイン画面上で右クリック → <strong>開く (&amp;O)</strong> を選択してファイルを開きます。</li>
+      <li>または、ファイルエクスプローラーからウィンドウへ<strong>ドラッグ＆ドロップ</strong>します。</li>
+      <li>メディアキーまたは <kbd>Space</kbd> で再生を開始します。</li>
+    </ol>
+
+    <h3>URLストリームを再生する</h3>
+    <ol>
+      <li>右クリックメニュー → <strong>URLを開く (&amp;R)</strong> を選択。</li>
+      <li>ストリームURLを入力してOKを押します。</li>
+    </ol>
+
+    <div class="info-box">
+      <strong>ヒント:</strong> 起動時に前回のプレイリストと再生位置を自動復元できます。設定 → 一般 で有効化してください。
+    </div>
+  </section>
+
+  <!-- ===== 再生操作 ===== -->
+  <section id="playback">
+    <h2>再生操作</h2>
+
+    <h3>基本コントロール</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ボタン</th><th>機能</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td>再生 (▶)</td><td>再生開始</td><td>停止中・一時停止中から再生を開始します</td></tr>
+          <tr><td>一時停止 (⏸)</td><td>一時停止</td><td>現在位置で一時停止。再度押すと再開します</td></tr>
+          <tr><td>停止 (⏹)</td><td>停止</td><td>再生を停止して先頭に戻ります</td></tr>
+          <tr><td>次へ (⏭)</td><td>次のトラック</td><td>プレイリストの次の曲へ移動します</td></tr>
+          <tr><td>前へ (⏮)</td><td>前のトラック</td><td>プレイリストの前の曲へ移動します</td></tr>
+          <tr><td>シーク前進</td><td>早送り</td><td>押し続けると加速してシークします</td></tr>
+          <tr><td>シーク後退</td><td>早戻し</td><td>押し続けると加速してシークします</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>再生モード</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>モード</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td>通常 (Normal)</td><td>プレイリストを順番に再生して終了</td></tr>
+          <tr><td>リピート (Repeat)</td><td>現在のトラックを繰り返し再生</td></tr>
+          <tr><td>ループ (Loop)</td><td>プレイリスト全体をループ再生。<kbd>L</kbd> キーで切替</td></tr>
+          <tr><td>ランダム (Random)</td><td>プレイリストをシャッフル再生。<kbd>R</kbd> キーで切替</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>スリープタイマー</h3>
+    <p>右クリックメニューの <strong>スリープタイマー</strong> から設定できます。指定時間後に再生を停止します。</p>
+    <ul>
+      <li>15分後</li>
+      <li>30分後</li>
+      <li>60分後</li>
+      <li>キャンセル</li>
+    </ul>
+  </section>
+
+  <!-- ===== キーボードショートカット ===== -->
+  <section id="keyboard">
+    <h2>キーボードショートカット</h2>
+    <div class="info-box">
+      メディアキー（キーボードの再生・停止・次曲・前曲ボタン）にも対応しています。
+    </div>
+
+    <h3>再生制御</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>キー</th><th>機能</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>Space</kbd></td><td>再生 / 一時停止</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td>トラック先頭から再生</td></tr>
+          <tr><td><kbd>S</kbd></td><td>停止</td></tr>
+          <tr><td><kbd>X</kbd></td><td>次のトラック</td></tr>
+          <tr><td><kbd>Z</kbd></td><td>前のトラック</td></tr>
+          <tr><td><kbd>→</kbd></td><td>シーク前進（押し続けで加速）</td></tr>
+          <tr><td><kbd>←</kbd></td><td>シーク後退（押し続けで加速）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>音量・モード</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>キー</th><th>機能</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>↑</kbd></td><td>音量アップ (+5)</td></tr>
+          <tr><td><kbd>↓</kbd></td><td>音量ダウン (-5)</td></tr>
+          <tr><td><kbd>L</kbd></td><td>ループモード切替</td></tr>
+          <tr><td><kbd>R</kbd></td><td>ランダム再生切替</td></tr>
+          <tr><td><kbd>Escape</kbd></td><td>ミニプレイヤーに切替</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>ABリピート</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>キー</th><th>機能</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>A</kbd></td><td>A点（繰り返し開始位置）を設定</td></tr>
+          <tr><td><kbd>B</kbd></td><td>B点（繰り返し終了位置）を設定</td></tr>
+          <tr><td><kbd>C</kbd></td><td>ABリピート解除</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== 音量・パン ===== -->
+  <section id="volume">
+    <h2>音量・パン</h2>
+
+    <h3>音量</h3>
+    <p>音量スライダー（<strong>Vol</strong>）で 0 ～ 150% の範囲で調整できます。100% が原音量です。150% まで上げることでブースト再生が可能です。</p>
+    <p><kbd>↑</kbd> / <kbd>↓</kbd> キーでも ±5 単位で調整できます。</p>
+
+    <h3>パン (Pan)</h3>
+    <p>パンスライダーで左右の音量バランスを調整します。中央位置 (0) がステレオ標準です。</p>
+    <ul>
+      <li>左方向: 左チャンネルを強調 (-10 ～ 0)</li>
+      <li>右方向: 右チャンネルを強調 (0 ～ +10)</li>
+    </ul>
+  </section>
+
+  <!-- ===== プレイリスト ===== -->
+  <section id="playlist">
+    <h2>プレイリスト</h2>
+    <p>メイン画面のプレイリストボタン、または右クリックメニュー → <strong>プレイリスト (&amp;L)</strong> でプレイリストウィンドウを開きます。</p>
+
+    <h3>トラック追加方法</h3>
+    <ul>
+      <li>ファイルを<strong>ドラッグ＆ドロップ</strong>（フォルダごとドロップも可能）</li>
+      <li>右クリックメニュー → <strong>開く</strong> でファイル選択</li>
+      <li>M3U / PLS 形式のプレイリストファイルを開く</li>
+    </ul>
+
+    <h3>トラック操作</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>操作</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td>ダブルクリック</td><td>そのトラックを再生</td></tr>
+          <tr><td>右クリック → 再生</td><td>選択トラックを再生</td></tr>
+          <tr><td>右クリック → 削除</td><td>プレイリストから削除</td></tr>
+          <tr><td>右クリック → 上へ移動</td><td>トラック順を上に移動</td></tr>
+          <tr><td>右クリック → 下へ移動</td><td>トラック順を下に移動</td></tr>
+          <tr><td>右クリック → ファイルを開く</td><td>エクスプローラーで場所を表示</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>並び替え</h3>
+    <p>右クリックメニュー → <strong>並び替え</strong> から選択できます。</p>
+    <ul>
+      <li>ファイル名順</li>
+      <li>タイトル順</li>
+      <li>アーティスト順</li>
+    </ul>
+
+    <h3>プレイリストの保存・読み込み</h3>
+    <p>右クリックメニュー → <strong>保存</strong> で M3U 形式で保存できます。プレイリストファイル (.m3u / .m3u8 / .pls) を開くと自動的に読み込まれます。</p>
+
+    <div class="info-box">
+      <strong>自動保存:</strong> 設定で「プレイリストを自動保存する」を有効にすると、アプリ終了時にプレイリストが保存され、次回起動時に復元されます。
+    </div>
+  </section>
+
+  <!-- ===== 対応フォーマット ===== -->
+  <section id="formats">
+    <h2>対応フォーマット</h2>
+
+    <h3>音声ファイル <span class="badge badge-green">標準対応</span></h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>形式</th><th>拡張子</th></tr></thead>
+        <tbody>
+          <tr><td>MP3</td><td><code>.mp3</code> <code>.mp2</code></td></tr>
+          <tr><td>Wave</td><td><code>.wav</code></td></tr>
+          <tr><td>Ogg Vorbis</td><td><code>.ogg</code></td></tr>
+          <tr><td>FLAC</td><td><code>.flac</code></td></tr>
+          <tr><td>AIFF</td><td><code>.aiff</code> <code>.aif</code></td></tr>
+          <tr><td>Windows Media</td><td><code>.wma</code> <code>.asf</code> <code>.asx</code> <code>.wax</code></td></tr>
+          <tr><td>FMOD Sound Bank</td><td><code>.fsb</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>MIDI <span class="badge badge-blue">マルチエンジン対応</span></h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>形式</th><th>拡張子</th></tr></thead>
+        <tbody>
+          <tr><td>MIDI</td><td><code>.mid</code> <code>.midi</code> <code>.rmi</code> <code>.kar</code></td></tr>
+          <tr><td>DLS サウンドフォント</td><td><code>.dls</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="info-box">
+      MIDI 再生はエンジンを選択できます。標準では <strong>XArkMidiEngine</strong> を使用します。
+      サウンドフォントは設定 → 出力から指定します。エンジン別の対応形式については <a href="#midi-engine" style="color:var(--accent2)">MIDIエンジン</a> を参照してください。
+    </div>
+
+    <h3>トラッカー音楽</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>形式</th><th>拡張子</th></tr></thead>
+        <tbody>
+          <tr><td>MOD / S3M / XM / IT</td><td><code>.mod</code> <code>.s3m</code> <code>.xm</code> <code>.it</code> <code>.mo3</code></td></tr>
+          <tr><td>その他</td><td><code>.umx</code> <code>.669</code> <code>.mtm</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>SRL (Soleil Rising Lossless Audio) <span class="badge badge-green">標準同梱</span></h3>
+    <p><code>codec_srla.dll</code> プラグインにより対応します（標準同梱）。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>形式</th><th>拡張子</th></tr></thead>
+        <tbody>
+          <tr><td>SRLA</td><td><code>.srl</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Windows Media Audio <span class="badge badge-green">標準同梱</span></h3>
+    <p><code>codec_wma.dll</code> プラグインにより対応します（標準同梱）。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>形式</th><th>拡張子</th></tr></thead>
+        <tbody>
+          <tr><td>Windows Media Audio</td><td><code>.wma</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>AAC / ALAC <span class="badge badge-red">別途ダウンロード</span></h3>
+    <p><code>codec_mp4.dll</code> プラグインを追加することで対応します。プラグインは <a href="https://github.com/AoiKagase/FMOD-PLUGINS" target="_blank" style="color:var(--accent2)">GitHub: AoiKagase/FMOD-PLUGINS</a> の GitHub Actions ページからダウンロードできます。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>形式</th><th>拡張子</th></tr></thead>
+        <tbody>
+          <tr><td>AAC / ALAC</td><td><code>.m4a</code> <code>.mp4</code> MP4コンテナ形式のAppleオーディオに対応</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>プレイリスト・シート</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>形式</th><th>拡張子</th></tr></thead>
+        <tbody>
+          <tr><td>M3U プレイリスト</td><td><code>.m3u</code> <code>.m3u8</code></td></tr>
+          <tr><td>PLS プレイリスト</td><td><code>.pls</code></td></tr>
+          <tr><td>CUEシート</td><td><code>.cue</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== エフェクト ===== -->
+  <section id="effects">
+    <h2>エフェクト</h2>
+    <p>右クリックメニュー → <strong>エフェクト (&amp;E)</strong> でエフェクトパネルを開きます。各エフェクトは個別に有効化/無効化できます。</p>
+
+    <h3>利用可能なエフェクト一覧</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>エフェクト</th><th>主なパラメータ</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>ピッチシフト</td>
+            <td>Pitch (%)、FFTサイズ</td>
+            <td>再生速度を変えずに音程を変更。FFTサイズが大きいほど高品質</td>
+          </tr>
+          <tr>
+            <td>周波数変更</td>
+            <td>Frequency (Hz)</td>
+            <td>再生周波数を直接変更（速度と音程が同時に変わります）</td>
+          </tr>
+          <tr>
+            <td>ディストーション</td>
+            <td>Level</td>
+            <td>音を歪ませるエフェクト。ギター系サウンドに</td>
+          </tr>
+          <tr>
+            <td>コーラス</td>
+            <td>Mix (%)、Rate (Hz)、Depth</td>
+            <td>音に広がり・厚みを付加するモジュレーション系エフェクト</td>
+          </tr>
+          <tr>
+            <td>エコー</td>
+            <td>Delay (ms)、Feedback (%)、Dry/Wet</td>
+            <td>山びこのような反響効果を付加</td>
+          </tr>
+          <tr>
+            <td>フランジャー</td>
+            <td>Mix (%)、Rate (Hz)、Depth</td>
+            <td>ジェット機のような独特のうねり効果</td>
+          </tr>
+          <tr>
+            <td>ハイパスフィルター</td>
+            <td>CutOff (Hz)、Resonance</td>
+            <td>指定周波数以下の低音をカット</td>
+          </tr>
+          <tr>
+            <td>ローパスフィルター</td>
+            <td>CutOff (Hz)、Resonance</td>
+            <td>指定周波数以上の高音をカット</td>
+          </tr>
+          <tr>
+            <td>コンプレッサー</td>
+            <td>Threshold、Ratio、Attack、Release、Gain</td>
+            <td>音量ダイナミクスを均一化。音圧を上げるのに有効</td>
+          </tr>
+          <tr>
+            <td>リバーブ (SFX)</td>
+            <td>DecayTime など11パラメータ</td>
+            <td>空間の残響感を付加。ホールやルームのシミュレーション</td>
+          </tr>
+          <tr>
+            <td>ノーマライズ</td>
+            <td>MaxAmp、FadeTime (ms)、Threshold</td>
+            <td>音量をリアルタイムで正規化</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>スピード機能</h3>
+    <p>ピッチシフトと周波数変更を連動させることで、<strong>音程を維持したまま再生速度を変更</strong>、または<strong>速度と音程を同時に変更</strong>することができます。</p>
+
+    <h3>プリセット</h3>
+    <p>エフェクトの設定値をプリセットとして保存・読み込みできます。よく使う設定を名前を付けて保存しておくと便利です。</p>
+  </section>
+
+  <!-- ===== グラフィックイコライザー ===== -->
+  <section id="equalizer">
+    <h2>グラフィックイコライザー</h2>
+    <p>右クリックメニュー → <strong>イコライザ (&amp;Q)</strong> で12バンドグラフィックイコライザーを開きます。</p>
+
+    <h3>周波数帯域</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>バンド</th><th>周波数</th><th>適した用途</th></tr></thead>
+        <tbody>
+          <tr><td>Band 1</td><td>32 Hz</td><td>超低域（サブベース）</td></tr>
+          <tr><td>Band 2</td><td>64 Hz</td><td>低域（ベース）</td></tr>
+          <tr><td>Band 3</td><td>125 Hz</td><td>低中域（体感する低音）</td></tr>
+          <tr><td>Band 4</td><td>250 Hz</td><td>中低域（暖かみ）</td></tr>
+          <tr><td>Band 5</td><td>500 Hz</td><td>中域（声・楽器の基音）</td></tr>
+          <tr><td>Band 6</td><td>1 kHz</td><td>中域（存在感）</td></tr>
+          <tr><td>Band 7</td><td>2 kHz</td><td>中高域（明瞭度）</td></tr>
+          <tr><td>Band 8</td><td>4 kHz</td><td>高中域（歯擦音）</td></tr>
+          <tr><td>Band 9</td><td>8 kHz</td><td>高域（ブライト感）</td></tr>
+          <tr><td>Band 10</td><td>12 kHz</td><td>超高域（空気感）</td></tr>
+          <tr><td>Band 11</td><td>16 kHz</td><td>超高域</td></tr>
+          <tr><td>Band 12</td><td>22 kHz</td><td>可聴域上限付近</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box">
+      <strong>プリセット:</strong> 名前を付けて保存し、後から呼び出すことができます。ロック、クラシック、ボーカル強調など用途に合わせた設定を複数保存しておくと便利です。
+    </div>
+  </section>
+
+  <!-- ===== CD機能 ===== -->
+  <section id="cd">
+    <h2>CD機能</h2>
+    <p>右クリックメニュー → CDドライブを選択して CD ウィンドウを開きます。</p>
+
+    <h3>基本操作</h3>
+    <ol>
+      <li>CDをドライブに挿入します。</li>
+      <li>CDウィンドウでドライブを選択します。</li>
+      <li>TOC（トラック情報）が自動的に読み込まれます。</li>
+      <li>CDDB / MusicBrainz からメタデータ（アーティスト・アルバム・トラック名）を自動取得します。</li>
+      <li>トラックを選択して再生、またはCD取り込みを実行します。</li>
+    </ol>
+
+    <h3>CD取り込み</h3>
+    <p>CDトラックをファイルとして保存します。Win32 IOCTL 経由でセクタを直接読み取るため、高精度な取り込みが可能です。</p>
+
+    <h3>CDDB / MusicBrainz 設定</h3>
+    <p>設定 → CD/CDDB で以下を設定できます。</p>
+    <ul>
+      <li>CDDBサーバーの追加・変更（複数サーバー登録可能、自動フォールバック対応）</li>
+      <li>MusicBrainz を優先的に使用するオプション</li>
+    </ul>
+  </section>
+
+  <!-- ===== CUEシート ===== -->
+  <section id="cue">
+    <h2>CUEシート対応</h2>
+    <p>CUEシート (.cue) ファイルを開くことで、1つの音声ファイルに含まれる複数トラックを個別に再生できます。</p>
+
+    <h3>使用方法</h3>
+    <ol>
+      <li><code>.cue</code> ファイルを MediaPlayer X-Ark で開きます。</li>
+      <li>プレイリストにCUEシートの各トラックが展開されて追加されます。</li>
+      <li>通常のトラックと同様に再生・管理できます。</li>
+    </ol>
+
+    <h3>対応CUEシート形式</h3>
+    <ul>
+      <li>シングルファイル形式（1つの音声ファイル + CUEシート）</li>
+      <li>マルチファイル形式（複数の音声ファイル + CUEシート）</li>
+    </ul>
+  </section>
+
+  <!-- ===== ビジュアライザー ===== -->
+  <section id="visualizer">
+    <h2>ビジュアライザー</h2>
+
+    <h3>スペクトラムアナライザー</h3>
+    <p>FFT解析による周波数スペクトラムをリアルタイムで表示します。専用の描画スレッドでスムーズなアニメーションを実現しています。</p>
+    <ul>
+      <li>スペクトラム表示モードを複数から選択可能（設定 → 表示）</li>
+      <li><strong>スノーブロックエフェクト</strong>: スペクトラムの降雪風ブロックアニメーション（設定で有効化）</li>
+    </ul>
+
+    <h3>波形表示</h3>
+    <p>トラックの全体波形をウィンドウ下部に表示します。波形上をクリックすることで任意の位置にシークできます。</p>
+
+    <div class="info-box">
+      波形はバックグラウンドで解析されます。長い楽曲の場合、完全な波形表示まで少し時間がかかることがあります。
+    </div>
+  </section>
+
+  <!-- ===== ミニプレイヤー ===== -->
+  <section id="miniplayer">
+    <h2>ミニプレイヤー</h2>
+    <p>コンパクトなミニプレイヤーモードで使用できます。</p>
+    <ul>
+      <li><kbd>Escape</kbd> キー または メニュー → <strong>最小化 (&amp;X)</strong> で切替</li>
+      <li>基本的な再生コントロールを小さなウィンドウで操作可能</li>
+      <li>画面端に寄せてコンパクトに使用するのに最適</li>
+    </ul>
+  </section>
+
+  <!-- ===== 一般設定 ===== -->
+  <section id="settings-general">
+    <h2>設定 — 一般</h2>
+    <p>右クリックメニュー → <strong>設定 (&amp;T)</strong> → 「一般」タブ</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>設定項目</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td>前回のプレイリストを復元</td><td>起動時に前回のプレイリストを自動的に読み込む</td></tr>
+          <tr><td>前回の再生位置を復元</td><td>起動時に前回停止した位置から再生を再開する</td></tr>
+          <tr><td>プレイリストを自動保存</td><td>終了時にプレイリストを自動保存する</td></tr>
+          <tr><td>常に最前面に表示</td><td>ウィンドウを常に他のウィンドウの手前に表示する</td></tr>
+          <tr><td>ファイルを開いた時の動作</td><td>自動判断 / 常に再生 / 常にプレイリストへ追加</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== 出力設定 ===== -->
+  <section id="settings-output">
+    <h2>設定 — 出力</h2>
+    <p>右クリックメニュー → <strong>設定 (&amp;T)</strong> → 「出力」タブ</p>
+
+    <h3>出力方式</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>方式</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td>AUTODETECT</td><td>システムに最適な出力方式を自動選択（推奨）</td></tr>
+          <tr><td>WASAPI</td><td>Windows Audio Session API（低レイテンシ）</td></tr>
+          <tr><td>ASIO</td><td>Audio Stream Input/Output（プロ向け超低レイテンシ、専用ドライバ必要）</td></tr>
+          <tr><td>WinSonic</td><td>Windows Sonic（空間オーディオ）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>バッファ設定</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>設定</th><th>説明</th><th>推奨値</th></tr></thead>
+        <tbody>
+          <tr><td>ストリームバッファサイズ</td><td>ストリーミング再生時のバッファ (KB)</td><td>128 KB</td></tr>
+          <tr><td>DSPバッファサイズ</td><td>DSP処理バッファ (サンプル数)</td><td>2048</td></tr>
+          <tr><td>DSPバッファ数</td><td>DSPバッファの数</td><td>4</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="warn-box">
+      <strong>注意:</strong> バッファ値を小さくするとレイテンシが下がりますが、音切れが発生することがあります。環境に合わせて調整してください。
+    </div>
+
+    <h3>MIDI エンジン設定</h3>
+    <p>設定 → 出力 → MIDI レンダラー でエンジンを選択できます。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>エンジン</th><th>サウンドフォント対応</th><th>備考</th></tr></thead>
+        <tbody>
+          <tr><td>XArkMidiEngine（標準）</td><td>DLS / SF2</td><td>標準搭載のカスタムエンジン</td></tr>
+          <tr><td>FluidSynth</td><td>SF2</td><td>別途 libfluidsynth.dll の配置が必要</td></tr>
+          <tr><td>BASSMIDI</td><td>SF2</td><td>別途 bass.dll / bassmidi.dll の配置が必要</td></tr>
+          <tr><td>FMOD（自動フォールバック）</td><td>DLS（Windows 標準）</td><td>上記ライブラリが全て不在の場合のみ使用</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="info-box">
+      <strong>サウンドフォント:</strong> XArkMidiEngine は DLS / SF2 の両方に対応します。
+      FluidSynth・BASSMIDI は SF2 のみ対応です。
+      サウンドフォントファイルを指定しない場合、Windows 標準の <code>gm.dls</code> を使用します。
+    </div>
+  </section>
+
+  <!-- ===== 再生設定 ===== -->
+  <section id="settings-playback">
+    <h2>設定 — 再生</h2>
+    <p>右クリックメニュー → <strong>設定 (&amp;T)</strong> → 「再生」タブ</p>
+
+    <h3>クロスフェード</h3>
+    <p>トラック間を滑らかにつなぐクロスフェードの設定です。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>設定</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td>クロスフェードを有効化</td><td>トラック切替時にフェードイン/アウトを行う</td></tr>
+          <tr><td>クロスフェード時間</td><td>クロスフェードの長さ (1～15秒)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>NonStopMix</h3>
+    <p>次の曲を事前に準備して、曲間を追加せずに連続再生する機能です。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>設定</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td>NonStopMix を有効化</td><td>ギャップレス再生を有効にする</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== スキン設定 ===== -->
+  <section id="settings-skin">
+    <h2>設定 — スキン</h2>
+    <p>右クリックメニュー → <strong>スキン設定 (&amp;A)</strong></p>
+    <p>XML ベースの <code>.xsk</code> スキンファイルを使用して UI の外観を変更できます。</p>
+    <ul>
+      <li>スキン一覧から選択してプレビューを確認できます</li>
+      <li>スキンファイルはアプリケーションフォルダの <code>Skins/</code> に配置します</li>
+      <li>サードパーティ製スキンを追加することも可能です</li>
+    </ul>
+  </section>
+
+  <!-- ===== Discord設定 ===== -->
+  <section id="settings-discord">
+    <h2>設定 — Discord 連携</h2>
+    <p>Discord Rich Presence を使用して、再生中の曲情報を Discord のステータスに表示できます。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>設定</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td>Discord Rich Presence を有効化</td><td>再生中の情報をDiscordに送信する</td></tr>
+          <tr><td>アプリケーション ID</td><td>独自のDiscord ApplicationIDを使用する場合に入力</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>表示される情報: トラックタイトル、アーティスト名、アルバム名、再生状態（再生中/一時停止中）</p>
+  </section>
+
+  <!-- ===== ReplayGain ===== -->
+  <section id="replaygain">
+    <h2>ReplayGain</h2>
+    <p>楽曲間の音量差を自動補正する機能です。異なるアルバムの曲を続けて再生するときの音量のバラつきを抑えます。</p>
+
+    <h3>設定</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>設定</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td>ReplayGain を有効化</td><td>ReplayGain 補正を適用する</td></tr>
+          <tr><td>モード: Track</td><td>各トラック単位で音量を正規化（プレイリスト混在時に適している）</td></tr>
+          <tr><td>モード: Album</td><td>アルバム全体の音量バランスを維持して正規化</td></tr>
+          <tr><td>プリアンプ</td><td>ReplayGain 適用後の追加ゲイン調整 (-6 ～ +6 dB)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box">
+      <strong>前提条件:</strong> ReplayGain を利用するには、音声ファイルに ReplayGain タグが書き込まれている必要があります。タグはサードパーティツール（例: foobar2000 の ReplayGain Scanner）で書き込めます。
+    </div>
+  </section>
+
+  <!-- ===== ABリピート ===== -->
+  <section id="abrepeat">
+    <h2>AB リピート</h2>
+    <p>楽曲の特定区間を繰り返し再生する機能です。語学学習や演奏練習に便利です。</p>
+
+    <h3>使用方法</h3>
+    <ol>
+      <li>繰り返したい区間の開始位置で <kbd>A</kbd> キーを押して A 点を設定</li>
+      <li>繰り返したい区間の終了位置で <kbd>B</kbd> キーを押して B 点を設定</li>
+      <li>A 点から B 点の区間が自動的に繰り返し再生されます</li>
+      <li><kbd>C</kbd> キーで AB リピートを解除します</li>
+    </ol>
+  </section>
+
+  <!-- ===== クロスフェード ===== -->
+  <section id="crossfade">
+    <h2>クロスフェード</h2>
+    <p>トラック切替時に前の曲をフェードアウトしながら次の曲をフェードインさせる機能です。DJ ミックスのような連続再生が実現できます。</p>
+    <p>設定 → 再生 → クロスフェード でオン/オフと時間 (1～15秒) を調整できます。</p>
+
+    <div class="info-box">
+      <strong>NonStopMix との組み合わせ:</strong> NonStopMix はクロスフェードと排他です。用途に応じてどちらか一方を選択してください。
+    </div>
+  </section>
+
+  <!-- ===== NonStopMix ===== -->
+  <section id="nonstop">
+    <h2>NonStopMix</h2>
+    <p>次の曲を再生中に事前ロードし、トラック境界でそのまま接続するギャップレス再生機能です。</p>
+  </section>
+
+  <!-- ===== MIDIエンジン ===== -->
+  <section id="midi-engine">
+    <h2>MIDI エンジン</h2>
+    <p>MIDI ファイルの再生に使用するエンジンを設定 → 出力 → MIDI レンダラー で選択できます。標準では <strong>XArkMidiEngine</strong> が使用されます。FluidSynth や BASSMIDI はライブラリを別途配置することでユーザーが導入できます。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>エンジン</th><th>サウンドフォント対応</th><th>導入方法</th></tr></thead>
+        <tbody>
+          <tr><td>XArkMidiEngine（標準）</td><td>DLS / SF2</td><td>標準搭載。追加作業不要</td></tr>
+          <tr><td>FluidSynth</td><td>SF2</td><td>別途 <code>libfluidsynth.dll</code> を配置</td></tr>
+          <tr><td>BASSMIDI</td><td>SF2</td><td>別途 <code>bass.dll</code> / <code>bassmidi.dll</code> を配置</td></tr>
+          <tr><td>FMOD（自動フォールバック）</td><td>DLS（Windows 標準）</td><td>上記ライブラリが全て不在の場合のみ使用</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box">
+      <strong>サウンドフォント対応形式:</strong> XArkMidiEngine は DLS・SF2 の両方に対応します。FluidSynth・BASSMIDI は SF2 のみ対応です。
+      サウンドフォントを指定しない場合は Windows 標準の <code>gm.dls</code> を使用します。
+    </div>
+
+    <h3>エンジン選択の優先順位</h3>
+    <p>「自動」設定の場合、利用可能なライブラリを以下の順で検索して使用します。</p>
+    <ol>
+      <li>XArkMidiEngine</li>
+      <li>BASSMIDI</li>
+      <li>FluidSynth</li>
+      <li>FMOD（フォールバック）</li>
+    </ol>
+  </section>
+
+  <!-- ===== プラグイン ===== -->
+  <section id="plugins">
+    <h2>コーデックプラグイン</h2>
+    <p>FMOD コーデックプラグイン (.dll) を追加することで、対応フォーマットを拡張できます。</p>
+
+    <h3>プラグインの追加方法</h3>
+    <ol>
+      <li>プラグインDLLを <code>Plugins/</code> フォルダに配置します。</li>
+      <li>アプリケーションを再起動します。</li>
+      <li>設定 → プラグイン で読み込み状態を確認できます。</li>
+    </ol>
+
+    <h3>標準同梱プラグイン</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ファイル</th><th>対応形式</th></tr></thead>
+        <tbody>
+          <tr><td><code>codec_srla.dll</code></td><td>SRLA (.srl)</td></tr>
+          <tr><td><code>codec_wma.dll</code></td><td>Windows Media Audio (.wma) (FMOD標準対応形式だが、環境によってエラーとなる場合がある為別途用意)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>追加プラグイン（別途ダウンロード）</h3>
+    <p>追加のコーデックプラグインは <a href="https://github.com/AoiKagase/FMOD-PLUGINS" target="_blank" style="color:var(--accent2)">GitHub: AoiKagase/FMOD-PLUGINS</a> の GitHub Actions ページからダウンロードできます。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ファイル</th><th>対応形式</th></tr></thead>
+        <tbody>
+          <tr><td><code>codec_mp4.dll</code></td><td>AAC, M4A, MP4, 3GP</td></tr>
+          <tr><td>その他</td><td>リポジトリ参照</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="warn-box">
+      <strong>注意:</strong> プラグインは 64bit (x64) 版のみ対応しています。32bit プラグインは動作しません。
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // アクティブリンクのハイライト
+  const navLinks = document.querySelectorAll('#sidebar nav a')
+  const sections = document.querySelectorAll('section[id], div[id="hero"]')
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(link => link.classList.remove('active'))
+        const active = document.querySelector(`#sidebar nav a[href="#${entry.target.id}"]`)
+        if (active) active.classList.add('active')
+      }
+    })
+  }, { rootMargin: '-20% 0px -70% 0px' })
+
+  sections.forEach(s => observer.observe(s))
+</script>
+</body>
+</html>
