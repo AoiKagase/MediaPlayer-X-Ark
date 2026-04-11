@@ -1694,7 +1694,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				if (tempSystem.getNumDrivers(out numDrivers) != FMOD.RESULT.OK)
 					return list;
 
-				for (int i = 0; i <= numDrivers; i++)
+				for (int i = 0; i < numDrivers; i++)
 				{
 					var device = new DEVICE_INFO();
 					device.namelen = 256;
@@ -1731,7 +1731,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			if (FmodSystem.getNumDrivers(out numDrivers) != FMOD.RESULT.OK)
 				return list;
 
-			for (int i = 0; i <= numDrivers; i++)
+			for (int i = 0; i < numDrivers; i++)
 			{
 				var device = new DEVICE_INFO();
 				device.namelen = 256;
