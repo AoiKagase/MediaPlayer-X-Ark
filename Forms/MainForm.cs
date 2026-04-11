@@ -938,6 +938,7 @@ namespace MediaPlayer_X_Ark
 		}
 		private void BtnPause_Click(object sender, EventArgs e)
 		{
+			_controller.TogglePlayPause();
 		}
 		private void BtnSeekForward_Click(object sender, EventArgs e)
 		{
@@ -1294,10 +1295,10 @@ namespace MediaPlayer_X_Ark
 			contextMenu.Size = new System.Drawing.Size(193, 422);
 
 			// PlayMode
-			menuPlayModeNormal.Click += (s, e) => _controller.SetLoopMode(LOOP_MODE.LOOP_NONE);
-			menuPlayModeRandom.Click += (s, e) => _controller.SetLoopMode(LOOP_MODE.LOOP_RANDOM);
-			menuPlayModeRepeat.Click += (s, e) => _controller.SetLoopMode(LOOP_MODE.LOOP_ONE_REPEAT);
-			menuPlayModeLoop.Click += (s, e) => _controller.SetLoopMode(LOOP_MODE.LOOP_ALL);
+			menuPlayModeNormal.Click += (s, e) => { _controller.SetLoopMode(LOOP_MODE.LOOP_NONE); _skinApplicator?.UpdateLoopButton(BtnLoop, _controller.GetLoopMode()); };
+			menuPlayModeRandom.Click += (s, e) => { _controller.ToggleRandom(); _skinApplicator?.UpdateRandomButton(BtnRandom, _controller.GetLoopMode()); };
+			menuPlayModeRepeat.Click += (s, e) => { _controller.SetLoopMode(LOOP_MODE.LOOP_ONE_REPEAT); _skinApplicator?.UpdateLoopButton(BtnLoop, _controller.GetLoopMode()); };
+			menuPlayModeLoop.Click += (s, e) => {_controller.SetLoopMode(LOOP_MODE.LOOP_ALL); _skinApplicator?.UpdateLoopButton(BtnLoop, _controller.GetLoopMode()); };
 
 			contextMenu.Opening += ContextMenu_Opening;
 
@@ -1326,7 +1327,6 @@ namespace MediaPlayer_X_Ark
 		}
 		private void ContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			menuPlayModeRandom.Enabled = false; // 未実装
 			menuPlayModeNormal.Checked = (_controller.GetLoopMode() & LOOP_MODE.LOOP_NONE) != 0;
 			menuPlayModeRandom.Checked = (_controller.GetLoopMode() & LOOP_MODE.LOOP_RANDOM) != 0;
 			menuPlayModeRepeat.Checked = (_controller.GetLoopMode() & LOOP_MODE.LOOP_ONE_REPEAT) != 0;

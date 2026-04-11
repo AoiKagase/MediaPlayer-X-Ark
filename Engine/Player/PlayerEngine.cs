@@ -1204,9 +1204,6 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			PlayList.Clear();
 		}
 
-		public void CreateSoundForMidi(string filename)
-		{
-		}
 		public void PlayNext(int fromIndex, bool manual = false)
 		{
 			if (PlayList.Count == 0) return;
