@@ -370,3 +370,4 @@ FodyWeavers.xsd
 /.dotnetcli
 /.claude
 /.dotnet-cli
+*.exe

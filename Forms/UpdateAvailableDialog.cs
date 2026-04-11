@@ -1,6 +1,7 @@
 using MediaPlayer_X_Ark.Engine.Update;
 using System;
 using System.Drawing;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -20,6 +21,8 @@ namespace MediaPlayer_X_Ark.Forms
 		private Label _lblStatus;
 		private Button _btnDownload;
 		private Button _btnClose;
+		private readonly string _traceLogPath =
+			Path.Combine(Application.StartupPath, "_update_trace.log");
 
 		private CancellationTokenSource _cts;
 
@@ -132,6 +135,7 @@ namespace MediaPlayer_X_Ark.Forms
 
 		private async void BtnDownload_Click(object sender, EventArgs e)
 		{
+			Trace("BtnDownload_Click:start");
 			_btnDownload.Enabled = false;
 			_btnClose.Enabled = false;
 			_progressBar.Visible = true;
@@ -148,25 +152,43 @@ namespace MediaPlayer_X_Ark.Forms
 
 			try
 			{
+				Trace("BtnDownload_Click:await-prepare");
 				await applier.DownloadAndPrepareAsync(_info, progress, _cts.Token);
+				Trace("BtnDownload_Click:prepare-complete");
 				_progressBar.Value = 100;
 				_lblStatus.Text = "準備完了。アプリケーションを再起動します...";
 				_lblStatus.ForeColor = Color.FromArgb(0, 128, 0);
 				await Task.Delay(1000);
-				UpdateApplier.LaunchBatchAndExit();
+				Trace("BtnDownload_Click:launch");
+				UpdateApplier.LaunchUpdaterAndExit();
 			}
 			catch (OperationCanceledException)
 			{
+				Trace("BtnDownload_Click:canceled");
 				_lblStatus.Text = "キャンセルされました。";
 				_btnDownload.Enabled = true;
 				_btnClose.Enabled = true;
 			}
 			catch (Exception ex)
 			{
-				_lblStatus.Text = $"失敗: {ex.Message}";
+				Trace("BtnDownload_Click:error");
+				_lblStatus.Text = $"失敗: {ex.Message} (_update_error.log を確認)";
 				_lblStatus.ForeColor = Color.Red;
 				_btnDownload.Enabled = true;
 				_btnClose.Enabled = true;
+			}
+		}
+
+		private void Trace(string message)
+		{
+			try
+			{
+				File.AppendAllText(
+					_traceLogPath,
+					$"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} {message}{Environment.NewLine}");
+			}
+			catch
+			{
 			}
 		}
 
