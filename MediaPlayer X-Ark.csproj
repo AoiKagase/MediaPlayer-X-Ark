@@ -23,18 +23,8 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="Resources\Skins\Temp\**" />
-		<Compile Remove="SkinConverter\**" />
-		<Compile Remove="SkinCreator\**" />
 		<EmbeddedResource Remove="Resources\Skins\Temp\**" />
-		<EmbeddedResource Remove="SkinConverter\**" />
-		<EmbeddedResource Remove="SkinCreator\**" />
 		<None Remove="Resources\Skins\Temp\**" />
-		<!-- Vendor 配下は ProjectReference で参照するため直接コンパイル対象から除外 -->
-		<Compile Remove="Vendor\**" />
-		<EmbeddedResource Remove="Vendor\**" />
-		<None Remove="SkinConverter\**" />
-		<None Remove="SkinCreator\**" />
-		<None Remove="Vendor\**" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Remove="Controls\SpectrumAnalyzer - Copy.cs" />
