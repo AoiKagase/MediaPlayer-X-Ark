@@ -110,7 +110,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			var info = FileVersionInfo.GetVersionInfo(location);
 
 			_lblAppName.Text = info.ProductName ?? "MediaPlayer X-Ark";
-			_lblVersion.Text = "Version " + (info.ProductVersion ?? "1.0.0.0");
+			_lblVersion.Text = "Version " + AppVersion.Current;
 			_lblCopyright.Text = info.LegalCopyright ?? "";
 			_lblCompany.Text = info.CompanyName ?? "";
 			_lnkGitHub.Text = "https://github.com/AoiKagase/MediaPlayer-X-Ark";

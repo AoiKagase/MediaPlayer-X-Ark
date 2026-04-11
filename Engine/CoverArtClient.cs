@@ -19,13 +19,12 @@ namespace MediaPlayer_X_Ark.Engine
 	{
 		private const string MbApiBase = "https://musicbrainz.org/ws/2";
 		private const string CaaBase = "https://coverartarchive.org";
-		private const string UserAgent = "MediaPlayerXArk/1.0 (contact@example.com)";
 		private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(10);
 
 		private static readonly HttpClient _http = new HttpClient
 		{
 			Timeout = Timeout,
-			DefaultRequestHeaders = { { "User-Agent", UserAgent } }
+			DefaultRequestHeaders = { { "User-Agent", Engine.Update.AppVersion.UserAgent } }
 		};
 
 		// ─────────────────────────────────────────

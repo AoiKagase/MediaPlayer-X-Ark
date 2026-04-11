@@ -1,7 +1,5 @@
 using System;
-using System.Diagnostics;
 using System.Net.Http;
-using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -69,19 +67,11 @@ namespace MediaPlayer_X_Ark.Engine.Update
 		}
 
 		/// <summary>
-		/// 現在実行中のアセンブリのバージョンを取得する。
-		/// シングルファイルパブリッシュ時は Location が空になるため
-		/// Environment.ProcessPath をフォールバックとして使用する。
+		/// AutoUpdater の比較基準となる現在のアプリバージョンを取得する。
 		/// </summary>
 		public static Version GetCurrentVersion()
 		{
-			var location = Assembly.GetExecutingAssembly().Location;
-			if (string.IsNullOrEmpty(location))
-				location = Environment.ProcessPath ?? string.Empty;
-			if (string.IsNullOrEmpty(location))
-				return new Version(0, 0, 0, 0);
-			var info = FileVersionInfo.GetVersionInfo(location);
-			if (Version.TryParse(info.FileVersion, out var v))
+			if (Version.TryParse(AppVersion.Current, out var v))
 				return v;
 			return new Version(0, 0, 0, 0);
 		}
