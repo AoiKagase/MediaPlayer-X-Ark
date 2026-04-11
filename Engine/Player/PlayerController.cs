@@ -102,6 +102,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			_engine.SoundFontPath = _config.settings.SoundFontPath;
 			_engine.MidiRendererBackend = _config.settings.MidiRendererBackend;
+			ApplyVolumeFromConfig();
+			ApplyPanFromConfig();
 
 			_engine.effector.ApplySettings(_config.settings.Effectors);
 
@@ -120,6 +122,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				_engine.SetDevice(_config.settings.Device);
 				_engine.PlaySoundPaused(_config.settings.LastPlayingIndex,
 					_config.settings.LastPlayingPosition);
+				ApplyVolumeFromConfig();
+				ApplyPanFromConfig();
 
 				TrackChanged?.Invoke(_config.settings.LastPlayingIndex);
 				PlaybackStateChanged?.Invoke();

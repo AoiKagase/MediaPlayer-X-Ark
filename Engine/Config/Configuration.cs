@@ -343,6 +343,12 @@ namespace MediaPlayer_X_Ark.Engine.Config
 
 	public class Configuration : IConfigService
     {
+		private const int DefaultVolume = 100;
+		private const int MinVolume = 0;
+		private const int MaxVolume = 150;
+		private const int MinPan = -10;
+		private const int MaxPan = 10;
+
         public ConfigurationData settings { get; set; }
         protected IPlayerEngine engine;
 
@@ -354,7 +360,7 @@ namespace MediaPlayer_X_Ark.Engine.Config
             if (File.Exists(Path.Combine(Application.StartupPath, "config.json")))
             {
                 string jsonString = File.ReadAllText(Path.Combine(Application.StartupPath, "config.json"), Encoding.UTF8);
-                settings = JsonSerializer.Deserialize<ConfigurationData>(jsonString);
+                settings = JsonSerializer.Deserialize<ConfigurationData>(jsonString) ?? new ConfigurationData();
             }
             else
             {
@@ -381,6 +387,18 @@ namespace MediaPlayer_X_Ark.Engine.Config
 
                 settings.Skin = File.Exists(defaultXsk) ? defaultXsk : defaultXsf;
             }
+
+			NormalizeSettings();
+		}
+
+		private void NormalizeSettings()
+		{
+			settings ??= new ConfigurationData();
+			settings.Volume = Math.Clamp(settings.Volume, MinVolume, MaxVolume);
+			settings.Pan = Math.Clamp(settings.Pan, MinPan, MaxPan);
+
+			if (settings.Volume == 0 && !File.Exists(Path.Combine(Application.StartupPath, "config.json")))
+				settings.Volume = DefaultVolume;
 		}
 
 		internal class ConfigServiceAdapter : IConfigService
