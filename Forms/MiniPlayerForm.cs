@@ -8,6 +8,9 @@ namespace MediaPlayer_X_Ark.Forms
 {
     public partial class MiniPlayerForm : Form
     {
+        private static int ClampTrackSliderValue(uint value)
+            => (int)Math.Min(value, (uint)int.MaxValue);
+
         private readonly PlayerController _controller;
         private readonly MainForm _mainForm;
         private SkinApplicator _skinApplicator;
@@ -44,7 +47,7 @@ namespace MediaPlayer_X_Ark.Forms
         {
             if (InvokeRequired) { Invoke(new Action(() => OnTrackChanged(index))); return; }
             UpdateTitle();
-            SldTrack.Maximum = (int)_controller.GetLength();
+            SldTrack.Maximum = ClampTrackSliderValue(_controller.GetLength());
             SldTrack.Value = 0;
         }
 
@@ -101,7 +104,9 @@ namespace MediaPlayer_X_Ark.Forms
         private void MiniTimer_Tick(object sender, EventArgs e)
         {
             if (_controller == null) return;
-            SldTrack.Value = (int)_controller.GetPosition();
+            SldTrack.Value = Math.Min(
+                ClampTrackSliderValue(_controller.GetPosition()),
+                SldTrack.Maximum);
         }
 
         // ── フォームクローズ ─────────────────────────────────────

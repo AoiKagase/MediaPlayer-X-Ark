@@ -92,7 +92,7 @@ namespace MediaPlayer_X_Ark
             get { return this._value; }
             set
             {
-                this._value = value;
+                this._value = Math.Clamp(value, Minimum, Maximum);
                 ValueChangeSliderPosition();
 
                 OnValueChanged(EventArgs.Empty);
@@ -105,6 +105,13 @@ namespace MediaPlayer_X_Ark
 
         private void ValueChangeSliderPosition()
         {
+            if (Maximum <= Minimum)
+            {
+                this.Slider.Left = 0;
+                this.Slider.Top = 0;
+                return;
+            }
+
             if (this.Orientation == Orientation.Horizontal)
             {
                 this.Slider.Top = 0;

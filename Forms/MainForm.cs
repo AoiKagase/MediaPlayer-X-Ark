@@ -61,6 +61,8 @@ namespace MediaPlayer_X_Ark
 		private int seeking;
 		private const int SeekStep = 1000;       // 1回あたりのシーク量（ミリ秒）
 		private const int SeekMaxValue = 10000;  // 加速の上限（ミリ秒）
+		private static int ClampTrackSliderValue(uint value)
+			=> (int)Math.Min(value, (uint)int.MaxValue);
 
         private float _abStart = -1f;
         private float _abEnd = -1f;
@@ -363,7 +365,7 @@ namespace MediaPlayer_X_Ark
             _abEnd = -1f;
             _controller.ClearAbRepeat();
 
-            SldTrack.Maximum = (int)_controller.GetLength();
+            SldTrack.Maximum = ClampTrackSliderValue(_controller.GetLength());
 			SldTrack.Value = 0;
 			_controller.SetVolume(SldVolume.Value);
 			_controller.SetPan(SldPan.Value);
@@ -645,7 +647,9 @@ namespace MediaPlayer_X_Ark
 			}
 			// シーク中は SeekiTimer 側でスライダーを動かすためスキップする
 			if (this.seekValue == 0)
-				SldTrack.Value = (int)_controller.GetPosition();
+				SldTrack.Value = Math.Min(
+					ClampTrackSliderValue(_controller.GetPosition()),
+					SldTrack.Maximum);
 
 			TimeSpan time1 = TimeSpan.FromMilliseconds(SldTrack.Value);
 			TimeSpan time2 = TimeSpan.FromMilliseconds(SldTrack.Maximum);
@@ -1102,16 +1106,15 @@ namespace MediaPlayer_X_Ark
 				return;
 
 			seekValue = Math.Min(seekValue + SeekStep, SeekMaxValue);
-			int newValue;
 			if (seeking == 1)
 			{
-				newValue = SldTrack.Value + seekValue;
-				SldTrack.Value = Math.Min(newValue, SldTrack.Maximum);
+				long newValue = (long)SldTrack.Value + seekValue;
+				SldTrack.Value = (int)Math.Min(newValue, SldTrack.Maximum);
 			}
 			else if (seeking == 2)
 			{
-				newValue = SldTrack.Value - seekValue;
-				SldTrack.Value = Math.Max(newValue, SldTrack.Minimum);
+				long newValue = (long)SldTrack.Value - seekValue;
+				SldTrack.Value = (int)Math.Max(newValue, SldTrack.Minimum);
 			}
 		}
 

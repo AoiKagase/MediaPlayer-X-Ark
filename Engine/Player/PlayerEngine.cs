@@ -556,13 +556,17 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		}
 		public void SetPosition(uint position)
 		{
+			if (!IsValidIndex(PlayingIndex))
+				return;
+
+			var entry = PlayList[PlayingIndex];
+			uint maxPosition = entry.IsCueTrack ? entry.LengthMs : GetLength(PlayingIndex);
+			if (maxPosition > 0)
+				position = Math.Min(position, maxPosition);
+
 			uint absPos = position;
-			if (IsValidIndex(PlayingIndex))
-			{
-				var entry = PlayList[PlayingIndex];
-				if (entry.IsCueTrack && entry.CueStartMs.HasValue)
-					absPos = (uint)entry.CueStartMs.Value + position;
-			}
+			if (entry.IsCueTrack && entry.CueStartMs.HasValue)
+				absPos = (uint)entry.CueStartMs.Value + position;
 			FmodCallFunction(FmodChannel.setPosition(absPos, TIMEUNIT.MS));
 		}
 		/// <summary>
@@ -676,6 +680,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			if (result == FMOD.RESULT.OK)
 			{
+				uint maxPosition = PlayList[index].IsCueTrack
+					? PlayList[index].LengthMs
+					: GetLength(index);
+				if (maxPosition > 0)
+					position = Math.Min(position, maxPosition);
+
 				uint seekPos = position;
 				// CUEトラック: 相対位置を絶対位置に変換
 				if (PlayList[index].IsCueTrack && PlayList[index].CueStartMs.HasValue)
@@ -692,6 +702,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			uint length = 0;
 			if (index >= PlayList.Count || index < 0)
 				return 0;
+
+			if (PlayList[index].IsCueTrack)
+				return PlayList[index].LengthMs;
 
 			FmodCallFunction(PlayList[index].Sound.getLength(out length, TIMEUNIT.MS));
 
