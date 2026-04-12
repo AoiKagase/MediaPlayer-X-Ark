@@ -16,10 +16,6 @@ namespace MediaPlayer_X_Ark.Skin
     /// </summary>
     public class SkinApplicator
     {
-        [DllImport("user32.dll")]
-        private static extern int SendMessage(IntPtr hWnd, int wMsg, bool wParam, int lParam);
-        private const int WM_SETREDRAW = 0x000B;
-
         private readonly INewSkinSystem _skin;
 
         public SkinApplicator(INewSkinSystem skin)
@@ -32,7 +28,7 @@ namespace MediaPlayer_X_Ark.Skin
         {
             // 全変更が終わるまで描画を停止して中間状態の残像を防ぐ
             if (form.IsHandleCreated)
-                SendMessage(form.Handle, WM_SETREDRAW, false, 0);
+                Win32API.SendMessage(form.Handle, Win32API.WM_SETREDRAW, false, 0);
             try
             {
                 form.BackgroundImage = _skin.MainForm.BackImage;
@@ -90,7 +86,7 @@ namespace MediaPlayer_X_Ark.Skin
             finally
             {
                 if (form.IsHandleCreated)
-                    SendMessage(form.Handle, WM_SETREDRAW, true, 0);
+                    Win32API.SendMessage(form.Handle, Win32API.WM_SETREDRAW, true, 0);
                 form.Refresh();
             }
         }

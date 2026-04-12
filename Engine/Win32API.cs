@@ -62,7 +62,7 @@ namespace MediaPlayer_X_Ark
 
 		[DllImport("kernel32.dll", EntryPoint = "GetPrivateProfileStringW", CharSet = CharSet.Unicode, SetLastError = true)]
 		public static extern uint GetPrivateProfileString(string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpresulturnedString, uint nSize, string lpFileName);
-		[DllImport("KERNEL32.DLL")]
+		[DllImport("kernel32.DLL")]
 		public static extern uint GetPrivateProfileInt(string lpAppName, string lpKeyName, int nDefault, string lpFileName);
 
         [DllImport("user32.dll")]
@@ -71,6 +71,25 @@ namespace MediaPlayer_X_Ark
 		[DllImport("kernel32.dll", SetLastError = true)]
 		public static extern bool SetDllDirectory(string lpPathName);
 
+		public static readonly IntPtr HWND_TOP = IntPtr.Zero;
+		public const uint SWP_NOSIZE = 0x0001;
+		public const uint SWP_NOMOVE = 0x0002;
+		public const uint SWP_NOACTIVATE = 0x0010;
+		public const uint SWP_SHOWWINDOW = 0x0040;
+
+		[DllImport("user32.dll")]
+		public static extern bool SetWindowPos(
+			IntPtr hWnd,
+			IntPtr hWndInsertAfter,
+			int X,
+			int Y,
+			int cx,
+			int cy,
+			uint uFlags);
+
+		[DllImport("user32.dll")]
+		public static extern int SendMessage(IntPtr hWnd, int wMsg, bool wParam, int lParam);
+		public const int WM_SETREDRAW = 0x000B;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
