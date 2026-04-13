@@ -60,11 +60,16 @@ namespace MediaPlayer_X_Ark
         /// <param name="e"></param>
         void StartUp_StartupNextInstance(object sender, StartupNextInstanceEventArgs e)
         {
-            string parameters = e.CommandLine[0];
-            if (File.Exists(parameters))
-            {
-                ((MainForm)this.MainForm).Controller.OpenAndPlay(parameters);
-            }
+			this.MainForm.Show();
+			this.MainForm.Activate();
+			if (e.CommandLine.Count > 0)
+			{
+				string parameters = e.CommandLine[0];
+				if (File.Exists(parameters))
+				{
+					((MainForm)this.MainForm).Controller.OpenAndPlay(parameters);
+				}
+			}
         }
     }
 }
