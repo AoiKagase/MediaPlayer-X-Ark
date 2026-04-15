@@ -27,8 +27,49 @@ namespace MediaPlayer_X_Ark
 			WHITENESS = 0x00FF0062,
 			CAPTUREBLT = 0x40000000
 		}
+		/// <summary>
+		/// Kernel32.dll群
+		/// </summary>
 		[DllImport("kernel32.dll")]
 		public static extern IntPtr LoadLibrary(string path);
+
+		[DllImport("kernel32.dll", EntryPoint = "GetPrivateProfileStringW", CharSet = CharSet.Unicode, SetLastError = true)]
+		public static extern uint GetPrivateProfileString(string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpresulturnedString, uint nSize, string lpFileName);
+		[DllImport("kernel32.dll")]
+		public static extern uint GetPrivateProfileInt(string lpAppName, string lpKeyName, int nDefault, string lpFileName);
+		[DllImport("kernel32.dll", SetLastError = true)]
+		public static extern bool SetDllDirectory(string lpPathName);
+
+		/// <summary>
+		/// user32.dll群
+		/// </summary>
+		[DllImport("user32.dll")]
+		public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+		[DllImport("user32.dll")]
+		public static extern IntPtr GetWindowDC(IntPtr hWnd);
+
+		[DllImport("user32.dll")]
+		public static extern IntPtr GetDC(IntPtr hwnd);
+		[DllImport("user32.dll")]
+		public static extern int FillRect(IntPtr hDC, [In] ref RECT lprc, IntPtr hbr);
+
+		public static readonly IntPtr HWND_TOP = IntPtr.Zero;
+		public const uint SWP_NOSIZE = 0x0001;
+		public const uint SWP_NOMOVE = 0x0002;
+		public const uint SWP_NOACTIVATE = 0x0010;
+		public const uint SWP_SHOWWINDOW = 0x0040;
+		public const int WM_SETREDRAW = 0x000B;
+
+		[DllImport("user32.dll")]
+		public static extern bool SetWindowPos(IntPtr hWnd,	IntPtr hWndInsertAfter,
+			int X, int Y, int cx, int cy, uint uFlags);
+
+		[DllImport("user32.dll")]
+		public static extern int SendMessage(IntPtr hWnd, int wMsg, bool wParam, int lParam);
+
+		/// <summary>
+		/// gdi32.dll群
+		/// </summary>
 		[DllImport("gdi32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool BitBlt(IntPtr hdc, int nXDest, int nYDest, int nWidth, int nHeight,
@@ -36,12 +77,6 @@ namespace MediaPlayer_X_Ark
 		[DllImport("gdi32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool PatBlt(IntPtr hdc, int x, int y, int width, int height, int rop);
-		[DllImport("user32.dll")]
-		public static extern IntPtr GetWindowDC(IntPtr hWnd);
-
-		[DllImport("user32.dll")]
-		public static extern IntPtr GetDC(IntPtr hwnd);
-
 		[DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
 		public static extern IntPtr CreateCompatibleDC(IntPtr hdc);
 
@@ -54,42 +89,9 @@ namespace MediaPlayer_X_Ark
 		[DllImport("gdi32.dll")]
 		public static extern IntPtr DeleteObject(IntPtr hObject);
 
-		[DllImport("user32.dll")]
-		public static extern int FillRect(IntPtr hDC, [In] ref RECT lprc, IntPtr hbr);
-
 		[DllImport("gdi32.dll")]
 		public static extern IntPtr CreateSolidBrush(uint crColor);
 
-		[DllImport("kernel32.dll", EntryPoint = "GetPrivateProfileStringW", CharSet = CharSet.Unicode, SetLastError = true)]
-		public static extern uint GetPrivateProfileString(string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpresulturnedString, uint nSize, string lpFileName);
-		[DllImport("kernel32.DLL")]
-		public static extern uint GetPrivateProfileInt(string lpAppName, string lpKeyName, int nDefault, string lpFileName);
-
-        [DllImport("user32.dll")]
-        public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
-		[DllImport("kernel32.dll", SetLastError = true)]
-		public static extern bool SetDllDirectory(string lpPathName);
-
-		public static readonly IntPtr HWND_TOP = IntPtr.Zero;
-		public const uint SWP_NOSIZE = 0x0001;
-		public const uint SWP_NOMOVE = 0x0002;
-		public const uint SWP_NOACTIVATE = 0x0010;
-		public const uint SWP_SHOWWINDOW = 0x0040;
-
-		[DllImport("user32.dll")]
-		public static extern bool SetWindowPos(
-			IntPtr hWnd,
-			IntPtr hWndInsertAfter,
-			int X,
-			int Y,
-			int cx,
-			int cy,
-			uint uFlags);
-
-		[DllImport("user32.dll")]
-		public static extern int SendMessage(IntPtr hWnd, int wMsg, bool wParam, int lParam);
-		public const int WM_SETREDRAW = 0x000B;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]

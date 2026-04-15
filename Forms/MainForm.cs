@@ -56,7 +56,7 @@ namespace MediaPlayer_X_Ark
 		private PictureBox _waveformArea = null;
 		private int _waveformRefreshCounter = 0;
 		private readonly List<Form> _managedForms = new List<Form>();
-
+		public IEnumerable<Form> ManagedForms => _managedForms.Where(f => f != null && !f.IsDisposed);
 		private int seekValue;
 		private int seeking;
 		private const int SeekStep = 1000;       // 1回あたりのシーク量（ミリ秒）

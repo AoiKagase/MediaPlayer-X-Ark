@@ -36,6 +36,14 @@ namespace MediaPlayer_X_Ark.Forms
 			_mainForm = mainForm;
 			this.Owner = mainForm;
 		}
+		protected override void OnShown(EventArgs e)
+		{
+			base.OnShown(e);
+			// アプリ内の他フォームより前面に固定
+			Win32API.SetWindowPos(this.Handle, Win32API.HWND_TOP, 0, 0, 0, 0,
+				Win32API.SWP_NOMOVE | Win32API.SWP_NOSIZE | Win32API.SWP_NOACTIVATE);
+		}
+
 		private void OptionsForm_Load(object sender, EventArgs e)
 		{
 			BuildLayout();

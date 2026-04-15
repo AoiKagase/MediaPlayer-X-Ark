@@ -317,6 +317,7 @@
 			ShowInTaskbar = false;
 			StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			Text = "ファイル情報";
+			Activated += FileInfoForm_Activated;
 			FormClosing += FileInfoForm_FormClosing;
 			Load += FileInfoForm_Load;
 			((System.ComponentModel.ISupportInitialize)picCover).EndInit();

@@ -1,6 +1,7 @@
 ﻿using ATL.Playlist;
 using MediaPlayer_X_Ark.Engine.Config;
 using MediaPlayer_X_Ark.Engine.Player;
+using MediaPlayer_X_Ark.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -80,41 +81,41 @@ namespace MediaPlayer_X_Ark
 			var menuOpen = new ToolStripMenuItem("ファイルを開く");
 			var menuSave = new ToolStripMenuItem("保存");
 			var menuClear = new ToolStripMenuItem("全消去");
-            var menuSort = new ToolStripMenuItem("並び替え");
-            var menuSortFile = new ToolStripMenuItem("ファイル名順");
-            var menuSortTitle = new ToolStripMenuItem("タイトル順");
-            var menuSortArtist = new ToolStripMenuItem("アーティスト順");
+			var menuSort = new ToolStripMenuItem("並び替え");
+			var menuSortFile = new ToolStripMenuItem("ファイル名順");
+			var menuSortTitle = new ToolStripMenuItem("タイトル順");
+			var menuSortArtist = new ToolStripMenuItem("アーティスト順");
 
-            menuOpen.Click += (s, e) => PBtnOpen_Click(s, e);
+			menuOpen.Click += (s, e) => PBtnOpen_Click(s, e);
 			menuSave.Click += (s, e) => PBtnSave_Click(s, e);
 			menuClear.Click += (s, e) => PBtnClear_Click(s, e);
-            menuSortFile.Click += (s, e) => SortPlayList(x => x.FileName);
-            menuSortTitle.Click += (s, e) => SortPlayList(x => x.Title ?? x.FileName);
+			menuSortFile.Click += (s, e) => SortPlayList(x => x.FileName);
+			menuSortTitle.Click += (s, e) => SortPlayList(x => x.Title ?? x.FileName);
 			menuSortArtist.Click += (s, e) => SortPlayList(x => x.Artist ?? "");
-            menuSort.DropDownItems.AddRange(new ToolStripItem[]
+			menuSort.DropDownItems.AddRange(new ToolStripItem[]
 			{
 				menuSortFile,
 				menuSortTitle,
 				menuSortArtist,
 			});
-            _formContextMenu.Items.AddRange(new ToolStripItem[]
+			_formContextMenu.Items.AddRange(new ToolStripItem[]
 			{
 				menuOpen,
 				menuSave,
 				new ToolStripSeparator(),
 				menuClear,
-	            new ToolStripSeparator(),
+				new ToolStripSeparator(),
 				menuSort
-            });
+			});
 
 			PlayListGrid.MouseDown += PlayListGrid_MouseDown;
 			this.MouseDown += PlayListForm_MouseDown_ContextMenu;
 		}
-        private void SortPlayList<T>(Func<PlayList, T> keySelector)
-        {
-            _player.Sort(keySelector);
-        }
-        private void PlayListGrid_MouseDown(object sender, MouseEventArgs e)
+		private void SortPlayList<T>(Func<PlayList, T> keySelector)
+		{
+			_player.Sort(keySelector);
+		}
+		private void PlayListGrid_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (e.Button != MouseButtons.Right) return;
 
@@ -308,8 +309,8 @@ namespace MediaPlayer_X_Ark
 				if (_player.PlayList[i].Sound.hasHandle())
 					_player.PlayList[i].Sound.release();
 				_player.PlayList.RemoveAt(i);
-                _player.UpdateShuffleQueueOnRemove(i);
-            }
+				_player.UpdateShuffleQueueOnRemove(i);
+			}
 
 			_mainForm.Controller.AutoSavePlaylist();
 		}
@@ -521,7 +522,7 @@ namespace MediaPlayer_X_Ark
 		{
 			get
 			{
-					var cp = base.CreateParams;
+				var cp = base.CreateParams;
 				return cp;
 			}
 		}
@@ -591,7 +592,7 @@ namespace MediaPlayer_X_Ark
 				}
 				catch (Exception)
 				{
-					}
+				}
 			}
 
 			base.WndProc(ref m);
@@ -613,6 +614,15 @@ namespace MediaPlayer_X_Ark
 					   pixel.B == plForm.TransparentKey.B;
 			}
 			return false;
+		}
+		private void PlayListForm_Activated(object sender, EventArgs e)
+		{
+			var optionForm = _mainForm.ManagedForms.FirstOrDefault(f => f.Name == "OptionsForm");
+			if (optionForm != null && optionForm.IsHandleCreated && optionForm.Visible)
+			{
+				Win32API.SetWindowPos(optionForm.Handle, Win32API.HWND_TOP, 0, 0, 0, 0,
+					Win32API.SWP_NOMOVE | Win32API.SWP_NOSIZE | Win32API.SWP_NOACTIVATE);
+			}
 		}
 	}
 }

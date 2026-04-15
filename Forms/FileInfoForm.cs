@@ -33,7 +33,7 @@ namespace MediaPlayer_X_Ark.Forms
 			InitializeComponent();
 
 			InitFileNameContextMenu();
-        }
+		}
 		private void InitFileNameContextMenu()
 		{
 			var fileNameMenu = new ContextMenuStrip();
@@ -129,63 +129,63 @@ namespace MediaPlayer_X_Ark.Forms
 			}
 
 			// ② CUEトラック：REM DISCIDでCDDB問い合わせ（Artist/Albumが未設定の場合）
-		if (img == null && item.IsCueTrack && item.CueSheetRef != null
-			&& !string.IsNullOrEmpty(item.CueSheetRef.DiscId)
-			&& (string.IsNullOrEmpty(item.Artist) || string.IsNullOrEmpty(item.Album)))
-		{
-			try
+			if (img == null && item.IsCueTrack && item.CueSheetRef != null
+				&& !string.IsNullOrEmpty(item.CueSheetRef.DiscId)
+				&& (string.IsNullOrEmpty(item.Artist) || string.IsNullOrEmpty(item.Album)))
 			{
-				var cddbResults = await Engine.CD.CddbClient.QueryByCueAsync(
-					item.CueSheetRef,
-					_config.settings.CddbServers,
-					ct);
-
-				if (cddbResults.Count > 0)
+				try
 				{
-					var best = cddbResults[0];
-					// 同じCUEシートの全トラックにタグを適用
-					for (int i = 0; i < _player.PlayList.Count; i++)
+					var cddbResults = await Engine.CD.CddbClient.QueryByCueAsync(
+						item.CueSheetRef,
+						_config.settings.CddbServers,
+						ct);
+
+					if (cddbResults.Count > 0)
 					{
-						var e = _player.PlayList[i];
-						if (!e.IsCueTrack || e.CueSheetRef != item.CueSheetRef) continue;
+						var best = cddbResults[0];
+						// 同じCUEシートの全トラックにタグを適用
+						for (int i = 0; i < _player.PlayList.Count; i++)
+						{
+							var e = _player.PlayList[i];
+							if (!e.IsCueTrack || e.CueSheetRef != item.CueSheetRef) continue;
 
-						int trackIdx = i - _player.PlayList.IndexOf(
-							_player.PlayList.First(p =>
-								p.IsCueTrack && p.CueSheetRef == item.CueSheetRef));
+							int trackIdx = i - _player.PlayList.IndexOf(
+								_player.PlayList.First(p =>
+									p.IsCueTrack && p.CueSheetRef == item.CueSheetRef));
 
-						if (string.IsNullOrEmpty(e.Artist))
-							e.Artist = best.Artist ?? "";
-						if (string.IsNullOrEmpty(e.Album))
-							e.Album = best.Album ?? "";
-						if (trackIdx >= 0 && trackIdx < best.Tracks.Count
-							&& e.Title.StartsWith("Track "))
-							e.Title = best.Tracks[trackIdx];
-					}
+							if (string.IsNullOrEmpty(e.Artist))
+								e.Artist = best.Artist ?? "";
+							if (string.IsNullOrEmpty(e.Album))
+								e.Album = best.Album ?? "";
+							if (trackIdx >= 0 && trackIdx < best.Tracks.Count
+								&& e.Title.StartsWith("Track "))
+								e.Title = best.Tracks[trackIdx];
+						}
 
-					// 現在表示中のエントリのラベルを更新
-					if (index == _currentIndex)
-					{
-						var updated = _player.PlayList[index];
-						if (InvokeRequired)
-							Invoke(new Action(() =>
+						// 現在表示中のエントリのラベルを更新
+						if (index == _currentIndex)
+						{
+							var updated = _player.PlayList[index];
+							if (InvokeRequired)
+								Invoke(new Action(() =>
+								{
+									lblTitleVal.Text = updated.Title ?? "-";
+									lblArtistVal.Text = updated.Artist ?? "-";
+									lblAlbumVal.Text = updated.Album ?? "-";
+								}));
+							else
 							{
 								lblTitleVal.Text = updated.Title ?? "-";
 								lblArtistVal.Text = updated.Artist ?? "-";
 								lblAlbumVal.Text = updated.Album ?? "-";
-							}));
-						else
-						{
-							lblTitleVal.Text = updated.Title ?? "-";
-							lblArtistVal.Text = updated.Artist ?? "-";
-							lblAlbumVal.Text = updated.Album ?? "-";
+							}
 						}
 					}
 				}
+				catch { }
 			}
-			catch { }
-		}
 
-		// ③ 通常ファイル or Disc ID 取得失敗：Artist + Album で検索
+			// ③ 通常ファイル or Disc ID 取得失敗：Artist + Album で検索
 			//    タグ取得が非同期のため Album が空の間は最大3秒待機する
 			if (img == null)
 			{
@@ -257,6 +257,16 @@ namespace MediaPlayer_X_Ark.Forms
 		{
 			e.Cancel = true;
 			Hide();
+		}
+
+		private void FileInfoForm_Activated(object sender, EventArgs e)
+		{
+			var optionForm = _mainForm.ManagedForms.FirstOrDefault(f => f.Name == "OptionsForm");
+			if (optionForm != null && optionForm.IsHandleCreated && optionForm.Visible)
+			{
+				Win32API.SetWindowPos(optionForm.Handle, Win32API.HWND_TOP, 0, 0, 0, 0,
+					Win32API.SWP_NOMOVE | Win32API.SWP_NOSIZE | Win32API.SWP_NOACTIVATE);
+			}
 		}
 	}
 }
