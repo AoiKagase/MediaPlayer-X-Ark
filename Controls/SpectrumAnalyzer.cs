@@ -500,26 +500,10 @@ namespace MediaPlayer_X_Ark.Controls
 
 		private SizeI GetClientPixelSize()
 		{
-			NativeMethods.GetClientRect(Handle, out var rect);
-			int width = Math.Max(1, rect.Right - rect.Left);
-			int height = Math.Max(1, rect.Bottom - rect.Top);
+			float scale = DeviceDpi > 0 ? DeviceDpi / 96f : 1f;
+			int width = Math.Max(1, (int)Math.Round(Width * scale, MidpointRounding.AwayFromZero));
+			int height = Math.Max(1, (int)Math.Round(Height * scale, MidpointRounding.AwayFromZero));
 			return new SizeI(width, height);
-		}
-
-		private static class NativeMethods
-		{
-			[System.Runtime.InteropServices.DllImport("user32.dll")]
-			[return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
-			public static extern bool GetClientRect(IntPtr hWnd, out NativeRect lpRect);
-		}
-
-		[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-		private struct NativeRect
-		{
-			public int Left;
-			public int Top;
-			public int Right;
-			public int Bottom;
 		}
 	}
 }

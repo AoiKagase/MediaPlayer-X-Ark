@@ -6,6 +6,9 @@ namespace MediaPlayer_X_Ark
 {
     public partial class ScrollLabel : UserControl
     {
+        private Font _baseLabelFont;
+        private bool _adjustingFont;
+
         public Label Value
         {
             get
@@ -31,10 +34,16 @@ namespace MediaPlayer_X_Ark
             InitializeComponent();
             Resize += (_, _) => UpdateLabelBounds();
             Label.TextChanged += (_, _) => UpdateLabelBounds();
+            Label.FontChanged += (_, _) =>
+            {
+                if (!_adjustingFont)
+                    _baseLabelFont = (Font)Label.Font.Clone();
+            };
         }
 
         private void ScrollLabel_Load(object sender, EventArgs e)
         {
+            _baseLabelFont = (Font)Label.Font.Clone();
             UpdateLabelBounds();
             this.ScrollTime.Interval = 100;
             this.Label.Text = "";
@@ -71,7 +80,47 @@ namespace MediaPlayer_X_Ark
                 Label.Width = Width;
                 Label.Height = Height;
                 Label.TextAlign = ContentAlignment.MiddleLeft;
+                FitFontToBounds();
             }
         }
+
+        private void FitFontToBounds()
+        {
+            if (Label.Width <= 0 || Label.Height <= 0)
+                return;
+
+            var sourceFont = _baseLabelFont ?? Label.Font;
+            float size = sourceFont.Size;
+            TextFormatFlags flags = TextFormatFlags.NoPadding | TextFormatFlags.SingleLine;
+            _adjustingFont = true;
+            try
+            {
+                while (size > 1f)
+                {
+                    using var testFont = new Font(sourceFont.FontFamily, size, sourceFont.Style, GraphicsUnit.Point);
+                    Size measured = TextRenderer.MeasureText(Label.Text ?? string.Empty, testFont, new Size(int.MaxValue, int.MaxValue), flags);
+                    if (measured.Width <= Label.Width && measured.Height <= Label.Height)
+                    {
+                        if (!FontEquals(Label.Font, testFont))
+                            Label.Font = (Font)testFont.Clone();
+                        return;
+                    }
+
+                    size -= 0.25f;
+                }
+            }
+            finally
+            {
+                _adjustingFont = false;
+            }
+        }
+
+        private static bool FontEquals(Font left, Font right)
+            => left != null
+            && right != null
+            && left.FontFamily.Name == right.FontFamily.Name
+            && Math.Abs(left.Size - right.Size) < 0.01f
+            && left.Style == right.Style
+            && left.Unit == right.Unit;
     }
 }
