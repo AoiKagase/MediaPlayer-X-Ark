@@ -270,17 +270,21 @@ namespace MediaPlayer_X_Ark.Skin
                 else if (c is CustomSlider slider && sliderMap.TryGetValue(c.Name, out var sc))
                 {
                     if (sc.SliderImage == null) continue;
+                    int previousMinimum = slider.Minimum;
+                    int previousMaximum = slider.Maximum;
+                    int previousValue = slider.Value;
+                    bool preserveRange = previousMaximum > previousMinimum;
                     var rect = ScaleRect(sc.Position, scale);
                     slider.SliderImage = ScaleImage(sc.SliderImage, scale);
                     slider.Orientation = sc.Orientation;
-                    slider.Minimum = sc.Minimum;
-                    slider.Maximum = sc.Maximum;
+                    slider.Minimum = preserveRange ? previousMinimum : sc.Minimum;
+                    slider.Maximum = preserveRange ? previousMaximum : sc.Maximum;
                     slider.Top = rect.Top;
                     slider.Left = rect.Left;
                     slider.Width = rect.Width;
                     slider.Height = rect.Height;
                     slider.Enabled = slider.Visible = sc.Enabled;
-                    slider.Value = 0;
+                    slider.SetValueSilently(preserveRange ? previousValue : sc.Minimum);
                     slider.Refresh();
                 }
                 else if (c is ScrollLabel lbl && (labelMap?.TryGetValue(c.Name, out var gc) ?? false))

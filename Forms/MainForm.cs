@@ -214,6 +214,7 @@ namespace MediaPlayer_X_Ark
 			}
 			else if (_skinTitleFont != null)
 				LabelTitle.Value.Font = _skinTitleFont;
+			LabelTitle.RefreshLabelLayout();
 
 			// 時間表示フォント
 			if (s.UseCustomTimeFont && !string.IsNullOrEmpty(s.TimeFontName) && s.TimeFontSize > 0)
@@ -227,6 +228,7 @@ namespace MediaPlayer_X_Ark
 			}
 			else if (_skinTimeFont != null)
 				LabelTime.Value.Font = _skinTimeFont;
+			LabelTime.RefreshLabelLayout();
 
 			// タイトルスクロール速度
 			if (s.UseCustomTitleScrollInterval && s.TitleScrollIntervalMs > 0)

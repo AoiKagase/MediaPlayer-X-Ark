@@ -95,6 +95,12 @@ namespace MediaPlayer_X_Ark
             }
         }
 
+        public void RefreshLabelLayout()
+        {
+            UpdateLabelBounds();
+            Label.Invalidate();
+        }
+
         private void FitFontToBounds()
         {
             if (Label.Width <= 0 || Label.Height <= 0)

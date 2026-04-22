@@ -81,8 +81,28 @@ namespace MediaPlayer_X_Ark
             }
         }
 
-        public int Maximum { get; set; }
-        public int Minimum { get; set; }
+        private int _maximum;
+        private int _minimum;
+
+        public int Maximum
+        {
+            get { return _maximum; }
+            set
+            {
+                _maximum = value;
+                CoerceValueAndRefreshPosition();
+            }
+        }
+
+        public int Minimum
+        {
+            get { return _minimum; }
+            set
+            {
+                _minimum = value;
+                CoerceValueAndRefreshPosition();
+            }
+        }
         public Orientation Orientation { get; set; }
 
         private int _value;
@@ -122,6 +142,23 @@ namespace MediaPlayer_X_Ark
                 this.Slider.Left = 0;
                 this.Slider.Top = Math.Max((this.Height - this.Slider.Height) - (int)(((float)(this.Height - this.Slider.Height) / (Maximum - Minimum)) * (this._value - Minimum)), 0);
             }
+        }
+
+        public void RefreshSliderPosition()
+        {
+            ValueChangeSliderPosition();
+        }
+
+        public void SetValueSilently(int value)
+        {
+            this._value = Math.Clamp(value, Minimum, Maximum);
+            ValueChangeSliderPosition();
+        }
+
+        private void CoerceValueAndRefreshPosition()
+        {
+            this._value = Math.Clamp(this._value, Minimum, Maximum);
+            ValueChangeSliderPosition();
         }
 
         private void CustomSlider_Load(object sender, EventArgs e)
