@@ -64,10 +64,9 @@ namespace MediaPlayer_X_Ark.Controls
 			{
 				lock (_bitmapLock)
 				{
-					if (!ReferenceEquals(_bitmapBackground, value))
-						_bitmapBackground?.Dispose();
-
-					_bitmapBackground = value;
+					var cloned = CloneBitmap(value);
+					_bitmapBackground?.Dispose();
+					_bitmapBackground = cloned;
 					RefreshBackgroundBitmap();
 				}
 
@@ -88,10 +87,9 @@ namespace MediaPlayer_X_Ark.Controls
 			{
 				lock (_bitmapLock)
 				{
-					if (!ReferenceEquals(_bitmapSpectrum, value))
-						_bitmapSpectrum?.Dispose();
-
-					_bitmapSpectrum = value;
+					var cloned = CloneBitmap(value);
+					_bitmapSpectrum?.Dispose();
+					_bitmapSpectrum = cloned;
 					_d2dBitmapSpectrum?.Dispose();
 					_d2dBitmapSpectrum = CreateD2DBitmap(_bitmapSpectrum);
 				}
@@ -456,7 +454,19 @@ namespace MediaPlayer_X_Ark.Controls
 			if (_renderTarget == null || source == null || source.Width <= 0 || source.Height <= 0)
 				return null;
 
-			using var converted = Ensure32bppPArgb(source);
+			Bitmap converted;
+			try
+			{
+				converted = Ensure32bppPArgb(source);
+			}
+			catch (ArgumentException ex)
+			{
+				Debug.WriteLine($"CreateD2DBitmap skipped invalid bitmap: {ex.Message}");
+				return null;
+			}
+
+			using (converted)
+			{
 			var bitmapData = converted.LockBits(
 				new Rectangle(0, 0, converted.Width, converted.Height),
 				ImageLockMode.ReadOnly,
@@ -476,6 +486,15 @@ namespace MediaPlayer_X_Ark.Controls
 			{
 				converted.UnlockBits(bitmapData);
 			}
+			}
+		}
+
+		private static Bitmap CloneBitmap(Bitmap source)
+		{
+			if (source == null)
+				return null;
+
+			return (Bitmap)source.Clone();
 		}
 
 		private static Bitmap Ensure32bppPArgb(Bitmap source)
