@@ -28,14 +28,12 @@ namespace MediaPlayer_X_Ark
         public ScrollLabel()
         {
             InitializeComponent();
+            Resize += (_, _) => UpdateLabelBounds();
         }
 
         private void ScrollLabel_Load(object sender, EventArgs e)
         {
-            this.Label.Left = 0;
-            this.Label.Top = 0;
-            this.Label.Width = this.Width;
-            this.Label.Height = this.Height;
+            UpdateLabelBounds();
             this.ScrollTime.Interval = 100;
             this.Label.Text = "";
         }
@@ -48,6 +46,17 @@ namespace MediaPlayer_X_Ark
                     Label.Left = this.Width + 10;
                 Label.Left--;
             }
+        }
+
+        private void UpdateLabelBounds()
+        {
+            Label.AutoSize = false;
+            Label.Top = 0;
+            Label.Height = Height;
+            if (!ScrollEnable)
+                Label.Left = 0;
+            if (Label.Width < Width)
+                Label.Width = Width;
         }
     }
 }

@@ -17,6 +17,8 @@ namespace MediaPlayer_X_Ark.Forms
 {
 	public partial class OptionsForm : Form
 	{
+		private float _runtimeLayoutScale = 1f;
+
 		private IPlayerEngine _engine;
 		private IConfigService _config;
 		private MainForm _mainForm;
@@ -47,6 +49,7 @@ namespace MediaPlayer_X_Ark.Forms
 		private void OptionsForm_Load(object sender, EventArgs e)
 		{
 			BuildLayout();
+			ApplyRuntimeLayoutScaleIfNeeded();
 			BuildTreeMenu();
 			RegisterControls();
 			SelectTab("GENERAL");
@@ -81,6 +84,38 @@ namespace MediaPlayer_X_Ark.Forms
 			Controls.Add(_contentPanel);
 			Controls.Add(splitter);
 			Controls.Add(_treeMenu);
+		}
+
+		private void ApplyRuntimeLayoutScaleIfNeeded()
+		{
+			float scale = DeviceDpi > 0 ? DeviceDpi / 96f : 1f;
+			if (Math.Abs(scale - _runtimeLayoutScale) < 0.001f)
+				return;
+
+			float delta = scale / _runtimeLayoutScale;
+			SuspendLayout();
+			foreach (Control control in Controls)
+				control.Scale(new SizeF(delta, delta));
+
+			_treeMenu.Width = ScaleLength(_treeMenu.Width, delta);
+			_contentPanel.Padding = ScalePadding(_contentPanel.Padding, delta);
+			_runtimeLayoutScale = scale;
+			ResumeLayout(true);
+		}
+
+		private static Padding ScalePadding(Padding padding, float scale)
+			=> new Padding(
+				ScaleLength(padding.Left, scale),
+				ScaleLength(padding.Top, scale),
+				ScaleLength(padding.Right, scale),
+				ScaleLength(padding.Bottom, scale));
+
+		private static int ScaleLength(int value, float scale)
+		{
+			if (value <= 0)
+				return value;
+
+			return Math.Max(1, (int)Math.Round(value * scale, MidpointRounding.AwayFromZero));
 		}
 
 		private void BuildTreeMenu()
