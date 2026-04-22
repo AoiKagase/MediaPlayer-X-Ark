@@ -148,8 +148,13 @@ namespace UI
 			if (!IsHandleCreated || D2DContext.Factory == null) return;
 			DisposeDeviceResources();
 			var pixelSize = GetClientPixelSize();
+			var renderTargetProperties = new RenderTargetProperties
+			{
+				DpiX = 96f,
+				DpiY = 96f
+			};
 			_renderTarget = D2DContext.Factory.CreateHwndRenderTarget(
-				new RenderTargetProperties(),
+				renderTargetProperties,
 				new HwndRenderTargetProperties
 				{
 					Hwnd           = Handle,

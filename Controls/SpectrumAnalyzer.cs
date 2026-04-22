@@ -194,9 +194,14 @@ namespace MediaPlayer_X_Ark.Controls
 
 			DisposeDeviceResources();
 			var pixelSize = GetClientPixelSize();
+			var renderTargetProperties = new RenderTargetProperties
+			{
+				DpiX = 96f,
+				DpiY = 96f
+			};
 
 			_renderTarget = D2DContext.Factory.CreateHwndRenderTarget(
-				new RenderTargetProperties(),
+				renderTargetProperties,
 				new HwndRenderTargetProperties
 				{
 					Hwnd = Handle,
