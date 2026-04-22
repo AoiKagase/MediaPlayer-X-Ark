@@ -284,7 +284,7 @@ namespace MediaPlayer_X_Ark.Skin
                     slider.Width = rect.Width;
                     slider.Height = rect.Height;
                     slider.Enabled = slider.Visible = sc.Enabled;
-                    slider.SetValueSilently(preserveRange ? previousValue : sc.Minimum);
+                    slider.SetValueSilently(previousValue);
                     slider.Refresh();
                 }
                 else if (c is ScrollLabel lbl && (labelMap?.TryGetValue(c.Name, out var gc) ?? false))
