@@ -147,12 +147,13 @@ namespace UI
 		{
 			if (!IsHandleCreated || D2DContext.Factory == null) return;
 			DisposeDeviceResources();
+			var pixelSize = GetClientPixelSize();
 			_renderTarget = D2DContext.Factory.CreateHwndRenderTarget(
 				new RenderTargetProperties(),
 				new HwndRenderTargetProperties
 				{
 					Hwnd           = Handle,
-					PixelSize      = new Vortice.Mathematics.SizeI(Math.Max(1, Width), Math.Max(1, Height)),
+					PixelSize      = pixelSize,
 					PresentOptions = PresentOptions.None,
 				});
 		}
@@ -877,6 +878,7 @@ namespace UI
 			rt.BeginDraw();
 			try
 			{
+				rt.Transform = Matrix3x2.CreateScale(GetRenderScaleX(), GetRenderScaleY());
 				// 背景
 				using (var backBrush = rt.CreateSolidColorBrush(ToColor4(BackColor)))
 					rt.FillRectangle(
@@ -952,6 +954,7 @@ namespace UI
 			}
 			finally
 			{
+				rt.Transform = Matrix3x2.Identity;
 				try { rt.EndDraw(); }
 				catch
 				{
@@ -1141,7 +1144,7 @@ namespace UI
 		protected override void OnResize(EventArgs args)
 		{
 			if (_renderTarget != null && Width > 0 && Height > 0)
-				_renderTarget.Resize(new Vortice.Mathematics.SizeI(Width, Height));
+				_renderTarget.Resize(GetClientPixelSize());
 			Invalidate();
 			base.OnResize(args);
 		}
@@ -1152,12 +1155,47 @@ namespace UI
 		protected override void OnSizeChanged(EventArgs args)
 		{
 			SuspendLayout();
-			if (Height > Width)
-				Height = Width;
-			else if (Height < Width)
-				Width = Height;
+			int edge = Math.Max(1, Math.Min(Width, Height));
+			if (Width != edge || Height != edge)
+				Size = new Size(edge, edge);
 			ResumeLayout(true);
 			base.OnSizeChanged(args);
+		}
+
+		private float GetRenderScaleX()
+		{
+			int width = Math.Max(1, Width);
+			return GetClientPixelSize().Width / (float)width;
+		}
+
+		private float GetRenderScaleY()
+		{
+			int height = Math.Max(1, Height);
+			return GetClientPixelSize().Height / (float)height;
+		}
+
+		private Vortice.Mathematics.SizeI GetClientPixelSize()
+		{
+			NativeMethods.GetClientRect(Handle, out var rect);
+			int width = Math.Max(1, rect.Right - rect.Left);
+			int height = Math.Max(1, rect.Bottom - rect.Top);
+			return new Vortice.Mathematics.SizeI(width, height);
+		}
+
+		private static class NativeMethods
+		{
+			[System.Runtime.InteropServices.DllImport("user32.dll")]
+			[return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+			public static extern bool GetClientRect(IntPtr hWnd, out NativeRect lpRect);
+		}
+
+		[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+		private struct NativeRect
+		{
+			public int Left;
+			public int Top;
+			public int Right;
+			public int Bottom;
 		}
 		/// <summary>
 		/// Called when the control receives focus

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace MediaPlayer_X_Ark
@@ -29,6 +30,7 @@ namespace MediaPlayer_X_Ark
         {
             InitializeComponent();
             Resize += (_, _) => UpdateLabelBounds();
+            Label.TextChanged += (_, _) => UpdateLabelBounds();
         }
 
         private void ScrollLabel_Load(object sender, EventArgs e)
@@ -50,13 +52,26 @@ namespace MediaPlayer_X_Ark
 
         private void UpdateLabelBounds()
         {
-            Label.AutoSize = false;
-            Label.Top = 0;
-            Label.Height = Height;
-            if (!ScrollEnable)
+            Label.Margin = Padding.Empty;
+            Label.Padding = Padding.Empty;
+            Label.UseMnemonic = false;
+
+            if (ScrollEnable)
+            {
+                Label.AutoSize = true;
+                Label.MaximumSize = Size.Empty;
+                Label.Left = Math.Min(Label.Left, Width);
+                Label.Top = Math.Max(0, (Height - Label.Height) / 2);
+            }
+            else
+            {
+                Label.AutoSize = false;
                 Label.Left = 0;
-            if (Label.Width < Width)
+                Label.Top = 0;
                 Label.Width = Width;
+                Label.Height = Height;
+                Label.TextAlign = ContentAlignment.MiddleLeft;
+            }
         }
     }
 }

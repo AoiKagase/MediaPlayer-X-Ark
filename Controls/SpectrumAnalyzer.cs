@@ -193,13 +193,14 @@ namespace MediaPlayer_X_Ark.Controls
 				return;
 
 			DisposeDeviceResources();
+			var pixelSize = GetClientPixelSize();
 
 			_renderTarget = D2DContext.Factory.CreateHwndRenderTarget(
 				new RenderTargetProperties(),
 				new HwndRenderTargetProperties
 				{
 					Hwnd = Handle,
-					PixelSize = new Vortice.Mathematics.SizeI(Math.Max(1, Width), Math.Max(1, Height)),
+					PixelSize = pixelSize,
 					PresentOptions = PresentOptions.None
 				});
 
@@ -259,9 +260,10 @@ namespace MediaPlayer_X_Ark.Controls
 					}
 
 					var targetSize = _renderTarget.PixelSize;
-					if (targetSize.Width != Width || targetSize.Height != Height)
+					var pixelSize = GetClientPixelSize();
+					if (targetSize.Width != pixelSize.Width || targetSize.Height != pixelSize.Height)
 					{
-						_renderTarget.Resize(new SizeI(Math.Max(1, Width), Math.Max(1, Height)));
+						_renderTarget.Resize(pixelSize);
 						_analyzerSnow = new float[WindowSize];
 						RefreshBackgroundBitmap();
 					}
@@ -271,6 +273,7 @@ namespace MediaPlayer_X_Ark.Controls
 					{
 						_renderTarget.BeginDraw();
 						began = true;
+						_renderTarget.Transform = Matrix3x2.CreateScale(GetRenderScaleX(), GetRenderScaleY());
 
 						_renderTarget.Clear(ToColor4(_backColor.IsEmpty ? System.Drawing.Color.Black : _backColor));
 						DrawBackground();
@@ -293,6 +296,7 @@ namespace MediaPlayer_X_Ark.Controls
 					{
 						if (began)
 						{
+							_renderTarget.Transform = Matrix3x2.Identity;
 							try { _renderTarget?.EndDraw(); }
 							catch (SharpGenException ex)
 							{
@@ -481,5 +485,41 @@ namespace MediaPlayer_X_Ark.Controls
 
 		private float lin2dB(float linear)
 			=> Math.Clamp((float)Math.Log10(linear) * 20.0f, -80.0f, 0.0f);
+
+		private float GetRenderScaleX()
+		{
+			int width = Math.Max(1, Width);
+			return GetClientPixelSize().Width / (float)width;
+		}
+
+		private float GetRenderScaleY()
+		{
+			int height = Math.Max(1, Height);
+			return GetClientPixelSize().Height / (float)height;
+		}
+
+		private SizeI GetClientPixelSize()
+		{
+			NativeMethods.GetClientRect(Handle, out var rect);
+			int width = Math.Max(1, rect.Right - rect.Left);
+			int height = Math.Max(1, rect.Bottom - rect.Top);
+			return new SizeI(width, height);
+		}
+
+		private static class NativeMethods
+		{
+			[System.Runtime.InteropServices.DllImport("user32.dll")]
+			[return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+			public static extern bool GetClientRect(IntPtr hWnd, out NativeRect lpRect);
+		}
+
+		[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+		private struct NativeRect
+		{
+			public int Left;
+			public int Top;
+			public int Right;
+			public int Bottom;
+		}
 	}
 }
