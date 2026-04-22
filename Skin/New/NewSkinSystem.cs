@@ -352,6 +352,7 @@ namespace MediaPlayer_X_Ark.Skin.New
 								def.Size > 0 ? def.Size : 9, style,
 								GraphicsUnit.Point);
 			result.FontColor = ParseColor(def.ForeColor ?? "FFFFFF");
+			result.HorizontalAlign = ParseHorizontalAlignment(def.Align);
 			result.Position = new RECT
 			{
 				Left = def.Location.X,
@@ -363,6 +364,16 @@ namespace MediaPlayer_X_Ark.Skin.New
 			result.ScrollEnable = def.ScrollEnable;
 			result.Enabled = true;
 			return result;
+		}
+
+		private static HorizontalAlignment ParseHorizontalAlignment(string align)
+		{
+			return align?.Trim().ToLowerInvariant() switch
+			{
+				"center" => HorizontalAlignment.Center,
+				"right" => HorizontalAlignment.Right,
+				_ => HorizontalAlignment.Left,
+			};
 		}
 		private PictureComponents LoadPictures(Dictionary<string, PartsPictureArea> picts, string key)
 		{

@@ -48,6 +48,7 @@ namespace MediaPlayer_X_Ark.Skin
         public bool Enabled;
         public int Interval;
         public bool ScrollEnable;
+        public HorizontalAlignment HorizontalAlign;
         public RECT Position;
         public Font Font;
         public Color BackColor;

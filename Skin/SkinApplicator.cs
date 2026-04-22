@@ -287,6 +287,7 @@ namespace MediaPlayer_X_Ark.Skin
                 {
                     var rect = ScaleRectWithFlooredPosition(gc.Position, scale);
                     lbl.BackColor = Color.Transparent;
+                    lbl.HorizontalAlign = gc.HorizontalAlign;
                     lbl.Value.Font = ScaleFont(gc.Font, scale);
                     lbl.Value.ForeColor = gc.FontColor;
                     lbl.Top = rect.Top;

@@ -29,6 +29,12 @@ namespace MediaPlayer_X_Ark
             set;
         }
 
+        public HorizontalAlignment HorizontalAlign
+        {
+            get;
+            set;
+        } = HorizontalAlignment.Left;
+
         public ScrollLabel()
         {
             InitializeComponent();
@@ -79,7 +85,12 @@ namespace MediaPlayer_X_Ark
                 Label.Top = 0;
                 Label.Width = Width;
                 Label.Height = Height;
-                Label.TextAlign = ContentAlignment.MiddleLeft;
+                Label.TextAlign = HorizontalAlign switch
+                {
+                    HorizontalAlignment.Center => ContentAlignment.MiddleCenter,
+                    HorizontalAlignment.Right => ContentAlignment.MiddleRight,
+                    _ => ContentAlignment.MiddleLeft,
+                };
                 FitFontToBounds();
             }
         }

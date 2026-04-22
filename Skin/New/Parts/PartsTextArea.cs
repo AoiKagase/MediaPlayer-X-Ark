@@ -34,6 +34,12 @@ namespace MediaPlayer_X_Ark.Skin.New.Parts
 		/// </summary>
 		[JsonPropertyName("backColor")] public string BackColor { get; set; }
 		/// <summary>
+		/// テキストの横方向の配置基準を表すプロパティ。
+		/// left / center / right を指定する。
+		/// 未指定時は left。
+		/// </summary>
+		[JsonPropertyName("align")] public string Align { get; set; }
+		/// <summary>
 		/// テキストエリアがスクロール可能かどうかを表すプロパティ。
 		/// テキストがエリアのサイズを超える場合に、自動スクロールするかどうかを指定するために使用される。
 		/// </summary>
