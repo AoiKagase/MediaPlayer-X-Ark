@@ -56,7 +56,7 @@ namespace MediaPlayer_X_Ark.Skin
 
                 if (_skin.Spectrum.Image != null)
                 {
-                    spectrum.BitmapSpectrum = (Bitmap)ScaleImage(_skin.Spectrum.Image, scale);
+                    spectrum.BitmapSpectrum = (Bitmap)_skin.Spectrum.Image.Clone();
                 }
                 else
                 {

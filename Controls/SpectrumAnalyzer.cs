@@ -386,6 +386,8 @@ namespace MediaPlayer_X_Ark.Controls
 			int height = Math.Max(1, ClientSize.Height);
 			int step      = Mode > 0 ? Mode * 2 : 1;
 			int fftLength = Math.Min(WindowSize, _mFFT.Length);
+			float sourceWidth = _d2dBitmapSpectrum?.PixelSize.Width ?? width;
+			float sourceHeight = _d2dBitmapSpectrum?.PixelSize.Height ?? height;
 
 			for (int i = 0; i < fftLength; i += step)
 			{
@@ -415,10 +417,10 @@ namespace MediaPlayer_X_Ark.Controls
 				if (barHeight <= 0)
 					continue;
 
-				float srcLeft   = Math.Clamp(left,        0, _d2dBitmapSpectrum.PixelSize.Width);
-				float srcTop    = Math.Clamp(lineHeight,   0, _d2dBitmapSpectrum.PixelSize.Height);
-				float srcRight  = Math.Clamp(right,        0, _d2dBitmapSpectrum.PixelSize.Width);
-				float srcBottom = Math.Clamp(height,       0, _d2dBitmapSpectrum.PixelSize.Height);
+				float srcLeft   = Math.Clamp(left * sourceWidth / width, 0, sourceWidth);
+				float srcTop    = Math.Clamp(lineHeight * sourceHeight / height, 0, sourceHeight);
+				float srcRight  = Math.Clamp(right * sourceWidth / width, 0, sourceWidth);
+				float srcBottom = Math.Clamp(height * sourceHeight / height, 0, sourceHeight);
 
 				if (srcRight <= srcLeft || srcBottom <= srcTop)
 					continue;
