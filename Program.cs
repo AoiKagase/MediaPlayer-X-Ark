@@ -16,9 +16,10 @@ namespace MediaPlayer_X_Ark
         static void Main(string[] args)
         {
             UpdateApplier.CleanupStagedUpdateArtifacts();
-            //            Application.EnableVisualStyles();
-            //            Application.SetCompatibleTextRenderingDefault(false);
-            //            Application.Run(new MainForm());
+
+            if (!Application.SetHighDpiMode(HighDpiMode.PerMonitorV2))
+                Application.SetHighDpiMode(HighDpiMode.SystemAware);
+
             StartUp winAppBase = new StartUp();
             winAppBase.Run(args);
         }
