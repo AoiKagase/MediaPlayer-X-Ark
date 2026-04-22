@@ -3,6 +3,7 @@ using MediaPlayer_X_Ark.Engine.Player;
 using MediaPlayer_X_Ark.Skin.New;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System;
 using System.Runtime.InteropServices;
@@ -17,6 +18,7 @@ namespace MediaPlayer_X_Ark.Skin
     public class SkinApplicator
     {
         private readonly INewSkinSystem _skin;
+        private readonly Dictionary<(Image Image, int ScaleKey), Image> _scaledImageCache = new();
 
         public SkinApplicator(INewSkinSystem skin)
         {
@@ -31,26 +33,30 @@ namespace MediaPlayer_X_Ark.Skin
                 Win32API.SendMessage(form.Handle, Win32API.WM_SETREDRAW, false, 0);
             try
             {
-                form.BackgroundImage = _skin.MainForm.BackImage;
+                float scale = GetScaleFactor(form);
+                var formRect = ScaleRect(_skin.MainForm.Position, scale);
+                var spectrumRect = ScaleRect(_skin.Spectrum.Position, scale);
+
+                form.BackgroundImage = ScaleImage(_skin.MainForm.BackImage, scale);
                 form.TransparencyKey = _skin.MainForm.TransparentKey;
-                form.Width           = _skin.MainForm.Position.Width;
-                form.Height          = _skin.MainForm.Position.Height;
+                form.Width           = formRect.Width;
+                form.Height          = formRect.Height;
 
                 // スペクトラム配置
                 form.SuspendLayout();
-                spectrum.Left   = _skin.Spectrum.Position.Left;
-                spectrum.Top    = _skin.Spectrum.Position.Top;
-                spectrum.Width  = _skin.Spectrum.Position.Width;
-                spectrum.Height = _skin.Spectrum.Position.Height;
+                spectrum.Left   = spectrumRect.Left;
+                spectrum.Top    = spectrumRect.Top;
+                spectrum.Width  = spectrumRect.Width;
+                spectrum.Height = spectrumRect.Height;
                 form.ResumeLayout(false);
 
                 // スペクトラムビットマップ再生成
-                int sw = _skin.Spectrum.Position.Width;
-                int sh = _skin.Spectrum.Position.Height;
+                int sw = spectrumRect.Width;
+                int sh = spectrumRect.Height;
 
                 if (_skin.Spectrum.Image != null)
                 {
-                    spectrum.BitmapSpectrum = new Bitmap(_skin.Spectrum.Image);
+                    spectrum.BitmapSpectrum = (Bitmap)ScaleImage(_skin.Spectrum.Image, scale);
                 }
                 else
                 {
@@ -62,13 +68,11 @@ namespace MediaPlayer_X_Ark.Skin
                 // 背景からスペクトラム領域を切り出し
                 if (_skin.MainForm.BackImage != null)
                 {
-                    var rect = new Rectangle(
-                        _skin.Spectrum.Position.Left,
-                        _skin.Spectrum.Position.Top,
-                        sw, sh);
+                    var rect = spectrumRect;
                     var bmp = new Bitmap(sw, sh);
+                    var scaledBackground = form.BackgroundImage;
                     using (var g = Graphics.FromImage(bmp))
-                        g.DrawImage(_skin.MainForm.BackImage,
+                        g.DrawImage(scaledBackground,
                             new Rectangle(0, 0, sw, sh), rect, GraphicsUnit.Pixel);
                     spectrum.BitmapBackground = bmp;
                 }
@@ -94,9 +98,12 @@ namespace MediaPlayer_X_Ark.Skin
         /// <summary>プレイリストフォームにスキンを適用する</summary>
         public void ApplyToPlayListForm(Form playListForm)
         {
-            playListForm.BackgroundImage = _skin.SubForms["PlayListForm"].BackImage;
-            playListForm.Width           = _skin.SubForms["PlayListForm"].Position.Width;
-            playListForm.Height          = _skin.SubForms["PlayListForm"].Position.Height;
+            float scale = GetScaleFactor(playListForm);
+            var rect = ScaleRect(_skin.SubForms["PlayListForm"].Position, scale);
+
+            playListForm.BackgroundImage = ScaleImage(_skin.SubForms["PlayListForm"].BackImage, scale);
+            playListForm.Width           = rect.Width;
+            playListForm.Height          = rect.Height;
             playListForm.TransparencyKey = _skin.SubForms["PlayListForm"].TransparentKey;
             playListForm.Refresh();
 
@@ -108,23 +115,26 @@ namespace MediaPlayer_X_Ark.Skin
             if (!_skin.SubForms.TryGetValue("FileInfoForm", out var def)) return;
 
             if (def.BackImage != null)
-                form.BackgroundImage = def.BackImage;
+                form.BackgroundImage = ScaleImage(def.BackImage, GetScaleFactor(form));
             else if (def.BackColor != Color.Empty)
                 form.BackColor = def.BackColor;
 
             if (def.ForeColor != Color.Empty)
                 form.ForeColor = def.ForeColor;
 
-            if (def.Position.Width > 0) form.Width = def.Position.Width;
-            if (def.Position.Height > 0) form.Height = def.Position.Height;
+            float scale = GetScaleFactor(form);
 
-            ApplyLabelsRecursive(form.Controls, def);
+            if (def.Position.Width > 0) form.Width = ScaleLength(def.Position.Width, scale);
+            if (def.Position.Height > 0) form.Height = ScaleLength(def.Position.Height, scale);
+
+            ApplyLabelsRecursive(form.Controls, def, scale);
             form.Refresh();
         }
 
         private void ApplyLabelsRecursive(
             System.Windows.Forms.Control.ControlCollection controls,
-            FormComponents def)
+            FormComponents def,
+            float scale)
         {
             foreach (Control c in controls)
             {
@@ -132,10 +142,10 @@ namespace MediaPlayer_X_Ark.Skin
                 {
                     lbl.BackColor = Color.Transparent;
                     if (def.ForeColor != Color.Empty) lbl.ForeColor = def.ForeColor;
-                    if (def.Font != null) lbl.Font = def.Font;
+                    if (def.Font != null) lbl.Font = ScaleFont(def.Font, scale);
                 }
                 if (c.Controls.Count > 0)
-                    ApplyLabelsRecursive(c.Controls, def);
+                    ApplyLabelsRecursive(c.Controls, def, scale);
             }
         }
 
@@ -145,12 +155,14 @@ namespace MediaPlayer_X_Ark.Skin
             if (!_skin.SubForms.TryGetValue("MiniPlayerForm", out var def)) return;
 
             if (def.BackImage != null)
-                miniPlayerForm.BackgroundImage = def.BackImage;
+                miniPlayerForm.BackgroundImage = ScaleImage(def.BackImage, GetScaleFactor(miniPlayerForm));
             else if (def.BackColor != Color.Empty)
                 miniPlayerForm.BackColor = def.BackColor;
 
-            if (def.Position.Width > 0) miniPlayerForm.Width = def.Position.Width;
-            if (def.Position.Height > 0) miniPlayerForm.Height = def.Position.Height;
+            float scale = GetScaleFactor(miniPlayerForm);
+
+            if (def.Position.Width > 0) miniPlayerForm.Width = ScaleLength(def.Position.Width, scale);
+            if (def.Position.Height > 0) miniPlayerForm.Height = ScaleLength(def.Position.Height, scale);
             miniPlayerForm.TransparencyKey = def.TransparentKey;
 
             ApplyControls(miniPlayerForm.Controls);
@@ -159,9 +171,12 @@ namespace MediaPlayer_X_Ark.Skin
         /// <summary>プレイリストフォームの位置をマグネットモードに合わせて更新する</summary>
         public void UpdatePlayListPosition(Form mainForm, Form playListForm)
         {
-            playListForm.Left = mainForm.Left + _skin.SubForms["PlayListForm"].Position.Left;
-            playListForm.Top  = mainForm.Top  + _skin.SubForms["PlayListForm"].Position.Top;
+            float scale = GetScaleFactor(mainForm);
+            playListForm.Left = mainForm.Left + ScaleCoordinate(_skin.SubForms["PlayListForm"].Position.Left, scale);
+            playListForm.Top  = mainForm.Top  + ScaleCoordinate(_skin.SubForms["PlayListForm"].Position.Top, scale);
         }
+
+        public int ScaleValue(Control control, int value) => ScaleCoordinate(value, GetScaleFactor(control));
 
         /// <summary>ボタンの押下画像をセットする</summary>
         public void SetButtonDown(Button btn)
@@ -172,7 +187,7 @@ namespace MediaPlayer_X_Ark.Skin
                 if (!_skin.Buttons.TryGetValue(parent, out var btnMap)) return;
                 if (btnMap.TryGetValue(btn.Name, out var bc))
                 {
-                    btn.BackgroundImage = bc.DownImage;
+                    btn.BackgroundImage = ScaleImage(bc.DownImage, GetScaleFactor(btn));
                     btn.Refresh();
                 }
             }
@@ -188,7 +203,7 @@ namespace MediaPlayer_X_Ark.Skin
                 if (!_skin.Buttons.TryGetValue(parent, out var btnMap)) return;
                 if (btnMap.TryGetValue(btn.Name, out var bc))
                 {
-                    btn.BackgroundImage = bc.BackImage;
+                    btn.BackgroundImage = ScaleImage(bc.BackImage, GetScaleFactor(btn));
                     btn.Refresh();
                 }
             }
@@ -199,13 +214,14 @@ namespace MediaPlayer_X_Ark.Skin
         public void UpdateLoopButton(Button btn, LOOP_MODE loop)
         {
             var loopOnly = loop & ~LOOP_MODE.LOOP_RANDOM;
-            btn.BackgroundImage = loopOnly switch
+            var image = loopOnly switch
             {
                 LOOP_MODE.LOOP_ONE_REPEAT => _skin.Buttons["MainForm"]["BtnLoop"].DownImage,
                 LOOP_MODE.LOOP_ALL        => _skin.Buttons["MainForm"]["BtnLoop"].OptionalImage,
 				_                         => _skin.Buttons["MainForm"]["BtnLoop"].BackImage,
 
 			};
+            btn.BackgroundImage = ScaleImage(image, GetScaleFactor(btn));
             btn.Refresh();
         }
 
@@ -213,9 +229,10 @@ namespace MediaPlayer_X_Ark.Skin
         public void UpdateRandomButton(Button btn, LOOP_MODE loop)
         {
             bool isRandom = (loop & LOOP_MODE.LOOP_RANDOM) != 0;
-            btn.BackgroundImage = isRandom
+            btn.BackgroundImage = ScaleImage(isRandom
                 ? _skin.Buttons["MainForm"]["BtnRandom"].DownImage
-                : _skin.Buttons["MainForm"]["BtnRandom"].BackImage;
+                : _skin.Buttons["MainForm"]["BtnRandom"].BackImage,
+                GetScaleFactor(btn));
             btn.Refresh();
         }
 
@@ -226,6 +243,7 @@ namespace MediaPlayer_X_Ark.Skin
             var sliderMap = _skin.Sliders;
             foreach (Control c in controls)
             {
+                float scale = GetScaleFactor(c);
                 var parentName = c.Parent?.Name ?? "";
                 _skin.Buttons.TryGetValue(parentName, out var btnMap);
                 _skin.Labels.TryGetValue(parentName, out var labelMap);
@@ -238,60 +256,132 @@ namespace MediaPlayer_X_Ark.Skin
                         btn.Enabled = false;
                         continue;
                     }
+                    var rect = ScaleRect(bc.Position, scale);
                     btn.AutoSize = false;
-                    btn.BackgroundImage = bc.BackImage;
+                    btn.BackgroundImage = ScaleImage(bc.BackImage, scale);
                     btn.BackgroundImageLayout = ImageLayout.None;
-                    btn.Top = bc.Position.Top;
-                    btn.Left = bc.Position.Left;
-                    btn.Width = bc.Position.Width;
-                    btn.Height = bc.Position.Height;
+                    btn.Top = rect.Top;
+                    btn.Left = rect.Left;
+                    btn.Width = rect.Width;
+                    btn.Height = rect.Height;
                     btn.Enabled = btn.Visible = bc.Enabled;
                     btn.Refresh();
                 }
                 else if (c is CustomSlider slider && sliderMap.TryGetValue(c.Name, out var sc))
                 {
                     if (sc.SliderImage == null) continue;
-                    slider.SliderImage = sc.SliderImage;
+                    var rect = ScaleRect(sc.Position, scale);
+                    slider.SliderImage = ScaleImage(sc.SliderImage, scale);
                     slider.Orientation = sc.Orientation;
                     slider.Minimum = sc.Minimum;
                     slider.Maximum = sc.Maximum;
-                    slider.Top = sc.Position.Top;
-                    slider.Left = sc.Position.Left;
-                    slider.Width = sc.Position.Width;
-                    slider.Height = sc.Position.Height;
+                    slider.Top = rect.Top;
+                    slider.Left = rect.Left;
+                    slider.Width = rect.Width;
+                    slider.Height = rect.Height;
                     slider.Enabled = slider.Visible = sc.Enabled;
                     slider.Value = 0;
                     slider.Refresh();
                 }
                 else if (c is ScrollLabel lbl && (labelMap?.TryGetValue(c.Name, out var gc) ?? false))
                 {
+                    var rect = ScaleRect(gc.Position, scale);
                     lbl.BackColor = Color.Transparent;
-                    lbl.Value.Font = gc.Font;
+                    lbl.Value.Font = ScaleFont(gc.Font, scale);
                     lbl.Value.ForeColor = gc.FontColor;
-                    lbl.Top = gc.Position.Top;
-                    lbl.Left = gc.Position.Left;
-                    lbl.Width = gc.Position.Width;
-                    lbl.Height = gc.Position.Height;
+                    lbl.Top = rect.Top;
+                    lbl.Left = rect.Left;
+                    lbl.Width = rect.Width;
+                    lbl.Height = rect.Height;
                     lbl.Enabled = lbl.Visible = gc.Enabled;
                     lbl.Value.Left = 0;
-                    lbl.Value.Width = gc.Position.Width;
-                    lbl.Value.Height = gc.Position.Height;
+                    lbl.Value.Width = rect.Width;
+                    lbl.Value.Height = rect.Height;
                     lbl.ScrollEnable = gc.ScrollEnable;
                     lbl.Timer.Interval = gc.Interval > 0 ? gc.Interval : 100;
                     lbl.Timer.Enabled = gc.Interval > 0;
                 }
                 else if (c is DataGridView dgv && (gridMap?.TryGetValue(c.Name, out var plGrid) ?? false))
                 {
+                    var rect = ScaleRect(plGrid.ListPosition, scale);
 					dgv.BackgroundColor = plGrid.ListBackColor;
 					dgv.RowsDefaultCellStyle.BackColor = plGrid.ListBackColor;
 					dgv.RowsDefaultCellStyle.ForeColor = plGrid.ListForeColor;
 					dgv.ForeColor = plGrid.ListForeColor;
-					dgv.Left = plGrid.ListPosition.Left;
-					dgv.Top = plGrid.ListPosition.Top;
-					dgv.Width = plGrid.ListPosition.Width;
-					dgv.Height = plGrid.ListPosition.Height;
+                    dgv.Font = ScaleFont(dgv.Font, scale);
+                    dgv.RowTemplate.Height = ScaleLength(dgv.RowTemplate.Height, scale);
+					dgv.Left = rect.Left;
+					dgv.Top = rect.Top;
+					dgv.Width = rect.Width;
+					dgv.Height = rect.Height;
 				}
             }
+        }
+
+        private static float GetScaleFactor(Control control)
+        {
+            if (control == null)
+                return 1f;
+
+            if (control.DeviceDpi > 0)
+                return control.DeviceDpi / 96f;
+
+            using var g = control.CreateGraphics();
+            return g.DpiX / 96f;
+        }
+
+        private static int ScaleCoordinate(int value, float scale)
+            => (int)Math.Round(value * scale, MidpointRounding.AwayFromZero);
+
+        private static int ScaleLength(int value, float scale)
+        {
+            if (value <= 0)
+                return value;
+
+            return Math.Max(1, (int)Math.Round(value * scale, MidpointRounding.AwayFromZero));
+        }
+
+        private static Rectangle ScaleRect(RECT rect, float scale)
+            => new Rectangle(
+                ScaleCoordinate(rect.Left, scale),
+                ScaleCoordinate(rect.Top, scale),
+                ScaleLength(rect.Width, scale),
+                ScaleLength(rect.Height, scale));
+
+        private Font ScaleFont(Font font, float scale)
+        {
+            if (font == null)
+                return null;
+
+            float size = Math.Max(1f, font.Size * scale);
+            return new Font(font.FontFamily, size, font.Style, GraphicsUnit.Point);
+        }
+
+        private Image ScaleImage(Image image, float scale)
+        {
+            if (image == null || scale <= 0f)
+                return image;
+
+            if (Math.Abs(scale - 1f) < 0.001f)
+                return image;
+
+            int scaleKey = (int)Math.Round(scale * 1000f, MidpointRounding.AwayFromZero);
+            if (_scaledImageCache.TryGetValue((image, scaleKey), out var cached))
+                return cached;
+
+            int width = ScaleLength(image.Width, scale);
+            int height = ScaleLength(image.Height, scale);
+            var bitmap = new Bitmap(width, height);
+            using (var g = Graphics.FromImage(bitmap))
+            {
+                g.InterpolationMode = InterpolationMode.NearestNeighbor;
+                g.PixelOffsetMode = PixelOffsetMode.Half;
+                g.CompositingQuality = CompositingQuality.HighQuality;
+                g.DrawImage(image, new Rectangle(0, 0, width, height));
+            }
+
+            _scaledImageCache[(image, scaleKey)] = bitmap;
+            return bitmap;
         }
 
 

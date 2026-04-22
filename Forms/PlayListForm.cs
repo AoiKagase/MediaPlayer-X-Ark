@@ -52,6 +52,8 @@ namespace MediaPlayer_X_Ark
 		{
 			// グリッド用コンテキストメニュー
 			_gridContextMenu = new ContextMenuStrip();
+			_gridContextMenu.ShowImageMargin = false;
+			_gridContextMenu.AutoSize = true;
 			var menuPlay = new ToolStripMenuItem("再生");
 			var menuDelete = new ToolStripMenuItem("削除");
 			var menuUp = new ToolStripMenuItem("上へ移動");
@@ -78,6 +80,8 @@ namespace MediaPlayer_X_Ark
 
 			// フォーム用コンテキストメニュー
 			_formContextMenu = new ContextMenuStrip();
+			_formContextMenu.ShowImageMargin = false;
+			_formContextMenu.AutoSize = true;
 			var menuOpen = new ToolStripMenuItem("ファイルを開く");
 			var menuSave = new ToolStripMenuItem("保存");
 			var menuClear = new ToolStripMenuItem("全消去");
@@ -511,8 +515,8 @@ namespace MediaPlayer_X_Ark
 				{
 					if (plForm.MagnetMode)
 					{
-						_mainForm.Left = Left - plForm.Position.Left;
-						_mainForm.Top = Top - plForm.Position.Top;
+						_mainForm.Left = Left - _mainForm.ScaleSkinValue(plForm.Position.Left);
+						_mainForm.Top = Top - _mainForm.ScaleSkinValue(plForm.Position.Top);
 					}
 				}
 			}

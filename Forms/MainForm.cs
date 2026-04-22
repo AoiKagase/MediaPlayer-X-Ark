@@ -66,10 +66,11 @@ namespace MediaPlayer_X_Ark
 
         private float _abStart = -1f;
         private float _abEnd = -1f;
-        public MainForm()
+		public MainForm()
 		{
 			D2DContext.Initialize();
 			InitializeComponent();
+			DpiChanged += MainForm_DpiChanged;
 			this.Opacity = 0;
 			Spectrum.Visible = false;
 		}
@@ -79,6 +80,41 @@ namespace MediaPlayer_X_Ark
 			Spectrum.Mode = _config.settings.DefaultSpectrumMode;
 			Spectrum.SnowBlockEnabled = _config.settings.SnowBlockEnabled;
 		}
+
+		private void RefreshSkinBackups()
+		{
+			_skinTitleFont = LabelTitle.Value.Font;
+			_skinTimeFont = LabelTime.Value.Font;
+			_skinTitleScrollInterval = LabelTitle.Timer.Interval;
+		}
+
+		private void ReapplyCurrentSkinLayout()
+		{
+			if (_skinApplicator == null)
+				return;
+
+			_skinApplicator.ApplyToMainForm(this, Spectrum);
+			if (_playListForm != null && !_playListForm.IsDisposed)
+			{
+				_skinApplicator.ApplyToPlayListForm(_playListForm);
+				if (_currentSkin?.SubForms.TryGetValue("PlayListForm", out var playListDef) == true
+					&& playListDef.MagnetMode)
+				{
+					_skinApplicator.UpdatePlayListPosition(this, _playListForm);
+				}
+			}
+			if (_fileInfoForm != null && !_fileInfoForm.IsDisposed)
+				_skinApplicator.ApplyToFileInfoForm(_fileInfoForm);
+			if (_miniPlayerForm != null && !_miniPlayerForm.IsDisposed)
+				_skinApplicator.ApplyToMiniPlayerForm(_miniPlayerForm);
+
+			SetupWaveformTarget();
+			RefreshSkinBackups();
+			ApplySpectrumVisualSettings();
+		}
+
+		public int ScaleSkinValue(int value)
+			=> _skinApplicator?.ScaleValue(this, value) ?? value;
 		/// <summary>
 		/// スキンロード
 		/// 設定ファイルからスキンファイルパスを取得して投げる
@@ -101,9 +137,7 @@ namespace MediaPlayer_X_Ark
                 _skinApplicator.ApplyToMiniPlayerForm(_miniPlayerForm);
 
 				// スキン適用後の値をバックアップ（設定オーバーライドOFF時の復元用）
-				_skinTitleFont = LabelTitle.Value.Font;
-				_skinTimeFont = LabelTime.Value.Font;
-				_skinTitleScrollInterval = LabelTitle.Timer.Interval;
+				RefreshSkinBackups();
 
                 SetupWaveformTarget();
 				_config.settings.Skin = skinFile;
@@ -242,10 +276,14 @@ namespace MediaPlayer_X_Ark
 
 			if (wDef.Target == "area" && wDef.Location.W > 0 && wDef.Location.H > 0)
 			{
+				int x = _skinApplicator?.ScaleValue(this, wDef.Location.X) ?? wDef.Location.X;
+				int y = _skinApplicator?.ScaleValue(this, wDef.Location.Y) ?? wDef.Location.Y;
+				int width = _skinApplicator?.ScaleValue(this, wDef.Location.W) ?? wDef.Location.W;
+				int height = _skinApplicator?.ScaleValue(this, wDef.Location.H) ?? wDef.Location.H;
 				_waveformArea = new PictureBox
 				{
-					Location = new Point(wDef.Location.X, wDef.Location.Y),
-					Size = new System.Drawing.Size(wDef.Location.W, wDef.Location.H),
+					Location = new Point(x, y),
+					Size = new System.Drawing.Size(width, height),
 					BackColor = Color.Transparent,
 					SizeMode = PictureBoxSizeMode.StretchImage,
 				};
@@ -581,9 +619,7 @@ namespace MediaPlayer_X_Ark
 				{
 					if (plForm.MagnetMode)
 					{
-						// Main + Offset
-						_playListForm.Left = Left + plForm.Position.Left;
-						_playListForm.Top = Top + plForm.Position.Top;
+						_skinApplicator?.UpdatePlayListPosition(this, _playListForm);
 					}
 				}
 
@@ -985,8 +1021,7 @@ namespace MediaPlayer_X_Ark
 
 			if (plForm != null)
 			{
-				_playListForm.Left = Left + plForm.Position.Left;
-				_playListForm.Top = Top + plForm.Position.Top;
+				_skinApplicator?.UpdatePlayListPosition(this, _playListForm);
 			}
 
 		}
@@ -1161,6 +1196,7 @@ namespace MediaPlayer_X_Ark
 
 		private void InitContextMenu()
 		{
+			ConfigureContextMenu(contextMenu);
 			var menuOpen = new ToolStripMenuItem("開く(&O)", null, BtnOpenFile_Click, "menuOpen");
 			var menuUrlOpen = new ToolStripMenuItem("URLを開く(&R)", null, BtnUrlOpen_Click, "menuUrlOpen");
 			var menuPlay = new ToolStripMenuItem("再生(&P)", null, BtnPlay_Click, "menuPlay");
@@ -1191,33 +1227,44 @@ namespace MediaPlayer_X_Ark
 			var menuExit = new ToolStripMenuItem("閉じる(&Z)", null, BtnClose_Click, "menuExit");
 
 			var menuFileInfo = new ToolStripMenuItem("ファイル情報");
-
-			menuOpen.Size = new System.Drawing.Size(192, 22);
-			menuUrlOpen.Size = new System.Drawing.Size(192, 22);
-			menuPlay.Size = new System.Drawing.Size(192, 22);
-			menuPause.Size = new System.Drawing.Size(192, 22);
-			menuStop.Size = new System.Drawing.Size(192, 22);
-			menuBack.Size = new System.Drawing.Size(192, 22);
-			menuNext.Size = new System.Drawing.Size(192, 22);
-			menuPlayMode.Size = new System.Drawing.Size(192, 22);
-			menuPlayModeNormal.Size = new System.Drawing.Size(118, 22);
-			menuPlayModeRandom.Size = new System.Drawing.Size(118, 22);
-			menuPlayModeRepeat.Size = new System.Drawing.Size(118, 22);
-			menuHelp.Size = new System.Drawing.Size(192, 22);
-			menuPlayModeLoop.Size = new System.Drawing.Size(118, 22);
-			menuPlayList.Size = new System.Drawing.Size(192, 22);
-			menuOption.Size = new System.Drawing.Size(192, 22);
-			menuEffects.Size = new System.Drawing.Size(192, 22);
-			menuEqualizer.Size = new System.Drawing.Size(192, 22);
-			menuExtensions.Size = new System.Drawing.Size(192, 22);
-			menuSkinSelect.Size = new System.Drawing.Size(192, 22);
-			menuAutoUpdateCheck.Size = new System.Drawing.Size(192, 22);
-			menuAbout.Size = new System.Drawing.Size(192, 22);
-			menuMinimize.Size = new System.Drawing.Size(192, 22);
-			menuExit.Size = new System.Drawing.Size(192, 22);
+			var menuPlayback = new ToolStripMenuItem("再生操作");
+			var menuLibrary = new ToolStripMenuItem("ライブラリ");
+			var menuCustomize = new ToolStripMenuItem("設定と拡張");
+			var menuSupport = new ToolStripMenuItem("ヘルプと更新");
 
 			menuPlayMode.DropDownItems.AddRange(new ToolStripItem[] {
 				menuPlayModeNormal, menuPlayModeRandom, menuPlayModeRepeat, menuPlayModeLoop });
+			menuPlayback.DropDownItems.AddRange(new ToolStripItem[]
+			{
+				menuPlay,
+				menuPause,
+				menuStop,
+				new ToolStripSeparator(),
+				menuBack,
+				menuNext,
+				new ToolStripSeparator(),
+				menuPlayMode,
+			});
+			menuLibrary.DropDownItems.AddRange(new ToolStripItem[]
+			{
+				menuFileInfo,
+				menuPlayList,
+				menuSleep,
+			});
+			menuCustomize.DropDownItems.AddRange(new ToolStripItem[]
+			{
+				menuOption,
+				menuEffects,
+				menuEqualizer,
+				menuExtensions,
+				menuSkinSelect,
+			});
+			menuSupport.DropDownItems.AddRange(new ToolStripItem[]
+			{
+				menuAutoUpdateCheck,
+				menuAbout,
+				menuHelp,
+			});
 
 			menuPlayList.Click += (s, e) => BtnPlaylist_Click(s, e);
 			menuOption.Click += (s, e) => BtnSetting_Click(s, e);
@@ -1269,33 +1316,16 @@ namespace MediaPlayer_X_Ark
 				menuOpen,
 				menuUrlOpen,
 				new ToolStripSeparator(),
-				menuPlay,
-				menuPause,
-				menuStop,
-				menuBack,
-				menuNext,
+				menuPlayback,
+				menuLibrary,
+				menuCustomize,
 				new ToolStripSeparator(),
-				menuFileInfo,
-				menuPlayMode,
-				menuSleep,
-				new ToolStripSeparator(),
-				menuPlayList,
-				menuOption,
-				menuEffects,
-				menuEqualizer,
-				menuExtensions,
-				menuSkinSelect,
-				new ToolStripSeparator(),
-				menuAutoUpdateCheck,
-				new ToolStripSeparator(),
-				menuAbout,
-				menuHelp,
+				menuSupport,
 				new ToolStripSeparator(),
 				menuMinimize,
 				menuExit
 			});
 			contextMenu.Name = "contextMenu";
-			contextMenu.Size = new System.Drawing.Size(193, 422);
 
 			// PlayMode
 			menuPlayModeNormal.Click += (s, e) => { _controller.SetLoopMode(LOOP_MODE.LOOP_NONE); _skinApplicator?.UpdateLoopButton(BtnLoop, _controller.GetLoopMode()); };
@@ -1313,12 +1343,28 @@ namespace MediaPlayer_X_Ark
 			trayMenuExit.Click += (s, e) => Application.Exit();
 
 			notifyIcon.ContextMenuStrip = new ContextMenuStrip();
+			ConfigureContextMenu(notifyIcon.ContextMenuStrip);
 			notifyIcon.ContextMenuStrip.Items.AddRange(new ToolStripItem[]
 			{
 				trayMenuRestore,
 				new ToolStripSeparator(),
 				trayMenuExit,
 			});
+		}
+
+		private static void ConfigureContextMenu(ContextMenuStrip menu)
+		{
+			menu.ShowImageMargin = false;
+			menu.ShowCheckMargin = true;
+			menu.AutoSize = true;
+		}
+
+		private void MainForm_DpiChanged(object sender, DpiChangedEventArgs e)
+		{
+			if (!IsHandleCreated || _currentSkin == null)
+				return;
+
+			BeginInvoke((Action)ReapplyCurrentSkinLayout);
 		}
 		private void UpdateSleepTimerMenu(ToolStripMenuItem selected)
 		{

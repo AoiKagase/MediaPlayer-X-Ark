@@ -37,6 +37,8 @@ namespace MediaPlayer_X_Ark.Forms
 		private void InitFileNameContextMenu()
 		{
 			var fileNameMenu = new ContextMenuStrip();
+			fileNameMenu.ShowImageMargin = false;
+			fileNameMenu.AutoSize = true;
 			var menuCopyFileName = new ToolStripMenuItem("ファイル名をコピー");
 			var menuCopyFullPath = new ToolStripMenuItem("フルパスをコピー");
 
