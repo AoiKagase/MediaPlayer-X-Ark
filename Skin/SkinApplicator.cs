@@ -35,7 +35,7 @@ namespace MediaPlayer_X_Ark.Skin
             {
                 float scale = GetScaleFactor(form);
                 var formRect = ScaleRect(_skin.MainForm.Position, scale);
-                var spectrumRect = ScaleRect(_skin.Spectrum.Position, scale);
+                var spectrumRect = ScaleRectWithFlooredPosition(_skin.Spectrum.Position, scale);
 
                 form.BackgroundImage = ScaleImage(_skin.MainForm.BackImage, scale);
                 form.TransparencyKey = _skin.MainForm.TransparentKey;
@@ -285,7 +285,7 @@ namespace MediaPlayer_X_Ark.Skin
                 }
                 else if (c is ScrollLabel lbl && (labelMap?.TryGetValue(c.Name, out var gc) ?? false))
                 {
-                    var rect = ScaleRect(gc.Position, scale);
+                    var rect = ScaleRectWithFlooredPosition(gc.Position, scale);
                     lbl.BackColor = Color.Transparent;
                     lbl.Value.Font = ScaleFont(gc.Font, scale);
                     lbl.Value.ForeColor = gc.FontColor;
@@ -348,13 +348,22 @@ namespace MediaPlayer_X_Ark.Skin
                 ScaleLength(rect.Width, scale),
                 ScaleLength(rect.Height, scale));
 
+        private static Rectangle ScaleRectWithFlooredPosition(RECT rect, float scale)
+            => new Rectangle(
+                ScaleCoordinateFloor(rect.Left, scale),
+                ScaleCoordinateFloor(rect.Top, scale),
+                ScaleLength(rect.Width, scale),
+                ScaleLength(rect.Height, scale));
+
+        private static int ScaleCoordinateFloor(int value, float scale)
+            => (int)Math.Floor(value * scale);
+
         private Font ScaleFont(Font font, float scale)
         {
             if (font == null)
                 return null;
 
-            float size = Math.Max(1f, font.Size * scale);
-            return new Font(font.FontFamily, size, font.Style, GraphicsUnit.Point);
+            return new Font(font.FontFamily, font.Size, font.Style, GraphicsUnit.Point);
         }
 
         private Image ScaleImage(Image image, float scale)

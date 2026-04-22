@@ -154,7 +154,6 @@ namespace MediaPlayer_X_Ark
 		public void ApplySpectrumVisualSettings()
 		{
 			var s = _config.settings;
-			float dpiScale = DeviceDpi > 0 ? DeviceDpi / 96f : 1f;
 
 			// ウェーブ色（設定優先でなければスキン値、またはデフォルト）
 			if (s.UseCustomWaveColor)
@@ -209,7 +208,7 @@ namespace MediaPlayer_X_Ark
 				var style = s.TitleFontBold ? System.Drawing.FontStyle.Bold : System.Drawing.FontStyle.Regular;
 				LabelTitle.Value.Font = new System.Drawing.Font(
 					s.TitleFontName,
-					Math.Max(1f, s.TitleFontSize * dpiScale),
+					s.TitleFontSize,
 					style,
 					System.Drawing.GraphicsUnit.Point);
 			}
@@ -222,7 +221,7 @@ namespace MediaPlayer_X_Ark
 				var style = s.TimeFontBold ? System.Drawing.FontStyle.Bold : System.Drawing.FontStyle.Regular;
 				LabelTime.Value.Font = new System.Drawing.Font(
 					s.TimeFontName,
-					Math.Max(1f, s.TimeFontSize * dpiScale),
+					s.TimeFontSize,
 					style,
 					System.Drawing.GraphicsUnit.Point);
 			}

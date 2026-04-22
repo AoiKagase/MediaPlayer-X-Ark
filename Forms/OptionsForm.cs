@@ -17,6 +17,7 @@ namespace MediaPlayer_X_Ark.Forms
 {
 	public partial class OptionsForm : Form
 	{
+		private static readonly Size BaseClientSize = new Size(960, 720);
 		private float _runtimeLayoutScale = 1f;
 
 		private IPlayerEngine _engine;
@@ -94,10 +95,14 @@ namespace MediaPlayer_X_Ark.Forms
 
 			float delta = scale / _runtimeLayoutScale;
 			SuspendLayout();
+			ClientSize = new Size(
+				Math.Max(ClientSize.Width, ScaleLength(BaseClientSize.Width, scale)),
+				Math.Max(ClientSize.Height, ScaleLength(BaseClientSize.Height, scale)));
+			MinimumSize = new Size(
+				ScaleLength(BaseClientSize.Width, scale),
+				ScaleLength(BaseClientSize.Height + 39, scale));
 			foreach (Control control in Controls)
 				control.Scale(new SizeF(delta, delta));
-
-			_treeMenu.Width = ScaleLength(_treeMenu.Width, delta);
 			_contentPanel.Padding = ScalePadding(_contentPanel.Padding, delta);
 			_runtimeLayoutScale = scale;
 			ResumeLayout(true);
