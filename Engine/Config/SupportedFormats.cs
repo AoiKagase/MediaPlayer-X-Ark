@@ -21,8 +21,9 @@ namespace MediaPlayer_X_Ark.Engine.Config
     {
         // ─────────────────────────────────────────
         //  FMOD Core 組み込み対応形式
-        //  FMOD Core が codec plugin なしで再生できる形式のみ列挙する。
-        //  MP4/AAC 等 codec が必要なものは _codecFormatMap に定義する。
+        //  FMOD Core が codec plugin なしで再生できる形式、または
+        //  本アプリが独自処理で開ける形式のみ列挙する。
+        //  ここにない拡張子は、実際に再生経路が確認できたものだけ追加する。
         // ─────────────────────────────────────────
 
         private static readonly FormatEntry[] _builtIn =
@@ -36,28 +37,21 @@ namespace MediaPlayer_X_Ark.Engine.Config
             new FormatEntry("音声ファイル", ".aiff", "Audio Interchange File Format", "FMOD"),
             new FormatEntry("音声ファイル", ".aif",  "Audio Interchange File Format", "FMOD"),
             new FormatEntry("音声ファイル", ".fsb",  "FMOD Sample Bank",              "FMOD"),
-            // Windows Media 系は OS の MF codec 経由で FMOD が再生する
+            // Windows Media 系は Windows プラットフォーム上で FMOD が扱える形式
             new FormatEntry("音声ファイル", ".wma",  "Windows Media Audio",            "FMOD"),
             new FormatEntry("音声ファイル", ".asf",  "Advanced Systems Format",        "FMOD"),
-            new FormatEntry("音声ファイル", ".asx",  "Windows Media Audio Redirector", "FMOD"),
-            new FormatEntry("音声ファイル", ".wax",  "Windows Media Audio Redirector", "FMOD"),
 
-            // ── MIDI: デフォルトは FMOD（FluidSynth 導入時は ExtensionsControl が表示を切り替える）
+            // ── MIDI: デフォルトは FMOD（外部レンダラー導入時は表示のみ切り替える）
             new FormatEntry("MIDI", ".mid",  "MIDI Sequence",           "FMOD"),
             new FormatEntry("MIDI", ".midi", "MIDI Sequence",           "FMOD"),
             new FormatEntry("MIDI", ".rmi",  "RIFF MIDI",               "FMOD"),
             new FormatEntry("MIDI", ".kar",  "Karaoke MIDI",            "FMOD"),
-            new FormatEntry("MIDI", ".dls",  "DownLoadable Sound (SF)", "FMOD"),
 
-            // ── トラッカー: FMOD Core ネイティブ ─────────────────────
+            // ── トラッカー: 現在のアプリ実装で専用扱いしている形式 ─────────
             new FormatEntry("トラッカー", ".mod", "Amiga MOD",                     "FMOD"),
             new FormatEntry("トラッカー", ".s3m", "ScreamTracker 3",               "FMOD"),
             new FormatEntry("トラッカー", ".xm",  "FastTracker 2 Extended Module", "FMOD"),
             new FormatEntry("トラッカー", ".it",  "Impulse Tracker",               "FMOD"),
-            new FormatEntry("トラッカー", ".mo3", "BASS MO3 (compressed MOD)",     "FMOD"),
-            new FormatEntry("トラッカー", ".umx", "Unreal Music Package",          "FMOD"),
-            new FormatEntry("トラッカー", ".669", "Composer 669",                  "FMOD"),
-            new FormatEntry("トラッカー", ".mtm", "MultiTracker Module",           "FMOD"),
 
             // ── プレイリスト / CUEシート: アプリ側処理 ───────────────
             new FormatEntry("プレイリスト", ".m3u",  "M3U Playlist",          "App"),
@@ -79,20 +73,54 @@ namespace MediaPlayer_X_Ark.Engine.Config
             // ── codec_mp4.dll ─────────────────────────────────────────
             ["codec_mp4.dll"] = new[]
             {
-                new FormatEntry("音声ファイル", ".aac", "Advanced Audio Coding", "codec_mp4.dll"),
+//              new FormatEntry("音声ファイル", ".aac", "Advanced Audio Coding", "codec_mp4.dll"),
                 new FormatEntry("音声ファイル", ".m4a", "MPEG-4 Audio",          "codec_mp4.dll"),
-                new FormatEntry("動画ファイル", ".mp4", "MPEG-4 Video",          "codec_mp4.dll"),
-                new FormatEntry("動画ファイル", ".m4v", "iTunes Video",          "codec_mp4.dll"),
-                new FormatEntry("動画ファイル", ".3gp", "3GPP Media",            "codec_mp4.dll"),
-                new FormatEntry("動画ファイル", ".3g2", "3GPP2 Media",           "codec_mp4.dll"),
+//              new FormatEntry("動画ファイル", ".mp4", "MPEG-4 Video",          "codec_mp4.dll"),
+//              new FormatEntry("動画ファイル", ".m4v", "iTunes Video",          "codec_mp4.dll"),
+//              new FormatEntry("動画ファイル", ".3gp", "3GPP Media",            "codec_mp4.dll"),
+//              new FormatEntry("動画ファイル", ".3g2", "3GPP2 Media",           "codec_mp4.dll"),
             },
 
-            // ── codec_wma.dll（保留）────────────────────────────────
-            // ["codec_wma.dll"] = new[]
-            // {
-            //     new FormatEntry("動画ファイル", ".wmv", "Windows Media Video", "codec_wma.dll"),
-            // },
-        };
+            // ── codec_wma.dll ────────────────────────────────────────
+            // WMA/ASF 系のデコーダ差し替え用途。関連付け・OPEN フィルターに
+            // 新しい拡張子を追加しないため、ここではマッピングを持たない。
+
+            // ── codec_srla.dll ────────────────────────────────────────
+            ["codec_srla.dll"] = new[]
+            {
+                new FormatEntry("音声ファイル", ".srl", "Soleil Rising Lossless Audio", "codec_srla.dll"),
+            },
+
+			// ── codec_ape.dll ────────────────────────────────────────
+			["codec_ape.dll"] = new[]
+			{
+				new FormatEntry("音声ファイル", ".ape", "Monkey's Audio", "codec_ape.dll"),
+			},
+
+			// ── codec_opus.dll ────────────────────────────────────────
+			["codec_opus.dll"] = new[]
+			{
+				new FormatEntry("音声ファイル", ".opus", "Ogg Opus", "codec_opus.dll"),
+			},
+
+			// ── codec_tak.dll ────────────────────────────────────────
+			["codec_tak.dll"] = new[]
+			{
+				new FormatEntry("音声ファイル", ".tak", "Tom's lossless Audio Kompressor", "codec_tak.dll"),
+			},
+
+			// ── codec_tta.dll ────────────────────────────────────────
+			["codec_tta.dll"] = new[]
+			{
+				new FormatEntry("音声ファイル", ".tta", "The True Audio", "codec_tta.dll"),
+			},
+
+			// ── codec_wv.dll ────────────────────────────────────────
+			["codec_wv.dll"] = new[]
+			{
+				new FormatEntry("音声ファイル", ".wv", "WavPack", "codec_wv.dll"),
+			},
+		};
 
         // ─────────────────────────────────────────
         //  ロード済み codec エントリ
@@ -150,7 +178,7 @@ namespace MediaPlayer_X_Ark.Engine.Config
 
         /// <summary>全対応拡張子の一覧（重複除去）。OpenFileDialog の Filter 生成などに使用する。</summary>
         public static IEnumerable<string> GetAllExtensions()
-            => GetAll().Select(e => e.Ext).Distinct();
+            => GetAll().Select(e => e.Ext).Distinct(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// OpenFileDialog 用フィルター文字列を生成する。
@@ -159,12 +187,15 @@ namespace MediaPlayer_X_Ark.Engine.Config
         public static string BuildOpenFileFilter()
         {
             var all     = GetAll().ToList();
-            var allExts = all.Select(e => "*" + e.Ext).Distinct().ToArray();
+            var allExts = all.Select(e => "*" + e.Ext).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
             var allPart = $"全対応ファイル ({string.Join(";", allExts)})|{string.Join(";", allExts)}";
 
             var groupParts = all.Select(e => e.Group).Distinct().Select(g =>
             {
-                var exts = all.Where(e => e.Group == g).Select(e => "*" + e.Ext).Distinct().ToArray();
+                var exts = all.Where(e => e.Group == g)
+                    .Select(e => "*" + e.Ext)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToArray();
                 return $"{g} ({string.Join(";", exts)})|{string.Join(";", exts)}";
             });
 

@@ -359,6 +359,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					Type = pluginType,
 					Version = version,
 				});
+
+				if (pluginType == FMOD.PLUGINTYPE.CODEC)
+					SupportedFormats.RegisterLoadedCodec(filename);
 			}
 			return;
 		}

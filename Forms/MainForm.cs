@@ -364,7 +364,7 @@ namespace MediaPlayer_X_Ark
 			InitContextMenu();
 
 			_openFileDialogMedia = new OpenFileDialog();
-			_openFileDialogMedia.Filter = "音楽ファイル|*.mp3;*.flac;*.ogg;*.wav;*.aac;*.m4a;*.wma;*.mid;*.mod;*.xm;*.it;*.s3m|すべてのファイル|*.*";
+			_openFileDialogMedia.Filter = SupportedFormats.BuildOpenFileFilter();
 			_openFileDialogMedia.Multiselect = true;
 
 			this.TopMost = _config.settings.AlwaysOnTop;
