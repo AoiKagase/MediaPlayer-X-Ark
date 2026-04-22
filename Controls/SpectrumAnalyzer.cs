@@ -273,7 +273,7 @@ namespace MediaPlayer_X_Ark.Controls
 					{
 						_renderTarget.BeginDraw();
 						began = true;
-						_renderTarget.Transform = Matrix3x2.CreateScale(GetRenderScaleX(), GetRenderScaleY());
+						_renderTarget.Transform = Matrix3x2.Identity;
 
 						_renderTarget.Clear(ToColor4(_backColor.IsEmpty ? System.Drawing.Color.Black : _backColor));
 						DrawBackground();
@@ -322,9 +322,11 @@ namespace MediaPlayer_X_Ark.Controls
 				return;
 
 			var sourceSize = _d2dBitmapBackground.PixelSize;
+			int width = Math.Max(1, ClientSize.Width);
+			int height = Math.Max(1, ClientSize.Height);
 			_renderTarget.DrawBitmap(
 				_d2dBitmapBackground,
-				new Rect(0, 0, Width, Height),
+				new Rect(0, 0, width, height),
 				1.0f,
 				BitmapInterpolationMode.Linear,
 				new Rect(0, 0, sourceSize.Width, sourceSize.Height));
@@ -332,8 +334,8 @@ namespace MediaPlayer_X_Ark.Controls
 
 		private void DrawWave()
 		{
-			int height = Height;
-			int width  = Width;
+			int height = Math.Max(1, ClientSize.Height);
+			int width  = Math.Max(1, ClientSize.Width);
 
 			if (_mWaveL != null && _waveLeftBrush != null)
 			{
@@ -377,25 +379,27 @@ namespace MediaPlayer_X_Ark.Controls
 			if (_mFFT == null || _analyzerSnow == null)
 				return;
 
+			int width = Math.Max(1, ClientSize.Width);
+			int height = Math.Max(1, ClientSize.Height);
 			int step      = Mode > 0 ? Mode * 2 : 1;
 			int fftLength = Math.Min(WindowSize, _mFFT.Length);
 
 			for (int i = 0; i < fftLength; i += step)
 			{
 				float db         = lin2dB(Math.Max(_mFFT[i], float.Epsilon));
-				int   lineHeight = Height - (int)((Height / 80f) * (db + 80f));
-				lineHeight = Math.Clamp(lineHeight, 0, Height);
+				int   lineHeight = height - (int)((height / 80f) * (db + 80f));
+				lineHeight = Math.Clamp(lineHeight, 0, height);
 
 				int left  = i;
-				int right = Width > WindowSize
-					? i + (Width / WindowSize) + (int)(Mode / 2f)
+				int right = width > WindowSize
+					? i + (width / WindowSize) + (int)(Mode / 2f)
 					: i + 1 + (int)(Mode / 2f);
-				right = Math.Clamp(Math.Min(right, Width), Math.Min(left + 1, Width), Width);
+				right = Math.Clamp(Math.Min(right, width), Math.Min(left + 1, width), width);
 
-				int snowBottom = Height;
+				int snowBottom = height;
 				if (_analyzerSnow[i] > lineHeight)
 					snowBottom = (int)(_analyzerSnow[i] = lineHeight);
-				else if (_analyzerSnow[i] < Height)
+				else if (_analyzerSnow[i] < height)
 					snowBottom = (int)(_analyzerSnow[i] += SnowFallSpeed);
 
 				if (SnowBlockEnabled && _snowBrush != null)
@@ -404,14 +408,14 @@ namespace MediaPlayer_X_Ark.Controls
 				if (_d2dBitmapSpectrum == null)
 					continue;
 
-				int barHeight = Height - lineHeight;
+				int barHeight = height - lineHeight;
 				if (barHeight <= 0)
 					continue;
 
 				float srcLeft   = Math.Clamp(left,        0, _d2dBitmapSpectrum.PixelSize.Width);
 				float srcTop    = Math.Clamp(lineHeight,   0, _d2dBitmapSpectrum.PixelSize.Height);
 				float srcRight  = Math.Clamp(right,        0, _d2dBitmapSpectrum.PixelSize.Width);
-				float srcBottom = Math.Clamp(Height,       0, _d2dBitmapSpectrum.PixelSize.Height);
+				float srcBottom = Math.Clamp(height,       0, _d2dBitmapSpectrum.PixelSize.Height);
 
 				if (srcRight <= srcLeft || srcBottom <= srcTop)
 					continue;
@@ -486,23 +490,10 @@ namespace MediaPlayer_X_Ark.Controls
 		private float lin2dB(float linear)
 			=> Math.Clamp((float)Math.Log10(linear) * 20.0f, -80.0f, 0.0f);
 
-		private float GetRenderScaleX()
-		{
-			int width = Math.Max(1, Width);
-			return GetClientPixelSize().Width / (float)width;
-		}
-
-		private float GetRenderScaleY()
-		{
-			int height = Math.Max(1, Height);
-			return GetClientPixelSize().Height / (float)height;
-		}
-
 		private SizeI GetClientPixelSize()
 		{
-			float scale = DeviceDpi > 0 ? DeviceDpi / 96f : 1f;
-			int width = Math.Max(1, (int)Math.Round(Width * scale, MidpointRounding.AwayFromZero));
-			int height = Math.Max(1, (int)Math.Round(Height * scale, MidpointRounding.AwayFromZero));
+			int width = Math.Max(1, ClientSize.Width);
+			int height = Math.Max(1, ClientSize.Height);
 			return new SizeI(width, height);
 		}
 	}

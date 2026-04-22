@@ -878,7 +878,7 @@ namespace UI
 			rt.BeginDraw();
 			try
 			{
-				rt.Transform = Matrix3x2.CreateScale(GetRenderScaleX(), GetRenderScaleY());
+				rt.Transform = Matrix3x2.Identity;
 				// 背景
 				using (var backBrush = rt.CreateSolidColorBrush(ToColor4(BackColor)))
 					rt.FillRectangle(
@@ -941,7 +941,7 @@ namespace UI
 				// フォーカス矩形
 				if (Focused)
 				{
-					float fw = Math.Min(Width, Height);
+					float fw = Math.Min(ClientSize.Width, ClientSize.Height);
 					using var focusBrush = rt.CreateSolidColorBrush(new Color4(0f, 0f, 0f, 1f));
 					using var focusStyle = D2DContext.Factory.CreateStrokeStyle(
 						new StrokeStyleProperties { DashStyle = Vortice.Direct2D1.DashStyle.Dot });
@@ -1143,7 +1143,7 @@ namespace UI
 		/// <param name="args">The event arguments</param>
 		protected override void OnResize(EventArgs args)
 		{
-			if (_renderTarget != null && Width > 0 && Height > 0)
+			if (_renderTarget != null && ClientSize.Width > 0 && ClientSize.Height > 0)
 				_renderTarget.Resize(GetClientPixelSize());
 			Invalidate();
 			base.OnResize(args);
@@ -1162,23 +1162,10 @@ namespace UI
 			base.OnSizeChanged(args);
 		}
 
-		private float GetRenderScaleX()
-		{
-			int width = Math.Max(1, Width);
-			return GetClientPixelSize().Width / (float)width;
-		}
-
-		private float GetRenderScaleY()
-		{
-			int height = Math.Max(1, Height);
-			return GetClientPixelSize().Height / (float)height;
-		}
-
 		private Vortice.Mathematics.SizeI GetClientPixelSize()
 		{
-			float scale = DeviceDpi > 0 ? DeviceDpi / 96f : 1f;
-			int width = Math.Max(1, (int)Math.Round(Width * scale, MidpointRounding.AwayFromZero));
-			int height = Math.Max(1, (int)Math.Round(Height * scale, MidpointRounding.AwayFromZero));
+			int width = Math.Max(1, ClientSize.Width);
+			int height = Math.Max(1, ClientSize.Height);
 			return new Vortice.Mathematics.SizeI(width, height);
 		}
 		/// <summary>
