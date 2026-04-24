@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -42,8 +44,13 @@ namespace MediaPlayer_X_Ark.Engine.CD
           case OutputFormat.Srla: WriteSrla(pcmData, outputPath, progress, ct); break;
         }
 
-        if (meta != null && format != OutputFormat.Alac && format != OutputFormat.Srla)
-          WriteTags(outputPath, meta);
+        if (meta != null)
+        {
+          if (format == OutputFormat.Srla)
+            WriteSrlaTags(outputPath, meta);
+          else if (format != OutputFormat.Alac)
+            WriteTags(outputPath, meta);
+        }
       }, ct);
     }
 
@@ -223,6 +230,48 @@ namespace MediaPlayer_X_Ark.Engine.CD
       {
         System.Diagnostics.Debug.WriteLine($"[CdRipper] Tag write failed: {ex.Message}");
       }
+    }
+
+    private static void WriteSrlaTags(string path, RipMetadata meta)
+    {
+      try
+      {
+        var items = new List<SrlaApeTagItem>();
+        AddSrlaTextTag(items, "Title", meta.Title);
+        AddSrlaTextTag(items, "Artist", meta.Artist);
+        AddSrlaTextTag(items, "Album", meta.Album);
+
+        if (meta.TrackNumber > 0)
+        {
+          string trackValue = meta.TrackTotal > 0
+            ? $"{meta.TrackNumber}/{meta.TrackTotal}"
+            : meta.TrackNumber.ToString();
+          AddSrlaTextTag(items, "Track", trackValue);
+        }
+
+        if (meta.Year > 0)
+          AddSrlaTextTag(items, "Year", meta.Year.ToString());
+
+        if (items.Count > 0)
+          SrlaTag.WriteApeTag(path, items);
+      }
+      catch (Exception ex)
+      {
+        System.Diagnostics.Debug.WriteLine($"[CdRipper] SRLA tag write failed: {ex.Message}");
+      }
+    }
+
+    private static void AddSrlaTextTag(List<SrlaApeTagItem> items, string key, string value)
+    {
+      if (string.IsNullOrWhiteSpace(value))
+        return;
+
+      items.Add(new SrlaApeTagItem
+      {
+        Key = key,
+        Value = Encoding.UTF8.GetBytes(value),
+        Kind = SrlaApeItemKind.Utf8,
+      });
     }
 
     /// <summary>
