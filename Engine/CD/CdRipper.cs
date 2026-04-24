@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,7 +12,7 @@ namespace MediaPlayer_X_Ark.Engine.CD
   /// </summary>
   public static class CdRipper
   {
-    public enum OutputFormat { Wav, Flac, Alac }
+    public enum OutputFormat { Wav, Flac, Alac, Srla }
 
     /// <summary>
     /// 1トラックをリップして保存する。
@@ -39,10 +41,16 @@ namespace MediaPlayer_X_Ark.Engine.CD
           case OutputFormat.Wav:  WriteWav(pcmData, outputPath, progress, ct); break;
           case OutputFormat.Flac: WriteFlac(pcmData, outputPath, progress, ct); break;
           case OutputFormat.Alac: WriteAlac(pcmData, outputPath, progress, ct); break;
+          case OutputFormat.Srla: WriteSrla(pcmData, outputPath, progress, ct); break;
         }
 
-        if (meta != null && format != OutputFormat.Alac)
-          WriteTags(outputPath, meta);
+        if (meta != null)
+        {
+          if (format == OutputFormat.Srla)
+            WriteSrlaTags(outputPath, meta);
+          else if (format != OutputFormat.Alac)
+            WriteTags(outputPath, meta);
+        }
       }, ct);
     }
 
@@ -163,6 +171,46 @@ namespace MediaPlayer_X_Ark.Engine.CD
       encoder.Close();
     }
 
+    // ── SRLA ─────────────────────────────────────────────────────────
+
+    private static void WriteSrla(byte[] pcmData, string path, IProgress<int> progress, CancellationToken ct)
+    {
+      const int bytesPerFrame = 4; // 16bit stereo @ 2ch
+      var createParams = new SrlaEncoderCreateParams
+      {
+        sample_rate = 44100,
+        channels = 2,
+        bits_per_sample = 16,
+        frames_per_packet = 4096,
+        srla_preset = 4,
+        srla_max_block_size = 4096,
+        srla_lookahead_samples = 4096,
+        srla_ltp_order = 0,
+      };
+
+      if ((pcmData.Length % bytesPerFrame) != 0)
+        throw new InvalidOperationException("SRLA input PCM length is not aligned to audio frame size.");
+
+      int chunkSize = createParams.frames_per_packet * bytesPerFrame;
+      int written = 0;
+
+      using var encoder = new SrlaEncoder(path, createParams);
+      while (written < pcmData.Length)
+      {
+        ct.ThrowIfCancellationRequested();
+
+        int len = Math.Min(chunkSize, pcmData.Length - written);
+        var chunk = new byte[len];
+        Buffer.BlockCopy(pcmData, written, chunk, 0, len);
+
+        encoder.Write(chunk);
+        written += len;
+        progress?.Report((int)((long)written * 100 / pcmData.Length));
+      }
+
+      encoder.Close();
+    }
+
     // ── メタデータ書き込み（ATL経由） ────────────────────────────────
 
     private static void WriteTags(string path, RipMetadata meta)
@@ -184,6 +232,48 @@ namespace MediaPlayer_X_Ark.Engine.CD
       }
     }
 
+    private static void WriteSrlaTags(string path, RipMetadata meta)
+    {
+      try
+      {
+        var items = new List<SrlaApeTagItem>();
+        AddSrlaTextTag(items, "Title", meta.Title);
+        AddSrlaTextTag(items, "Artist", meta.Artist);
+        AddSrlaTextTag(items, "Album", meta.Album);
+
+        if (meta.TrackNumber > 0)
+        {
+          string trackValue = meta.TrackTotal > 0
+            ? $"{meta.TrackNumber}/{meta.TrackTotal}"
+            : meta.TrackNumber.ToString();
+          AddSrlaTextTag(items, "Track", trackValue);
+        }
+
+        if (meta.Year > 0)
+          AddSrlaTextTag(items, "Year", meta.Year.ToString());
+
+        if (items.Count > 0)
+          SrlaTag.WriteApeTag(path, items);
+      }
+      catch (Exception ex)
+      {
+        System.Diagnostics.Debug.WriteLine($"[CdRipper] SRLA tag write failed: {ex.Message}");
+      }
+    }
+
+    private static void AddSrlaTextTag(List<SrlaApeTagItem> items, string key, string value)
+    {
+      if (string.IsNullOrWhiteSpace(value))
+        return;
+
+      items.Add(new SrlaApeTagItem
+      {
+        Key = key,
+        Value = Encoding.UTF8.GetBytes(value),
+        Kind = SrlaApeItemKind.Utf8,
+      });
+    }
+
     /// <summary>
     /// 保存先ファイル名を生成する（トラック番号_タイトル.拡張子）。
     /// </summary>
@@ -193,6 +283,7 @@ namespace MediaPlayer_X_Ark.Engine.CD
       {
         OutputFormat.Flac => ".flac",
         OutputFormat.Alac => ".m4a",
+        OutputFormat.Srla => ".srl",
         _                 => ".wav",
       };
 

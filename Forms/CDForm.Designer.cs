@@ -163,7 +163,7 @@ namespace MediaPlayer_X_Ark
 			//
 			cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			cmbFormat.FormattingEnabled = true;
-			cmbFormat.Items.AddRange(new object[] { "WAV", "FLAC", "ALAC (.m4a)" });
+			cmbFormat.Items.AddRange(new object[] { "WAV", "FLAC", "ALAC (.m4a)", "SRLA (.srl)" });
 			cmbFormat.Location = new System.Drawing.Point(50, 406);
 			cmbFormat.Name = "cmbFormat";
 			cmbFormat.Size = new System.Drawing.Size(110, 23);
