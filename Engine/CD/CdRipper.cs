@@ -7,306 +7,336 @@ using System.Threading.Tasks;
 
 namespace MediaPlayer_X_Ark.Engine.CD
 {
-  /// <summary>
-  /// CDDAのPCMデータをWAV / FLAC / ALACファイルとして保存する。
-  /// </summary>
-  public static class CdRipper
-  {
-    public enum OutputFormat { Wav, Flac, Alac, Srla }
+	/// <summary>
+	/// CDDAのPCMデータをWAV / FLAC / ALACファイルとして保存する。
+	/// </summary>
+	public static class CdRipper
+	{
+		public enum OutputFormat { Wav, Flac, Alac, Srla }
 
-    /// <summary>
-    /// 1トラックをリップして保存する。
-    /// </summary>
-    /// <param name="pcmData">ReadTrack() で取得した44100Hz/16bit/ステレオのPCMデータ</param>
-    /// <param name="outputPath">保存先フルパス（拡張子込み）</param>
-    /// <param name="format">出力フォーマット</param>
-    /// <param name="meta">タグ情報（null可）</param>
-    /// <param name="ct">キャンセルトークン</param>
-    public static Task RipAsync(
-      byte[] pcmData,
-      string outputPath,
-      OutputFormat format,
-      RipMetadata meta,
-      IProgress<int> progress = null,
-      CancellationToken ct = default)
-    {
-      return Task.Run(() =>
-      {
-        ct.ThrowIfCancellationRequested();
+		/// <summary>
+		/// 1トラックをリップして保存する。
+		/// </summary>
+		/// <param name="pcmData">ReadTrack() で取得した44100Hz/16bit/ステレオのPCMデータ</param>
+		/// <param name="outputPath">保存先フルパス（拡張子込み）</param>
+		/// <param name="format">出力フォーマット</param>
+		/// <param name="meta">タグ情報（null可）</param>
+		/// <param name="ct">キャンセルトークン</param>
+		public static Task RipAsync(
+		  byte[] pcmData,
+		  string outputPath,
+		  OutputFormat format,
+		  RipMetadata meta,
+		  IProgress<int> progress = null,
+		  CancellationToken ct = default)
+		{
+			return Task.Run(() =>
+			{
+				ct.ThrowIfCancellationRequested();
 
-        Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+				Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
 
-        switch (format)
-        {
-          case OutputFormat.Wav:  WriteWav(pcmData, outputPath, progress, ct); break;
-          case OutputFormat.Flac: WriteFlac(pcmData, outputPath, progress, ct); break;
-          case OutputFormat.Alac: WriteAlac(pcmData, outputPath, progress, ct); break;
-          case OutputFormat.Srla: WriteSrla(pcmData, outputPath, progress, ct); break;
-        }
+				switch (format)
+				{
+					case OutputFormat.Wav: WriteWav(pcmData, outputPath, progress, ct); break;
+					case OutputFormat.Flac: WriteFlac(pcmData, outputPath, progress, ct); break;
+					case OutputFormat.Alac: WriteAlac(pcmData, outputPath, progress, ct); break;
+					case OutputFormat.Srla: WriteSrla(pcmData, outputPath, progress, ct); break;
+				}
 
-        if (meta != null)
-        {
-          if (format == OutputFormat.Srla)
-            WriteSrlaTags(outputPath, meta);
-          else if (format != OutputFormat.Alac)
-            WriteTags(outputPath, meta);
-        }
-      }, ct);
-    }
+				if (meta != null)
+				{
+					if (format == OutputFormat.Srla)
+						WriteSrlaTags(outputPath, meta);
+					else
+						WriteTags(outputPath, meta);
+				}
+			}, ct);
+		}
 
-    // ── WAV ──────────────────────────────────────────────────────────
+		// ── WAV ──────────────────────────────────────────────────────────
 
-    private static void WriteWav(byte[] pcmData, string path, IProgress<int> progress, CancellationToken ct)
-    {
-      const int sampleRate  = 44100;
-      const short channels  = 2;
-      const short bitsPerSample = 16;
-      int byteRate  = sampleRate * channels * (bitsPerSample / 8);
-      short blockAlign = (short)(channels * (bitsPerSample / 8));
+		private static void WriteWav(byte[] pcmData, string path, IProgress<int> progress, CancellationToken ct)
+		{
+			const int sampleRate = 44100;
+			const short channels = 2;
+			const short bitsPerSample = 16;
+			int byteRate = sampleRate * channels * (bitsPerSample / 8);
+			short blockAlign = (short)(channels * (bitsPerSample / 8));
 
-      using var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
-      using var bw = new BinaryWriter(fs);
+			using var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
+			using var bw = new BinaryWriter(fs);
 
-      // RIFF ヘッダ
-      bw.Write(System.Text.Encoding.ASCII.GetBytes("RIFF"));
-      bw.Write((uint)(36 + pcmData.Length));
-      bw.Write(System.Text.Encoding.ASCII.GetBytes("WAVE"));
+			// RIFF ヘッダ
+			bw.Write(System.Text.Encoding.ASCII.GetBytes("RIFF"));
+			bw.Write((uint)(36 + pcmData.Length));
+			bw.Write(System.Text.Encoding.ASCII.GetBytes("WAVE"));
 
-      // fmt チャンク
-      bw.Write(System.Text.Encoding.ASCII.GetBytes("fmt "));
-      bw.Write((uint)16);
-      bw.Write((short)1);         // PCM
-      bw.Write(channels);
-      bw.Write((uint)sampleRate);
-      bw.Write((uint)byteRate);
-      bw.Write(blockAlign);
-      bw.Write(bitsPerSample);
+			// fmt チャンク
+			bw.Write(System.Text.Encoding.ASCII.GetBytes("fmt "));
+			bw.Write((uint)16);
+			bw.Write((short)1);         // PCM
+			bw.Write(channels);
+			bw.Write((uint)sampleRate);
+			bw.Write((uint)byteRate);
+			bw.Write(blockAlign);
+			bw.Write(bitsPerSample);
 
-      // data チャンク
-      bw.Write(System.Text.Encoding.ASCII.GetBytes("data"));
-      bw.Write((uint)pcmData.Length);
+			// data チャンク
+			bw.Write(System.Text.Encoding.ASCII.GetBytes("data"));
+			bw.Write((uint)pcmData.Length);
 
-      // PCMデータをチャンク書き込み（進捗報告付き）
-      const int chunkSize = 65536;
-      int written = 0;
-      while (written < pcmData.Length)
-      {
-        ct.ThrowIfCancellationRequested();
-        int len = Math.Min(chunkSize, pcmData.Length - written);
-        bw.Write(pcmData, written, len);
-        written += len;
-        progress?.Report((int)((long)written * 100 / pcmData.Length));
-      }
-    }
+			// PCMデータをチャンク書き込み（進捗報告付き）
+			const int chunkSize = 65536;
+			int written = 0;
+			while (written < pcmData.Length)
+			{
+				ct.ThrowIfCancellationRequested();
+				int len = Math.Min(chunkSize, pcmData.Length - written);
+				bw.Write(pcmData, written, len);
+				written += len;
+				progress?.Report((int)((long)written * 100 / pcmData.Length));
+			}
+		}
 
-    // ── FLAC ─────────────────────────────────────────────────────────
+		// ── FLAC ─────────────────────────────────────────────────────────
 
-    private static void WriteFlac(byte[] pcmData, string path, IProgress<int> progress, CancellationToken ct)
-    {
-      const int bytesPerFrame = 4; // 16bit stereo @ 2ch
-      var createParams = new FlacEncoderCreateParams
-      {
-        sample_rate = 44100,
-        channels = 2,
-        bits_per_sample = 16,
-        frames_per_packet = 4096,
-      };
+		private static void WriteFlac(byte[] pcmData, string path, IProgress<int> progress, CancellationToken ct)
+		{
+			const int bytesPerFrame = 4; // 16bit stereo @ 2ch
+			var createParams = new FlacEncoderCreateParams
+			{
+				sample_rate = 44100,
+				channels = 2,
+				bits_per_sample = 16,
+				frames_per_packet = 4096,
+			};
 
-      if ((pcmData.Length % bytesPerFrame) != 0)
-        throw new InvalidOperationException("FLAC input PCM length is not aligned to audio frame size.");
+			if ((pcmData.Length % bytesPerFrame) != 0)
+				throw new InvalidOperationException("FLAC input PCM length is not aligned to audio frame size.");
 
-      int chunkSize = createParams.frames_per_packet * bytesPerFrame;
-      int written = 0;
+			int chunkSize = createParams.frames_per_packet * bytesPerFrame;
+			int written = 0;
 
-      using var encoder = new FlacEncoder(path, createParams);
-      while (written < pcmData.Length)
-      {
-        ct.ThrowIfCancellationRequested();
+			using var encoder = new FlacEncoder(path, createParams);
+			while (written < pcmData.Length)
+			{
+				ct.ThrowIfCancellationRequested();
 
-        int len = Math.Min(chunkSize, pcmData.Length - written);
-        var chunk = new byte[len];
-        Buffer.BlockCopy(pcmData, written, chunk, 0, len);
+				int len = Math.Min(chunkSize, pcmData.Length - written);
+				var chunk = new byte[len];
+				Buffer.BlockCopy(pcmData, written, chunk, 0, len);
 
-        encoder.Write(chunk);
-        written += len;
-        progress?.Report((int)((long)written * 100 / pcmData.Length));
-      }
+				encoder.Write(chunk);
+				written += len;
+				progress?.Report((int)((long)written * 100 / pcmData.Length));
+			}
 
-      encoder.Close();
-    }
+			encoder.Close();
+		}
 
-    // ── ALAC ─────────────────────────────────────────────────────────
+		// ── ALAC ─────────────────────────────────────────────────────────
 
-    private static void WriteAlac(byte[] pcmData, string path, IProgress<int> progress, CancellationToken ct)
-    {
-      const int bytesPerFrame = 4; // 16bit stereo @ 2ch
-      var createParams = new AlacEncoderCreateParams
-      {
-        sample_rate = 44100,
-        channels = 2,
-        bits_per_sample = 16,
-        frames_per_packet = 4096,
-      };
+		private static void WriteAlac(byte[] pcmData, string path, IProgress<int> progress, CancellationToken ct)
+		{
+			const int bytesPerFrame = 4; // 16bit stereo @ 2ch
+			var createParams = new AlacEncoderCreateParams
+			{
+				sample_rate = 44100,
+				channels = 2,
+				bits_per_sample = 16,
+				frames_per_packet = 4096,
+			};
 
-      if ((pcmData.Length % bytesPerFrame) != 0)
-        throw new InvalidOperationException("ALAC input PCM length is not aligned to audio frame size.");
+			if ((pcmData.Length % bytesPerFrame) != 0)
+				throw new InvalidOperationException("ALAC input PCM length is not aligned to audio frame size.");
 
-      int chunkSize = createParams.frames_per_packet * bytesPerFrame;
-      int written = 0;
+			int chunkSize = createParams.frames_per_packet * bytesPerFrame;
+			int written = 0;
 
-      using var encoder = new AlacEncoder(path, createParams);
-      while (written < pcmData.Length)
-      {
-        ct.ThrowIfCancellationRequested();
+			using var encoder = new AlacEncoder(path, createParams);
+			while (written < pcmData.Length)
+			{
+				ct.ThrowIfCancellationRequested();
 
-        int len = Math.Min(chunkSize, pcmData.Length - written);
-        var chunk = new byte[len];
-        Buffer.BlockCopy(pcmData, written, chunk, 0, len);
+				int len = Math.Min(chunkSize, pcmData.Length - written);
+				var chunk = new byte[len];
+				Buffer.BlockCopy(pcmData, written, chunk, 0, len);
 
-        encoder.Write(chunk);
-        written += len;
-        progress?.Report((int)((long)written * 100 / pcmData.Length));
-      }
+				encoder.Write(chunk);
+				written += len;
+				progress?.Report((int)((long)written * 100 / pcmData.Length));
+			}
 
-      encoder.Close();
-    }
+			encoder.Close();
+		}
 
-    // ── SRLA ─────────────────────────────────────────────────────────
+		// ── SRLA ─────────────────────────────────────────────────────────
 
-    private static void WriteSrla(byte[] pcmData, string path, IProgress<int> progress, CancellationToken ct)
-    {
-      const int bytesPerFrame = 4; // 16bit stereo @ 2ch
-      var createParams = new SrlaEncoderCreateParams
-      {
-        sample_rate = 44100,
-        channels = 2,
-        bits_per_sample = 16,
-        frames_per_packet = 4096,
-        srla_preset = 4,
-        srla_max_block_size = 4096,
-        srla_lookahead_samples = 4096,
-        srla_ltp_order = 0,
-      };
+		private static void WriteSrla(byte[] pcmData, string path, IProgress<int> progress, CancellationToken ct)
+		{
+			const int bytesPerFrame = 4; // 16bit stereo @ 2ch
+			var createParams = new SrlaEncoderCreateParams
+			{
+				sample_rate = 44100,
+				channels = 2,
+				bits_per_sample = 16,
+				frames_per_packet = 4096,
+				srla_preset = 4,
+				srla_max_block_size = 4096,
+				srla_lookahead_samples = 4096,
+				srla_ltp_order = 0,
+			};
 
-      if ((pcmData.Length % bytesPerFrame) != 0)
-        throw new InvalidOperationException("SRLA input PCM length is not aligned to audio frame size.");
+			if ((pcmData.Length % bytesPerFrame) != 0)
+				throw new InvalidOperationException("SRLA input PCM length is not aligned to audio frame size.");
 
-      int chunkSize = createParams.frames_per_packet * bytesPerFrame;
-      int written = 0;
+			int chunkSize = createParams.frames_per_packet * bytesPerFrame;
+			int written = 0;
 
-      using var encoder = new SrlaEncoder(path, createParams);
-      while (written < pcmData.Length)
-      {
-        ct.ThrowIfCancellationRequested();
+			using var encoder = new SrlaEncoder(path, createParams);
+			while (written < pcmData.Length)
+			{
+				ct.ThrowIfCancellationRequested();
 
-        int len = Math.Min(chunkSize, pcmData.Length - written);
-        var chunk = new byte[len];
-        Buffer.BlockCopy(pcmData, written, chunk, 0, len);
+				int len = Math.Min(chunkSize, pcmData.Length - written);
+				var chunk = new byte[len];
+				Buffer.BlockCopy(pcmData, written, chunk, 0, len);
 
-        encoder.Write(chunk);
-        written += len;
-        progress?.Report((int)((long)written * 100 / pcmData.Length));
-      }
+				encoder.Write(chunk);
+				written += len;
+				progress?.Report((int)((long)written * 100 / pcmData.Length));
+			}
 
-      encoder.Close();
-    }
+			encoder.Close();
+		}
 
-    // ── メタデータ書き込み（ATL経由） ────────────────────────────────
+		// ── メタデータ書き込み（ATL経由） ────────────────────────────────
 
-    private static void WriteTags(string path, RipMetadata meta)
-    {
-      try
-      {
-        var track = new ATL.Track(path);
-        if (!string.IsNullOrEmpty(meta.Title))   track.Title       = meta.Title;
-        if (!string.IsNullOrEmpty(meta.Artist))  track.Artist      = meta.Artist;
-        if (!string.IsNullOrEmpty(meta.Album))   track.Album       = meta.Album;
-        if (meta.TrackNumber > 0)                track.TrackNumber = (ushort)meta.TrackNumber;
-        if (meta.TrackTotal > 0)                 track.TrackTotal  = (ushort)meta.TrackTotal;
-        if (meta.Year > 0)                       track.Year        = meta.Year;
-        track.Save();
-      }
-      catch (Exception ex)
-      {
-        System.Diagnostics.Debug.WriteLine($"[CdRipper] Tag write failed: {ex.Message}");
-      }
-    }
+		private static void WriteTags(string path, RipMetadata meta)
+		{
+			try
+			{
+				var track = new ATL.Track(path);
+				if (!string.IsNullOrEmpty(meta.Title)) track.Title = meta.Title;
+				if (!string.IsNullOrEmpty(meta.Artist)) track.Artist = meta.Artist;
+				if (!string.IsNullOrEmpty(meta.Album)) track.Album = meta.Album;
+				if (meta.TrackNumber > 0) track.TrackNumber = (ushort)meta.TrackNumber;
+				if (meta.TrackTotal > 0) track.TrackTotal = (ushort)meta.TrackTotal;
+				if (meta.Year > 0) track.Year = meta.Year;
 
-    private static void WriteSrlaTags(string path, RipMetadata meta)
-    {
-      try
-      {
-        var items = new List<SrlaApeTagItem>();
-        AddSrlaTextTag(items, "Title", meta.Title);
-        AddSrlaTextTag(items, "Artist", meta.Artist);
-        AddSrlaTextTag(items, "Album", meta.Album);
+				if (meta.CoverArtData != null && meta.CoverArtData.Length > 0)
+				{
+					var picture = ATL.PictureInfo.fromBinaryData(
+					  meta.CoverArtData,
+					  ATL.PictureInfo.PIC_TYPE.Front,
+					  ATL.AudioData.MetaDataIOFactory.TagType.ANY,
+					  null,
+					  1);
+					track.EmbeddedPictures.Add(picture);
+				}
 
-        if (meta.TrackNumber > 0)
-        {
-          string trackValue = meta.TrackTotal > 0
-            ? $"{meta.TrackNumber}/{meta.TrackTotal}"
-            : meta.TrackNumber.ToString();
-          AddSrlaTextTag(items, "Track", trackValue);
-        }
+				track.Save();
+			}
+			catch (Exception ex)
+			{
+				System.Diagnostics.Debug.WriteLine($"[CdRipper] Tag write failed: {ex.Message}");
+			}
+		}
 
-        if (meta.Year > 0)
-          AddSrlaTextTag(items, "Year", meta.Year.ToString());
+		private static void WriteSrlaTags(string path, RipMetadata meta)
+		{
+			try
+			{
+				var items = new List<SrlaApeTagItem>();
+				AddSrlaTextTag(items, "Title", meta.Title);
+				AddSrlaTextTag(items, "Artist", meta.Artist);
+				AddSrlaTextTag(items, "Album", meta.Album);
 
-        if (items.Count > 0)
-          SrlaTag.WriteApeTag(path, items);
-      }
-      catch (Exception ex)
-      {
-        System.Diagnostics.Debug.WriteLine($"[CdRipper] SRLA tag write failed: {ex.Message}");
-      }
-    }
+				if (meta.TrackNumber > 0)
+				{
+					string trackValue = meta.TrackTotal > 0
+					  ? $"{meta.TrackNumber}/{meta.TrackTotal}"
+					  : meta.TrackNumber.ToString();
+					AddSrlaTextTag(items, "Track", trackValue);
+				}
 
-    private static void AddSrlaTextTag(List<SrlaApeTagItem> items, string key, string value)
-    {
-      if (string.IsNullOrWhiteSpace(value))
-        return;
+				if (meta.Year > 0)
+					AddSrlaTextTag(items, "Year", meta.Year.ToString());
 
-      items.Add(new SrlaApeTagItem
-      {
-        Key = key,
-        Value = Encoding.UTF8.GetBytes(value),
-        Kind = SrlaApeItemKind.Utf8,
-      });
-    }
+				if (meta.CoverArtData != null && meta.CoverArtData.Length > 0)
+				{
+					const string coverName = "Cover Art (Front).jpg";
+					byte[] coverValue = new byte[Encoding.UTF8.GetByteCount(coverName) + 1 + meta.CoverArtData.Length];
 
-    /// <summary>
-    /// 保存先ファイル名を生成する（トラック番号_タイトル.拡張子）。
-    /// </summary>
-    public static string BuildFileName(string folder, OutputFormat format, int trackNumber, string title)
-    {
-      string ext = format switch
-      {
-        OutputFormat.Flac => ".flac",
-        OutputFormat.Alac => ".m4a",
-        OutputFormat.Srla => ".srl",
-        _                 => ".wav",
-      };
+					int nameBytes = Encoding.UTF8.GetBytes(coverName, 0, coverName.Length, coverValue, 0);
+					coverValue[nameBytes] = 0;
+					Buffer.BlockCopy(meta.CoverArtData, 0, coverValue, nameBytes + 1, meta.CoverArtData.Length);
 
-      string safeName = SanitizeFileName($"{trackNumber:D2} {title}");
-      return Path.Combine(folder, safeName + ext);
-    }
+					items.Add(new SrlaApeTagItem
+					{
+						Key = "Cover Art (Front)",
+						Value = coverValue,
+						Kind = SrlaApeItemKind.Binary,
+					});
+				}
 
-    private static string SanitizeFileName(string name)
-    {
-      foreach (char c in Path.GetInvalidFileNameChars())
-        name = name.Replace(c, '_');
-      return name.Trim();
-    }
-  }
+				if (items.Count > 0)
+					SrlaTag.WriteApeTag(path, items);
+			}
+			catch (Exception ex)
+			{
+				System.Diagnostics.Debug.WriteLine($"[CdRipper] SRLA tag write failed: {ex.Message}");
+			}
+		}
 
-  /// <summary>保存時に付与するタグ情報。</summary>
-  public class RipMetadata
-  {
-    public string Title       { get; set; }
-    public string Artist      { get; set; }
-    public string Album       { get; set; }
-    public int    TrackNumber { get; set; }
-    public int    TrackTotal  { get; set; }
-    public int    Year        { get; set; }
-  }
+		private static void AddSrlaTextTag(List<SrlaApeTagItem> items, string key, string value)
+		{
+			if (string.IsNullOrWhiteSpace(value))
+				return;
+
+			items.Add(new SrlaApeTagItem
+			{
+				Key = key,
+				Value = Encoding.UTF8.GetBytes(value),
+				Kind = SrlaApeItemKind.Utf8,
+			});
+		}
+
+		/// <summary>
+		/// 保存先ファイル名を生成する（トラック番号_タイトル.拡張子）。
+		/// </summary>
+		public static string BuildFileName(string folder, OutputFormat format, int trackNumber, string title)
+		{
+			string ext = format switch
+			{
+				OutputFormat.Flac => ".flac",
+				OutputFormat.Alac => ".m4a",
+				OutputFormat.Srla => ".srl",
+				_ => ".wav",
+			};
+
+			string safeName = SanitizeFileName($"{trackNumber:D2} {title}");
+			return Path.Combine(folder, safeName + ext);
+		}
+
+		private static string SanitizeFileName(string name)
+		{
+			foreach (char c in Path.GetInvalidFileNameChars())
+				name = name.Replace(c, '_');
+			return name.Trim();
+		}
+	}
+
+	/// <summary>保存時に付与するタグ情報。</summary>
+	public class RipMetadata
+	{
+		public string Title { get; set; }
+		public string Artist { get; set; }
+		public string Album { get; set; }
+		public int TrackNumber { get; set; }
+		public int TrackTotal { get; set; }
+		public int Year { get; set; }
+		public byte[] CoverArtData { get; set; }
+	}
 }

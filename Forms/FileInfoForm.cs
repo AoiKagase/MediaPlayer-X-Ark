@@ -73,6 +73,12 @@ namespace MediaPlayer_X_Ark.Forms
 			lblTitleVal.Text = item.Title ?? "-";
 			lblArtistVal.Text = item.Artist ?? "-";
 			lblAlbumVal.Text = item.Album ?? "-";
+			lblYearVal.Text = item.Year > 0 ? item.Year.ToString() : "-";
+			lblTrackVal.Text = item.TrackNumber > 0
+				? (item.TrackTotal > 0
+					? $"{item.TrackNumber}/{item.TrackTotal}"
+					: item.TrackNumber.ToString())
+				: "-";
 			lblFileNameVal.Text = item.FileName;
 			lblFormatVal.Text = item.Format.ToString();
 			lblBitVal.Text = item.Bit > 0 ? $"{item.Bit}bit" : "-";
@@ -114,8 +120,35 @@ namespace MediaPlayer_X_Ark.Forms
 		{
 			if (index < 0 || index >= _player.PlayList.Count) return;
 			var item = _player.PlayList[index];
-
 			System.Drawing.Image img = null;
+
+			// ① ファイルから直接取得できる場合はそれを優先（例：ATLが対応しておらず、コーデックプラグインが対応している場合など）
+			FMOD.RESULT result = _player.GetTag("COVERART", index, out FMOD.TAG coverTag);
+			_player.DumpTags(index);
+			if (result == FMOD.RESULT.OK)
+			{
+				if (coverTag.datatype == FMOD.TAGDATATYPE.BINARY)
+				{
+					try
+					{
+						byte[] imgData = new byte[coverTag.datalen];
+						System.Runtime.InteropServices.Marshal.Copy(coverTag.data, imgData, 0, (int)coverTag.datalen);
+						using (var ms = new MemoryStream(imgData))
+						{
+							using var tmp = Image.FromStream(ms);
+							img = new Bitmap(tmp);
+							if (InvokeRequired)
+								Invoke(new Action(() => { if (!picCover.IsDisposed) picCover.Image = img; }));
+							else
+								picCover.Image = img;
+						}
+						return;
+					}
+					catch
+					{
+					}
+				}
+			}
 
 			// ② CDトラック：MusicBrainz Disc ID で直接取得（高速・高精度）
 			if (!string.IsNullOrEmpty(item.MusicBrainzDiscId))

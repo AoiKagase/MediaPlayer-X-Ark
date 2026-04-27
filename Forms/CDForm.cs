@@ -1,3 +1,4 @@
+using MediaPlayer_X_Ark.Engine;
 using MediaPlayer_X_Ark.Engine.CD;
 using MediaPlayer_X_Ark.Engine.Config;
 using MediaPlayer_X_Ark.Engine.Player;
@@ -52,6 +53,7 @@ namespace MediaPlayer_X_Ark
 			{
 				_cdReader?.Dispose();
 				_cdReader = null;
+				_appliedResult = null;
 
 				char driveLetter = cmbDrive.SelectedItem.ToString()[0];
 				_cdReader = new CdReader(driveLetter);
@@ -65,6 +67,11 @@ namespace MediaPlayer_X_Ark
 			{
 				lblStatus.Text = $"読み取り失敗: {ex.Message}";
 			}
+		}
+
+		private static int ParseYear(string year)
+		{
+			return int.TryParse(year, out int value) && value > 0 ? value : 0;
 		}
 
 		private void lstTracks_DoubleClick(object sender, EventArgs e)
@@ -90,7 +97,11 @@ namespace MediaPlayer_X_Ark
 				{
 					_mainForm.Controller.Stop();
 					_cdReader.Tracks[trackIndex].PlayListIndex = index;
-					_player.PlayList[index].MusicBrainzDiscId = _cdReader.MusicBrainzId;
+					var entry = _player.PlayList[index];
+					entry.TrackNumber = _cdReader.Tracks[trackIndex].TrackNumber;
+					entry.TrackTotal = _cdReader.AudioTracks;
+					entry.Year = ParseYear(_appliedResult?.Year);
+					entry.MusicBrainzDiscId = _cdReader.MusicBrainzId;
 					if (playImmediately) 
 						_mainForm.Controller.PlayAt(index);
 					lblStatus.Text = $"{title} 完了";
@@ -154,7 +165,11 @@ namespace MediaPlayer_X_Ark
 					_player.CreateSoundFromPCM(pcmData, title, out index);
 					_cdReader.Tracks[trackIndex].PlayListIndex = index;
 
-					_player.PlayList[index].MusicBrainzDiscId = _cdReader.MusicBrainzId;
+					var entry = _player.PlayList[index];
+					entry.TrackNumber = _cdReader.Tracks[trackIndex].TrackNumber;
+					entry.TrackTotal = _cdReader.AudioTracks;
+					entry.Year = ParseYear(_appliedResult?.Year);
+					entry.MusicBrainzDiscId = _cdReader.MusicBrainzId;
 				}
 				catch (Exception ex)
 				{
@@ -205,6 +220,7 @@ namespace MediaPlayer_X_Ark
 			{
 				_cdReader.Eject();
 				lstTracks.Items.Clear();
+				_appliedResult = null;
 				lblStatus.Text = "取り出しました";
 			}
 			catch
@@ -303,8 +319,10 @@ namespace MediaPlayer_X_Ark
 					Title       = track.Title,
 					Artist      = _appliedResult?.Artist ?? "",
 					Album       = _appliedResult?.Album  ?? "",
+					Year        = ParseYear(_appliedResult?.Year),
 					TrackNumber = track.TrackNumber,
 					TrackTotal  = _cdReader.AudioTracks,
+					CoverArtData = _appliedResult?.CoverArtData,
 				};
 
 				string outputPath = CdRipper.BuildFileName(outputFolder, format, track.TrackNumber, track.Title);
@@ -416,6 +434,7 @@ namespace MediaPlayer_X_Ark
 				}
 			}
 
+			await AttachCoverArtAsync(selected, ct);
 			ApplyCddbResult(selected);
 		}
 
@@ -500,11 +519,43 @@ namespace MediaPlayer_X_Ark
 					entry.Title = title;
 					entry.Artist = result.Artist;
 					entry.Album = result.Album;
+					entry.Year = ParseYear(result.Year);
+					entry.TrackNumber = _cdReader.Tracks[i].TrackNumber;
+					entry.TrackTotal = _cdReader.AudioTracks;
 					entry.SetLength((uint)_cdReader.Tracks[i].Duration.Milliseconds);
 				}
 			}
 
 			lblStatus.Text = $"[{result.SourceLabel}] {result}";
+		}
+
+		private async Task AttachCoverArtAsync(CddbResult result, CancellationToken ct)
+		{
+			if (result == null) return;
+
+			byte[] coverArt = null;
+
+			if (!string.IsNullOrEmpty(_cdReader?.MusicBrainzId))
+			{
+				try
+				{
+					coverArt = await CoverArtClient.FetchBytesByDiscIdAsync(
+						_cdReader.MusicBrainzId, ct);
+				}
+				catch { }
+			}
+
+			if ((coverArt == null || coverArt.Length == 0) && !string.IsNullOrEmpty(result.Album))
+			{
+				try
+				{
+					coverArt = await CoverArtClient.FetchBytesByArtistAlbumAsync(
+						result.Artist, result.Album, ct);
+				}
+				catch { }
+			}
+
+			result.CoverArtData = coverArt ?? Array.Empty<byte>();
 		}
 	}
 }

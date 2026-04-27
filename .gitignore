@@ -371,3 +371,5 @@ FodyWeavers.xsd
 /.claude
 /.dotnet-cli
 *.exe
+# Added by code-review-graph
+.code-review-graph/

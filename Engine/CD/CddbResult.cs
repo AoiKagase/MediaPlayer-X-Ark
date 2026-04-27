@@ -27,6 +27,11 @@ namespace MediaPlayer_X_Ark.Engine.CD
 		public string Source { get; set; } = "";
 
 		/// <summary>
+		/// CoverArt の生バイナリ。取得できなかった場合は空配列。
+		/// </summary>
+		public byte[] CoverArtData { get; set; } = Array.Empty<byte>();
+
+		/// <summary>
 		/// UI表示用の短いソース名。
 		/// MusicBrainz はそのまま、URL はホスト名のみを返す。
 		/// 例: "http://gnudb.gnudb.org/~cddb/cddb.cgi" → "gnudb.gnudb.org"

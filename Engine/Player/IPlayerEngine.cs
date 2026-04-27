@@ -98,7 +98,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
                            out bool diskBusy);
         FMOD.RESULT CreateSoundFromPCM(byte[] pcmData, string title, out int index);
 
-        void ClearPlayList();
+        FMOD.RESULT GetTag(string name, int index, out FMOD.TAG tag);
+		void DumpTags(int index);
+		void ClearPlayList();
         // ── 音量・パン ───────────────────────────────
         void SetVolume(float vol);
         int GetVolume();

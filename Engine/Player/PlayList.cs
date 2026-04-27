@@ -57,6 +57,12 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		public string Artist { get; set; }
 		[DisplayName("Album")]
 		public string Album { get; set; }
+		[Browsable(false)]
+		public int Year { get; set; }
+		[Browsable(false)]
+		public int TrackNumber { get; set; }
+		[Browsable(false)]
+		public int TrackTotal { get; set; }
 		/// <summary>ReplayGain トラックゲイン（dB）。タグがなければ null。</summary>
 		[Browsable(false)]
 		public float? ReplayGainTrack { get; set; } = null;

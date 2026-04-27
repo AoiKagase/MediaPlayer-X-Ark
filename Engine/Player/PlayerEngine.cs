@@ -1189,6 +1189,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 						PlayList[index].Title = track.Title;
 						PlayList[index].Artist = track.Artist;
 						PlayList[index].Album = track.Album;
+						PlayList[index].Year = track.Year ?? 0;
+						PlayList[index].TrackNumber = track.TrackNumber ?? 0;
+						PlayList[index].TrackTotal = track.TrackTotal ?? 0;
 						PlayList[index].SetLength((uint)track.DurationMs);
 
 						// ATL の AdditionalFields に "REPLAYGAIN_TRACK_GAIN" などが格納される
@@ -1209,6 +1212,75 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 		}
 
+		public RESULT GetTag(string name, int index, out FMOD.TAG tag)
+		{
+			tag = new FMOD.TAG();
+			if (!IsValidIndex(index))
+				return RESULT.ERR_INVALID_PARAM;
+			var sound = PlayList[index].Sound;
+			if (!sound.hasHandle())
+				return RESULT.ERR_INVALID_HANDLE;
+			return FmodCallFunction(sound.getTag(name, 0, out tag));
+		}
+		public void DumpTags(int index)
+		{
+			if (!IsValidIndex(index))
+			{
+				System.Diagnostics.Debug.WriteLine($"[TAG] invalid index: {index}");
+				return;
+			}
+
+			var sound = PlayList[index].Sound;
+			if (!sound.hasHandle())
+			{
+				System.Diagnostics.Debug.WriteLine($"[TAG] no sound handle: {index}");
+				return;
+			}
+
+			if (sound.getNumTags(out int numTags, out int numUpdated) != FMOD.RESULT.OK)
+			{
+				System.Diagnostics.Debug.WriteLine($"[TAG] getNumTags failed: {index}");
+				return;
+			}
+
+			System.Diagnostics.Debug.WriteLine($"[TAG] index={index} numTags={numTags} updated={numUpdated}");
+
+			for (int i = 0; i < numTags; i++)
+			{
+				var result = sound.getTag(null, i, out FMOD.TAG tag);
+				if (result != FMOD.RESULT.OK)
+				{
+					System.Diagnostics.Debug.WriteLine($"[TAG] getTag failed: i={i} result={result}");
+					continue;
+				}
+
+				string type = tag.type.ToString();
+				string dataType = tag.datatype.ToString();
+				string name = (string)tag.name ?? "";
+				string valueInfo;
+
+				if (tag.datatype == FMOD.TAGDATATYPE.STRING || tag.datatype == FMOD.TAGDATATYPE.STRING_UTF8)
+				{
+					string text = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tag.data) ?? "";
+					valueInfo = text;
+				}
+				else if (tag.datatype == FMOD.TAGDATATYPE.BINARY)
+				{
+					byte[] bytes = new byte[tag.datalen];
+					System.Runtime.InteropServices.Marshal.Copy(tag.data, bytes, 0, (int)tag.datalen);
+					int take = Math.Min(bytes.Length, 32);
+					valueInfo = BitConverter.ToString(bytes, 0, take);
+					if (bytes.Length > 32) valueInfo += "...";
+				}
+				else
+				{
+					valueInfo = $"data=0x{tag.data.ToString("X")}, len={tag.datalen}";
+				}
+
+				System.Diagnostics.Debug.WriteLine(
+						$"[TAG] #{i} type={type} datatype={dataType} name={name} len={tag.datalen} updated={tag.updated} value={valueInfo}");
+			}
+		}
 		/// <summary>"-6.54 dB" 形式の文字列を float に変換する。解析失敗時は null を返す。</summary>
 		private static float? ParseReplayGainDb(string value)
 		{
