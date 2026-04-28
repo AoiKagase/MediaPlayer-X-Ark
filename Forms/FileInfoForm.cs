@@ -31,6 +31,7 @@ namespace MediaPlayer_X_Ark.Forms
 			_mainForm = mainform;
 			this.Owner = mainform;
 			InitializeComponent();
+			ApplicationIcon.ApplyTo(this);
 
 			InitFileNameContextMenu();
 		}

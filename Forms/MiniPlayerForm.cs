@@ -20,6 +20,7 @@ namespace MediaPlayer_X_Ark.Forms
 							  SkinApplicator skinApplicator = null)
 		{
 			InitializeComponent();
+			MediaPlayer_X_Ark.ApplicationIcon.ApplyTo(this);
 			_mainForm = mainForm;
 			_controller = controller;
 			_skinApplicator = skinApplicator;

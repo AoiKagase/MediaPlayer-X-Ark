@@ -15,6 +15,7 @@ namespace MediaPlayer_X_Ark
 		public PresetNameInputForm()
 		{
 			InitializeComponent();
+			ApplicationIcon.ApplyTo(this);
 		}
 
 		private void BtnOK_Click(object sender, EventArgs e)

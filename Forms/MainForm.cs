@@ -70,6 +70,7 @@ namespace MediaPlayer_X_Ark
 		{
 			D2DContext.Initialize();
 			InitializeComponent();
+			ApplicationIcon.ApplyTo(this, notifyIcon);
 			DpiChanged += MainForm_DpiChanged;
 			this.Opacity = 0;
 			Spectrum.Visible = false;

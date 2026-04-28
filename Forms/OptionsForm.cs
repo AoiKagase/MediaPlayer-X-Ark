@@ -33,6 +33,7 @@ namespace MediaPlayer_X_Ark.Forms
 		public OptionsForm(MainForm mainForm, PlayerController engine, IConfigService config)
 		{
 			InitializeComponent();
+			ApplicationIcon.ApplyTo(this);
 
 			_engine = engine.Engine;
 			_config = config;

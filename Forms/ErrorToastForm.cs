@@ -32,6 +32,7 @@ namespace MediaPlayer_X_Ark.Forms
 				true);
 
 			FormBorderStyle = FormBorderStyle.None;
+			MediaPlayer_X_Ark.ApplicationIcon.ApplyTo(this);
 			ShowInTaskbar = false;
 			TopMost = true;
 			BackColor = Color.FromArgb(40, 40, 40);

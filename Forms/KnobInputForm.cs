@@ -40,6 +40,7 @@ namespace UI
 				rangeText += $" {unit}";
 
 			// フォーム設定
+			MediaPlayer_X_Ark.ApplicationIcon.ApplyTo(this);
 			Text = string.IsNullOrEmpty(parameterName)
 				? "値を入力"
 				: parameterName;

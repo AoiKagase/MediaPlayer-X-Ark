@@ -17,6 +17,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		private Label _lblCopyright;
 		private Label _lblCompany;
 		private Label _lblFmodCredit;
+		private Label _lblThirdPartyCredit;
 		private LinkLabel _lnkGitHub;
 		private Button _btnCheckUpdate;
 		private Label _lblUpdateStatus;
@@ -68,9 +69,20 @@ namespace MediaPlayer_X_Ark.Forms.Options
 				Text = "Audio Engine: FMOD by Firelight Technologies Pty Ltd.",
 			};
 
-			_lnkGitHub = new LinkLabel
+			_lblThirdPartyCredit = new Label
 			{
 				Location = new Point(pad, pad + (lineHeight + 12) * 5),
+				AutoSize = false,
+				Size = new Size(520, 76),
+				Font = new Font("Yu Gothic UI", 9f),
+				Text = "Third-party libraries:\r\n" +
+					"nfluidsynth, Vortice.Direct2D1, ATL, DiscordRPC, Newtonsoft.Json\r\n" +
+					"Bundled codec/MIDI components",
+			};
+
+			_lnkGitHub = new LinkLabel
+			{
+				Location = new Point(pad, pad + (lineHeight + 12) * 7),
 				AutoSize = true,
 				Font = new Font("Yu Gothic UI", 9f),
 			};
@@ -85,7 +97,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
 			_btnCheckUpdate = new Button
 			{
-				Location = new Point(pad, pad + (lineHeight + 12) * 6),
+				Location = new Point(pad, pad + (lineHeight + 12) * 8),
 				Size = new Size(160, 28),
 				Text = "アップデートを確認",
 				FlatStyle = FlatStyle.Flat,
@@ -97,7 +109,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
 			_lblUpdateStatus = new Label
 			{
-				Location = new Point(pad, pad + (lineHeight + 12) * 6 + 36),
+				Location = new Point(pad, pad + (lineHeight + 12) * 8 + 36),
 				AutoSize = true,
 				Font = new Font("Yu Gothic UI", 9f),
 				ForeColor = Color.Gray,
@@ -106,7 +118,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			Controls.AddRange(new Control[]
 			{
 				_lblAppName, _lblVersion,
-				_lblCopyright, _lblCompany, _lblFmodCredit, _lnkGitHub,
+				_lblCopyright, _lblCompany, _lblFmodCredit, _lblThirdPartyCredit, _lnkGitHub,
 				_btnCheckUpdate, _lblUpdateStatus,
 			});
 		}

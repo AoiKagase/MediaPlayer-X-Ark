@@ -31,6 +31,7 @@ namespace MediaPlayer_X_Ark.Forms
 			_info = info;
 			_currentVersion = UpdateChecker.GetCurrentVersion().ToString();
 			BuildLayout();
+			MediaPlayer_X_Ark.ApplicationIcon.ApplyTo(this);
 		}
 
 		private void BuildLayout()

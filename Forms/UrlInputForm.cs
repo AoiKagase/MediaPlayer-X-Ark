@@ -22,6 +22,7 @@ namespace MediaPlayer_X_Ark.Forms
 		public UrlInputForm()
 		{
 			// フォーム設定
+			MediaPlayer_X_Ark.ApplicationIcon.ApplyTo(this);
 			this.Text = "URL Open";
 			this.FormBorderStyle = FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;

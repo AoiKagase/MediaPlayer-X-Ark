@@ -34,6 +34,7 @@ namespace MediaPlayer_X_Ark
 
 			this.Owner = main;
 			InitializeComponent();
+			ApplicationIcon.ApplyTo(this);
 		}
 
 		private void PlayList_Load(object sender, EventArgs e)

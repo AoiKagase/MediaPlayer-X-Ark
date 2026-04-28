@@ -23,6 +23,7 @@ namespace MediaPlayer_X_Ark
 		public CDForm(MainForm mainForm, PlayerController player, IConfigService config)
 		{
 			InitializeComponent();
+			ApplicationIcon.ApplyTo(this);
 			_mainForm = mainForm;
 			_config = config;
 			_player = player.Engine;
