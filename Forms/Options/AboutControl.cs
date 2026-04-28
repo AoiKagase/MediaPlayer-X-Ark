@@ -16,6 +16,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		private Label _lblVersion;
 		private Label _lblCopyright;
 		private Label _lblCompany;
+		private Label _lblFmodCredit;
 		private LinkLabel _lnkGitHub;
 		private Button _btnCheckUpdate;
 		private Label _lblUpdateStatus;
@@ -59,9 +60,17 @@ namespace MediaPlayer_X_Ark.Forms.Options
 				Font = new Font("Yu Gothic UI", 9f),
 			};
 
-			_lnkGitHub = new LinkLabel
+			_lblFmodCredit = new Label
 			{
 				Location = new Point(pad, pad + (lineHeight + 12) * 4),
+				AutoSize = true,
+				Font = new Font("Yu Gothic UI", 9f),
+				Text = "Audio Engine: FMOD by Firelight Technologies Pty Ltd.",
+			};
+
+			_lnkGitHub = new LinkLabel
+			{
+				Location = new Point(pad, pad + (lineHeight + 12) * 5),
 				AutoSize = true,
 				Font = new Font("Yu Gothic UI", 9f),
 			};
@@ -76,7 +85,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
 			_btnCheckUpdate = new Button
 			{
-				Location = new Point(pad, pad + (lineHeight + 12) * 5),
+				Location = new Point(pad, pad + (lineHeight + 12) * 6),
 				Size = new Size(160, 28),
 				Text = "アップデートを確認",
 				FlatStyle = FlatStyle.Flat,
@@ -88,7 +97,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
 			_lblUpdateStatus = new Label
 			{
-				Location = new Point(pad, pad + (lineHeight + 12) * 5 + 36),
+				Location = new Point(pad, pad + (lineHeight + 12) * 6 + 36),
 				AutoSize = true,
 				Font = new Font("Yu Gothic UI", 9f),
 				ForeColor = Color.Gray,
@@ -97,7 +106,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			Controls.AddRange(new Control[]
 			{
 				_lblAppName, _lblVersion,
-				_lblCopyright, _lblCompany, _lnkGitHub,
+				_lblCopyright, _lblCompany, _lblFmodCredit, _lnkGitHub,
 				_btnCheckUpdate, _lblUpdateStatus,
 			});
 		}

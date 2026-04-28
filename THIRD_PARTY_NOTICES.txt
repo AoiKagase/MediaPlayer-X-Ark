@@ -1,0 +1,164 @@
+Third-party notices for MediaPlayer X-Ark
+Generated on 2026-04-28.
+
+This file summarizes third-party components used or distributed by this
+repository. It is based on MediaPlayer X-Ark.csproj, obj/project.assets.json,
+local NuGet package metadata, and bundled DLL file metadata.
+
+This is a notice and license inventory. It does not embed complete license
+texts. For redistribution, include the complete license files from the package
+or upstream source where the license requires it.
+
+Direct NuGet dependencies
+
+1. Microsoft.CSharp 4.7.0
+   License: MIT
+   Source: local NuGet metadata and LICENSE.TXT
+   Project: https://github.com/dotnet/corefx
+
+2. nfluidsynth 0.3.1
+   License: see upstream package license URL
+   Source: local NuGet metadata
+   Project: https://github.com/atsushieno/nfluidsynth
+   License URL: https://github.com/atsushieno/nfluidsynth/blob/master/LICENSE
+   Runtime note: this project references only the NuGet package. FluidSynth /
+   libfluidsynth itself is not distributed by this repository and must be
+   provided by the user when needed.
+
+3. System.Data.DataSetExtensions 4.6.0-preview3.19128.7
+   License: MIT
+   Source: local NuGet metadata, LICENSE.TXT, and THIRD-PARTY-NOTICES.TXT
+   Project: https://github.com/dotnet/corefx
+
+4. Vortice.Direct2D1 3.8.3
+   License: MIT
+   Source: local NuGet metadata
+   Repository: https://github.com/amerkoleci/Vortice.Windows
+
+5. z440.atl.core 7.11.0
+   License: MIT
+   Source: local NuGet metadata
+   Project: https://github.com/Zeugma440/atldotnet
+
+6. DiscordRichPresence 1.6.1.70
+   License: MIT
+   Source: local NuGet metadata
+   Project: https://github.com/Lachee/discord-rpc-csharp
+
+Transitive runtime outputs and related packages
+
+1. Newtonsoft.Json 13.0.1
+   License: MIT
+   Source: local NuGet metadata and LICENSE.md
+   Project: https://www.newtonsoft.com/json
+   Repository: https://github.com/JamesNK/Newtonsoft.Json
+
+2. NFluidsynth.dll / NFluidsynth.MidiAccess.dll
+   Package: nfluidsynth 0.3.1
+   License: see nfluidsynth entry above
+
+3. Ude.NetStandard.dll
+   Package: Ude.NetStandard 1.2.0
+   Usage: transitive dependency of z440.atl.core. ATL is used by this project
+   for media metadata-related operations, including embedded cover-art access
+   through ATL.Track and playlist-related ATL namespaces. Ude.NetStandard is
+   therefore included as an ATL support dependency, likely for character set
+   detection while reading tags and metadata.
+   License: package file COPYING says "See license directory"; the referenced
+   license directory was not present in the local NuGet package cache.
+   Source: local NuGet metadata
+   Project: https://github.com/yinyue200/ude
+   Redistribution action: verify the upstream license before release.
+
+4. SharpGen.Runtime.dll
+   Package: SharpGen.Runtime 2.4.2-beta
+   License: MIT
+   Source: local NuGet metadata
+   Project: https://github.com/SharpGenTools/SharpGenTools
+
+5. SharpGen.Runtime.COM.dll
+   Package: SharpGen.Runtime.COM 2.4.2-beta
+   License: MIT
+   Source: local NuGet metadata
+   Project: https://github.com/SharpGenTools/SharpGenTools
+
+6. ATL.dll
+   Package: z440.atl.core 7.11.0
+   License: MIT
+   Source: local NuGet metadata
+   Project: https://github.com/Zeugma440/atldotnet
+
+7. DiscordRPC.dll
+   Package: DiscordRichPresence 1.6.1.70
+   License: MIT
+   Source: local NuGet metadata
+   Project: https://github.com/Lachee/discord-rpc-csharp
+
+Bundled native DLLs in Resources
+
+1. Resources/Libs/AlacEncoder.dll
+   License: not identified from local metadata
+   File version metadata: empty
+   Redistribution action: confirm origin and license before release.
+
+2. Resources/Libs/FlacEncoder.dll
+   License: not identified from local metadata
+   File version metadata: empty
+   Redistribution action: confirm origin and license before release.
+
+3. Resources/Libs/SRLAEncoder.dll
+   License: not identified from local metadata
+   File version metadata: empty
+   Redistribution action: confirm origin and license before release.
+
+4. Resources/Libs/XArkMidiEngine.dll
+   License: not identified from local metadata
+   File version metadata: empty
+   Redistribution action: confirm whether this is project-owned or third-party.
+
+5. Resources/Plugins/codec_srla.dll
+   License: not identified from local metadata
+   File version metadata: empty
+   Redistribution action: confirm origin and license before release.
+
+6. Resources/Plugins/codec_wma.dll
+   License: not identified from local metadata
+   File version metadata: empty
+   Redistribution action: confirm origin and license before release.
+
+Build-referenced runtime DLLs
+
+1. fmod.dll
+   Product: FMOD
+   Description: FMOD Sound System
+   Company: Firelight Technologies
+   Version found in build output: 2.3.12
+   Copyright metadata: Copyright (c) Firelight Technologies 2004-2026
+   License basis: FMOD EULA non-commercial use. This project is intended to be
+   distributed without monetisation, advertising, sponsorship, promotion, or
+   other commercial use.
+   Required attribution: Audio Engine: FMOD by Firelight Technologies Pty Ltd.
+   License references:
+   - https://www.fmod.com/legal
+   - https://www.fmod.com/attribution
+   Note: MediaPlayer X-Ark.csproj references Resources/fmod.dll, but that file
+   was not present in the tracked Resources tree in this checkout. Copies were
+   found under build output directories.
+   Source repository note: FMOD SDK C# wrapper/header files are intentionally
+   not tracked in this public repository. They are kept only in local working
+   copies when needed for development.
+
+License follow-up checklist
+
+- Include complete MIT license text for MIT-licensed packages in release
+  notices when required by their licenses.
+- Verify Ude.NetStandard's upstream license because the package-local COPYING
+  file does not contain the full license text.
+- Verify nfluidsynth package license text. FluidSynth native binary notices are
+  not required for this repository unless a FluidSynth binary is later shipped.
+- Confirm the origin and license for each bundled encoder/plugin DLL that has
+  empty file version metadata.
+- Keep the FMOD attribution line in the app credits or documentation for every
+  redistributed build that includes fmod.dll.
+- Re-check FMOD licensing before adding monetisation, advertising, sponsorship,
+  promotion, commercial services, or any other commercial use.

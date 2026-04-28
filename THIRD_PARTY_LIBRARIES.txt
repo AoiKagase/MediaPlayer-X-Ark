@@ -1,0 +1,45 @@
+Third-party libraries inventory
+Generated from MediaPlayer X-Ark.csproj and obj/project.assets.json on 2026-04-28.
+
+Scope
+- Direct NuGet package references declared in MediaPlayer X-Ark.csproj
+- Transitive NuGet packages resolved by restore
+- Native DLLs bundled under Resources/Libs and Resources/Plugins
+- Runtime DLLs referenced by the build that are not currently present in the tracked Resources tree
+
+1. Direct NuGet packages
+- Microsoft.CSharp 4.7.0
+- nfluidsynth 0.3.1
+- System.Data.DataSetExtensions 4.6.0-preview3.19128.7
+- Vortice.Direct2D1 3.8.3
+- z440.atl.core 7.11.0
+- DiscordRichPresence 1.6.1.70
+
+2. Transitive runtime outputs
+- Newtonsoft.Json 13.0.1
+- NFluidsynth.dll
+- NFluidsynth.MidiAccess.dll
+- Ude.NetStandard.dll
+- SharpGen.Runtime.dll
+- SharpGen.Runtime.COM.dll
+- ATL.dll
+- DiscordRPC.dll
+- Vortice.Direct2D1.dll
+- Vortice.* runtime assemblies generated from Vortice.Direct2D1
+
+3. Bundled native libraries in the repository
+- Resources/Libs/AlacEncoder.dll
+- Resources/Libs/FlacEncoder.dll
+- Resources/Libs/SRLAEncoder.dll
+- Resources/Libs/XArkMidiEngine.dll
+- Resources/Plugins/codec_srla.dll
+- Resources/Plugins/codec_wma.dll
+
+4. Build-referenced runtime DLLs
+- Resources/fmod.dll
+  - Referenced by the project file and copied into build output
+  - Not currently found in the tracked Resources tree in this checkout
+
+Notes
+- This file is a consolidated inventory, not a license summary.
+- If you need license text, verify each package's upstream license before redistribution.

@@ -373,3 +373,8 @@ FodyWeavers.xsd
 *.exe
 # Added by code-review-graph
 .code-review-graph/
+
+# FMOD SDK C# wrapper/header files are local-only and must not be published.
+Fmod/fmod.cs
+Fmod/fmod_dsp.cs
+Fmod/fmod_errors.cs
