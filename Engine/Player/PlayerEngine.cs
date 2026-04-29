@@ -1359,7 +1359,10 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					{
 						try
 						{
-							using (var xarkEngine = new XArkMidiEngine.Engine(filename, _soundFontPath))
+							var options = XArkMidiEngine.CreateOptions.Default();
+							options.CompatibilityFlags = XArkMidiEngine.CompatibilityFlags.Sf2ZeroLengthLoopRetrigger;
+
+							using (var xarkEngine = new XArkMidiEngine.Engine(filename, _soundFontPath, XArkMidiEngine.SoundBankKind.Auto, 44100, 2, options))
 							{
 								var pcm = xarkEngine.RenderAllBytes();
 								result = CreateMidiPcmSound(pcm, out sound);
