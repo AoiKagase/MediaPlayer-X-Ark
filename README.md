@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="Resources/Brand/media-player-x-ark-logo.png" alt="Media Player X-Ark" width="520">
+  <img src="Resources/Brand/readme-logo-panel.png" alt="Media Player X-Ark" width="620">
 </p>
 
 # Media Player X-Ark
@@ -154,4 +154,3 @@ DLS/SF2両方対応出来るエンジンを作っちゃいましたね。ただ�
 それでも標準搭載できるという強みがあるので、気になるならDLL落として導入してもらえれば選べるようになりますし、<br>
 標準の方が好みだって言ってくれればそれはもうその鼻の高さたるやって感じで小躍りします。<br>
     
-
