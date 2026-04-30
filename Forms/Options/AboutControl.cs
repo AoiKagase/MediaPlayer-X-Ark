@@ -18,6 +18,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 		private Label _lblCopyright;
 		private Label _lblCompany;
 		private PictureBox _picAppLogo;
+		private PictureBox _picAppWordmark;
 		private PictureBox _picFmodLogo;
 		private Label _lblFmodCredit;
 		private Label _lblThirdPartyCredit;
@@ -44,11 +45,20 @@ namespace MediaPlayer_X_Ark.Forms.Options
 				BackColor = Color.Transparent,
 			};
 
+			_picAppWordmark = new PictureBox
+			{
+				Location = new Point(pad + 82, pad + 4),
+				Size = new Size(360, 38),
+				SizeMode = PictureBoxSizeMode.Zoom,
+				BackColor = Color.Transparent,
+			};
+
 			_lblAppName = new Label
 			{
 				Location = new Point(pad + 82, pad + 4),
 				Size = new Size(400, 32),
 				Font = new Font("Yu Gothic UI", 16f, FontStyle.Bold),
+				Visible = false,
 			};
 
 			_lblVersion = new Label
@@ -138,7 +148,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
 			Controls.AddRange(new Control[]
 			{
-				_picAppLogo, _lblAppName, _lblVersion,
+				_picAppLogo, _picAppWordmark, _lblAppName, _lblVersion,
 				_lblCopyright, _lblCompany, _picFmodLogo, _lblFmodCredit, _lblThirdPartyCredit, _lnkGitHub,
 				_btnCheckUpdate, _lblUpdateStatus,
 			});
@@ -157,6 +167,7 @@ namespace MediaPlayer_X_Ark.Forms.Options
 			_lblCompany.Text = info.CompanyName ?? "";
 			_lnkGitHub.Text = "https://github.com/AoiKagase/MediaPlayer-X-Ark";
 			LoadImage(_picAppLogo, @"Resources\Icons\x-ark-icon.png");
+			LoadImage(_picAppWordmark, @"Resources\Brand\media-player-x-ark-logo.png");
 			LoadImage(_picFmodLogo, @"Resources\Attribution\FMOD_Logo_Black_Transparent.png");
 		}
 
@@ -193,16 +204,26 @@ namespace MediaPlayer_X_Ark.Forms.Options
 
 		private static void LoadImage(PictureBox pictureBox, string relativePath)
 		{
-			string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
-			if (!File.Exists(path))
-				path = Path.Combine(AppContext.BaseDirectory, relativePath);
-			if (!File.Exists(path))
+			var assembly = typeof(AboutControl).Assembly;
+			using var stream = OpenEmbeddedResource(assembly, relativePath);
+			if (stream == null)
 				return;
 
-			using var stream = File.OpenRead(path);
 			using var image = Image.FromStream(stream);
 			pictureBox.Image?.Dispose();
 			pictureBox.Image = new Bitmap(image);
+		}
+
+		private static Stream OpenEmbeddedResource(System.Reflection.Assembly assembly, string relativePath)
+		{
+			string resourceSuffix = relativePath.Replace('\\', '.').Replace('/', '.');
+			foreach (string resourceName in assembly.GetManifestResourceNames())
+			{
+				if (resourceName.EndsWith(resourceSuffix, StringComparison.Ordinal))
+					return assembly.GetManifestResourceStream(resourceName);
+			}
+
+			return null;
 		}
 	}
 }

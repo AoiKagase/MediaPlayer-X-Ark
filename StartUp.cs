@@ -42,7 +42,7 @@ namespace MediaPlayer_X_Ark
             System.Diagnostics.Debug.WriteLine(FlacEncoder.GetLoadedBuildId());
 			this.EnableVisualStyles = true;
             this.IsSingleInstance = true;
-			this.MinimumSplashScreenDisplayTime = 1800;
+			this.MinimumSplashScreenDisplayTime = 3000;
 			this.SplashScreen = new SplashForm();
             var mainForm = new MainForm();
 			mainForm.StartupReady += MainForm_StartupReady;

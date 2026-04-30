@@ -47,7 +47,8 @@ Scope
 5. Bundled attribution assets in the repository
 - Resources/Attribution/FMOD_Logo_Black_Transparent.png
   - Source: https://www.fmod.com/attribution
-  - Used by Forms/Options/AboutControl.cs.
+  - Embedded into the application assembly and used by
+    Forms/Options/AboutControl.cs and Forms/SplashForm.cs.
 - Resources/Attribution/FMOD_Logo_Guidelines.pdf
   - Source: https://www.fmod.com/attribution
 

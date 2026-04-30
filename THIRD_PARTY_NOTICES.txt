@@ -202,6 +202,7 @@ Bundled proprietary runtime DLLs
    Required attribution: Audio Engine: FMOD Studio by Firelight Technologies Pty Ltd.
    Logo assets:
    - Resources/Attribution/FMOD_Logo_Black_Transparent.png
+     Embedded into the application assembly for runtime display.
    - Resources/Attribution/FMOD_Logo_Guidelines.pdf
    Logo source: https://www.fmod.com/attribution
    About screen implementation: Forms/Options/AboutControl.cs displays the

@@ -45,10 +45,13 @@
 		<Content Include="Resources\Attribution\**\*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+		<Content Remove="Resources\Attribution\FMOD_Logo_Black_Transparent.png" />
 		<Content Include="Resources\Icons\x-ark-icon.ico" />
-		<Content Include="Resources\Icons\x-ark-icon.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
+		<Content Remove="Resources\Icons\x-ark-icon.png" />
+		<Content Remove="Resources\Brand\media-player-x-ark-logo.png" />
+		<EmbeddedResource Include="Resources\Attribution\FMOD_Logo_Black_Transparent.png" />
+		<EmbeddedResource Include="Resources\Icons\x-ark-icon.png" />
+		<EmbeddedResource Include="Resources\Brand\media-player-x-ark-logo.png" />
 		<Content Include="Resources\Skins" />
 		<Content Include="Resources\Plugins" />
 	</ItemGroup>
