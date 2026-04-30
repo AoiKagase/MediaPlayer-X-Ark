@@ -1,4 +1,5 @@
 ﻿using MediaPlayer_X_Ark.Engine.CD;
+using MediaPlayer_X_Ark.Forms;
 using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Collections.Generic;
@@ -41,9 +42,19 @@ namespace MediaPlayer_X_Ark
             System.Diagnostics.Debug.WriteLine(FlacEncoder.GetLoadedBuildId());
 			this.EnableVisualStyles = true;
             this.IsSingleInstance = true;
-            this.MainForm = new MainForm();
+			this.MinimumSplashScreenDisplayTime = 1800;
+			this.SplashScreen = new SplashForm();
+            var mainForm = new MainForm();
+			mainForm.StartupReady += MainForm_StartupReady;
+            this.MainForm = mainForm;
             this.StartupNextInstance += new StartupNextInstanceEventHandler(StartUp_StartupNextInstance);
         }
+
+		private void MainForm_StartupReady(object sender, EventArgs e)
+		{
+			if (this.SplashScreen is SplashForm splash && !splash.IsDisposed)
+				splash.CloseAfterMinimumDisplay(this.MinimumSplashScreenDisplayTime);
+		}
 
 		private static void TryLoadOptionalLibrary(string libsPath, string fileName)
 		{

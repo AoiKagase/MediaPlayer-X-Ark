@@ -50,6 +50,7 @@ namespace MediaPlayer_X_Ark
 		private int _skinTitleScrollInterval;
 
 		public INewSkinSystem CurrentSkin => _currentSkin;
+		public event EventHandler StartupReady;
 
 		private OpenFileDialog _openFileDialogMedia;
 		private Bitmap _waveformBitmap = null;
@@ -392,6 +393,7 @@ namespace MediaPlayer_X_Ark
 			}
 			this.Opacity = 1;
 			this.Visible = true;
+			StartupReady?.Invoke(this, EventArgs.Empty);
 		}
 		private async Task CheckForUpdateOnStartupAsync()
 		{

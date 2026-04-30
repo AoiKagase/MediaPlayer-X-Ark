@@ -42,7 +42,13 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Content Include="Resources\fmod.dll" />
+		<Content Include="Resources\Attribution\**\*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 		<Content Include="Resources\Icons\x-ark-icon.ico" />
+		<Content Include="Resources\Icons\x-ark-icon.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 		<Content Include="Resources\Skins" />
 		<Content Include="Resources\Plugins" />
 	</ItemGroup>
