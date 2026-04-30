@@ -1,0 +1,4 @@
+FMOD SDK put this directory.
+- fmod.cs
+- fmod_dsp.cs
+- fmod_errors.cs
