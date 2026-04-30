@@ -1,4 +1,4 @@
-Third-party notices for MediaPlayer X-Ark
+1. Third-party notices for MediaPlayer X-Ark
 Reviewed on 2026-04-30.
 
 This file summarizes third-party components used or distributed by this
@@ -17,10 +17,9 @@ Direct NuGet dependencies
    Project: https://github.com/dotnet/corefx
 
 2. nfluidsynth 0.3.1
-   License: verify upstream package license before redistribution
-   Source: local NuGet metadata
+   License: MIT
+   Source: upstream GitHub repository (https://github.com/atsushieno/nfluidsynth)
    Project: https://github.com/atsushieno/nfluidsynth
-   License URL: https://github.com/atsushieno/nfluidsynth/blob/master/LICENSE
    Runtime note: this project references the managed NuGet package. The
    FluidSynth / libfluidsynth native runtime is not tracked under Resources in
    this repository and is expected to be provided separately by the user when
@@ -60,8 +59,8 @@ Transitive runtime outputs and related packages
 
 2. NFluidsynth.dll / NFluidsynth.MidiAccess.dll
    Package: nfluidsynth 0.3.1
-   License: verify upstream package license before redistribution
-   Source: local NuGet metadata
+   License: MIT
+   Source: upstream GitHub repository (https://github.com/atsushieno/nfluidsynth)
    Project: https://github.com/atsushieno/nfluidsynth
 
 3. Ude.NetStandard.dll
@@ -71,13 +70,14 @@ Transitive runtime outputs and related packages
    through ATL.Track and playlist-related ATL namespaces. Ude.NetStandard is
    therefore included as an ATL support dependency, likely for character set
    detection while reading tags and metadata.
-   License: package file COPYING says "See license directory"; the referenced
-   license directory was not present in the local NuGet package cache used for
-   this review.
-   Source: local NuGet metadata and NuGet package page
-   Project: https://github.com/yinyue200/ude
-   Redistribution action: verify the upstream license and include the required
-   notice/license text before release.
+   License: MPL 1.1 (alternatively GPL 2.0+ or LGPL 2.1+)
+   Source: upstream GitHub repository (https://github.com/yinyue200/ude),
+     which states the library is subject to MPL 1.1, or alternatively
+     GPL 2.0+ or LGPL 2.1+. This project treats MPL 1.1 as the operative license.
+   Redistribution action: include the MPL 1.1 license text before release.
+     The NuGet package-local COPYING file did not contain the full license text
+     in the local cache used for this review; use the upstream text as the
+     authoritative source.
 
 4. SharpGen.Runtime.dll
    Package: SharpGen.Runtime 2.4.2-beta
@@ -145,51 +145,65 @@ Build-time package not distributed as an application runtime dependency
 
 Bundled native DLLs in Resources
 
-1. Resources/Libs/AlacEncoder.dll
-   License: MPL
-   Source: project owner confirmation
-   File version metadata: empty
-   Redistribution action: include the applicable MPL license text and comply
-   with MPL redistribution/source-availability requirements before release.
+1. Libs/AlacEncoder.dll
+   License: MPL 2.0
+   Source: first-party DLL developed by the project owner
+   Repository: https://github.com/AoiKagase/AlacEncoder
+   Redistribution action: include the MPL 2.0 license text before release.
+     MPL 2.0 requires that the license notice be preserved and that
+     recipients can obtain the source code of the MPL-licensed files.
+     As a first-party component, ensure source availability (e.g. via
+     this repository or a designated source archive) before release.
 
-2. Resources/Libs/FlacEncoder.dll
-   License: MPL
-   Source: project owner confirmation
-   File version metadata: empty
-   Redistribution action: include the applicable MPL license text and comply
-   with MPL redistribution/source-availability requirements before release.
+2. Libs/FlacEncoder.dll
+   License: MPL 2.0
+   Source: first-party DLL developed by the project owner
+   Repository: https://github.com/AoiKagase/FlacEncoder
+   Redistribution action: include the MPL 2.0 license text before release.
+     MPL 2.0 requires that the license notice be preserved and that
+     recipients can obtain the source code of the MPL-licensed files.
+     As a first-party component, ensure source availability (e.g. via
+     this repository or a designated source archive) before release.
 
-3. Resources/Libs/SRLAEncoder.dll
-   License: MPL
-   Source: project owner confirmation
-   File version metadata: empty
-   Redistribution action: include the applicable MPL license text and comply
-   with MPL redistribution/source-availability requirements before release.
+3. Libs/SRLAEncoder.dll
+   License: MPL 2.0
+   Source: first-party DLL developed by the project owner
+   Repository: https://github.com/AoiKagase/SRLAEncoder
+   Redistribution action: include the MPL 2.0 license text before release.
+     MPL 2.0 requires that the license notice be preserved and that
+     recipients can obtain the source code of the MPL-licensed files.
+     As a first-party component, ensure source availability (e.g. via
+     this repository or a designated source archive) before release.
 
-4. Resources/Libs/XArkMidiEngine.dll
-   License: MPL
-   Source: project owner confirmation
-   File version metadata: empty
-   Redistribution action: include the applicable MPL license text and comply
-   with MPL redistribution/source-availability requirements before release.
+4. Libs/XArkMidiEngine.dll
+   License: MPL 2.0
+   Source: first-party DLL developed by the project owner
+   Repository: https://github.com/AoiKagase/X-Ark_MIDI_ENGINE
+   Redistribution action: include the MPL 2.0 license text before release.
+     MPL 2.0 requires that the license notice be preserved and that
+     recipients can obtain the source code of the MPL-licensed files.
+     As a first-party component, ensure source availability (e.g. via
+     this repository or a designated source archive) before release.
 
-5. Resources/Plugins/codec_srla.dll
+5. Plugins/codec_srla.dll
    License: MIT
    Source: project owner confirmation
+   Repository: https://github.com/AoiKagase/FMOD-PLUGINS
    File version metadata: empty
    Redistribution action: include the applicable MIT license text before
    release.
 
-6. Resources/Plugins/codec_wma.dll
+6. Plugins/codec_wma.dll
    License: MIT
    Source: project owner confirmation
+   Repository: https://github.com/AoiKagase/FMOD-PLUGINS
    File version metadata: empty
    Redistribution action: include the applicable MIT license text before
    release.
 
 Bundled proprietary runtime DLLs
 
-1. Resources/Libs/fmod.dll
+1. Libs/fmod.dll
    Product: FMOD
    Description: FMOD Sound System
    Company: Firelight Technologies
@@ -202,7 +216,7 @@ Bundled proprietary runtime DLLs
    Required attribution: Audio Engine: FMOD Studio by Firelight Technologies Pty Ltd.
    Logo assets:
    - Resources/Attribution/FMOD_Logo_Black_Transparent.png
-     Embedded into the application assembly for runtime display.
+   Embedded into the application assembly for runtime display.
    - Resources/Attribution/FMOD_Logo_Guidelines.pdf
    Logo source: https://www.fmod.com/attribution
    About screen implementation: Forms/Options/AboutControl.cs displays the
@@ -218,10 +232,9 @@ Bundled proprietary runtime DLLs
    implements that startup display. FMOD support forum posts state that
    non-commercial use still requires logo and attribution, and that the
    Windows fmod.dll includes the Ogg Vorbis codec.
-   Project-file note: MediaPlayer X-Ark.csproj references Resources/fmod.dll
-   and copies Resources/*.dll, while the tracked file in this checkout is
-   Resources/Libs/fmod.dll. Keep the project file, tracked Resources layout,
-   and release packaging layout consistent before release.
+   Project-file note: Libs/fmod.dll is both the tracked path in this
+   repository and the intended runtime layout. The project file should
+   reference Libs/fmod.dll accordingly.
    Source repository note: FMOD SDK C# wrapper/header files are intentionally
    not tracked in this public repository. They are kept only in local working
    copies when needed for development.
@@ -231,15 +244,10 @@ Release packaging requirements
 - Include complete license texts or license files for every MIT-licensed
   package listed above. A summary-only notice file is not enough by itself if
   the license requires preserving the copyright and permission notice.
-- Verify Ude.NetStandard's upstream license because the package-local COPYING
-  file did not contain the full license text in the local NuGet package cache
-  used for this review.
-- Verify nfluidsynth's license text before release. FluidSynth native binary
-  notices are not required for this repository unless a FluidSynth native
-  binary is later shipped.
-- Include the applicable MPL license text and source-availability information
-  for AlacEncoder.dll, FlacEncoder.dll, SRLAEncoder.dll, and
-  XArkMidiEngine.dll.
+- Include the MPL 1.1 license text for Ude.NetStandard.dll. Use the upstream
+  repository (https://github.com/yinyue200/ude) as the authoritative source.
+- Include the MPL 2.0 license text and ensure source availability for
+  AlacEncoder.dll, FlacEncoder.dll, SRLAEncoder.dll, and XArkMidiEngine.dll.
 - Include the applicable MIT license text for codec_srla.dll and codec_wma.dll.
 - Keep the FMOD attribution line and logo in the app credits/About screen for
   every redistributed build that includes fmod.dll.

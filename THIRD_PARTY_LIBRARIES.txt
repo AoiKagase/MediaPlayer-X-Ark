@@ -1,66 +1,48 @@
-Third-party libraries inventory
+1. Third-party libraries inventory
 Reviewed against MediaPlayer X-Ark.csproj and obj/project.assets.json on 2026-04-30.
 
 Scope
 - Direct NuGet package references declared in MediaPlayer X-Ark.csproj
 - Transitive NuGet packages resolved by restore
-- Native DLLs bundled under Resources/Libs and Resources/Plugins
+- Native DLLs bundled under Libs and Resources/Plugins
 - Build-time packages that appear in obj/project.assets.json but are not app
   runtime libraries are called out separately
 
 1. Direct NuGet packages
-- Microsoft.CSharp 4.7.0
-- nfluidsynth 0.3.1
-- System.Data.DataSetExtensions 4.6.0-preview3.19128.7
-- Vortice.Direct2D1 3.8.3
-- z440.atl.core 7.11.0
-- DiscordRichPresence 1.6.1.70
+   - Microsoft.CSharp 4.7.0
+   - nfluidsynth 0.3.1
+   - System.Data.DataSetExtensions 4.6.0-preview3.19128.7
+   - Vortice.Direct2D1 3.8.3
+   - z440.atl.core 7.11.0
+   - DiscordRichPresence 1.6.1.70
 
 2. Transitive runtime packages and outputs
-- Newtonsoft.Json 13.0.1 / Newtonsoft.Json.dll
-- NFluidsynth.dll
-- NFluidsynth.MidiAccess.dll
-- Ude.NetStandard 1.2.0 / Ude.NetStandard.dll
-- SharpGen.Runtime 2.4.2-beta / SharpGen.Runtime.dll
-- SharpGen.Runtime.COM 2.4.2-beta / SharpGen.Runtime.COM.dll
-- ATL.dll
-- DiscordRPC.dll
-- Vortice.Direct2D1 3.8.3 / Vortice.Direct2D1.dll
-- Vortice.DXGI 3.8.3 / Vortice.DXGI.dll
-- Vortice.DirectX 3.8.3 / Vortice.DirectX.dll
-- Vortice.Mathematics 2.1.0 / Vortice.Mathematics.dll
-- System.Text.Json 9.0.1 / System.Text.Json.dll
+   - Newtonsoft.Json 13.0.1 / Newtonsoft.Json.dll
+   - NFluidsynth.dll
+   - NFluidsynth.MidiAccess.dll
+   - Ude.NetStandard 1.2.0 / Ude.NetStandard.dll
+   - SharpGen.Runtime 2.4.2-beta / SharpGen.Runtime.dll
+   - SharpGen.Runtime.COM 2.4.2-beta / SharpGen.Runtime.COM.dll
+   - ATL.dll
+   - DiscordRPC.dll
+   - Vortice.Direct2D1 3.8.3 / Vortice.Direct2D1.dll
+   - Vortice.DXGI 3.8.3 / Vortice.DXGI.dll
+   - Vortice.DirectX 3.8.3 / Vortice.DirectX.dll
+   - Vortice.Mathematics 2.1.0 / Vortice.Mathematics.dll
+   - System.Text.Json 9.0.1 / System.Text.Json.dll
 
 3. Build-time packages present in obj/project.assets.json
-- Microsoft.NET.ILLink.Tasks 9.0.15
-  - Build/publish tooling only; not treated as an application runtime DLL.
+   - Microsoft.NET.ILLink.Tasks 9.0.15
+   - Build/publish tooling only; not treated as an application runtime DLL.
 
-4. Bundled native libraries in the repository
-- Resources/Libs/AlacEncoder.dll
-- Resources/Libs/FlacEncoder.dll
-- Resources/Libs/SRLAEncoder.dll
-- Resources/Libs/XArkMidiEngine.dll
-- Resources/Plugins/codec_srla.dll
-- Resources/Plugins/codec_wma.dll
-- Resources/Libs/fmod.dll
-
-5. Bundled attribution assets in the repository
-- Resources/Attribution/FMOD_Logo_Black_Transparent.png
-  - Source: https://www.fmod.com/attribution
-  - Embedded into the application assembly and used by
-    Forms/Options/AboutControl.cs and Forms/SplashForm.cs.
-- Resources/Attribution/FMOD_Logo_Guidelines.pdf
-  - Source: https://www.fmod.com/attribution
-
-6. Packaging consistency notes
-- MediaPlayer X-Ark.csproj references Resources/fmod.dll and copies
-  Resources/*.dll, but the tracked FMOD runtime is Resources/Libs/fmod.dll.
-  Keep the project file, tracked Resources layout, and release packaging layout
-  consistent before release.
-- AlacEncoder.dll, FlacEncoder.dll, SRLAEncoder.dll, and XArkMidiEngine.dll
-  are MPL-licensed per project owner confirmation.
-- codec_srla.dll and codec_wma.dll are MIT-licensed per project owner
-  confirmation.
+4. Bundled native libraries
+   - Libs/AlacEncoder.dll (MPL 2.0, first-party)
+   - Libs/FlacEncoder.dll (MPL 2.0, first-party)
+   - Libs/SRLAEncoder.dll (MPL 2.0, first-party)
+   - Libs/XArkMidiEngine.dll (MPL 2.0, first-party)
+   - Libs/fmod.dll (FMOD EULA, Firelight Technologies)
+   - Plugins/codec_srla.dll (MIT)
+   - Plugins/codec_wma.dll (MIT)
 
 Notes
 - This file is a consolidated inventory, not a license summary.
