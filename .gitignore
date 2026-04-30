@@ -390,3 +390,7 @@ coverart.bin
 coverart.jpg
 GEMINI.md
 RTK.md
+
+# FMOD logo/attribution assets are required locally for distribution
+# compliance, but are Firelight Technologies copyrighted materials.
+/Resources/Attribution/
