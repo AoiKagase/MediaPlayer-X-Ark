@@ -17,5 +17,6 @@ namespace MediaPlayer_X_Ark.Skin.New.Parts
 		[JsonPropertyName("color")] public string Color { get; set; }
 		[JsonPropertyName("borderColor")] public string BorderColor { get; set; }
 		[JsonPropertyName("borderWidth")] public int BorderWidth { get; set; }
+		[JsonPropertyName("cornerRadius")] public int CornerRadius { get; set; }
 	}
 }

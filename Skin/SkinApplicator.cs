@@ -345,6 +345,13 @@ namespace MediaPlayer_X_Ark.Skin
                     picture.Top = rect.Top;
                     picture.Width = rect.Width;
                     picture.Height = rect.Height;
+                    if (picture is Controls.RoundedPictureBox roundedPicture)
+                    {
+                        roundedPicture.BorderColor = pc.BorderColor;
+                        roundedPicture.BorderWidth = ScaleLength(pc.BorderWidth, scale);
+                        if (pc.CornerRadius > 0)
+                            roundedPicture.CornerRadius = ScaleLength(pc.CornerRadius, scale);
+                    }
                     if (pc.Image != null)
                         picture.Image = ScaleImage(pc.Image, scale);
                     picture.Enabled = picture.Visible = pc.Enabled;

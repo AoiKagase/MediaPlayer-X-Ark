@@ -99,6 +99,7 @@ namespace MediaPlayer_X_Ark.Skin
 		public RECT Position;
 		public Color BorderColor;
 		public int BorderWidth;
+		public int CornerRadius;
 		public bool Enabled;
 	}
 }

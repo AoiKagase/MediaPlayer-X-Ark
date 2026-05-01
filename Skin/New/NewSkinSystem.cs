@@ -402,6 +402,7 @@ namespace MediaPlayer_X_Ark.Skin.New
 			}
 			result.BorderColor = ParseColor(def.BorderColor ?? "000000");
 			result.BorderWidth = def.BorderWidth;
+			result.CornerRadius = def.CornerRadius;
 
 			result.Position = new RECT
 			{

@@ -34,7 +34,7 @@
 			lblLengthVal = new System.Windows.Forms.Label();
 			lblSampleRateVal = new System.Windows.Forms.Label();
 			lblChannelVal = new System.Windows.Forms.Label();
-			picCover = new System.Windows.Forms.PictureBox();
+			picCover = new MediaPlayer_X_Ark.Controls.RoundedPictureBox();
 			lblTitleKey = new System.Windows.Forms.Label();
 			lblArtistKey = new System.Windows.Forms.Label();
 			lblAlbumKey = new System.Windows.Forms.Label();
@@ -331,7 +331,7 @@
         private System.Windows.Forms.Label lblLengthVal;
         private System.Windows.Forms.Label lblSampleRateVal;
         private System.Windows.Forms.Label lblChannelVal;
-        private System.Windows.Forms.PictureBox picCover;
+        private MediaPlayer_X_Ark.Controls.RoundedPictureBox picCover;
         private System.Windows.Forms.Label lblTitleKey;
         private System.Windows.Forms.Label lblArtistKey;
         private System.Windows.Forms.Label lblAlbumKey;
