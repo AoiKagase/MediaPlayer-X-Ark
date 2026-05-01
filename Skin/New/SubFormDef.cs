@@ -23,6 +23,7 @@ namespace MediaPlayer_X_Ark.Skin.New
 		/// スキンのサブフォームに配置されるボタンの定義を格納するために使用される。
 		/// </summary>
 		[JsonPropertyName("buttons")] public Dictionary<string, PartsButtons> Buttons { get; set; }
+		[JsonPropertyName("sliders")] public Dictionary<string, PartsSliders> Sliders { get; set; }
 		/// <summary>
 		/// Labels: ラベルを表すプロパティ。
 		/// スキンのサブフォームに配置されるラベルの定義を格納するために使用される。

@@ -117,9 +117,11 @@ namespace MediaPlayer_X_Ark.Skin
             if (def.BackImage != null)
                 form.BackgroundImage = ScaleImage(def.BackImage, GetScaleFactor(form));
             else if (def.BackColor != Color.Empty)
-                form.BackColor = def.BackColor;
+            {
+				form.BackColor = def.BackColor;
+			}
 
-            if (def.ForeColor != Color.Empty)
+			if (def.ForeColor != Color.Empty)
                 form.ForeColor = def.ForeColor;
 
             float scale = GetScaleFactor(form);
@@ -128,6 +130,7 @@ namespace MediaPlayer_X_Ark.Skin
             if (def.Position.Height > 0) form.Height = ScaleLength(def.Position.Height, scale);
 
             ApplyLabelsRecursive(form.Controls, def, scale);
+            ApplyControls(form.Controls);
             form.Refresh();
         }
 
@@ -240,7 +243,6 @@ namespace MediaPlayer_X_Ark.Skin
 
         private void ApplyControls(System.Windows.Forms.Control.ControlCollection controls)
         {
-            var sliderMap = _skin.Sliders;
             foreach (Control c in controls)
             {
                 float scale = GetScaleFactor(c);
@@ -248,6 +250,9 @@ namespace MediaPlayer_X_Ark.Skin
                 _skin.Buttons.TryGetValue(parentName, out var btnMap);
                 _skin.Labels.TryGetValue(parentName, out var labelMap);
                 _skin.Grids.TryGetValue(parentName, out var gridMap);
+                _skin.Pictures.TryGetValue(parentName, out var pictureMap);
+                if (!_skin.FormSliders.TryGetValue(parentName, out var sliderMap))
+                    sliderMap = _skin.Sliders;
                 if (c is Button btn && (btnMap?.TryGetValue(c.Name, out var bc) ?? false))
                 {
                     if (bc.BackImage == null || !bc.Enabled)
@@ -267,8 +272,14 @@ namespace MediaPlayer_X_Ark.Skin
                     btn.Enabled = btn.Visible = bc.Enabled;
                     btn.Refresh();
                 }
-                else if (c is CustomSlider slider && sliderMap.TryGetValue(c.Name, out var sc))
+                else if (c is CustomSlider slider && (sliderMap?.TryGetValue(c.Name, out var sc) ?? false))
                 {
+                    if (!sc.Enabled)
+                    {
+                        slider.Visible = false;
+                        slider.Enabled = false;
+                        continue;
+                    }
                     if (sc.SliderImage == null) continue;
                     int previousMinimum = slider.Minimum;
                     int previousMaximum = slider.Maximum;
@@ -289,22 +300,25 @@ namespace MediaPlayer_X_Ark.Skin
                 }
                 else if (c is ScrollLabel lbl && (labelMap?.TryGetValue(c.Name, out var gc) ?? false))
                 {
-                    var rect = ScaleRectWithFlooredPosition(gc.Position, scale);
-                    lbl.BackColor = Color.Transparent;
-                    lbl.HorizontalAlign = gc.HorizontalAlign;
-                    lbl.Value.Font = ScaleFont(gc.Font, scale);
-                    lbl.Value.ForeColor = gc.FontColor;
-                    lbl.Top = rect.Top;
-                    lbl.Left = rect.Left;
-                    lbl.Width = rect.Width;
-                    lbl.Height = rect.Height;
-                    lbl.Enabled = lbl.Visible = gc.Enabled;
-                    lbl.Value.Left = 0;
-                    lbl.Value.Width = rect.Width;
-                    lbl.Value.Height = rect.Height;
-                    lbl.ScrollEnable = gc.ScrollEnable;
-                    lbl.Timer.Interval = gc.Interval > 0 ? gc.Interval : 100;
-                    lbl.Timer.Enabled = gc.Interval > 0;
+                    ApplyScrollLabel(lbl, gc, scale);
+                }
+                else if (c is Label label && (labelMap?.TryGetValue(c.Name, out var lc) ?? false))
+                {
+                    var rect = ScaleRectWithFlooredPosition(lc.Position, scale);
+                    label.BackColor = Color.Transparent;
+                    label.Font = ScaleFont(lc.Font, scale);
+                    label.ForeColor = lc.FontColor;
+                    label.TextAlign = lc.HorizontalAlign switch
+                    {
+                        HorizontalAlignment.Center => ContentAlignment.MiddleCenter,
+                        HorizontalAlignment.Right => ContentAlignment.MiddleRight,
+                        _ => ContentAlignment.MiddleLeft,
+                    };
+                    label.Left = rect.Left;
+                    label.Top = rect.Top;
+                    label.Width = rect.Width;
+                    label.Height = rect.Height;
+                    label.Enabled = label.Visible = lc.Enabled;
                 }
                 else if (c is DataGridView dgv && (gridMap?.TryGetValue(c.Name, out var plGrid) ?? false))
                 {
@@ -320,7 +334,41 @@ namespace MediaPlayer_X_Ark.Skin
 					dgv.Width = rect.Width;
 					dgv.Height = rect.Height;
 				}
+                else if (c is PictureBox picture && (pictureMap?.TryGetValue(c.Name, out var pc) ?? false))
+                {
+                    var rect = ScaleRect(pc.Position, scale);
+                    picture.Left = rect.Left;
+                    picture.Top = rect.Top;
+                    picture.Width = rect.Width;
+                    picture.Height = rect.Height;
+                    if (pc.Image != null)
+                        picture.Image = ScaleImage(pc.Image, scale);
+                    picture.Enabled = picture.Visible = pc.Enabled;
+                }
+
+                if (c.Controls.Count > 0)
+                    ApplyControls(c.Controls);
             }
+        }
+
+        private void ApplyScrollLabel(ScrollLabel lbl, LabelComponents gc, float scale)
+        {
+            var rect = ScaleRectWithFlooredPosition(gc.Position, scale);
+            lbl.BackColor = Color.Transparent;
+            lbl.HorizontalAlign = gc.HorizontalAlign;
+            lbl.Value.Font = ScaleFont(gc.Font, scale);
+            lbl.Value.ForeColor = gc.FontColor;
+            lbl.Top = rect.Top;
+            lbl.Left = rect.Left;
+            lbl.Width = rect.Width;
+            lbl.Height = rect.Height;
+            lbl.Enabled = lbl.Visible = gc.Enabled;
+            lbl.Value.Left = 0;
+            lbl.Value.Width = rect.Width;
+            lbl.Value.Height = rect.Height;
+            lbl.ScrollEnable = gc.ScrollEnable;
+            lbl.Timer.Interval = gc.Interval > 0 ? gc.Interval : 100;
+            lbl.Timer.Enabled = gc.Interval > 0;
         }
 
         private static float GetScaleFactor(Control control)

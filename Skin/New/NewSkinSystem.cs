@@ -59,6 +59,7 @@ namespace MediaPlayer_X_Ark.Skin.New
 		/// </summary>
 		public FormComponents MainForm { get; private set; }
         public Dictionary<string, SliderComponents> Sliders { get; private set; }
+        public Dictionary<string, Dictionary<string, SliderComponents>> FormSliders { get; private set; }
         public SpectrumComponents Spectrum { get; private set; }
         public WaveformComponents WaveForm { get; private set; }
 
@@ -132,8 +133,10 @@ namespace MediaPlayer_X_Ark.Skin.New
 				Buttons["MainForm"][kv.Key] = LoadButton(skin.MainForm.Buttons, kv.Key);
 
 			Sliders = new Dictionary<string, SliderComponents>();
+			FormSliders = new Dictionary<string, Dictionary<string, SliderComponents>>();
 			foreach (var kv in skin.MainForm.Sliders ?? new Dictionary<string, PartsSliders>())
 				Sliders[kv.Key] = LoadSlider(skin.MainForm.Sliders, kv.Key);
+			FormSliders["MainForm"] = Sliders;
 
 			Labels = new Dictionary<string, Dictionary<string, LabelComponents>>();
             Labels["MainForm"] = new Dictionary<string, LabelComponents>();
@@ -220,6 +223,13 @@ namespace MediaPlayer_X_Ark.Skin.New
 						Labels[kv.Key] = new Dictionary<string, LabelComponents>();
 					Labels[kv.Key][labelKv.Key] = LoadText(kv.Value.Labels, labelKv.Key);
                 }
+
+				foreach (var sliderKv in kv.Value.Sliders ?? new Dictionary<string, PartsSliders>())
+				{
+					if (!FormSliders.ContainsKey(kv.Key))
+						FormSliders[kv.Key] = new Dictionary<string, SliderComponents>();
+					FormSliders[kv.Key][sliderKv.Key] = LoadSlider(kv.Value.Sliders, sliderKv.Key);
+				}
 
 				foreach (var gridKv in kv.Value.Grids ?? new Dictionary<string, PartsGrids>())
 				{

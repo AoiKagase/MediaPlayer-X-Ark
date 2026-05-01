@@ -21,6 +21,7 @@ namespace MediaPlayer_X_Ark.Skin.New
         /// SliderName, SliderComponentsのペアを格納するDictionary。
         /// </summary>
         Dictionary<string, SliderComponents> Sliders { get; }
+        Dictionary<string, Dictionary<string, SliderComponents>> FormSliders { get; }
         /// <summary>
         /// FormKey, FormComponentsのペアを格納するDictionary。
         /// サブフォームの定義を保持するために使用される。

@@ -52,7 +52,9 @@
 		<EmbeddedResource Include="Resources\Attribution\FMOD_Logo_Black_Transparent.png" />
 		<EmbeddedResource Include="Resources\Icons\x-ark-icon.png" />
 		<EmbeddedResource Include="Resources\Brand\media-player-x-ark-logo.png" />
-		<Content Include="Resources\Skins" />
+		<Content Include="Resources\Skins\**\*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 		<Content Include="Resources\Plugins" />
 	</ItemGroup>
 	<ItemGroup>
@@ -79,8 +81,10 @@
 	<Target Name="PostBuild" AfterTargets="Build">
 		<ItemGroup>
 			<ResourceDlls Include="Resources\*.dll" />
+			<SkinFiles Include="Resources\Skins\**\*" />
 		</ItemGroup>
 		<Copy SourceFiles="@(ResourceDlls)" DestinationFolder="$(OutputPath)" />
+		<Copy SourceFiles="@(SkinFiles)" DestinationFolder="$(OutputPath)Skins\%(RecursiveDir)" />
 	</Target>
 	<Target Name="MoveLibs" AfterTargets="Build">
 		<MakeDir Directories="$(OutputPath)Libs" />
