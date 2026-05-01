@@ -168,9 +168,10 @@ $json = @"
     },
     "spectrum": { "src": { "imageKey": "background", "x": 18, "y": 38, "w": 256, "h": 70 }, "location": { "x": 18, "y": 38, "w": 256, "h": 70 }, "color": "071014", "waveColorL": "49d8e8", "waveColorR": "f2d05c" },
     "waveArea": { "target": "trackbar", "mode": "mix", "exponent": 2.0, "location": { "x": 0, "y": 0, "w": 0, "h": 0 }, "colorMix": "49d8e8", "colorUnplayed": "24343a", "colorPlayed": "f2d05c" },
+    "pictures": { "picCover": { "location": { "x": 296, "y": 38, "w": 72, "h": 72 }, "borderColor": "49d8e8", "borderWidth": 1, "cornerRadius": 10 } },
     "labels": {
-      "LabelTitle": { "location": { "x": 296, "y": 38, "w": 210, "h": 30 }, "font": "Yu Gothic UI", "size": 12, "bold": true, "foreColor": "dce7ea", "interval": 100, "scrollEnable": true },
-      "LabelTime": { "location": { "x": 386, "y": 8, "w": 154, "h": 22 }, "font": "Segoe UI", "size": 12, "bold": true, "foreColor": "f2d05c", "interval": 0, "scrollEnable": false, "align": "right" }
+      "LabelTitle": { "location": { "x": 382, "y": 38, "w": 124, "h": 30 }, "font": "Yu Gothic UI", "size": 12, "bold": true, "foreColor": "dce7ea", "interval": 100, "scrollEnable": true },
+      "LabelTime": { "location": { "x": 382, "y": 76, "w": 124, "h": 22 }, "font": "Segoe UI", "size": 12, "bold": true, "foreColor": "f2d05c", "interval": 0, "scrollEnable": false, "align": "right" }
     }
   },
   "subForms": {
@@ -199,7 +200,7 @@ $json = @"
       "foreColor": "dce7ea",
       "font": "Yu Gothic UI",
       "fontSize": 9,
-      "pictures": { "picCover": { "location": { "x": 22, "y": 48, "w": 128, "h": 128 }, "borderColor": "49d8e8", "borderWidth": 1 } },
+      "pictures": { "picCover": { "location": { "x": 22, "y": 48, "w": 128, "h": 128 }, "borderColor": "49d8e8", "borderWidth": 1, "cornerRadius": 12 } },
       "labels": {
         "lblTitleKey": { "location": { "x": 176, "y": 52, "w": 92, "h": 18 }, "font": "Yu Gothic UI", "size": 9, "bold": true, "foreColor": "7d9298" },
         "lblTitleVal": { "location": { "x": 272, "y": 52, "w": 188, "h": 18 }, "font": "Yu Gothic UI", "size": 9, "foreColor": "dce7ea" },

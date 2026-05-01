@@ -55,6 +55,7 @@ namespace MediaPlayer_X_Ark
 		private OpenFileDialog _openFileDialogMedia;
 		private Bitmap _waveformBitmap = null;
 		private PictureBox _waveformArea = null;
+		private CancellationTokenSource _coverArtCts;
 		private int _waveformRefreshCounter = 0;
 		private readonly List<Form> _managedForms = new List<Form>();
 		public IEnumerable<Form> ManagedForms => _managedForms.Where(f => f != null && !f.IsDisposed);
@@ -435,6 +436,7 @@ namespace MediaPlayer_X_Ark
 				_fileInfoForm.LoadInfo();
 
 			LabelTitle.Value.Text = _controller.BuildTitleText();
+			LoadMainCoverArt(index);
 
 			_waveformBitmap?.Dispose();
 			_waveformBitmap = null;
@@ -449,6 +451,180 @@ namespace MediaPlayer_X_Ark
 			if (!_controller.Engine.WaveformEnabled) return;
 			if (index != _controller.Engine.PlayingIndex) return;
 			UpdateWaveformBitmap(index);
+		}
+
+		private void LoadMainCoverArt(int index)
+		{
+			_coverArtCts?.Cancel();
+			_coverArtCts?.Dispose();
+			_coverArtCts = new CancellationTokenSource();
+			var ct = _coverArtCts.Token;
+
+			if (!_controller.IsValidTrackIndex(index))
+			{
+				SetMainCoverImage(CreateDummyCoverArt());
+				return;
+			}
+
+			var cover = _controller.Engine.GetCoverArt(index);
+			if (cover != null)
+			{
+				SetMainCoverImage(cover);
+				return;
+			}
+
+			SetMainCoverImage(CreateDummyCoverArt());
+			_ = FetchMainCoverArtFallbackAsync(index, ct);
+		}
+
+		private async Task FetchMainCoverArtFallbackAsync(int index, CancellationToken ct)
+		{
+			if (!_controller.IsValidTrackIndex(index)) return;
+			var item = _controller.Engine.PlayList[index];
+			Image img = null;
+
+			var result = _controller.Engine.GetTag("COVERART", index, out FMOD.TAG coverTag);
+			if (result == FMOD.RESULT.OK && coverTag.datatype == FMOD.TAGDATATYPE.BINARY)
+			{
+				try
+				{
+					byte[] imgData = new byte[coverTag.datalen];
+					System.Runtime.InteropServices.Marshal.Copy(coverTag.data, imgData, 0, (int)coverTag.datalen);
+					using var ms = new MemoryStream(imgData);
+					using var tmp = Image.FromStream(ms);
+					img = new Bitmap(tmp);
+					ApplyFetchedMainCover(index, img, ct);
+					return;
+				}
+				catch
+				{
+				}
+			}
+
+			if (!string.IsNullOrEmpty(item.MusicBrainzDiscId))
+			{
+				try
+				{
+					img = await CoverArtClient.FetchByDiscIdAsync(item.MusicBrainzDiscId, ct);
+				}
+				catch
+				{
+				}
+			}
+
+			if (img == null && item.IsCueTrack && item.CueSheetRef != null
+				&& !string.IsNullOrEmpty(item.CueSheetRef.DiscId)
+				&& (string.IsNullOrEmpty(item.Artist) || string.IsNullOrEmpty(item.Album)))
+			{
+				try
+				{
+					var cddbResults = await Engine.CD.CddbClient.QueryByCueAsync(
+						item.CueSheetRef,
+						_config.settings.CddbServers,
+						ct);
+
+					if (cddbResults.Count > 0)
+					{
+						var best = cddbResults[0];
+						var firstCueTrack = _controller.Engine.PlayList.First(p =>
+							p.IsCueTrack && p.CueSheetRef == item.CueSheetRef);
+
+						for (int i = 0; i < _controller.Engine.PlayList.Count; i++)
+						{
+							var entry = _controller.Engine.PlayList[i];
+							if (!entry.IsCueTrack || entry.CueSheetRef != item.CueSheetRef) continue;
+
+							int trackIdx = i - _controller.Engine.PlayList.IndexOf(firstCueTrack);
+							if (string.IsNullOrEmpty(entry.Artist))
+								entry.Artist = best.Artist ?? "";
+							if (string.IsNullOrEmpty(entry.Album))
+								entry.Album = best.Album ?? "";
+							if (trackIdx >= 0 && trackIdx < best.Tracks.Count && entry.Title.StartsWith("Track "))
+								entry.Title = best.Tracks[trackIdx];
+						}
+					}
+				}
+				catch
+				{
+				}
+			}
+
+			if (img == null)
+			{
+				const int waitMs = 500;
+				const int maxRetries = 6;
+				string artist = null;
+				string album = null;
+
+				for (int i = 0; i < maxRetries; i++)
+				{
+					if (ct.IsCancellationRequested) return;
+					if (!_controller.IsValidTrackIndex(index)) return;
+
+					artist = _controller.Engine.PlayList[index].Artist;
+					album = _controller.Engine.PlayList[index].Album;
+
+					if (!string.IsNullOrEmpty(album)) break;
+					await Task.Delay(waitMs, ct);
+				}
+
+				if (!string.IsNullOrEmpty(album))
+				{
+					try
+					{
+						img = await CoverArtClient.FetchByArtistAlbumAsync(artist, album, ct);
+					}
+					catch
+					{
+					}
+				}
+			}
+
+			ApplyFetchedMainCover(index, img, ct);
+		}
+
+		private void ApplyFetchedMainCover(int index, Image img, CancellationToken ct)
+		{
+			if (img == null)
+				return;
+			if (ct.IsCancellationRequested || IsDisposed || picCover.IsDisposed
+				|| index != _controller.Engine.PlayingIndex)
+			{
+				img.Dispose();
+				return;
+			}
+
+			if (InvokeRequired)
+				BeginInvoke(new Action(() => ApplyFetchedMainCover(index, img, ct)));
+			else
+				SetMainCoverImage(img);
+		}
+
+		private void SetMainCoverImage(Image image)
+		{
+			var old = picCover.Image;
+			picCover.Image = image;
+			picCover.Invalidate();
+			if (old != null && !ReferenceEquals(old, image))
+				old.Dispose();
+		}
+
+		private Image CreateDummyCoverArt()
+		{
+			var width = Math.Max(1, picCover.Width);
+			var height = Math.Max(1, picCover.Height);
+			var bmp = new Bitmap(width, height);
+			using var g = Graphics.FromImage(bmp);
+			g.Clear(Color.DimGray);
+			using var font = new Font("Arial", 10);
+			var text = "No Image";
+			var textSize = g.MeasureString(text, font);
+			g.DrawString(
+				text,
+				font,
+				Brushes.White,
+				new PointF((width - textSize.Width) / 2f, (height - textSize.Height) / 2f));
+			return bmp;
 		}
 
 		private void UpdateWaveformBitmap(int index)
@@ -669,6 +845,10 @@ namespace MediaPlayer_X_Ark
 		{
             D2DContext.Dispose();
             _discordPresence?.Dispose();
+            _coverArtCts?.Cancel();
+            _coverArtCts?.Dispose();
+            picCover.Image?.Dispose();
+            picCover.Image = null;
             _controller.Close();
 			_config.Save();
 			_fileInfoForm?.Dispose();

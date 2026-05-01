@@ -185,9 +185,10 @@ $json = @"
     },
     "spectrum": { "src": { "imageKey": "mainBackground", "x": 18, "y": 38, "w": 220, "h": 76 }, "location": { "x": 18, "y": 38, "w": 220, "h": 76 }, "color": "0b1209", "waveColorL": "7fd35b", "waveColorR": "ffb45a" },
     "waveArea": { "target": "trackbar", "mode": "mix", "exponent": 2.0, "location": { "x": 0, "y": 0, "w": 0, "h": 0 }, "colorMix": "7fd35b", "colorUnplayed": "30402a", "colorPlayed": "ffb45a" },
+    "pictures": { "picCover": { "location": { "x": 258, "y": 38, "w": 76, "h": 76 }, "borderColor": "7fd35b", "borderWidth": 1, "cornerRadius": 10 } },
     "labels": {
-      "LabelTitle": { "location": { "x": 258, "y": 38, "w": 220, "h": 34 }, "font": "Yu Gothic UI", "size": 12, "bold": true, "foreColor": "edf0dc", "interval": 100, "scrollEnable": true },
-      "LabelTime": { "location": { "x": 392, "y": 8, "w": 150, "h": 22 }, "font": "Segoe UI", "size": 12, "bold": true, "foreColor": "ffb45a", "interval": 0, "scrollEnable": false, "align": "right" }
+      "LabelTitle": { "location": { "x": 350, "y": 38, "w": 128, "h": 34 }, "font": "Yu Gothic UI", "size": 12, "bold": true, "foreColor": "edf0dc", "interval": 100, "scrollEnable": true },
+      "LabelTime": { "location": { "x": 350, "y": 74, "w": 128, "h": 22 }, "font": "Segoe UI", "size": 12, "bold": true, "foreColor": "ffb45a", "interval": 0, "scrollEnable": false, "align": "right" }
     }
   },
   "subForms": {
@@ -213,7 +214,7 @@ $json = @"
       "src": { "imageKey": "fileInfoBackground", "x": 0, "y": 0, "w": 460, "h": 520 },
       "location": { "x": 0, "y": 0, "w": 460, "h": 520 },
       "backColor": "141510", "foreColor": "edf0dc", "font": "Yu Gothic UI", "fontSize": 9,
-      "pictures": { "picCover": { "location": { "x": 22, "y": 48, "w": 128, "h": 128 }, "borderColor": "7fd35b", "borderWidth": 1 } },
+      "pictures": { "picCover": { "location": { "x": 22, "y": 48, "w": 128, "h": 128 }, "borderColor": "7fd35b", "borderWidth": 1, "cornerRadius": 12 } },
       "labels": {
         "lblTitleKey": { "location": { "x": 178, "y": 54, "w": 86, "h": 18 }, "font": "Yu Gothic UI", "size": 9, "bold": true, "foreColor": "a0aa8c" },
         "lblTitleVal": { "location": { "x": 268, "y": 54, "w": 158, "h": 18 }, "font": "Yu Gothic UI", "size": 9, "foreColor": "edf0dc" },

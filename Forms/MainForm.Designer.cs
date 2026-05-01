@@ -58,7 +58,9 @@ namespace MediaPlayer_X_Ark
 			BtnCD = new System.Windows.Forms.Button();
 			contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
 			notifyIcon = new System.Windows.Forms.NotifyIcon(components);
+			picCover = new RoundedPictureBox();
 			((System.ComponentModel.ISupportInitialize)Spectrum).BeginInit();
+			((System.ComponentModel.ISupportInitialize)picCover).BeginInit();
 			SuspendLayout();
 			// 
 			// BtnPlay
@@ -303,6 +305,7 @@ namespace MediaPlayer_X_Ark
 			// LabelTitle
 			// 
 			LabelTitle.BackColor = System.Drawing.SystemColors.Window;
+			LabelTitle.HorizontalAlign = System.Windows.Forms.HorizontalAlignment.Left;
 			LabelTitle.Location = new System.Drawing.Point(257, 161);
 			LabelTitle.Name = "LabelTitle";
 			LabelTitle.ScrollEnable = true;
@@ -312,6 +315,7 @@ namespace MediaPlayer_X_Ark
 			// LabelTime
 			// 
 			LabelTime.BackColor = System.Drawing.SystemColors.Window;
+			LabelTime.HorizontalAlign = System.Windows.Forms.HorizontalAlignment.Left;
 			LabelTime.Location = new System.Drawing.Point(174, 161);
 			LabelTime.Name = "LabelTime";
 			LabelTime.ScrollEnable = false;
@@ -367,6 +371,16 @@ namespace MediaPlayer_X_Ark
 			notifyIcon.Text = "MediaPlayer X-Ark";
 			notifyIcon.Visible = true;
 			// 
+			// picCover
+			// 
+			picCover.BorderColor = System.Drawing.Color.Empty;
+			picCover.Location = new System.Drawing.Point(363, 63);
+			picCover.Name = "picCover";
+			picCover.Size = new System.Drawing.Size(120, 120);
+			picCover.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			picCover.TabIndex = 22;
+			picCover.TabStop = false;
+			// 
 			// MainForm
 			// 
 			AllowDrop = true;
@@ -376,6 +390,7 @@ namespace MediaPlayer_X_Ark
 			ClientSize = new System.Drawing.Size(520, 227);
 			ContextMenuStrip = contextMenu;
 			ControlBox = false;
+			Controls.Add(picCover);
 			Controls.Add(BtnPlaylist);
 			Controls.Add(BtnCD);
 			Controls.Add(Spectrum);
@@ -410,6 +425,7 @@ namespace MediaPlayer_X_Ark
 			MouseDown += MainForm_MouseDown;
 			MouseMove += MainForm_MouseMove;
 			((System.ComponentModel.ISupportInitialize)Spectrum).EndInit();
+			((System.ComponentModel.ISupportInitialize)picCover).EndInit();
 			ResumeLayout(false);
 			PerformLayout();
 		}
@@ -441,6 +457,7 @@ namespace MediaPlayer_X_Ark
         public SpectrumAnalyzer Spectrum;
         private System.Windows.Forms.Button BtnCD;
         private System.Windows.Forms.NotifyIcon notifyIcon;
-    }
+		private RoundedPictureBox picCover;
+	}
 }
 

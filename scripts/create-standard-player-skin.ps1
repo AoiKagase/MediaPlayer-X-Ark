@@ -194,6 +194,7 @@ $json = @"
     },
     "spectrum": { "src": { "imageKey": "background", "x": 190, "y": 86, "w": 330, "h": 56 }, "location": { "x": 190, "y": 86, "w": 330, "h": 56 }, "color": "ffffff", "waveColorL": "5b8def", "waveColorR": "48a868" },
     "waveArea": { "target": "trackbar", "mode": "mix", "exponent": 2.0, "location": { "x": 0, "y": 0, "w": 0, "h": 0 }, "colorMix": "5b8def", "colorUnplayed": "c6cdd4", "colorPlayed": "48a868" },
+    "pictures": { "picCover": { "location": { "x": 34, "y": 26, "w": 128, "h": 128 }, "borderColor": "b8c0c8", "borderWidth": 1, "cornerRadius": 12 } },
     "labels": {
       "LabelTitle": { "location": { "x": 202, "y": 34, "w": 230, "h": 24 }, "font": "Yu Gothic UI", "size": 11, "bold": true, "foreColor": "303840", "interval": 100, "scrollEnable": true },
       "LabelTime": { "location": { "x": 386, "y": 34, "w": 118, "h": 24 }, "font": "Segoe UI", "size": 10, "bold": true, "foreColor": "607080", "interval": 0, "scrollEnable": false, "align": "right" }
@@ -222,7 +223,7 @@ $json = @"
       "src": { "imageKey": "fileInfoBackground", "x": 0, "y": 0, "w": 460, "h": 520 },
       "location": { "x": 0, "y": 0, "w": 460, "h": 520 },
       "backColor": "f3f5f7", "foreColor": "303840", "font": "Yu Gothic UI", "fontSize": 9,
-      "pictures": { "picCover": { "location": { "x": 22, "y": 50, "w": 128, "h": 128 }, "borderColor": "b8c0c8", "borderWidth": 1 } },
+      "pictures": { "picCover": { "location": { "x": 22, "y": 50, "w": 128, "h": 128 }, "borderColor": "b8c0c8", "borderWidth": 1, "cornerRadius": 12 } },
       "labels": {
         "lblTitleKey": { "location": { "x": 178, "y": 56, "w": 86, "h": 18 }, "font": "Yu Gothic UI", "size": 9, "bold": true, "foreColor": "607080" },
         "lblTitleVal": { "location": { "x": 268, "y": 56, "w": 154, "h": 18 }, "font": "Yu Gothic UI", "size": 9, "foreColor": "303840" },
