@@ -34,6 +34,10 @@ namespace MediaPlayer_X_Ark.Skin.New.Parts
 		/// </summary>
 		[JsonPropertyName("backColor")] public string BackColor { get; set; }
 		/// <summary>
+		/// backColor の互換表記。
+		/// </summary>
+		[JsonPropertyName("BackGroundColor")] public string BackGroundColor { get; set; }
+		/// <summary>
 		/// テキストの横方向の配置基準を表すプロパティ。
 		/// left / center / right を指定する。
 		/// 未指定時は left。

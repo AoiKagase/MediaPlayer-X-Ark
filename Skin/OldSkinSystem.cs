@@ -186,6 +186,8 @@ namespace MediaPlayer_X_Ark.Skin
 			result = Win32API.GetPrivateProfileString("GraphicArea", "-TitleFontColor", "", nValue, capacity, skinFile);
 			LabelTitle = new LabelComponents();
 			LabelTitle.FontColor = LoadColor(nValue.ToString());
+			result = Win32API.GetPrivateProfileString("GraphicArea", "-TextAreaBackColor", "", nValue, capacity, skinFile);
+			LabelTitle.BackColor = LoadColorOrEmpty(nValue.ToString());
 			LabelTitle.Font = new Font(fontName, size, ((bold > 0) ? FontStyle.Bold : FontStyle.Regular) | ((italic > 0) ? FontStyle.Italic : FontStyle.Regular), GraphicsUnit.Point);
 			LabelTitle.Position.Left = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaX", 0, skinFile);
 			LabelTitle.Position.Top = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TextAreaY", 0, skinFile);
@@ -203,6 +205,8 @@ namespace MediaPlayer_X_Ark.Skin
 			result = Win32API.GetPrivateProfileString("GraphicArea", "-TimeTxtColor", "", nValue, capacity, skinFile);
 			LabelTime = new LabelComponents();
 			LabelTime.FontColor = LoadColor(nValue.ToString());
+			result = Win32API.GetPrivateProfileString("GraphicArea", "-TextAreaBackColor", "", nValue, capacity, skinFile);
+			LabelTime.BackColor = LoadColorOrEmpty(nValue.ToString());
 			LabelTime.Font = new Font(fontName, size, ((bold > 0) ? FontStyle.Bold : FontStyle.Regular) | ((italic > 0) ? FontStyle.Italic : FontStyle.Regular), GraphicsUnit.Point);
 			LabelTime.Position.Left = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtAreaX", 0, skinFile);
 			LabelTime.Position.Top = (int)Win32API.GetPrivateProfileInt("GraphicArea", "-TimeTxtAreaY", 0, skinFile);
@@ -394,6 +398,14 @@ namespace MediaPlayer_X_Ark.Skin
 			if (color == "")
 				color = "0000000";
 			return ColorTranslator.FromWin32(Int32.Parse(color, System.Globalization.NumberStyles.HexNumber));
+		}
+
+		private Color LoadColorOrEmpty(string color)
+		{
+			if (string.IsNullOrEmpty(color))
+				return Color.Empty;
+
+			return LoadColor(color);
 		}
 
 		private ButtonComponents LoadPListComponents(string skinDir, string extension, string buttonNo, string key, string skinFile)

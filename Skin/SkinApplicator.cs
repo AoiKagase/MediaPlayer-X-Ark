@@ -309,7 +309,7 @@ namespace MediaPlayer_X_Ark.Skin
                 else if (c is Label label && (labelMap?.TryGetValue(c.Name, out var lc) ?? false))
                 {
                     var rect = ScaleRectWithFlooredPosition(lc.Position, scale);
-                    label.BackColor = Color.Transparent;
+                    label.BackColor = lc.BackColor == Color.Empty ? Color.Transparent : lc.BackColor;
                     label.Font = ScaleFont(lc.Font, scale);
                     label.ForeColor = lc.FontColor;
                     label.TextAlign = lc.HorizontalAlign switch
@@ -365,10 +365,11 @@ namespace MediaPlayer_X_Ark.Skin
         private void ApplyScrollLabel(ScrollLabel lbl, LabelComponents gc, float scale)
         {
             var rect = ScaleRectWithFlooredPosition(gc.Position, scale);
-            lbl.BackColor = Color.Transparent;
+            lbl.BackColor = gc.BackColor == Color.Empty ? Color.Transparent : gc.BackColor;
             lbl.HorizontalAlign = gc.HorizontalAlign;
             lbl.Value.Font = ScaleFont(gc.Font, scale);
             lbl.Value.ForeColor = gc.FontColor;
+            lbl.Value.BackColor = lbl.BackColor;
             lbl.Top = rect.Top;
             lbl.Left = rect.Left;
             lbl.Width = rect.Width;

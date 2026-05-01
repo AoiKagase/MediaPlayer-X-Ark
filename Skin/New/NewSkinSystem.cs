@@ -362,6 +362,7 @@ namespace MediaPlayer_X_Ark.Skin.New
 								def.Size > 0 ? def.Size : 9, style,
 								GraphicsUnit.Point);
 			result.FontColor = ParseColor(def.ForeColor ?? "FFFFFF");
+			result.BackColor = ParseColorOrEmpty(def.BackColor ?? def.BackGroundColor);
 			result.HorizontalAlign = ParseHorizontalAlignment(def.Align);
 			result.Position = new RECT
 			{
