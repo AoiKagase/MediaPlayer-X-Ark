@@ -106,7 +106,7 @@ namespace MediaPlayer_X_Ark
 				}
 			}
 			if (_fileInfoForm != null && !_fileInfoForm.IsDisposed)
-				_skinApplicator.ApplyToFileInfoForm(_fileInfoForm);
+				_fileInfoForm.ApplySkin(_skinApplicator, HasSubFormSkin("FileInfoForm"));
 			if (_miniPlayerForm != null && !_miniPlayerForm.IsDisposed)
 				_skinApplicator.ApplyToMiniPlayerForm(_miniPlayerForm);
 
@@ -117,6 +117,10 @@ namespace MediaPlayer_X_Ark
 
 		public int ScaleSkinValue(int value)
 			=> _skinApplicator?.ScaleValue(this, value) ?? value;
+
+		private bool HasSubFormSkin(string formName)
+			=> _currentSkin?.SubForms?.ContainsKey(formName) == true;
+
 		/// <summary>
 		/// スキンロード
 		/// 設定ファイルからスキンファイルパスを取得して投げる
@@ -126,17 +130,23 @@ namespace MediaPlayer_X_Ark
 		{
 			using (var pkg = SkinPackage.Open(skinFile))
 			{
+				INewSkinSystem loadedSkin = null;
 				if (pkg.Format == SkinPackage.SkinFormat.NewXsk)
 				{
 					var skin = new NewSkinSystem();
 					skin.Open(pkg.DefinitionPath);
-					_currentSkin = skin;
+					loadedSkin = skin;
 				}
-				_skinApplicator = new SkinApplicator(_currentSkin);
-				_skinApplicator.ApplyToMainForm(this, Spectrum);
-				_skinApplicator.ApplyToPlayListForm(_playListForm);
-                _skinApplicator.ApplyToFileInfoForm(_fileInfoForm);
-                _skinApplicator.ApplyToMiniPlayerForm(_miniPlayerForm);
+				_currentSkin = loadedSkin;
+				_skinApplicator = _currentSkin != null ? new SkinApplicator(_currentSkin) : null;
+				if (_currentSkin != null)
+				{
+					_skinApplicator.ApplyToMainForm(this, Spectrum);
+					_skinApplicator.ApplyToPlayListForm(_playListForm);
+				}
+                _fileInfoForm?.ApplySkin(_skinApplicator, HasSubFormSkin("FileInfoForm"));
+                if (_currentSkin != null)
+                    _skinApplicator.ApplyToMiniPlayerForm(_miniPlayerForm);
 
 				// スキン適用後の値をバックアップ（設定オーバーライドOFF時の復元用）
 				RefreshSkinBackups();

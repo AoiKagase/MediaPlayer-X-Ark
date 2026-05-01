@@ -21,6 +21,8 @@ namespace MediaPlayer_X_Ark.Forms
 		private readonly IPlayerEngine _player;
 		private readonly IConfigService _config;
 		private readonly MainForm _mainForm;
+		private readonly Dictionary<Control, ControlAppearance> _defaultControlAppearances = new Dictionary<Control, ControlAppearance>();
+		private FormAppearance _defaultFormAppearance;
 		private int _currentIndex { get; set; }
 		private CancellationTokenSource _coverArtCts;
 
@@ -32,8 +34,149 @@ namespace MediaPlayer_X_Ark.Forms
 			this.Owner = mainform;
 			InitializeComponent();
 			ApplicationIcon.ApplyTo(this);
+			CaptureDefaultAppearance();
 
 			InitFileNameContextMenu();
+		}
+
+		public void ApplySkin(SkinApplicator applicator, bool hasFileInfoSkin)
+		{
+			RestoreDefaultAppearance();
+
+			if (!hasFileInfoSkin)
+			{
+				if (Visible)
+					LoadInfo();
+				return;
+			}
+
+			FormBorderStyle = FormBorderStyle.None;
+			applicator?.ApplyToFileInfoForm(this);
+			if (Visible)
+				LoadInfo();
+		}
+
+		private void CaptureDefaultAppearance()
+		{
+			_defaultFormAppearance = new FormAppearance
+			{
+				ClientSize = ClientSize,
+				BackColor = BackColor,
+				BackgroundImage = BackgroundImage,
+				ForeColor = ForeColor,
+				FormBorderStyle = FormBorderStyle,
+				TransparencyKey = TransparencyKey,
+			};
+			CaptureControlAppearances(Controls);
+		}
+
+		private void CaptureControlAppearances(Control.ControlCollection controls)
+		{
+			foreach (Control control in controls)
+			{
+				_defaultControlAppearances[control] = new ControlAppearance
+				{
+					Location = control.Location,
+					Size = control.Size,
+					BackColor = control.BackColor,
+					ForeColor = control.ForeColor,
+					Font = control.Font,
+					Visible = control.Visible,
+					Enabled = control.Enabled,
+					LabelBorderStyle = control is Label label ? label.BorderStyle : null,
+					LabelTextAlign = control is Label labelAlign ? labelAlign.TextAlign : null,
+				};
+
+				if (control.Controls.Count > 0)
+					CaptureControlAppearances(control.Controls);
+			}
+		}
+
+		private void RestoreDefaultAppearance()
+		{
+			SuspendLayout();
+			try
+			{
+				ClientSize = _defaultFormAppearance.ClientSize;
+				BackColor = _defaultFormAppearance.BackColor;
+				BackgroundImage = _defaultFormAppearance.BackgroundImage;
+				ForeColor = _defaultFormAppearance.ForeColor;
+				TransparencyKey = _defaultFormAppearance.TransparencyKey;
+				RestoreControlAppearances(Controls);
+				ShowDefaultControls(Controls);
+				FormBorderStyle = _defaultFormAppearance.FormBorderStyle;
+				UpdateStyles();
+			}
+			finally
+			{
+				ResumeLayout(false);
+				PerformLayout();
+				Refresh();
+			}
+		}
+
+		private void ShowDefaultControls(Control.ControlCollection controls)
+		{
+			foreach (Control control in controls)
+			{
+				control.Visible = true;
+				control.Enabled = true;
+				control.BringToFront();
+
+				if (control.Controls.Count > 0)
+					ShowDefaultControls(control.Controls);
+			}
+		}
+
+		private void RestoreControlAppearances(Control.ControlCollection controls)
+		{
+			foreach (Control control in controls)
+			{
+				if (_defaultControlAppearances.TryGetValue(control, out var appearance))
+				{
+					control.Location = appearance.Location;
+					control.Size = appearance.Size;
+					control.BackColor = appearance.BackColor;
+					control.ForeColor = appearance.ForeColor;
+					control.Font = appearance.Font;
+					control.Visible = appearance.Visible;
+					control.Enabled = appearance.Enabled;
+
+					if (control is Label label)
+					{
+						if (appearance.LabelBorderStyle.HasValue)
+							label.BorderStyle = appearance.LabelBorderStyle.Value;
+						if (appearance.LabelTextAlign.HasValue)
+							label.TextAlign = appearance.LabelTextAlign.Value;
+					}
+				}
+
+				if (control.Controls.Count > 0)
+					RestoreControlAppearances(control.Controls);
+			}
+		}
+
+		private struct FormAppearance
+		{
+			public Size ClientSize;
+			public Color BackColor;
+			public Image BackgroundImage;
+			public Color ForeColor;
+			public FormBorderStyle FormBorderStyle;
+			public Color TransparencyKey;
+		}
+
+		private struct ControlAppearance
+		{
+			public Point Location;
+			public Size Size;
+			public Color BackColor;
+			public Color ForeColor;
+			public Font Font;
+			public bool Visible;
+			public bool Enabled;
+			public BorderStyle? LabelBorderStyle;
+			public ContentAlignment? LabelTextAlign;
 		}
 		private void InitFileNameContextMenu()
 		{
