@@ -115,10 +115,14 @@ namespace MediaPlayer_X_Ark.Skin
             if (!_skin.SubForms.TryGetValue("FileInfoForm", out var def)) return;
 
             if (def.BackImage != null)
-                form.BackgroundImage = ScaleImage(def.BackImage, GetScaleFactor(form));
-            else if (def.BackColor != Color.Empty)
+            {
+				form.FormBorderStyle = FormBorderStyle.None;
+				form.BackgroundImage = ScaleImage(def.BackImage, GetScaleFactor(form));
+			}
+			else if (def.BackColor != Color.Empty)
             {
 				form.BackColor = def.BackColor;
+                form.FormBorderStyle = FormBorderStyle.FixedSingle;
 			}
 
 			if (def.ForeColor != Color.Empty)
