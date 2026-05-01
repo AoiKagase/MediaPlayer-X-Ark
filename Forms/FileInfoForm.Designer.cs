@@ -50,7 +50,6 @@
 			lblAlbumVal = new System.Windows.Forms.Label();
 			lblYearVal = new System.Windows.Forms.Label();
 			lblTrackVal = new System.Windows.Forms.Label();
-			pnlSeparator = new System.Windows.Forms.Panel();
 			lblLengthKey = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)picCover).BeginInit();
 			SuspendLayout();
@@ -112,6 +111,7 @@
 			// 
 			// picCover
 			// 
+			picCover.BorderColor = System.Drawing.Color.Empty;
 			picCover.Location = new System.Drawing.Point(12, 12);
 			picCover.Name = "picCover";
 			picCover.Size = new System.Drawing.Size(120, 120);
@@ -264,14 +264,6 @@
 			lblTrackVal.TabIndex = 24;
 			lblTrackVal.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// pnlSeparator
-			// 
-			pnlSeparator.BackColor = System.Drawing.Color.Gray;
-			pnlSeparator.Location = new System.Drawing.Point(12, 158);
-			pnlSeparator.Name = "pnlSeparator";
-			pnlSeparator.Size = new System.Drawing.Size(393, 1);
-			pnlSeparator.TabIndex = 25;
-			// 
 			// lblLengthKey
 			// 
 			lblLengthKey.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 128);
@@ -287,7 +279,6 @@
 			AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			ClientSize = new System.Drawing.Size(404, 281);
 			Controls.Add(lblLengthKey);
-			Controls.Add(pnlSeparator);
 			Controls.Add(lblTrackVal);
 			Controls.Add(lblYearVal);
 			Controls.Add(lblAlbumVal);
@@ -347,7 +338,6 @@
         private System.Windows.Forms.Label lblAlbumVal;
         private System.Windows.Forms.Label lblYearVal;
         private System.Windows.Forms.Label lblTrackVal;
-        private System.Windows.Forms.Panel pnlSeparator;
         private System.Windows.Forms.Label lblLengthKey;
     }
 }
