@@ -401,6 +401,7 @@ namespace MediaPlayer_X_Ark.Skin.New
 				result.Image = CropImage(def.Src.ImageKey, def.Src);
 				if (result.Image == null) return result;
 			}
+			result.Color = ParseColorOrEmpty(def.Color);
 			result.BorderColor = ParseColor(def.BorderColor ?? "000000");
 			result.BorderWidth = def.BorderWidth;
 			result.CornerRadius = def.CornerRadius;

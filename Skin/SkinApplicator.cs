@@ -350,6 +350,7 @@ namespace MediaPlayer_X_Ark.Skin
                     picture.Top = rect.Top;
                     picture.Width = rect.Width;
                     picture.Height = rect.Height;
+                    picture.BackColor = pc.Color == Color.Empty ? Color.Transparent : pc.Color;
                     if (picture is Controls.RoundedPictureBox roundedPicture)
                     {
                         roundedPicture.BorderColor = pc.BorderColor;
