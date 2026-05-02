@@ -354,8 +354,7 @@ namespace MediaPlayer_X_Ark.Skin
                     {
                         roundedPicture.BorderColor = pc.BorderColor;
                         roundedPicture.BorderWidth = ScaleLength(pc.BorderWidth, scale);
-                        if (pc.CornerRadius > 0)
-                            roundedPicture.CornerRadius = ScaleLength(pc.CornerRadius, scale);
+                        roundedPicture.CornerRadius = ScaleLength(pc.CornerRadius, scale);
                         roundedPicture.Visible = pc.Enabled;
                     }
                     if (pc.Image != null)
