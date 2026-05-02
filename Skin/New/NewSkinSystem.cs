@@ -428,6 +428,7 @@ namespace MediaPlayer_X_Ark.Skin.New
         private Color ParseColorOrEmpty(string hex)
         {
             if (string.IsNullOrEmpty(hex)) return Color.Empty;
+            if (string.Equals(hex.Trim(), "Transparent", StringComparison.OrdinalIgnoreCase)) return Color.Empty;
             return ParseColor(hex);
         }
     }
