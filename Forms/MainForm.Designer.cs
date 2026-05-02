@@ -380,6 +380,7 @@ namespace MediaPlayer_X_Ark
 			picCover.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			picCover.TabIndex = 22;
 			picCover.TabStop = false;
+			picCover.Visible = false;
 			// 
 			// MainForm
 			// 

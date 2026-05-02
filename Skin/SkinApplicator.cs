@@ -276,6 +276,11 @@ namespace MediaPlayer_X_Ark.Skin
                     btn.Enabled = btn.Visible = bc.Enabled;
                     btn.Refresh();
                 }
+                else if (c is Button unskinnedButton && ShouldHideUnskinnedFileInfoButton(parentName, unskinnedButton, btnMap))
+                {
+                    unskinnedButton.Visible = false;
+                    unskinnedButton.Enabled = false;
+                }
                 else if (c is CustomSlider slider && (sliderMap?.TryGetValue(c.Name, out var sc) ?? false))
                 {
                     if (!sc.Enabled)
@@ -351,6 +356,7 @@ namespace MediaPlayer_X_Ark.Skin
                         roundedPicture.BorderWidth = ScaleLength(pc.BorderWidth, scale);
                         if (pc.CornerRadius > 0)
                             roundedPicture.CornerRadius = ScaleLength(pc.CornerRadius, scale);
+                        roundedPicture.Visible = pc.Enabled;
                     }
                     if (pc.Image != null)
                         picture.Image = ScaleImage(pc.Image, scale);
@@ -361,6 +367,14 @@ namespace MediaPlayer_X_Ark.Skin
                     ApplyControls(c.Controls);
             }
         }
+
+        private static bool ShouldHideUnskinnedFileInfoButton(
+            string parentName,
+            Button button,
+            Dictionary<string, ButtonComponents> buttonMap)
+            => parentName == "FileInfoForm"
+               && button.Name == "BtnClose"
+               && !(buttonMap?.ContainsKey(button.Name) ?? false);
 
         private void ApplyScrollLabel(ScrollLabel lbl, LabelComponents gc, float scale)
         {

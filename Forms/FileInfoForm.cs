@@ -45,6 +45,8 @@ namespace MediaPlayer_X_Ark.Forms
 
 			if (!hasFileInfoSkin)
 			{
+				BtnClose.Visible = false;
+				BtnClose.Enabled = false;
 				if (Visible)
 					LoadInfo();
 				return;
@@ -446,6 +448,11 @@ namespace MediaPlayer_X_Ark.Forms
 				Win32API.SetWindowPos(optionForm.Handle, Win32API.HWND_TOP, 0, 0, 0, 0,
 					Win32API.SWP_NOMOVE | Win32API.SWP_NOSIZE | Win32API.SWP_NOACTIVATE);
 			}
+		}
+
+		private void BtnClose_Click(object sender, EventArgs e)
+		{
+			Hide();
 		}
 	}
 }

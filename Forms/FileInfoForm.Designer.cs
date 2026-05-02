@@ -51,6 +51,7 @@
 			lblYearVal = new System.Windows.Forms.Label();
 			lblTrackVal = new System.Windows.Forms.Label();
 			lblLengthKey = new System.Windows.Forms.Label();
+			BtnClose = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)picCover).BeginInit();
 			SuspendLayout();
 			// 
@@ -274,10 +275,25 @@
 			lblLengthKey.Text = "再生時間：";
 			lblLengthKey.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
+			// BtnClose
+			// 
+			BtnClose.AutoSize = true;
+			BtnClose.BackColor = System.Drawing.SystemColors.HotTrack;
+			BtnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+			BtnClose.FlatAppearance.BorderSize = 0;
+			BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			BtnClose.Location = new System.Drawing.Point(12, 246);
+			BtnClose.Name = "BtnClose";
+			BtnClose.Size = new System.Drawing.Size(75, 27);
+			BtnClose.TabIndex = 27;
+			BtnClose.UseVisualStyleBackColor = false;
+			BtnClose.Click += BtnClose_Click;
+			// 
 			// FileInfoForm
 			// 
 			AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			ClientSize = new System.Drawing.Size(404, 281);
+			Controls.Add(BtnClose);
 			Controls.Add(lblLengthKey);
 			Controls.Add(lblTrackVal);
 			Controls.Add(lblYearVal);
@@ -313,6 +329,7 @@
 			Load += FileInfoForm_Load;
 			((System.ComponentModel.ISupportInitialize)picCover).EndInit();
 			ResumeLayout(false);
+			PerformLayout();
 		}
 
 		#endregion
@@ -339,5 +356,6 @@
         private System.Windows.Forms.Label lblYearVal;
         private System.Windows.Forms.Label lblTrackVal;
         private System.Windows.Forms.Label lblLengthKey;
-    }
+		private System.Windows.Forms.Button BtnClose;
+	}
 }
