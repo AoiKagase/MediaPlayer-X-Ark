@@ -2,6 +2,7 @@
 using MediaPlayer_X_Ark.Engine.Player;
 using MediaPlayer_X_Ark.Skin;
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -151,6 +152,27 @@ namespace MediaPlayer_X_Ark.Forms
 			{
 				Win32API.SetWindowPos(optionForm.Handle, Win32API.HWND_TOP, 0, 0, 0, 0,
 					Win32API.SWP_NOMOVE | Win32API.SWP_NOSIZE | Win32API.SWP_NOACTIVATE);
+			}
+		}
+		/// <summary>
+		/// 本体ドラッグによるウィンドウ移動
+		/// </summary>
+		private Point mousePoint;
+		private void MiniPlayerForm_MouseDown(object sender, MouseEventArgs e)
+		{
+			if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+			{
+				mousePoint = new Point(e.X, e.Y);
+				this.Activate();
+			}
+		}
+
+		private void MiniPlayerForm_MouseMove(object sender, MouseEventArgs e)
+		{
+			if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+			{
+				Left += e.X - mousePoint.X;
+				Top += e.Y - mousePoint.Y;
 			}
 		}
 	}

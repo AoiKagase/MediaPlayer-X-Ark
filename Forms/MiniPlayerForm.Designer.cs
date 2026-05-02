@@ -117,6 +117,7 @@
 			// 
 			// LabelTitle
 			// 
+			LabelTitle.HorizontalAlign = System.Windows.Forms.HorizontalAlignment.Left;
 			LabelTitle.Location = new System.Drawing.Point(12, 186);
 			LabelTitle.Name = "LabelTitle";
 			LabelTitle.ScrollEnable = false;
@@ -183,6 +184,8 @@
 			Activated += MiniPlayerForm_Activated;
 			FormClosing += MiniPlayerForm_FormClosing;
 			Load += MiniPlayerForm_Load;
+			MouseDown += MiniPlayerForm_MouseDown;
+			MouseMove += MiniPlayerForm_MouseMove;
 			ResumeLayout(false);
 			PerformLayout();
 		}

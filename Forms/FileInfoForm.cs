@@ -454,5 +454,28 @@ namespace MediaPlayer_X_Ark.Forms
 		{
 			Hide();
 		}
+
+		/// <summary>
+		/// 本体ドラッグによるウィンドウ移動
+		/// </summary>
+		private Point mousePoint;
+		private void FileInfoForm_MouseDown(object sender, MouseEventArgs e)
+		{
+			if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+			{
+				mousePoint = new Point(e.X, e.Y);
+				this.Activate();
+			}
+
+		}
+
+		private void FileInfoForm_MouseMove(object sender, MouseEventArgs e)
+		{
+			if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+			{
+				Left += e.X - mousePoint.X;
+				Top += e.Y - mousePoint.Y;
+			}
+		}
 	}
 }

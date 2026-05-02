@@ -327,6 +327,8 @@
 			Activated += FileInfoForm_Activated;
 			FormClosing += FileInfoForm_FormClosing;
 			Load += FileInfoForm_Load;
+			MouseDown += FileInfoForm_MouseDown;
+			MouseMove += FileInfoForm_MouseMove;
 			((System.ComponentModel.ISupportInitialize)picCover).EndInit();
 			ResumeLayout(false);
 			PerformLayout();
