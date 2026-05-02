@@ -9,6 +9,7 @@ using MediaPlayer_X_Ark.Skin.New;
 using NFluidsynth;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -1471,6 +1472,7 @@ namespace MediaPlayer_X_Ark
 
 			menuPlayList.Click += (s, e) => BtnPlaylist_Click(s, e);
 			menuOption.Click += (s, e) => BtnSetting_Click(s, e);
+			menuHelp.Click += MenuHelp_Click;
 			menuMinimize.Click += (s, e) => this.WindowState = FormWindowState.Minimized;
 			menuExit.Click += (s, e) => Application.Exit();
 
@@ -1608,6 +1610,31 @@ namespace MediaPlayer_X_Ark
 			}
 			_optionsForm.Show();
 			_optionsForm.SelectTab(tabName);
+		}
+
+		private void MenuHelp_Click(object sender, EventArgs e)
+		{
+			string helpPath = Path.Combine(Application.StartupPath, "Docs", "help.html");
+			if (!File.Exists(helpPath))
+			{
+				MessageBox.Show("ヘルプファイルが見つかりません。\n" + helpPath,
+					"ヘルプ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				return;
+			}
+
+			try
+			{
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = helpPath,
+					UseShellExecute = true,
+				});
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("ヘルプを開けませんでした。\n" + ex.Message,
+					"ヘルプ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
 
 		private void BtnUrlOpen_Click(object sender, EventArgs e)

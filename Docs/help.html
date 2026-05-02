@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediaPlayer X-Ark ヘルプ</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121933;
+      --panel-soft: #18213f;
+      --line: #2d3b68;
+      --text: #eef2ff;
+      --muted: #aab5d6;
+      --accent: #6ea8fe;
+      --accent-2: #7ef0c8;
+      --warn: #ffbc66;
+      --sidebar: 292px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Yu Gothic UI", Meiryo, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #090e1d 0%, #10172d 100%);
+      line-height: 1.72;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code, kbd { font-family: Consolas, "Cascadia Mono", monospace; }
+    code {
+      padding: 0.12rem 0.4rem;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: #080d1b;
+      color: #d9f3ff;
+    }
+    kbd {
+      display: inline-block;
+      min-width: 1.8em;
+      padding: 0.1rem 0.45rem;
+      border: 1px solid #4e6299;
+      border-radius: 5px;
+      background: #1c294c;
+      color: var(--text);
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(0, 1fr);
+      min-height: 100vh;
+    }
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 20px 14px 28px;
+      background: rgba(8, 13, 28, 0.96);
+      border-right: 1px solid rgba(78, 98, 153, 0.34);
+    }
+    .brand {
+      padding: 16px;
+      margin-bottom: 14px;
+      border: 1px solid rgba(78, 98, 153, 0.36);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+    .brand .eyebrow {
+      color: var(--accent-2);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .brand h1 {
+      margin: 8px 0 6px;
+      font-size: 24px;
+      line-height: 1.25;
+    }
+    .brand p { margin: 0; color: var(--muted); font-size: 13px; }
+    .search { margin-bottom: 14px; }
+    .search input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid rgba(78, 98, 153, 0.42);
+      border-radius: 6px;
+      color: var(--text);
+      background: var(--panel);
+      outline: none;
+    }
+    .search-note { margin: 7px 2px 0; color: var(--muted); font-size: 12px; }
+    .toc-group {
+      margin-bottom: 12px;
+      border: 1px solid rgba(78, 98, 153, 0.26);
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(18, 25, 51, 0.78);
+    }
+    .toc-title {
+      margin: 0;
+      padding: 10px 12px;
+      color: #d5e3ff;
+      font-size: 12px;
+      background: rgba(110, 168, 254, 0.08);
+      border-bottom: 1px solid rgba(78, 98, 153, 0.2);
+    }
+    .toc-group a {
+      display: block;
+      padding: 8px 12px;
+      color: var(--muted);
+      border-left: 3px solid transparent;
+    }
+    .toc-group a.active,
+    .toc-group a:hover {
+      color: var(--text);
+      text-decoration: none;
+      background: rgba(126, 240, 200, 0.08);
+      border-left-color: var(--accent-2);
+    }
+
+    main { padding: 34px 36px 72px; }
+    .hero, .section, .card, .note, .warn, .footer {
+      border: 1px solid rgba(78, 98, 153, 0.3);
+      border-radius: 8px;
+      background: rgba(18, 25, 51, 0.86);
+    }
+    .hero {
+      padding: 30px;
+      margin-bottom: 22px;
+      background: linear-gradient(135deg, rgba(110, 168, 254, 0.12), rgba(126, 240, 200, 0.07)), var(--panel);
+    }
+    .hero h2 { margin: 0 0 10px; font-size: 34px; line-height: 1.16; }
+    .hero p { margin: 0; max-width: 900px; color: var(--muted); }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .chip {
+      display: inline-flex;
+      padding: 0.35rem 0.65rem;
+      border: 1px solid rgba(78, 98, 153, 0.38);
+      border-radius: 999px;
+      background: rgba(8, 13, 28, 0.55);
+      color: #dce6ff;
+      font-size: 13px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    .card { padding: 16px; }
+    .card h3 { margin: 0 0 6px; font-size: 16px; }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .section {
+      padding: 26px;
+      margin-bottom: 18px;
+      scroll-margin-top: 22px;
+    }
+    .section h2 { margin: 0 0 10px; font-size: 28px; line-height: 1.22; }
+    .section h3 { margin: 24px 0 10px; font-size: 19px; color: #deebff; }
+    .section h4 { margin: 18px 0 8px; font-size: 15px; color: #e8efff; }
+    .intro { margin: 0 0 16px; color: var(--muted); }
+    .columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .note, .warn {
+      padding: 13px 15px;
+      margin: 14px 0;
+      background: rgba(8, 13, 28, 0.58);
+    }
+    .warn { border-color: rgba(255, 188, 102, 0.36); }
+    .warn strong { color: var(--warn); }
+    ul, ol { margin-top: 8px; padding-left: 1.25rem; }
+    li { margin-bottom: 0.45rem; }
+    table {
+      width: 100%;
+      margin-top: 10px;
+      border-collapse: collapse;
+      overflow: hidden;
+      border: 1px solid rgba(78, 98, 153, 0.28);
+      border-radius: 8px;
+      background: rgba(8, 13, 28, 0.68);
+    }
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(78, 98, 153, 0.2);
+      text-align: left;
+      vertical-align: top;
+    }
+    th { color: #dbe8ff; background: rgba(110, 168, 254, 0.08); white-space: nowrap; }
+    td { color: var(--muted); }
+    td strong { color: var(--text); }
+    tr:last-child td { border-bottom: none; }
+    .hidden-by-search { display: none !important; }
+    .footer { padding: 14px 16px; color: var(--muted); }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { position: static; height: auto; border-right: none; border-bottom: 1px solid rgba(78, 98, 153, 0.34); }
+      main { padding: 24px 18px 48px; }
+      .cards, .columns { grid-template-columns: 1fr; }
+      .hero h2 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <div class="brand">
+        <div class="eyebrow">Offline Help</div>
+        <h1>MediaPlayer X-Ark ヘルプ</h1>
+        <p>基本操作から詳細設定まで、アプリの使い方をまとめたヘルプです。</p>
+      </div>
+
+      <div class="search">
+        <input id="searchBox" type="search" placeholder="機能名・設定名で検索">
+        <div class="search-note">例: ReplayGain / AB / MIDI / CDDB / プラグイン</div>
+      </div>
+
+      <nav id="toc">
+        <div class="toc-group">
+          <h2 class="toc-title">スタート</h2>
+          <a href="#overview">全体像</a>
+          <a href="#quickstart">最初にやること</a>
+          <a href="#playback">基本操作</a>
+          <a href="#shortcuts">ショートカット</a>
+        </div>
+        <div class="toc-group">
+          <h2 class="toc-title">日常操作</h2>
+          <a href="#playlist">プレイリスト</a>
+          <a href="#display">表示とミニプレイヤー</a>
+          <a href="#formats">対応形式</a>
+          <a href="#cd">CD</a>
+          <a href="#cue">CUEシート</a>
+        </div>
+        <div class="toc-group">
+          <h2 class="toc-title">音と再生</h2>
+          <a href="#effects">エフェクト</a>
+          <a href="#equalizer">Graphic Equalizer</a>
+          <a href="#replaygain">ReplayGain</a>
+          <a href="#advanced-playback">AB / クロスフェード / NonStopMix</a>
+          <a href="#midi">MIDI</a>
+        </div>
+        <div class="toc-group">
+          <h2 class="toc-title">設定</h2>
+          <a href="#settings-general">一般設定</a>
+          <a href="#settings-playback">再生設定</a>
+          <a href="#settings-display">表示設定</a>
+          <a href="#settings-output">出力設定</a>
+          <a href="#settings-skin">スキン</a>
+          <a href="#settings-cddb">CDDB</a>
+          <a href="#settings-plugins">プラグインと関連付け</a>
+          <a href="#settings-discord">Discord連携</a>
+        </div>
+        <div class="toc-group">
+          <h2 class="toc-title">トラブル</h2>
+          <a href="#troubleshooting">困ったとき</a>
+        </div>
+      </nav>
+    </aside>
+
+    <main>
+      <section class="hero" id="hero">
+        <h2>MediaPlayer X-Ark ヘルプ</h2>
+        <p>
+          このヘルプでは、最初に再生するまでの手順から、音量補正、MIDI、CD、スキン、プラグインなどの詳細設定まで確認できます。
+          まず使い始める場合は「最初にやること」から、特定機能を確認したい場合は左の検索欄か目次を使ってください。
+        </p>
+        <div class="chips">
+          <span class="chip">ファイル / URL 再生</span>
+          <span class="chip">CD / CUE / MIDI</span>
+          <span class="chip">DSP / GEQ / ReplayGain</span>
+          <span class="chip">スキン / Discord / プラグイン</span>
+          <span class="chip">単一 HTML / オフライン対応</span>
+        </div>
+      </section>
+
+      <div class="cards">
+        <article class="card">
+          <h3>まず再生したい</h3>
+          <p>右クリックメニューの <strong>開く</strong>、またはファイルのドラッグ＆ドロップから始めます。URL ストリームも右クリックメニューから開けます。</p>
+        </article>
+        <article class="card">
+          <h3>音を整えたい</h3>
+          <p>ReplayGain、Graphic Equalizer、DSP、クロスフェード、NonStopMix を用途ごとに使い分けます。</p>
+        </article>
+        <article class="card">
+          <h3>対応範囲を広げたい</h3>
+          <p>MIDI レンダラー、サウンドフォント、コーデックプラグイン、関連付け設定を確認してください。</p>
+        </article>
+      </div>
+
+      <section class="section" id="overview" data-search="概要 全体像 FMOD CD CUE MIDI スキン Discord プラグイン">
+        <h2>全体像</h2>
+        <p class="intro">
+          MediaPlayer X-Ark は Windows 向けのデスクトップメディアプレイヤーです。
+          音楽ファイルの再生、プレイリスト管理、CD 再生、CUE シート展開、MIDI 再生、エフェクト、スキン、Discord 連携、プラグイン拡張に対応します。
+        </p>
+        <div class="columns">
+          <div class="card">
+            <h3>主な操作入口</h3>
+            <ul>
+              <li>右クリックメニュー: 開く、URLを開く、再生操作、設定、エフェクト、イコライザ</li>
+              <li>プレイリスト画面: 曲の追加、削除、並べ替え、保存</li>
+              <li>設定画面: 一般、再生、表示、出力、スキン、CDDB、プラグイン</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>このヘルプの読み方</h3>
+            <ul>
+              <li>初回利用: 「最初にやること」と「基本操作」</li>
+              <li>音質・音量: 「ReplayGain」「エフェクト」「Graphic Equalizer」</li>
+              <li>特殊メディア: 「CD」「CUEシート」「MIDI」</li>
+              <li>問題解決: 「困ったとき」</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="quickstart" data-search="クイックスタート 最初 開く URL ドラッグ ドロップ 再生">
+        <h2>最初にやること</h2>
+        <h3>ローカルファイルを再生する</h3>
+        <ol>
+          <li>メイン画面で右クリックし、<strong>開く (&amp;O)</strong> を選びます。</li>
+          <li>音声ファイル、プレイリスト、または <code>.cue</code> ファイルを選びます。</li>
+          <li>ファイルやフォルダをメイン画面へドラッグ＆ドロップして開くこともできます。</li>
+        </ol>
+        <h3>URL ストリームを再生する</h3>
+        <ol>
+          <li>右クリックメニューから <strong>URLを開く (&amp;R)</strong> を選びます。</li>
+          <li><code>http://</code> または <code>https://</code> で始まる URL を入力します。</li>
+          <li>確定すると、その URL の再生を開始します。</li>
+        </ol>
+        <div class="note"><strong>おすすめ:</strong> 日常利用では、一般設定の「前回のプレイリストを復元する」「前回の再生位置から再開する」を先に確認すると便利です。</div>
+      </section>
+
+      <section class="section" id="playback" data-search="基本操作 再生 一時停止 停止 次へ 前へ シーク ランダム ループ スリープタイマー">
+        <h2>基本操作</h2>
+        <table>
+          <thead><tr><th>操作</th><th>内容</th></tr></thead>
+          <tbody>
+            <tr><td><strong>再生 / 一時停止</strong></td><td>現在の曲の再生状態を切り替えます。</td></tr>
+            <tr><td><strong>停止</strong></td><td>再生を停止します。</td></tr>
+            <tr><td><strong>前へ / 次へ</strong></td><td>プレイリスト内の前後の曲へ移動します。</td></tr>
+            <tr><td><strong>シーク</strong></td><td>トラックスライダーまたはショートカットで再生位置を変更します。</td></tr>
+            <tr><td><strong>ランダム</strong></td><td>プレイリストの再生順をランダムにします。</td></tr>
+            <tr><td><strong>ループ</strong></td><td>通常、1曲リピート、全体ループなどの再生モードを切り替えます。</td></tr>
+            <tr><td><strong>スリープタイマー</strong></td><td>右クリックメニューから 15分 / 30分 / 60分後の停止を設定できます。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="shortcuts" data-search="ショートカット キーボード Space A B C 音量 シーク">
+        <h2>ショートカット</h2>
+        <table>
+          <thead><tr><th>キー</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td><kbd>Space</kbd></td><td>再生 / 一時停止</td></tr>
+            <tr><td><kbd>Left</kbd> / <kbd>Right</kbd></td><td>シーク</td></tr>
+            <tr><td><kbd>A</kbd></td><td>AB リピートの開始点を設定</td></tr>
+            <tr><td><kbd>B</kbd></td><td>AB リピートの終了点を設定</td></tr>
+            <tr><td><kbd>C</kbd></td><td>AB リピートを解除</td></tr>
+          </tbody>
+        </table>
+        <div class="note">ショートカットは画面やフォーカス状態によって効き方が変わる場合があります。確実に使う場合はメイン画面を前面にしてください。</div>
+      </section>
+
+      <section class="section" id="playlist" data-search="プレイリスト 追加 削除 保存 並べ替え ファイル">
+        <h2>プレイリスト</h2>
+        <p class="intro">プレイリスト画面では、曲の追加、削除、上下移動、保存、読み込みができます。</p>
+        <ul>
+          <li>複数ファイルをまとめて開くと、プレイリストへ追加できます。</li>
+          <li>CUE シートを開いた場合は、トラック単位に展開されます。</li>
+          <li>一般設定で、終了時のプレイリスト保存や起動時の復元を調整できます。</li>
+        </ul>
+      </section>
+
+      <section class="section" id="display" data-search="表示 ミニプレイヤー スペクトラム ウェーブフォーム カバーアート ファイル情報">
+        <h2>表示とミニプレイヤー</h2>
+        <p class="intro">メイン画面ではタイトル、時間、カバーアート、スペクトラム、ウェーブフォームなどを表示します。</p>
+        <ul>
+          <li>スペクトラム表示はクリックや設定で表示モードを切り替えられます。</li>
+          <li>ミニプレイヤー対応スキンでは、メイン画面を隠して小型表示に切り替えられます。</li>
+          <li>ファイル情報画面ではタグ情報やカバーアートを確認できます。</li>
+        </ul>
+      </section>
+
+      <section class="section" id="formats" data-search="対応形式 MP3 FLAC WAV OGG MIDI CUE プレイリスト プラグイン">
+        <h2>対応形式</h2>
+        <p class="intro">一般的な音声ファイル、MIDI、CUE、プレイリストに対応します。追加形式はコーデックプラグインで拡張できます。</p>
+        <table>
+          <thead><tr><th>種類</th><th>例</th><th>補足</th></tr></thead>
+          <tbody>
+            <tr><td>音声ファイル</td><td>MP3, FLAC, WAV, OGG など</td><td>環境やプラグインにより対応範囲が変わります。</td></tr>
+            <tr><td>MIDI</td><td>MID, MIDI, RMI, KAR</td><td>レンダラーとサウンドフォント設定を確認してください。</td></tr>
+            <tr><td>CUE</td><td><code>.cue</code></td><td>長い音声ファイルをトラック単位に展開します。</td></tr>
+            <tr><td>追加 codec</td><td>SRLA, WMA, MP4 系など</td><td>同梱または追加 DLL により対応します。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="effects" data-search="エフェクト DSP リバーブ エコー コンプレッサー ディストーション ピッチ">
+        <h2>エフェクト</h2>
+        <p class="intro">DSP エフェクトは、音に加工を加えるための機能です。効果を強くしすぎると音割れや聴き疲れにつながるため、少しずつ調整してください。</p>
+        <ul>
+          <li>リバーブ、エコー、コンプレッサー、ディストーションなどを用途に応じて切り替えます。</li>
+          <li>設定値は曲や音源によって最適値が変わります。</li>
+          <li>音量差が気になる場合は、エフェクトより先に ReplayGain を確認してください。</li>
+        </ul>
+      </section>
+
+      <section class="section" id="equalizer" data-search="Graphic Equalizer グラフィックイコライザー GEQ 12 Band 低音 高音">
+        <h2>Graphic Equalizer</h2>
+        <p class="intro">12 バンドの Graphic Equalizer で、低域から高域までのバランスを調整できます。</p>
+        <table>
+          <thead><tr><th>帯域</th><th>主な印象</th></tr></thead>
+          <tbody>
+            <tr><td>低域</td><td>重低音、キック、ベースの量感</td></tr>
+            <tr><td>中域</td><td>ボーカル、ギター、ピアノなどの聴こえ方</td></tr>
+            <tr><td>高域</td><td>抜け、空気感、シンバルなどの明るさ</td></tr>
+          </tbody>
+        </table>
+        <div class="warn"><strong>注意:</strong> 複数バンドを大きく上げるとクリップしやすくなります。上げるより、不要な帯域を下げる調整も試してください。</div>
+      </section>
+
+      <section class="section" id="replaygain" data-search="ReplayGain 音量差 トラック アルバム プリアンプ タグ">
+        <h2>ReplayGain</h2>
+        <p class="intro">ReplayGain は、曲ごとの音量差を自動補正する機能です。寄せ集めのプレイリストやアルバムをまたいだ再生で音量差を抑えたいときに使います。</p>
+        <table>
+          <thead><tr><th>項目</th><th>使い方</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Track</strong></td><td>各トラック単位で音量をそろえます。複数アルバムを混ぜて再生する場合に向いています。</td></tr>
+            <tr><td><strong>Album</strong></td><td>アルバム内の音量バランスを維持します。アルバムを通して聴く場合に向いています。</td></tr>
+            <tr><td><strong>プリアンプ</strong></td><td>ReplayGain 適用後の全体音量を追加調整します。</td></tr>
+          </tbody>
+        </table>
+        <div class="note">ReplayGain を使うには、音声ファイル側に ReplayGain タグが必要です。タグがない曲では補正できません。</div>
+      </section>
+
+      <section class="section" id="advanced-playback" data-search="ABリピート クロスフェード NonStopMix ギャップレス A B C">
+        <h2>AB / クロスフェード / NonStopMix</h2>
+        <h3>AB リピート</h3>
+        <p>曲の一部を繰り返す機能です。<kbd>A</kbd> で開始点、<kbd>B</kbd> で終了点、<kbd>C</kbd> で解除します。語学学習や演奏練習に向いています。</p>
+        <h3>クロスフェード</h3>
+        <p>曲の切り替わりで、前の曲をフェードアウトしながら次の曲をフェードインします。再生設定で有効化し、フェード時間を調整します。</p>
+        <h3>NonStopMix</h3>
+        <p>次の曲を事前に準備して、曲間を自然につなげるための機能です。ギャップレス再生に近い聴き方をしたい場合に使います。</p>
+        <div class="warn"><strong>組み合わせの注意:</strong> NonStopMix とクロスフェードは考え方が異なるため、同時に使う前提ではなく用途に応じて切り替えてください。</div>
+      </section>
+
+      <section class="section" id="cd" data-search="CD CDDA リッピング FLAC ALAC CDDB MusicBrainz TOC ドライブ">
+        <h2>CD</h2>
+        <p class="intro">オーディオ CD の再生、プレイリスト追加、メタデータ取得、リッピングに対応します。</p>
+        <ol>
+          <li>CD をドライブへ入れます。</li>
+          <li>CD 画面でドライブを選び、TOC を読み込みます。</li>
+          <li>トラック一覧を確認し、再生またはプレイリストへ追加します。</li>
+          <li>必要に応じて CDDB / MusicBrainz から曲名やアルバム情報を取得します。</li>
+        </ol>
+        <div class="note">リッピング機能を使う場合は、保存形式や保存先を確認してください。環境やディスク状態によって読み取りに時間がかかる場合があります。</div>
+      </section>
+
+      <section class="section" id="cue" data-search="CUE cue シート トラック 展開 ライブ 連続録音">
+        <h2>CUEシート</h2>
+        <p class="intro"><code>.cue</code> ファイルを開くと、1つの音声ファイルを複数トラックとして扱えます。</p>
+        <ul>
+          <li>シングルファイル型、マルチファイル型の CUE に対応します。</li>
+          <li>展開後は通常のプレイリスト項目として再生できます。</li>
+          <li>ライブ盤や連続録音の管理に向いています。</li>
+        </ul>
+      </section>
+
+      <section class="section" id="midi" data-search="MIDI XArkMidiEngine FluidSynth BASSMIDI FMOD SoundFont DLS SF2 gm.dls">
+        <h2>MIDI</h2>
+        <p class="intro">MIDI は、選択するレンダラーとサウンドフォントによって音が変わります。標準では XArkMidiEngine を利用でき、外部 DLL がある場合は FluidSynth や BASSMIDI も選択できます。</p>
+        <table>
+          <thead><tr><th>レンダラー</th><th>サウンドフォント</th><th>補足</th></tr></thead>
+          <tbody>
+            <tr><td><strong>XArkMidiEngine</strong></td><td>DLS / SF2</td><td>標準搭載。追加作業なしで利用できます。</td></tr>
+            <tr><td><strong>FluidSynth</strong></td><td>SF2</td><td>対応 DLL を配置した環境で利用できます。</td></tr>
+            <tr><td><strong>BASSMIDI</strong></td><td>SF2</td><td><code>bass.dll</code> と <code>bassmidi.dll</code> が必要です。</td></tr>
+            <tr><td><strong>FMOD</strong></td><td>DLS</td><td>他の経路が使えない場合のフォールバックとして扱われます。</td></tr>
+          </tbody>
+        </table>
+        <h3>自動選択の考え方</h3>
+        <p>自動設定では、利用可能なレンダラーを探して使用します。サウンドフォントを指定しない場合は Windows 標準の <code>gm.dls</code> を使う構成になります。</p>
+      </section>
+
+      <section class="section" id="settings-general" data-search="一般設定 起動 復元 自動保存 最前面 Discord URL 開いた時">
+        <h2>一般設定</h2>
+        <table>
+          <thead><tr><th>項目</th><th>内容</th></tr></thead>
+          <tbody>
+            <tr><td><strong>前回のプレイリストを復元する</strong></td><td>前回終了時のプレイリストを起動時に戻します。</td></tr>
+            <tr><td><strong>前回の再生位置から再開する</strong></td><td>途中停止した曲の位置を引き継ぎます。</td></tr>
+            <tr><td><strong>プレイリストを自動保存する</strong></td><td>終了時にプレイリストを保存します。</td></tr>
+            <tr><td><strong>常に最前面に表示する</strong></td><td>メインウィンドウを他のウィンドウより前に表示します。</td></tr>
+            <tr><td><strong>ファイルを開いた時の動作</strong></td><td>開いたファイルをすぐ再生するか、追加のみかを選びます。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="settings-playback" data-search="再生設定 ReplayGain クロスフェード NonStopMix トラック アルバム プリアンプ">
+        <h2>再生設定</h2>
+        <div class="columns">
+          <div class="card">
+            <h3>音量補正</h3>
+            <ul>
+              <li>ReplayGain の有効 / 無効</li>
+              <li>Track / Album モード</li>
+              <li>プリアンプ調整</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>曲間制御</h3>
+            <ul>
+              <li>クロスフェードの有効 / 無効</li>
+              <li>フェード時間</li>
+              <li>NonStopMix の有効 / 無効</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="settings-display" data-search="表示設定 スペクトラム ウェーブフォーム フォント タイトル 時間 色 SnowBlock">
+        <h2>表示設定</h2>
+        <ul>
+          <li>スペクトラムの表示モード、更新間隔、SnowBlock 表示</li>
+          <li>ウェーブフォームやスペクトラムの色</li>
+          <li>タイトル文字、時間表示のフォント、サイズ、太字</li>
+          <li>タイトルスクロール間隔</li>
+          <li>スキン設定より表示設定を優先する項目</li>
+        </ul>
+      </section>
+
+      <section class="section" id="settings-output" data-search="出力設定 AUTODETECT WASAPI ASIO WINSONIC バッファ デバイス MIDI">
+        <h2>出力設定</h2>
+        <table>
+          <thead><tr><th>方式</th><th>用途</th></tr></thead>
+          <tbody>
+            <tr><td><strong>AUTODETECT</strong></td><td>通常利用の第一候補です。</td></tr>
+            <tr><td><strong>WASAPI</strong></td><td>Windows 標準の扱いやすい出力方式です。</td></tr>
+            <tr><td><strong>ASIO</strong></td><td>ASIO 対応デバイス向けです。</td></tr>
+            <tr><td><strong>WINSONIC</strong></td><td>Windows Sonic を使う構成です。</td></tr>
+          </tbody>
+        </table>
+        <ul>
+          <li>出力デバイス</li>
+          <li>ストリームバッファ</li>
+          <li>DSP バッファサイズ / バッファ数</li>
+          <li>MIDI レンダラーとサウンドフォント</li>
+        </ul>
+      </section>
+
+      <section class="section" id="settings-skin" data-search="スキン xsk JSON 外観 MiniPlayer Author Description">
+        <h2>スキン</h2>
+        <p class="intro">スキン設定では、UI の外観を変更できます。スキンファイルを選び、Name / Author / Description などの情報を確認して適用します。</p>
+        <ul>
+          <li>メイン画面の見た目を変更します。</li>
+          <li>対応スキンではプレイリストやミニプレイヤーの見た目も変わります。</li>
+          <li>表示設定とは別に、スキンより優先する表示項目を指定できます。</li>
+        </ul>
+      </section>
+
+      <section class="section" id="settings-cddb" data-search="CDDB MusicBrainz gnudb FreeDB サーバー 優先順位 メタデータ">
+        <h2>CDDB</h2>
+        <p class="intro">CD のアルバム名、曲名、アーティスト名などを取得するための問い合わせ先を管理します。</p>
+        <ul>
+          <li>問い合わせ URL の追加 / 削除 / 並べ替え</li>
+          <li>gnudb / FreeDB と MusicBrainz の優先順位</li>
+          <li>デフォルト設定への復帰</li>
+        </ul>
+      </section>
+
+      <section class="section" id="settings-plugins" data-search="プラグイン 関連付け codec_wma codec_srla codec_mp4 dll Plugins GitHub Actions 管理者">
+        <h2>プラグインと関連付け</h2>
+        <h3>コーデックプラグイン</h3>
+        <p>FMOD コーデックプラグイン DLL を追加することで、対応形式を拡張できます。プラグインは <code>Plugins/</code> フォルダへ配置し、アプリケーションを再起動または再スキャンして読み込み状態を確認します。</p>
+        <table>
+          <thead><tr><th>プラグイン</th><th>対応形式</th></tr></thead>
+          <tbody>
+            <tr><td><code>codec_srla.dll</code></td><td>SRLA 形式</td></tr>
+            <tr><td><code>codec_wma.dll</code></td><td>WMA 形式。環境差を避けるため別途用意されています。</td></tr>
+            <tr><td><code>codec_mp4.dll</code> など</td><td>追加プラグインは FMOD-PLUGINS 側から取得します。</td></tr>
+          </tbody>
+        </table>
+        <div class="warn"><strong>注意:</strong> プラグインはアプリのビット数に合ったものを使ってください。合わない DLL は読み込めません。</div>
+        <h3>関連付け</h3>
+        <p>Windows 上で対応拡張子を X-Ark に関連付けるための設定です。管理者権限が必要な場合は、案内に従って権限を上げてください。</p>
+      </section>
+
+      <section class="section" id="settings-discord" data-search="Discord Rich Presence アプリケーション ID 再生情報 ステータス">
+        <h2>Discord連携</h2>
+        <p class="intro">Discord Rich Presence を有効にすると、再生中の曲情報を Discord のステータスに表示できます。</p>
+        <table>
+          <thead><tr><th>項目</th><th>内容</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Discord Rich Presence を有効化</strong></td><td>再生中の情報を Discord へ送信します。</td></tr>
+            <tr><td><strong>アプリケーション ID</strong></td><td>Discord Rich Presence を使うために必須です。利用者自身で用意した Discord Application ID を入力します。</td></tr>
+          </tbody>
+        </table>
+        <div class="warn"><strong>注意:</strong> アプリケーション ID が未設定の場合、Discord Rich Presence を有効にしても連携は利用できません。</div>
+        <p>表示対象には、トラックタイトル、アーティスト名、アルバム名、再生状態などが含まれます。</p>
+      </section>
+
+      <section class="section" id="troubleshooting" data-search="トラブル 音が出ない MIDI 鳴らない CD 情報 取れない プラグイン 開けない 曲間">
+        <h2>困ったとき</h2>
+        <table>
+          <thead><tr><th>症状</th><th>確認ポイント</th></tr></thead>
+          <tbody>
+            <tr><td><strong>音が出ない</strong></td><td>出力方式、出力デバイス、音量、ミュート状態を確認してください。</td></tr>
+            <tr><td><strong>MIDI が鳴らない</strong></td><td>レンダラー、サウンドフォント形式、追加 DLL の配置を確認してください。</td></tr>
+            <tr><td><strong>追加形式が開けない</strong></td><td>必要なコーデックプラグインが配置され、読み込まれているか確認してください。</td></tr>
+            <tr><td><strong>CD 情報が取れない</strong></td><td>CDDB 設定、ネットワーク接続、ディスクの読み取り状態を確認してください。</td></tr>
+            <tr><td><strong>曲間が不自然</strong></td><td>クロスフェードと NonStopMix のどちらを使うか整理してください。</td></tr>
+            <tr><td><strong>音量差が大きい</strong></td><td>ReplayGain タグの有無、Track / Album モード、プリアンプ設定を確認してください。</td></tr>
+          </tbody>
+        </table>
+        <div class="footer">このヘルプは、利用者向けの読みやすさと機能項目の探しやすさを重視しています。</div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const searchBox = document.getElementById("searchBox");
+      const sections = Array.from(document.querySelectorAll(".section"));
+      const links = Array.from(document.querySelectorAll("#toc a"));
+
+      function normalize(text) {
+        return (text || "").toLowerCase().replace(/\s+/g, " ").trim();
+      }
+
+      searchBox.addEventListener("input", function () {
+        const query = normalize(searchBox.value);
+        sections.forEach(function (section) {
+          const haystack = normalize(section.textContent + " " + (section.dataset.search || ""));
+          section.classList.toggle("hidden-by-search", query.length > 0 && !haystack.includes(query));
+        });
+      });
+
+      const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          links.forEach(function (link) { link.classList.remove("active"); });
+          const active = document.querySelector('#toc a[href="#' + entry.target.id + '"]');
+          if (active) {
+            active.classList.add("active");
+          }
+        });
+      }, { rootMargin: "-20% 0px -70% 0px" });
+
+      sections.forEach(function (section) { observer.observe(section); });
+    })();
+  </script>
+</body>
+</html>

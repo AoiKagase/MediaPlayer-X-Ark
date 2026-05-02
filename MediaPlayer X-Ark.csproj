@@ -55,6 +55,9 @@
 		<Content Include="Resources\Skins\**\*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+		<Content Include="Docs\help.html">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 		<Content Include="Resources\Plugins" />
 	</ItemGroup>
 	<ItemGroup>
