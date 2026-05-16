@@ -383,7 +383,13 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				else
 				{
 					if (IsValidIndex(PlayingIndex))
-						FmodCallFunction(FmodSystem.playSound(PlayList[PlayingIndex].Sound, FmodChannelGroup, false, out FmodChannel));
+					{
+						var result = FmodCallFunction(FmodSystem.playSound(PlayList[PlayingIndex].Sound, FmodChannelGroup, false, out FmodChannel));
+						if (result != RESULT.OK)
+						{
+							ApplyOutputSettingsToCurrentChannel(PlayingIndex);
+						}
+					}
 				}
 			}
 		}
@@ -950,19 +956,20 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			PlayingIndex = index;
 			var result = FmodCallFunction(FmodSystem.playSound(
-				PlayList[index].Sound, FmodChannelGroup, false, out FmodChannel));
+				PlayList[index].Sound, FmodChannelGroup, true, out FmodChannel));
+
+			if (result == FMOD.RESULT.OK)
+				ApplyOutputSettingsToCurrentChannel(index);
 
 			// CUEトラック: 開始位置にシーク
 			if (result == FMOD.RESULT.OK && PlayList[index].IsCueTrack)
 				FmodChannel.setPosition((uint)PlayList[index].CueStartMs.Value, FMOD.TIMEUNIT.MS);
 
-			if (result == FMOD.RESULT.OK && ReplayGainEnabled)
-				ApplyReplayGain(index);
-
 			_nowPlaying = true;
 			if (result == FMOD.RESULT.OK && NonStopMixEnabled && !CrossfadeEnabled)
 				PrepareGaplessTransition(index);
 
+			FmodChannel.setPaused(false);
 			return result;
 		}
 
@@ -993,6 +1000,20 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			FmodChannel.setVolume(finalVolume);
 		}
+
+		private void ApplyOutputSettingsToCurrentChannel(int index)
+		{
+			if (!FmodChannel.hasHandle())
+				return;
+
+			if (ReplayGainEnabled && IsValidIndex(index))
+				ApplyReplayGain(index);
+			else
+				FmodChannel.setVolume(_masterVolume);
+
+			FmodChannel.setPan(_masterPan);
+		}
+
 		public FMOD.RESULT PlaySoundPaused(int index, uint position = 0)
 		{
 			if (!IsValidIndex(index))
@@ -1026,6 +1047,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					seekPos = (uint)PlayList[index].CueStartMs.Value + position;
 				if (seekPos > 0)
 					FmodChannel.setPosition(seekPos, FMOD.TIMEUNIT.MS);
+
+				ApplyOutputSettingsToCurrentChannel(index);
 			}
 
 			_nowPlaying = true;
@@ -1866,7 +1889,13 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			if (result != FMOD.RESULT.OK) return result;
 
 			// URL ストリームはプレイリストに追加せず直接再生する
-			FmodCallFunction(FmodSystem.playSound(sound, FmodChannelGroup, false, out FmodChannel));
+			var playResult = FmodCallFunction(FmodSystem.playSound(sound, FmodChannelGroup, true, out FmodChannel));
+			if (playResult != FMOD.RESULT.OK)
+				return playResult;
+
+			FmodChannel.setVolume(_masterVolume);
+			FmodChannel.setPan(_masterPan);
+			FmodChannel.setPaused(false);
 
 			_nowPlaying = true;
 			return FMOD.RESULT.OK;

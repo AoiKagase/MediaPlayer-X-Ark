@@ -180,6 +180,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			_engine.SetDevice(_config.settings.Device);
 			_engine.SwitchPause();
 
+			ApplyVolumeFromConfig();
+			ApplyPanFromConfig();
+
 			PlaybackStateChanged?.Invoke();
 			UpdatePreciseTimer();
 		}
@@ -487,8 +490,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				bool suppressAutoAdvance = Environment.TickCount64 < Interlocked.Read(ref _suppressAutoAdvanceUntilMs);
 				if (!suppressAutoAdvance
 					&& _engine.NowPlaying
-					&& !_engine.IsPlaying()
-					&& IsValidTrackIndex(_engine.PlayingIndex + 1))
+					&& !_engine.IsPlaying())
 				{
 					StopPreciseTimer();
 					_syncContext.Post(_ => PlayNext(), null);

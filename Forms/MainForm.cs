@@ -1175,6 +1175,7 @@ namespace MediaPlayer_X_Ark
 		}
 		private void BtnBack_Click(object sender, EventArgs e)
 		{
+			_controller.SetVolume(SldVolume.Value);
 			_controller.PlayPrevious(true);
 		}
 		private void BtnSeekBack_Click(object sender, EventArgs e)
@@ -1182,6 +1183,7 @@ namespace MediaPlayer_X_Ark
 		}
 		private void BtnPause_Click(object sender, EventArgs e)
 		{
+			_controller.SetVolume(SldVolume.Value);
 			_controller.TogglePlayPause();
 		}
 		private void BtnSeekForward_Click(object sender, EventArgs e)
@@ -1189,6 +1191,7 @@ namespace MediaPlayer_X_Ark
 		}
 		private void BtnNext_Click(object sender, EventArgs e)
 		{
+			_controller.SetVolume(SldVolume.Value);
 			_controller.PlayNext(true);
 		}
 
