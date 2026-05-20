@@ -37,6 +37,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		[Browsable(false)]
 		public bool IsPcm { get; set; } = false;
 
+		[Browsable(false)]
+		internal XArkMidiFmodStream XArkMidiStream { get; set; }
+
 		[DisplayName("Title")]
 		public string Title
 		{
@@ -152,6 +155,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
         {
 			if (this.Sound.hasHandle())
 				this.Sound.release();
+			XArkMidiStream?.Dispose();
         }
 
 	}

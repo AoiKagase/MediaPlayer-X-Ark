@@ -161,6 +161,14 @@ public static class XArkMidiEngine
         out uint outWritten);
 
     [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+    private static extern XAmeResult XAmeReset(IntPtr engine);
+
+    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+    private static extern XAmeResult XAmeSeekFrames(
+        IntPtr engine,
+        ulong framePosition);
+
+    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
     private static extern XAmeResult XAmeSetChannelMuteMask(
         IntPtr engine,
         uint channelMask);
@@ -241,6 +249,7 @@ public static class XArkMidiEngine
         private IntPtr _handle;
         private bool _disposed;
         private readonly uint _numChannels;
+        private readonly uint _sampleRate;
 
         /// <summary>
         /// Create an engine using default creation options.
@@ -314,6 +323,7 @@ public static class XArkMidiEngine
                 throw new XArkMidiException(result, GetLastError());
 
             _numChannels = numChannels;
+            _sampleRate = sampleRate;
         }
 
         /// <summary>
@@ -337,6 +347,42 @@ public static class XArkMidiEngine
             if (result != XAmeResult.OK)
                 throw new XArkMidiException(result, GetLastError());
             return written;
+        }
+
+        /// <summary>
+        /// Reset playback to the beginning while keeping the loaded MIDI, sound bank, and user options.
+        /// 読み込み済み MIDI / サウンドバンクとユーザー設定を保持したまま、再生位置を先頭へ戻します。
+        /// </summary>
+        public void Reset()
+        {
+            ThrowIfDisposed();
+            var result = XAmeReset(_handle);
+            if (result != XAmeResult.OK)
+                throw new XArkMidiException(result, GetLastError());
+        }
+
+        /// <summary>
+        /// Seek to an output frame position.
+        /// 出力フレーム位置へシークします。
+        /// </summary>
+        public void SeekFrames(ulong framePosition)
+        {
+            ThrowIfDisposed();
+            var result = XAmeSeekFrames(_handle, framePosition);
+            if (result != XAmeResult.OK)
+                throw new XArkMidiException(result, GetLastError());
+        }
+
+        /// <summary>
+        /// Seek to a playback time in seconds.
+        /// 秒単位の再生位置へシークします。
+        /// </summary>
+        public void SeekSeconds(double seconds)
+        {
+            if (!double.IsFinite(seconds))
+                throw new ArgumentOutOfRangeException(nameof(seconds), "Must be finite");
+            var clampedSeconds = Math.Max(0.0, seconds);
+            SeekFrames((ulong)Math.Round(clampedSeconds * _sampleRate));
         }
 
         /// <summary>

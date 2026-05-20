@@ -45,6 +45,256 @@ namespace MediaPlayer_X_Ark.Engine.Player
         LOOP_ALL		= 0x08, // 1000
     }
 
+	internal sealed class XArkMidiFmodStream : IDisposable
+	{
+		private const int BytesPerSample = sizeof(short);
+		private readonly XArkMidiEngine.Engine _engine;
+		private readonly object _syncRoot = new object();
+		private readonly GCHandle _selfHandle;
+		private short[] _renderBuffer;
+		private byte[] _zeroBuffer;
+		private bool _disposed;
+		private bool _loopEnabled;
+
+		public int SampleRate { get; }
+		public int ChannelCount { get; }
+		public uint DecodeBufferFrames { get; } = 2048;
+		public uint LengthBytes { get; }
+		public uint FmodStreamLengthBytes => uint.MaxValue;
+		public uint EstimatedLengthMs { get; }
+		public IntPtr UserData => GCHandle.ToIntPtr(_selfHandle);
+		public FMOD.SOUND_PCMREAD_CALLBACK PcmReadCallback { get; }
+		public FMOD.SOUND_PCMSETPOS_CALLBACK PcmSetPosCallback { get; }
+		public Exception LastError { get; private set; }
+
+		public XArkMidiFmodStream(
+			string midiPath,
+			string soundBankPath,
+			XArkMidiEngine.SoundBankKind soundBankKind,
+			uint sampleRate,
+			uint channelCount,
+			XArkMidiEngine.CreateOptions options)
+		{
+			_engine = new XArkMidiEngine.Engine(
+				midiPath,
+				soundBankPath,
+				soundBankKind,
+				sampleRate,
+				channelCount,
+				options);
+			SampleRate = checked((int)sampleRate);
+			ChannelCount = checked((int)channelCount);
+			LengthBytes = CalculateLengthBytes(_engine.LengthFramesEstimate, channelCount);
+			EstimatedLengthMs = CalculateLengthMs(_engine.LengthFramesEstimate, sampleRate);
+			_renderBuffer = new short[checked((int)(DecodeBufferFrames * channelCount))];
+			_zeroBuffer = new byte[checked((int)(DecodeBufferFrames * channelCount * BytesPerSample))];
+			_selfHandle = GCHandle.Alloc(this);
+			PcmReadCallback = OnPcmRead;
+			PcmSetPosCallback = OnPcmSetPosition;
+		}
+
+		public void SetLoop(bool enabled)
+		{
+			lock (_syncRoot)
+			{
+				if (_disposed || _loopEnabled == enabled)
+					return;
+
+				_engine.SetLoop(enabled, 0);
+				_loopEnabled = enabled;
+			}
+		}
+
+		public bool TryTakeLastError(out Exception error)
+		{
+			error = LastError;
+			LastError = null;
+			return error != null;
+		}
+
+		public uint CurrentPositionMs
+		{
+			get
+			{
+				lock (_syncRoot)
+				{
+					if (_disposed || SampleRate <= 0)
+						return 0;
+
+					ulong positionMs = (ulong)Math.Round(_engine.CurrentFramePosition * 1000.0 / SampleRate);
+					return positionMs > uint.MaxValue ? uint.MaxValue : (uint)positionMs;
+				}
+			}
+		}
+
+		public void SeekMilliseconds(uint positionMs)
+		{
+			lock (_syncRoot)
+			{
+				if (_disposed)
+					return;
+
+				SeekFramesCore((ulong)Math.Round(positionMs * (double)SampleRate / 1000.0));
+			}
+		}
+
+		private FMOD.RESULT OnPcmRead(IntPtr sound, IntPtr data, uint datalen)
+		{
+			try
+			{
+				if (_disposed)
+				{
+					FillSilence(data, datalen);
+					return FMOD.RESULT.OK;
+				}
+
+				int requestedBytes = checked((int)datalen);
+				int bytesPerFrame = ChannelCount * BytesPerSample;
+				int requestedFrames = requestedBytes / bytesPerFrame;
+				if (requestedFrames <= 0)
+				{
+					FillSilence(data, datalen);
+					return FMOD.RESULT.OK;
+				}
+
+				EnsureRenderBuffer(requestedFrames);
+				uint writtenFrames;
+				lock (_syncRoot)
+				{
+					writtenFrames = _engine.Render(_renderBuffer, (uint)requestedFrames);
+					if (writtenFrames == 0 && _loopEnabled)
+					{
+						_engine.Reset();
+						writtenFrames = _engine.Render(_renderBuffer, (uint)requestedFrames);
+					}
+				}
+
+				if (writtenFrames == 0 && !_loopEnabled)
+					return FMOD.RESULT.ERR_FILE_EOF;
+
+				int writtenSamples = checked((int)writtenFrames * ChannelCount);
+				int writtenBytes = writtenSamples * BytesPerSample;
+				if (writtenSamples > 0)
+					Marshal.Copy(_renderBuffer, 0, data, writtenSamples);
+				if (writtenBytes < requestedBytes)
+					FillSilence(IntPtr.Add(data, writtenBytes), (uint)(requestedBytes - writtenBytes));
+
+				return FMOD.RESULT.OK;
+			}
+			catch (Exception ex)
+			{
+				LastError = ex;
+				FillSilence(data, datalen);
+				return FMOD.RESULT.OK;
+			}
+		}
+
+		private FMOD.RESULT OnPcmSetPosition(
+			IntPtr sound,
+			int subsound,
+			uint position,
+			FMOD.TIMEUNIT postype)
+		{
+			try
+			{
+				lock (_syncRoot)
+				{
+					if (_disposed)
+						return FMOD.RESULT.OK;
+
+					SeekFramesCore(ConvertToFrames(position, postype));
+				}
+				return FMOD.RESULT.OK;
+			}
+			catch (Exception ex)
+			{
+				LastError = ex;
+				return FMOD.RESULT.OK;
+			}
+		}
+
+		private ulong ConvertToFrames(uint position, FMOD.TIMEUNIT postype)
+		{
+			if ((postype & FMOD.TIMEUNIT.PCM) != 0)
+				return position;
+			if ((postype & FMOD.TIMEUNIT.PCMBYTES) != 0 || (postype & FMOD.TIMEUNIT.RAWBYTES) != 0)
+				return position / (uint)(ChannelCount * BytesPerSample);
+			if ((postype & FMOD.TIMEUNIT.MS) != 0)
+				return (ulong)Math.Round(position * (double)SampleRate / 1000.0);
+
+			return position;
+		}
+
+		private void SeekFramesCore(ulong framePosition)
+		{
+			if (framePosition == 0)
+				_engine.Reset();
+			else
+				_engine.SeekFrames(framePosition);
+		}
+
+		private static uint CalculateLengthBytes(ulong frameCount, uint channelCount)
+		{
+			ulong lengthBytes = frameCount * channelCount * BytesPerSample;
+			if (lengthBytes == 0)
+				return 1;
+			return lengthBytes > uint.MaxValue ? uint.MaxValue : (uint)lengthBytes;
+		}
+
+		private static uint CalculateLengthMs(ulong frameCount, uint sampleRate)
+		{
+			if (frameCount == 0 || sampleRate == 0)
+				return 0;
+
+			ulong lengthMs = (ulong)Math.Round(frameCount * 1000.0 / sampleRate);
+			return lengthMs > uint.MaxValue ? uint.MaxValue : (uint)lengthMs;
+		}
+
+		private void EnsureRenderBuffer(int requestedFrames)
+		{
+			int requiredSamples = checked(requestedFrames * ChannelCount);
+			if (_renderBuffer.Length < requiredSamples)
+				_renderBuffer = new short[requiredSamples];
+		}
+
+		private void FillSilence(IntPtr data, uint datalen)
+		{
+			int remaining = checked((int)datalen);
+			int offset = 0;
+			EnsureZeroBuffer(Math.Min(remaining, _zeroBuffer.Length));
+			while (remaining > 0)
+			{
+				int chunk = Math.Min(remaining, _zeroBuffer.Length);
+				Marshal.Copy(_zeroBuffer, 0, IntPtr.Add(data, offset), chunk);
+				remaining -= chunk;
+				offset += chunk;
+			}
+		}
+
+		private void EnsureZeroBuffer(int requiredBytes)
+		{
+			if (_zeroBuffer.Length < requiredBytes)
+				_zeroBuffer = new byte[requiredBytes];
+		}
+
+		public void Dispose()
+		{
+			if (_disposed)
+				return;
+
+			lock (_syncRoot)
+			{
+				if (_disposed)
+					return;
+
+				_disposed = true;
+				_engine.Dispose();
+				if (_selfHandle.IsAllocated)
+					_selfHandle.Free();
+			}
+		}
+	}
+
 	public class PlayerEngine : IPlayerEngine
 	{
 		private bool _disposed = false;
@@ -55,7 +305,16 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		public FmodSpectrum spectrum { get; private set; }
 		public FmodWave wave { get; private set; }
 		public Effector.Effectors effector { get; private set; }
-		public LOOP_MODE loop { get; set; }
+		private LOOP_MODE _loop = LOOP_MODE.LOOP_NONE;
+		public LOOP_MODE loop
+		{
+			get => _loop;
+			set
+			{
+				_loop = value;
+				ApplyCurrentXArkMidiLoopMode();
+			}
+		}
 		public event EventHandler<PlayerErrorEventArgs> ErrorOccurred;
 		public event Action<int> TrackAdvanced;
 		public int PlayingIndex { get; private set; } = -1;
@@ -140,8 +399,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				if (!entry.IsLoaded) continue;
 				var ext = Path.GetExtension(entry.FileName).ToLower();
 				if (ext != ".mid" && ext != ".midi") continue;
-				entry.Sound.release();
-				entry.Sound = default;
+				ReleasePlaylistSound(entry);
 			}
 		}
 
@@ -223,7 +481,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					try
 					{
 						if (PlayList[i].IsLoaded && PlayList[i].Sound.hasHandle())
-							PlayList[i].Sound.release();
+							ReleasePlaylistSound(PlayList[i]);
 					}
 					catch { }
 				}
@@ -424,6 +682,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		public bool IsPlaying()
 		{
 			UpdateScheduledTransition();
+			ReportCurrentXArkMidiStreamError(nameof(IsPlaying));
 			if (_pendingGaplessTransition)
 				return true;
 
@@ -630,6 +889,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 		public uint GetPosition()
 		{
 			UpdateScheduledTransition();
+			ReportCurrentXArkMidiStreamError(nameof(GetPosition));
 			uint position = 0;
 			if (FmodChannel.hasHandle() && (_pendingGaplessTransition || IsPlaying()))
 				FmodCallFunction(FmodChannel.getPosition(out position, TIMEUNIT.MS));
@@ -638,6 +898,9 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			if (IsValidIndex(PlayingIndex))
 			{
 				var entry = PlayList[PlayingIndex];
+				if (entry.XArkMidiStream != null)
+					position = entry.XArkMidiStream.CurrentPositionMs;
+
 				if (entry.IsCueTrack && entry.CueStartMs.HasValue
 					&& position >= (uint)entry.CueStartMs.Value)
 					position -= (uint)entry.CueStartMs.Value;
@@ -668,6 +931,10 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			if (wasPendingTransition || !FmodChannel.hasHandle())
 			{
 				RecreateCurrentChannelAtPosition(absPos, preservePaused);
+			}
+			else if (entry.XArkMidiStream != null)
+			{
+				entry.XArkMidiStream.SeekMilliseconds(absPos);
 			}
 			else
 			{
@@ -736,9 +1003,18 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				FmodChannel.setVolume(_masterVolume);
 			FmodChannel.setPan(_masterPan);
 
-			result = FmodCallFunction(FmodChannel.setPosition(absPos, TIMEUNIT.MS));
-			if (result != FMOD.RESULT.OK)
-				return;
+			var entry = PlayList[PlayingIndex];
+			if (entry.XArkMidiStream != null)
+			{
+				entry.XArkMidiStream.SeekMilliseconds(absPos);
+				ApplyCurrentXArkMidiLoopMode();
+			}
+			else
+			{
+				result = FmodCallFunction(FmodChannel.setPosition(absPos, TIMEUNIT.MS));
+				if (result != FMOD.RESULT.OK)
+					return;
+			}
 
 			FmodCallFunction(FmodChannel.setPaused(startPaused));
 			_nowPlaying = true;
@@ -922,6 +1198,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			_pendingGaplessTransition = true;
 			_preparedChannelEnded = false;
 			_retiringChannelEnded = false;
+			ApplyCurrentXArkMidiLoopMode();
 		}
 
 		public FMOD.RESULT PlaySound(int index)
@@ -946,8 +1223,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				if (PlayList[i].IsPcm) continue; // PCM トラックは再ロード不可のため常に保護
 				if (PlayList[i].IsLoaded)
 				{
-					PlayList[i].Sound.release();
-					PlayList[i].Sound = default;
+					ReleasePlaylistSound(PlayList[i]);
 				}
 			}
 
@@ -960,10 +1236,18 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			if (result == FMOD.RESULT.OK)
 				ApplyOutputSettingsToCurrentChannel(index);
+			if (result == FMOD.RESULT.OK)
+				ApplyCurrentXArkMidiLoopMode();
 
 			// CUEトラック: 開始位置にシーク
 			if (result == FMOD.RESULT.OK && PlayList[index].IsCueTrack)
-				FmodChannel.setPosition((uint)PlayList[index].CueStartMs.Value, FMOD.TIMEUNIT.MS);
+			{
+				uint cueStart = (uint)PlayList[index].CueStartMs.Value;
+				if (PlayList[index].XArkMidiStream != null)
+					PlayList[index].XArkMidiStream.SeekMilliseconds(cueStart);
+				else
+					FmodChannel.setPosition(cueStart, FMOD.TIMEUNIT.MS);
+			}
 
 			_nowPlaying = true;
 			if (result == FMOD.RESULT.OK && NonStopMixEnabled && !CrossfadeEnabled)
@@ -1045,10 +1329,13 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				// CUEトラック: 相対位置を絶対位置に変換
 				if (PlayList[index].IsCueTrack && PlayList[index].CueStartMs.HasValue)
 					seekPos = (uint)PlayList[index].CueStartMs.Value + position;
-				if (seekPos > 0)
+				if (PlayList[index].XArkMidiStream != null)
+					PlayList[index].XArkMidiStream.SeekMilliseconds(seekPos);
+				else if (seekPos > 0)
 					FmodChannel.setPosition(seekPos, FMOD.TIMEUNIT.MS);
 
 				ApplyOutputSettingsToCurrentChannel(index);
+				ApplyCurrentXArkMidiLoopMode();
 			}
 
 			_nowPlaying = true;
@@ -1062,6 +1349,13 @@ namespace MediaPlayer_X_Ark.Engine.Player
 
 			if (PlayList[index].IsCueTrack)
 				return PlayList[index].LengthMs;
+
+			if (PlayList[index].XArkMidiStream != null)
+			{
+				if (PlayList[index].LengthMs > 0)
+					return PlayList[index].LengthMs;
+				return PlayList[index].XArkMidiStream.EstimatedLengthMs;
+			}
 
 			FmodCallFunction(PlayList[index].Sound.getLength(out length, TIMEUNIT.MS));
 
@@ -1366,6 +1660,8 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			// 既にロード済みの場合はスキップ
 			if (PlayList[index].IsLoaded)
 				return FMOD.RESULT.OK;
+			PlayList[index].XArkMidiStream?.Dispose();
+			PlayList[index].XArkMidiStream = null;
 
 			string filename = PlayList[index].FileName;
 			FMOD.Sound sound;
@@ -1385,13 +1681,20 @@ namespace MediaPlayer_X_Ark.Engine.Player
 							var options = XArkMidiEngine.CreateOptions.Default();
 							options.CompatibilityFlags = XArkMidiEngine.CompatibilityFlags.Sf2ZeroLengthLoopRetrigger;
 							options.MaxSampleDataBytes = 4096ul * 1024ul * 1024ul; // 大容量 SF2 向けに 4GB まで展開を許可
-							using (var xarkEngine = new XArkMidiEngine.Engine(filename, _soundFontPath, XArkMidiEngine.SoundBankKind.Auto, 44100, 2, options))
+							var stream = new XArkMidiFmodStream(
+								filename,
+								_soundFontPath,
+								XArkMidiEngine.SoundBankKind.Auto,
+								44100,
+								2,
+								options);
+							result = CreateXArkMidiStreamSound(stream, out sound);
+							if (result == FMOD.RESULT.OK)
 							{
-								var pcm = xarkEngine.RenderAllBytes();
-								result = CreateMidiPcmSound(pcm, out sound);
-								if (result == FMOD.RESULT.OK)
-									return StoreMidiPcmSound(index, sound, result);
+								PlayList[index].XArkMidiStream = stream;
+								return StoreXArkMidiStreamSound(index, sound, result);
 							}
+							stream.Dispose();
 						}
 						catch (Exception ex)
 						{
@@ -1577,6 +1880,27 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				out sound));
 		}
 
+		private FMOD.RESULT CreateXArkMidiStreamSound(XArkMidiFmodStream stream, out FMOD.Sound sound)
+		{
+			sound = default;
+			FMOD.CREATESOUNDEXINFO streamInfo = new FMOD.CREATESOUNDEXINFO();
+			streamInfo.cbsize = Marshal.SizeOf(streamInfo);
+			streamInfo.length = stream.FmodStreamLengthBytes;
+			streamInfo.numchannels = stream.ChannelCount;
+			streamInfo.defaultfrequency = stream.SampleRate;
+			streamInfo.format = FMOD.SOUND_FORMAT.PCM16;
+			streamInfo.decodebuffersize = stream.DecodeBufferFrames;
+			streamInfo.pcmreadcallback = stream.PcmReadCallback;
+			streamInfo.pcmsetposcallback = stream.PcmSetPosCallback;
+			streamInfo.userdata = stream.UserData;
+
+			return FmodCallFunction(FmodSystem.createStream(
+				IntPtr.Zero,
+				FMOD.MODE.OPENUSER | FMOD.MODE.OPENRAW | FMOD.MODE._2D,
+				ref streamInfo,
+				out sound));
+		}
+
 		private FMOD.RESULT StoreMidiPcmSound(int index, FMOD.Sound sound, FMOD.RESULT result)
 		{
 			if (result == FMOD.RESULT.OK)
@@ -1585,6 +1909,83 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				_ = StartWaveformAnalysisFromSoundAsync(index);
 			}
 			return result;
+		}
+
+		private FMOD.RESULT StoreXArkMidiStreamSound(int index, FMOD.Sound sound, FMOD.RESULT result)
+		{
+			if (result == FMOD.RESULT.OK)
+			{
+				PlayList[index].Sound = sound;
+				sound.setUserData(PlayList[index].XArkMidiStream.UserData);
+				ApplyXArkMidiLoopMode(index);
+			}
+			return result;
+		}
+
+		private void ReleasePlaylistSound(PlayList entry)
+		{
+			if (entry == null)
+				return;
+
+			try
+			{
+				if (entry.Sound.hasHandle())
+					entry.Sound.release();
+			}
+			finally
+			{
+				entry.Sound = default;
+				entry.XArkMidiStream?.Dispose();
+				entry.XArkMidiStream = null;
+			}
+		}
+
+		private void ApplyXArkMidiLoopMode(int index)
+		{
+			if (!IsValidIndex(index))
+				return;
+
+			var stream = PlayList[index].XArkMidiStream;
+			if (stream == null)
+				return;
+
+			try
+			{
+				stream.SetLoop((_loop & LOOP_MODE.LOOP_ONE_REPEAT) != 0);
+			}
+			catch (Exception ex)
+			{
+				System.Diagnostics.Debug.WriteLine(
+					$"[XArkMidi] SetLoop failed file=\"{PlayList[index].FileName}\" error=\"{ex}\"");
+				ErrorOccurred?.Invoke(this, new PlayerErrorEventArgs(
+					nameof(ApplyXArkMidiLoopMode),
+					$"X-Ark Midi Engine loop error: {ex.Message}",
+					-1));
+			}
+		}
+
+		private void ApplyCurrentXArkMidiLoopMode()
+		{
+			ApplyXArkMidiLoopMode(PlayingIndex);
+			if (_preparedIndex >= 0)
+				ApplyXArkMidiLoopMode(_preparedIndex);
+		}
+
+		private void ReportCurrentXArkMidiStreamError(string callerMethodName)
+		{
+			if (!IsValidIndex(PlayingIndex))
+				return;
+
+			var stream = PlayList[PlayingIndex].XArkMidiStream;
+			if (stream == null || !stream.TryTakeLastError(out Exception error))
+				return;
+
+			System.Diagnostics.Debug.WriteLine(
+				$"[XArkMidi] Stream callback error file=\"{PlayList[PlayingIndex].FileName}\" error=\"{error}\"");
+			ErrorOccurred?.Invoke(this, new PlayerErrorEventArgs(
+				callerMethodName,
+				$"X-Ark Midi Engine stream error: {error.Message}",
+				-1));
 		}
 
 		private async System.Threading.Tasks.Task StartWaveformAnalysisAsync(
@@ -1644,7 +2045,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 			for (int i = 0; i < PlayList.Count; i++)
 			{
 				if (PlayList[i].IsLoaded)
-					PlayList[i].Sound.release();
+					ReleasePlaylistSound(PlayList[i]);
 			}
 			PlayList.Clear();
 		}
@@ -1728,8 +2129,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				&& PlayList[_fadingPlayListIndex].IsLoaded
 				&& !PlayList[_fadingPlayListIndex].IsPcm)
 			{
-				PlayList[_fadingPlayListIndex].Sound.release();
-				PlayList[_fadingPlayListIndex].Sound = default;
+				ReleasePlaylistSound(PlayList[_fadingPlayListIndex]);
 			}
 
 			FmodChannelFading = default;
@@ -1934,8 +2334,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					{
 						if (!PlayList[_fadingPlayListIndex].IsPcm)
 						{
-							PlayList[_fadingPlayListIndex].Sound.release();
-							PlayList[_fadingPlayListIndex].Sound = default;
+							ReleasePlaylistSound(PlayList[_fadingPlayListIndex]);
 						}
 					}
 					FmodChannelFading = default;
@@ -1973,8 +2372,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					&& PlayList[_fadingPlayListIndex].IsLoaded
 					&& !PlayList[_fadingPlayListIndex].IsPcm)
 				{
-					PlayList[_fadingPlayListIndex].Sound.release();
-					PlayList[_fadingPlayListIndex].Sound = default;
+					ReleasePlaylistSound(PlayList[_fadingPlayListIndex]);
 				}
 			}
 			_fadingPlayListIndex = PlayingIndex;
@@ -2004,8 +2402,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 					{
 						if (!PlayList[_fadingPlayListIndex].IsPcm)
 						{
-							PlayList[_fadingPlayListIndex].Sound.release();
-							PlayList[_fadingPlayListIndex].Sound = default;
+							ReleasePlaylistSound(PlayList[_fadingPlayListIndex]);
 						}
 					}
 					catch { }
@@ -2052,8 +2449,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 				{
 					if (!PlayList[_fadingPlayListIndex].IsPcm)
 					{
-						PlayList[_fadingPlayListIndex].Sound.release();
-						PlayList[_fadingPlayListIndex].Sound = default;
+						ReleasePlaylistSound(PlayList[_fadingPlayListIndex]);
 					}
 				}
 
