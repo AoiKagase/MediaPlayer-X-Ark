@@ -880,7 +880,9 @@ namespace MediaPlayer_X_Ark
 				// 停止中は spectrum/wave/position の更新で固まることがあるため、再生中だけ更新する。
 				if (!_spectrumClearedWhileStopped)
 				{
-					Spectrum.ZeroAnalyzerData();
+					Spectrum.mFFT = _engine.spectrum.UpdateSpectrum();
+					Spectrum.mWaveL = _engine.wave.GetWaveDataByChannel(0);
+					Spectrum.mWaveR = _engine.wave.GetWaveDataByChannel(1);
 					Spectrum.RenderFrame();
 					_spectrumClearedWhileStopped = true;
 				}
