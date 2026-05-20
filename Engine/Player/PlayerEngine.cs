@@ -1384,7 +1384,7 @@ namespace MediaPlayer_X_Ark.Engine.Player
 						{
 							var options = XArkMidiEngine.CreateOptions.Default();
 							options.CompatibilityFlags = XArkMidiEngine.CompatibilityFlags.Sf2ZeroLengthLoopRetrigger;
-
+							options.MaxSampleDataBytes = 4096ul * 1024ul * 1024ul; // 大容量 SF2 向けに 4GB まで展開を許可
 							using (var xarkEngine = new XArkMidiEngine.Engine(filename, _soundFontPath, XArkMidiEngine.SoundBankKind.Auto, 44100, 2, options))
 							{
 								var pcm = xarkEngine.RenderAllBytes();

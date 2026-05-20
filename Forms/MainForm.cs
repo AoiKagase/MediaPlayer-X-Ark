@@ -44,6 +44,7 @@ namespace MediaPlayer_X_Ark
 		private INewSkinSystem _currentSkin;
 		private SkinApplicator _skinApplicator;
 		private int _spectrumUpdateCounter;
+		private bool _spectrumClearedWhileStopped;
 
 		// スキン適用後の値バックアップ（設定オーバーライドをOFFにした時に復元するため）
 		private System.Drawing.Font _skinTitleFont;
@@ -873,6 +874,19 @@ namespace MediaPlayer_X_Ark
 		{
 			if (!initialize || _engine == null || _engine.spectrum == null)
 				return;
+
+			if (!_controller.IsPlaying)
+			{
+				// 停止中は spectrum/wave/position の更新で固まることがあるため、再生中だけ更新する。
+				if (!_spectrumClearedWhileStopped)
+				{
+					Spectrum.ZeroAnalyzerData();
+					Spectrum.RenderFrame();
+					_spectrumClearedWhileStopped = true;
+				}
+				return;
+			}
+			_spectrumClearedWhileStopped = false;
 
 			_spectrumUpdateCounter += Timer.Interval;
 			if (_spectrumUpdateCounter >= _config.settings.SpectrumUpdateIntervalMs)

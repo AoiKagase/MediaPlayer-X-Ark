@@ -106,7 +106,9 @@ namespace MediaPlayer_X_Ark.Forms
 		// ── タイマー（シークバー更新）──────────────────────────
 		private void MiniTimer_Tick(object sender, EventArgs e)
 		{
-			if (_controller == null) return;
+			if (_controller == null || !_controller.IsPlaying)
+				return;
+
 			SldTrack.Value = Math.Min(
 				ClampTrackSliderValue(_controller.GetPosition()),
 				SldTrack.Maximum);

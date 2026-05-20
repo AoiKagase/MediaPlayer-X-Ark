@@ -232,6 +232,16 @@ namespace MediaPlayer_X_Ark.Controls
 			}
 		}
 
+		public void ZeroAnalyzerData()
+		{
+			_mFFT = new float[WindowSize];
+			_mWaveL = new float[WindowSize];
+			_mWaveR = new float[WindowSize];
+			if (_analyzerSnow != null)
+				Array.Fill(_analyzerSnow, Math.Max(1, ClientSize.Height));
+			Invalidate();
+		}
+
 		private void DisposeDeviceResources()
 		{
 			_waveRightBrush?.Dispose();    _waveRightBrush    = null;

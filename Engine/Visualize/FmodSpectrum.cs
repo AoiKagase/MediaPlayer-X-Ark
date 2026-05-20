@@ -75,6 +75,8 @@ namespace MediaPlayer_X_Ark.Engine.Visualize
 
 			if (!isPlaying || paused)
 			{
+				if (mFFTSpectrum != null)
+					Array.Fill(mFFTSpectrum, 0f);
 				return mFFTSpectrum;
 			}
 
